@@ -1,0 +1,21 @@
+#!/bin/sh
+# update secret files if git pull on master resulted in new changes being merged locally
+
+branch=`git symbolic-ref HEAD`
+root_dir=`git rev-parse --show-toplevel`
+# must replace with actual vault_path and default_branch, can run setup.sh
+vault_path="kv/internal-tools"
+default_branch="main"
+
+if [ $branch = "refs/heads/${default_branch}" ]; then
+    if [ -f "${root_dir}/update_secret_files.py" ]; then
+        vault kv get -format=json $vault_path | python "${root_dir}/update_secret_files.py"
+        if [ $? -eq 0 ]; then
+            echo "Successfully pulled secrets from Vault"
+        else
+            echo "An error occurred while pulling secrets from Vault"
+        fi
+    else
+        echo "To automatically update secrets after git pull on default branch, place update_secret_files.py in repo root directory"
+    fi
+fi

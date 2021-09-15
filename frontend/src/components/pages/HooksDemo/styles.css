@@ -1,0 +1,71 @@
+/* Simple styling for HooksDemo, for demo convenience. */
+
+.page-root {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.page-content {
+  margin: 0 auto;
+  width: fit-content;
+  max-width: 80%;
+}
+
+.page-scroll-top-button {
+  position: fixed;
+  top: 20px;
+  left: 28px;
+  font-size: 1.5rem;
+}
+
+.page-banner {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  font-size: 2rem;
+  position: fixed;
+  right: 40px;
+  top: 20px;
+}
+
+.page-nav {
+  columns: 2;
+  margin-bottom: 20px;
+  padding-bottom: 28px;
+  border-bottom: gray 5px solid;
+}
+.page-nav-item {
+  font-size: 1.5rem;
+}
+
+.page-nav-item:hover {
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.section-root {
+  margin-bottom: 1rem;
+  padding: 10px 15px;
+  border-left: 5px solid transparent;
+}
+
+.section-root:hover {
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.1);
+  border-left: gray 5px solid;
+}
+
+.section-body {
+  display: flex;
+  align-items: center;
+}
+
+.section-emoji {
+  font-size: 64px;
+}
+
+.section-description {
+  margin-left: 12px;
+  height: fit-content;
+  font-size: 1.1rem;
+  padding: 10px;
+}

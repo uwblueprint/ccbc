@@ -1,0 +1,12 @@
+**/node_modules
+**/.env
+**/build
+**/venv
+**/__pycache__
+**/*.log
+**/firebaseServiceAccount.json
+**/.DS_Store
+**/nodemailer.config.ts
+.vscode
+**/*.cache
+**/*.egg-info
