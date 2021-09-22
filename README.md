@@ -117,7 +117,7 @@ docker exec -it <container-name> /bin/bash -c "yarn test"
 ## Version Control Guide
 
 ### Branching
-* Branch off of `main` for all feature work and bug fixes, creating a "feature branch". Prefix the feature branch name with your name. The branch name should be in kebab case and it should be short and descriptive. E.g. `tahmeed/new-feature`
+* Branch off of `development` for all feature work and bug fixes, creating a "feature branch". Prefix the feature branch name with your name. The branch name should be in kebab case and it should be short and descriptive. E.g. `tahmeed/new-feature`
 
 ### Commits
 * Commits should be atomic (guideline: the commit is self-contained; a reviewer could make sense of it even if they viewed the commit diff in isolation)
