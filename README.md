@@ -51,7 +51,7 @@ vault kv get -format=json kv/ccbc | python update_secret_files.py
 You should have three new files in your repo after this:
 
 - `.env`
-- `backend/.env`
+- `frontend/.env`
 - `backend/typescript/firebaseServiceAccount.json`
 
 4. Run the application
