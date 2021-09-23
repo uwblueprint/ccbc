@@ -33,7 +33,7 @@ Made from [Starter Code](https://uwblueprint.github.io/starter-code-v2), brought
 
 * Install Docker Desktop ([MacOS](https://docs.docker.com/docker-for-mac/install/) | [Windows (Home)](https://docs.docker.com/docker-for-windows/install-windows-home/) | [Windows (Pro, Enterprise, Education)](https://docs.docker.com/docker-for-windows/install/) | [Linux](https://docs.docker.com/engine/install/#server)) and ensure that it is running
 * Install [Node](https://nodejs.org/en/) latest LTS
-* Set up Vault client for secret management, see instructions [here](https://www.notion.so/uwblueprintexecs/Secret-Management-2d5b59ef0987415e93ec951ce05bf03e)
+* Set up Vault client for secret management, see instructions [here](https://www.notion.so/uwblueprintexecs/Secret-Management-2d5b59ef0987415e93ec951ce05bf03e). Only perform the steps up to the point where you login on terminal and the ui. No need to do anything from "Configure dev tools for your project repo" onwards
 
 
 ### Set up
