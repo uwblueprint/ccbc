@@ -76,6 +76,16 @@ If you don't need to rebuild packages between switching branches, you probably d
 docker ps
 ```
 
+### Starting Up Containers in a Background Process
+Add the `-d` flag to start up a container in a daemon process
+```bash
+# For starting up containers
+docker-compose up -d
+
+# For building and starting up containers
+docker-compose up --build -d
+```
+
 ### Accessing PostgreSQL Database
 
 ```bash
@@ -95,8 +105,6 @@ SELECT * FROM <table-name>;
 ```
 
 ### Linting & Formatting
-
-```
 
 TypeScript backend and frontend:
 ```bash
