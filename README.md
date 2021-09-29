@@ -22,6 +22,7 @@ Made from [Starter Code](https://uwblueprint.github.io/starter-code-v2), brought
   * 💽 [Accessing PostgreSQL Database](#accessing-postgresql-database)
   * ✨ [Linting & Formatting](#linting--formatting)
   * 🧪 [Running Tests](#running-tests)
+  * :outbox_tray: [Running Migrations](#running-migrations)
 * 🌳 [Version Control Guide](#version-control-guide)
   * 🌿 [Branching](#branching)
   * 🔒 [Commits](#commits)
@@ -138,7 +139,7 @@ cd backend/typescript
 # get container name
 $ docker ps
 # run a bash shell
-$ docker exec -it community-fridge-kw_ts-backend_1 /bin/bash  # For our project, typescript backend container name is community-fridge-kw_ts-backend_1. If you want to run a different container, replace community-fridge-kw_ts-backend_1 with the appropriate container name
+$ docker exec -it ccbc_ts-backend_1 /bin/bash  
 ```
 
 4. Ensure you have migration files in the migrations folder
