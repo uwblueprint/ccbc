@@ -122,6 +122,33 @@ TypeScript backend and frontend:
 docker exec -it <container-name> /bin/bash -c "yarn test"
 ```
 
+### Running Migrations
+
+1. Run both the TypeScript backend and database containers, you can use 
+```bash
+docker-compose up
+```
+2. `cd` into the backend/typescript folder
+```bash
+cd backend/typescript
+```
+
+3. Run a bash shell in the TypeScript backend container
+```bash
+# get container name
+$ docker ps
+# run a bash shell
+$ docker exec -it community-fridge-kw_ts-backend_1 /bin/bash  # For our project, typescript backend container name is community-fridge-kw_ts-backend_1. If you want to run a different container, replace community-fridge-kw_ts-backend_1 with the appropriate container name
+```
+
+4. Ensure you have migration files in the migrations folder
+
+5. Run the following command
+```bash
+node migrate up
+```
+
+
 ## Version Control Guide
 
 ### Branching
