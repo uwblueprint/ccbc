@@ -177,4 +177,3 @@ class EntityService implements IEntityService {
 }
 
 export default EntityService;
-
