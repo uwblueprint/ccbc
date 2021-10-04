@@ -6,13 +6,11 @@ export type Token = {
 };
 
 export type UserDTO = {
-  id: number;
-  auth_id: string;
+  authID: string;
   role_type: Role;
   firstName: string;
   lastName: string;
   email: string;
-  created_at: string;
 };
 
 export type CreateUserDTO = Omit<UserDTO, "id"> & { password: string };

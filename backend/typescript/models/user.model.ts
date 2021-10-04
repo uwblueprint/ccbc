@@ -3,11 +3,8 @@ import { Role } from "../types";
 
 @Table({ tableName: "users" })
 export default class User extends Model {
-  @Column({ type: DataType.INTEGER })
-  id!: number;
-
   @Column({ type: DataType.STRING })
-  auth_id!: string;
+  authID!: string;
 
   @Column({ type: DataType.ENUM("Admin", "Member", "Author") })
   role_type!: Role;
@@ -20,7 +17,4 @@ export default class User extends Model {
 
   @Column({ type: DataType.STRING })
   email!: string;
-
-  @Column({ type: DataType.DATE })
-  created_at!: string;
 }

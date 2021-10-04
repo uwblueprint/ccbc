@@ -1,4 +1,4 @@
-import { DataType } from "sequelize-typescript";
+import { DataType, Sequelize } from "sequelize-typescript";
 
 import { Migration } from "../umzug";
 
@@ -6,10 +6,10 @@ export const up: Migration = async ({ context: sequelize }) => {
   await sequelize.getQueryInterface().createTable("users", {
     id: {
       type: DataType.INTEGER,
-      allowNull: false,
       primaryKey: true,
+      autoIncrement: true,
     },
-    auth_id: {
+    authID: {
       type: DataType.STRING,
       allowNull: false,
     },
@@ -29,10 +29,7 @@ export const up: Migration = async ({ context: sequelize }) => {
       type: DataType.STRING,
       allowNull: false,
     },
-    created_at: {
-      type: DataType.DATE,
-      allowNull: false,
-    },
+    createdAt: DataType.DATE,
   });
 };
 
