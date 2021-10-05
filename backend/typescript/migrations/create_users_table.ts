@@ -9,7 +9,7 @@ export const up: Migration = async ({ context: sequelize }) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    authID: {
+    auth_id: {
       type: DataType.STRING,
       allowNull: false,
     },
