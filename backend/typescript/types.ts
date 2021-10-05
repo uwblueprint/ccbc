@@ -1,4 +1,4 @@
-export type Role = "User" | "Admin";
+export type Role = "Admin" | "Member" | "Author";
 
 export type Token = {
   accessToken: string;
@@ -6,18 +6,18 @@ export type Token = {
 };
 
 export type UserDTO = {
-  id: string;
+  authId: string;
+  roleType: Role;
   firstName: string;
   lastName: string;
   email: string;
-  role: Role;
 };
 
 export type CreateUserDTO = Omit<UserDTO, "id"> & { password: string };
 
 export type UpdateUserDTO = Omit<UserDTO, "id">;
 
-export type RegisterUserDTO = Omit<CreateUserDTO, "role">;
+export type RegisterUserDTO = Omit<CreateUserDTO, "role_type">;
 
 export type AuthDTO = Token & UserDTO;
 
