@@ -1,4 +1,4 @@
-import { DataType, Sequelize } from "sequelize-typescript";
+import { DataType } from "sequelize-typescript";
 
 import { Migration } from "../umzug";
 
