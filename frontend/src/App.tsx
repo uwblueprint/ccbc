@@ -5,11 +5,17 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import PrivateRoute from "./components/auth/PrivateRoute";
+
+/* Pages */
+import AdminDashboard from "./components/pages/AdminDashboard";
+import MagazineReview from "./components/pages/MagazineReview";
+import Profile from "./components/pages/Profile";
 import CreatePage from "./components/pages/CreatePage";
 import Default from "./components/pages/Default";
 import DisplayPage from "./components/pages/DisplayPage";
 import NotFound from "./components/pages/NotFound";
 import UpdatePage from "./components/pages/UpdatePage";
+
 import * as Routes from "./constants/Routes";
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
 import AuthContext from "./contexts/AuthContext";
@@ -54,31 +60,9 @@ const App = (): React.ReactElement => {
               <Route exact path={Routes.LOGIN_PAGE} component={Login} />
               <Route exact path={Routes.SIGNUP_PAGE} component={Signup} />
               <PrivateRoute exact path={Routes.HOME_PAGE} component={Default} />
-              <PrivateRoute
-                exact
-                path={Routes.CREATE_ENTITY_PAGE}
-                component={CreatePage}
-              />
-              <PrivateRoute
-                exact
-                path={Routes.UPDATE_ENTITY_PAGE}
-                component={UpdatePage}
-              />
-              <PrivateRoute
-                exact
-                path={Routes.DISPLAY_ENTITY_PAGE}
-                component={DisplayPage}
-              />
-              <PrivateRoute
-                exact
-                path={Routes.EDIT_TEAM_PAGE}
-                component={EditTeamInfoPage}
-              />
-              <PrivateRoute
-                exact
-                path={Routes.HOOKS_PAGE}
-                component={HooksDemo}
-              />
+              <PrivateRoute exact path={Routes.MAGAZINE_REVIEW_PAGE} component={MagazineReview} />
+              <PrivateRoute exact path={Routes.PROFILE_PAGE} component={Profile} />
+              <PrivateRoute exact path={Routes.ADMIN_DASHBOARD_PAGE} component={AdminDashboard} />
               <Route exact path="*" component={NotFound} />
             </Switch>
           </Router>
