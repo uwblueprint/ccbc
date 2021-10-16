@@ -1,21 +1,21 @@
-import { Column, DataTypes, Model, Table, CreatedAt, UpdatedAt, ForeignKey } from "sequelize-typescript";
+import { Column, DataType, Model, Table, CreatedAt, UpdatedAt, ForeignKey } from "sequelize-typescript";
 import User from './user.model'
 
 @Table({ tableName: "reviews" })
 export default class Review extends Model {
-    @Column({ type: DataTypes.STRING })
+    @Column({ type: DataType.STRING })
     body!: string;
 
-    @Column({ type: DataTypes.ARRAY(DataTypes.STRING)})
+    @Column({ type: DataType.ARRAY(DataType.STRING)})
     cover_images!: string[]
 
-    @Column({ type: DataTypes.STRING })
+    @Column({ type: DataType.STRING })
     byline!: string;
 
-    @Column({ type: DataTypes.BOOLEAN })
+    @Column({ type: DataType.BOOLEAN })
     featured!: boolean;
 
-    @Column({ type: DataTypes.INT})
+    @Column({ type: DataType.INTEGER})
     @ForeignKey(() => User)
     created_by!: number;
     
