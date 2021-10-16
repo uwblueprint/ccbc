@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { getApiValidationError, validatePrimitive } from "./util";
 
 /* eslint-disable-next-line import/prefer-default-export */
+// eslint-disable-next-line  @typescript-eslint/explicit-module-boundary-types
 export const loginRequestValidator = async (
   req: Request,
   res: Response,
@@ -22,6 +23,7 @@ export const loginRequestValidator = async (
   return next();
 };
 
+// eslint-disable-next-line  @typescript-eslint/explicit-module-boundary-types
 export const registerRequestValidator = async (
   req: Request,
   res: Response,

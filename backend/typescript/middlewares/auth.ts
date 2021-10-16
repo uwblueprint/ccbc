@@ -7,6 +7,7 @@ import { Role } from "../types";
 
 const authService: IAuthService = new AuthService(new UserService());
 
+// eslint-disable-next-line  @typescript-eslint/explicit-module-boundary-types
 export const getAccessToken = (req: Request) => {
   const authHeaderParts = req.headers.authorization?.split(" ");
   if (
@@ -21,6 +22,7 @@ export const getAccessToken = (req: Request) => {
 
 /* Determine if request is authorized based on accessToken validity and role of client */
 export const isAuthorizedByRole = (roles: Set<Role>) => {
+  // eslint-disable-next-line  @typescript-eslint/explicit-module-boundary-types
   return async (req: Request, res: Response, next: NextFunction) => {
     const accessToken = getAccessToken(req);
     const authorized =
@@ -38,6 +40,7 @@ export const isAuthorizedByRole = (roles: Set<Role>) => {
  * validity and if the userId that the token was issued to matches the requested userId
  * Note: userIdField is the name of the request parameter containing the requested userId */
 export const isAuthorizedByUserId = (userIdField: string) => {
+  // eslint-disable-next-line  @typescript-eslint/explicit-module-boundary-types
   return async (req: Request, res: Response, next: NextFunction) => {
     const accessToken = getAccessToken(req);
     const authorized =
@@ -59,6 +62,7 @@ export const isAuthorizedByUserId = (userIdField: string) => {
  * validity and if the email that the token was issued to matches the requested email
  * Note: emailField is the name of the request parameter containing the requested email */
 export const isAuthorizedByEmail = (emailField: string) => {
+  // eslint-disable-next-line  @typescript-eslint/explicit-module-boundary-types
   return async (req: Request, res: Response, next: NextFunction) => {
     const accessToken = getAccessToken(req);
     const authorized =

@@ -22,4 +22,3 @@ export default class Entity extends Model {
   @Column
   file_name!: string;
 }
-

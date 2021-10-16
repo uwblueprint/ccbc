@@ -54,6 +54,7 @@ class AuthService implements IAuthService {
         // You may want to silence the logger for this special OAuth user lookup case
         const user = await this.userService.getUserByEmail(googleUser.email);
         return { ...token, ...user };
+        /* eslint-disable no-empty */
       } catch (error) {}
 
       const user = await this.userService.createUser(

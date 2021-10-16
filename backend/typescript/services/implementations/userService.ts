@@ -149,6 +149,7 @@ class UserService implements IUserService {
 
     try {
       if (signUpMethod === "GOOGLE") {
+        /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
         firebaseUser = await firebaseAdmin.auth().getUser(authId!);
       } else {
         // signUpMethod === PASSWORD
@@ -217,7 +218,7 @@ class UserService implements IUserService {
 
       // the cast to "any" is needed due to a missing property in the Sequelize type definitions
       // https://github.com/sequelize/sequelize/issues/9978#issuecomment-426342219
-      /* eslint-disable-next-line no-underscore-dangle */
+      /* eslint-disable-next-line no-underscore-dangle, @typescript-eslint/no-explicit-any */
       const oldUser: User = (updateResult[1][0] as any)._previousDataValues;
 
       try {
@@ -363,4 +364,3 @@ class UserService implements IUserService {
 }
 
 export default UserService;
-
