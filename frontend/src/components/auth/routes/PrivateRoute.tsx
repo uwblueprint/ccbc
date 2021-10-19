@@ -18,6 +18,8 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
 }: PrivateRouteProps) => {
   const { authenticatedUser } = useContext(AuthContext);
 
+  // const userHasRequiredRole = requiredRoles.includes(authenticatedUser.role);
+
   return authenticatedUser ? (
     <Route path={path} exact={exact} component={component} />
   ) : (

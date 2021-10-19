@@ -11,7 +11,6 @@ import {
   setLocalStorageObjProperty,
 } from "../utils/LocalStorageUtils";
 
-
 const login = async (
   email: string,
   password: string,
@@ -116,4 +115,11 @@ const refresh = async (): Promise<boolean> => {
   }
 };
 
-export default { login, logout, loginWithGoogle, register, resetPassword, refresh };
+export default {
+  login,
+  logout,
+  loginWithGoogle,
+  register,
+  resetPassword,
+  refresh,
+};

@@ -60,11 +60,27 @@ const App = (): React.ReactElement => {
             <Switch>
               <Route exact path={Routes.LOGIN_PAGE} component={Login} />
               <Route exact path={Routes.SIGNUP_PAGE} component={Signup} />
-              <Route exact path={Routes.UNAUTHORIZED_PAGE} component={Unauthorized} />
+              <Route
+                exact
+                path={Routes.UNAUTHORIZED_PAGE}
+                component={Unauthorized}
+              />
               <PrivateRoute exact path={Routes.HOME_PAGE} component={Default} />
-              <PrivateRoute exact path={Routes.MAGAZINE_REVIEW_PAGE} component={MagazineReview} />
-              <PrivateRoute exact path={Routes.PROFILE_PAGE} component={Profile} />
-              <AdminRoute exact path={Routes.ADMIN_DASHBOARD_PAGE} component={AdminDashboard} />
+              <PrivateRoute
+                exact
+                path={Routes.MAGAZINE_REVIEW_PAGE}
+                component={MagazineReview}
+              />
+              <PrivateRoute
+                exact
+                path={Routes.PROFILE_PAGE}
+                component={Profile}
+              />
+              <AdminRoute
+                exact
+                path={Routes.ADMIN_DASHBOARD_PAGE}
+                component={AdminDashboard}
+              />
               <Route exact path="*" component={NotFound} />
             </Switch>
           </Router>
