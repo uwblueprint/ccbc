@@ -18,12 +18,7 @@ export default class Review extends Model {
     @Column({ type: DataType.INTEGER})
     @ForeignKey(() => User)
     created_by!: number;
-    
-    @CreatedAt
-    @Column
-    created_at!: Date;
 
-    @UpdatedAt
-    @Column
-    updated_at!: Date;
+    @Column({ type: DataType.DATE})
+    published_at!: Date;
 }
