@@ -2,7 +2,7 @@ import { Column, DataType, Model, Table, ForeginKey } from "sequelize-typescript
 import Tag from "./tag.model"
 import Review from "./review.model"
 
-@Table({tableName: "review_tags"})
+@Table({tableName: "review_tag"})
 export default class ReviewTag extends Model {
 
     @ForeginKey(() => Review)
