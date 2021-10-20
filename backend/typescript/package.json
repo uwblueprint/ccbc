@@ -4,6 +4,9 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "postinstall": "yarn run build",
     "test": "jest --runInBand --forceExit --detectOpenHandles",
     "dev": "nodemon -L",
     "lint": "eslint . --ext .ts,.js",
