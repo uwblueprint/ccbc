@@ -16,8 +16,6 @@ export const UPDATE_ENTITY_PAGE = "/entity/update";
 
 export const HOOKS_PAGE = "/hooks";
 
-export const MAGAZINE_REVIEW_PAGE = "/users/magazine-review";
+export const PROFILE_PAGE = "/users/:userid";
 
-export const PROFILE_PAGE = "/users/:userid/profile";
-
-export const ADMIN_DASHBOARD_PAGE = "/users/admin/dashboard";
+export const ADMIN_DASHBOARD_PAGE = "/dashboard";

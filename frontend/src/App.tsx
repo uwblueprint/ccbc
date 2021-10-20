@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 /* Routes */
 import * as Routes from "./constants/Routes";
 import PrivateRoute from "./components/auth/routes/PrivateRoute";
-import AdminRoute from "./components/auth/routes/AdminRoute";
 
 /* Pages */
 import Login from "./components/auth/Login";
@@ -23,6 +22,7 @@ import UpdatePage from "./components/pages/UpdatePage";
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
 import AuthContext from "./contexts/AuthContext";
 import { getLocalStorageObj } from "./utils/LocalStorageUtils";
+import { UserRole } from "./constants/Enums";
 import SampleContext, {
   DEFAULT_SAMPLE_CONTEXT,
 } from "./contexts/SampleContext";
@@ -65,21 +65,23 @@ const App = (): React.ReactElement => {
                 path={Routes.UNAUTHORIZED_PAGE}
                 component={Unauthorized}
               />
-              <PrivateRoute exact path={Routes.HOME_PAGE} component={Default} />
-              <PrivateRoute
+              <PrivateRoute 
                 exact
-                path={Routes.MAGAZINE_REVIEW_PAGE}
+                path={Routes.HOME_PAGE}
                 component={MagazineReview}
+                requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
               />
               <PrivateRoute
                 exact
                 path={Routes.PROFILE_PAGE}
                 component={Profile}
+                requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
               />
-              <AdminRoute
+              <PrivateRoute
                 exact
                 path={Routes.ADMIN_DASHBOARD_PAGE}
                 component={AdminDashboard}
+                requiredRoles={[UserRole.Admin]}
               />
               <Route exact path="*" component={NotFound} />
             </Switch>
