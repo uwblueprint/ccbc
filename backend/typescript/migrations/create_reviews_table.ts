@@ -27,7 +27,7 @@ export const up: Migration = async ({ context: sequelize }) => {
         },
         published_at: {
             type: DataType.DATE,
-            allowNull: false,
+            allowNull: true,
         },
         createdAt: {
             allowNull: false,
