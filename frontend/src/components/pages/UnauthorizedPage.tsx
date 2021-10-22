@@ -1,6 +1,6 @@
 import React from "react";
 
-const Unauthorized = (): React.ReactElement => {
+const UnauthorizedPage = (): React.ReactElement => {
   return (
     <div style={{ textAlign: "center" }}>
       <h1>You do not have permissions to view this page</h1>
@@ -8,4 +8,4 @@ const Unauthorized = (): React.ReactElement => {
   );
 };
 
-export default Unauthorized;
+export default UnauthorizedPage;

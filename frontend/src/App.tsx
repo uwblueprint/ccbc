@@ -13,7 +13,7 @@ import AdminDashboard from "./components/pages/AdminDashboard";
 import MagazineReview from "./components/pages/MagazineReview";
 import Profile from "./components/pages/Profile";
 import NotFound from "./components/pages/NotFound";
-import Unauthorized from "./components/pages/Unauthorized";
+import Unauthorized from "./components/pages/UnauthorizedPage";
 
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
 import AuthContext from "./contexts/AuthContext";
