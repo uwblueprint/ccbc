@@ -12,12 +12,8 @@ import Signup from "./components/auth/Signup";
 import AdminDashboard from "./components/pages/AdminDashboard";
 import MagazineReview from "./components/pages/MagazineReview";
 import Profile from "./components/pages/Profile";
-import CreatePage from "./components/pages/CreatePage";
-import Default from "./components/pages/Default";
-import DisplayPage from "./components/pages/DisplayPage";
 import NotFound from "./components/pages/NotFound";
 import Unauthorized from "./components/pages/Unauthorized";
-import UpdatePage from "./components/pages/UpdatePage";
 
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
 import AuthContext from "./contexts/AuthContext";
@@ -65,7 +61,7 @@ const App = (): React.ReactElement => {
                 path={Routes.UNAUTHORIZED_PAGE}
                 component={Unauthorized}
               />
-              <PrivateRoute 
+              <PrivateRoute
                 exact
                 path={Routes.HOME_PAGE}
                 component={MagazineReview}
