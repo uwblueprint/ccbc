@@ -11,6 +11,7 @@ export type UserDTO = {
   firstName: string;
   lastName: string;
   email: string;
+  active: boolean;
 };
 
 export type CreateUserDTO = Omit<UserDTO, "id"> & { password: string };

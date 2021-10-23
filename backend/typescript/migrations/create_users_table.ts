@@ -29,6 +29,10 @@ export const up: Migration = async ({ context: sequelize }) => {
       type: DataType.STRING,
       allowNull: false,
     },
+    active: {
+      type: DataType.BOOLEAN,
+      allowNull: false,
+    },
     createdAt: DataType.DATE,
   });
 };
