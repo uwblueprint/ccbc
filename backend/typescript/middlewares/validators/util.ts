@@ -8,8 +8,7 @@ const allowableContentTypes = new Set([
   "image/gif",
 ]);
 
-/* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any */
-export const validatePrimitive = (value: any, type: Type): boolean => {
+export const validatePrimitive = (value: unknown, type: Type): boolean => {
   if (value === undefined || value === null) return false;
 
   switch (type) {
@@ -28,8 +27,7 @@ export const validatePrimitive = (value: any, type: Type): boolean => {
   }
 };
 
-/* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,  @typescript-eslint/no-explicit-any */
-export const validateArray = (value: any, type: Type): boolean => {
+export const validateArray = (value: unknown, type: Type): boolean => {
   return (
     value !== undefined &&
     value !== null &&
