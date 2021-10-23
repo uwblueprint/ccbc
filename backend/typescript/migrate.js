@@ -1,5 +1,5 @@
-import { migrator } from "./umzug";
-
+// Only worked with this syntax
+// eslint-disable-next-line
 require("ts-node/register");
-
-migrator.runAsCLI();
+// eslint-disable-next-line
+require("./umzug").migrator.runAsCLI();
