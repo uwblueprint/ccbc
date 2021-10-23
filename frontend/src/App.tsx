@@ -2,25 +2,28 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState, useReducer } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
+/* Routes */
+import * as Routes from "./constants/Routes";
+import PrivateRoute from "./components/auth/routes/PrivateRoute";
+
+/* Pages */
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
-import PrivateRoute from "./components/auth/PrivateRoute";
-import CreatePage from "./components/pages/CreatePage";
-import Default from "./components/pages/Default";
-import DisplayPage from "./components/pages/DisplayPage";
+import AdminDashboard from "./components/pages/AdminDashboard";
+import MagazineReview from "./components/pages/MagazineReview";
+import Profile from "./components/pages/Profile";
 import NotFound from "./components/pages/NotFound";
-import UpdatePage from "./components/pages/UpdatePage";
-import * as Routes from "./constants/Routes";
+import Unauthorized from "./components/pages/UnauthorizedPage";
+
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
 import AuthContext from "./contexts/AuthContext";
 import { getLocalStorageObj } from "./utils/LocalStorageUtils";
+import { UserRole } from "./constants/Enums";
 import SampleContext, {
   DEFAULT_SAMPLE_CONTEXT,
 } from "./contexts/SampleContext";
 import sampleContextReducer from "./reducers/SampleContextReducer";
 import SampleContextDispatcherContext from "./contexts/SampleContextDispatcherContext";
-import EditTeamInfoPage from "./components/pages/EditTeamPage";
-import HooksDemo from "./components/pages/HooksDemo";
 
 import { AuthenticatedUser } from "./types/AuthTypes";
 
@@ -53,31 +56,28 @@ const App = (): React.ReactElement => {
             <Switch>
               <Route exact path={Routes.LOGIN_PAGE} component={Login} />
               <Route exact path={Routes.SIGNUP_PAGE} component={Signup} />
-              <PrivateRoute exact path={Routes.HOME_PAGE} component={Default} />
-              <PrivateRoute
+              <Route
                 exact
-                path={Routes.CREATE_ENTITY_PAGE}
-                component={CreatePage}
+                path={Routes.UNAUTHORIZED_PAGE}
+                component={Unauthorized}
               />
               <PrivateRoute
                 exact
-                path={Routes.UPDATE_ENTITY_PAGE}
-                component={UpdatePage}
+                path={Routes.HOME_PAGE}
+                component={MagazineReview}
+                requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
               />
               <PrivateRoute
                 exact
-                path={Routes.DISPLAY_ENTITY_PAGE}
-                component={DisplayPage}
+                path={Routes.PROFILE_PAGE}
+                component={Profile}
+                requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
               />
               <PrivateRoute
                 exact
-                path={Routes.EDIT_TEAM_PAGE}
-                component={EditTeamInfoPage}
-              />
-              <PrivateRoute
-                exact
-                path={Routes.HOOKS_PAGE}
-                component={HooksDemo}
+                path={Routes.ADMIN_DASHBOARD_PAGE}
+                component={AdminDashboard}
+                requiredRoles={[UserRole.Admin]}
               />
               <Route exact path="*" component={NotFound} />
             </Switch>

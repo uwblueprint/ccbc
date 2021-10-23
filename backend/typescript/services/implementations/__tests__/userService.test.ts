@@ -5,7 +5,7 @@ import UserService from "../userService";
 
 import { UserDTO } from "../../../types";
 
-import { testSql } from "../../../testUtils/testDb";
+import testSql from "../../../testUtils/testDb";
 
 const testUsers = [
   {

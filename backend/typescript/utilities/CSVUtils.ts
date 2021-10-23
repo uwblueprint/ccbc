@@ -29,7 +29,7 @@ type GenerateCSVParams<T> = {
  * @throws Error if JSON is not parsed properly
  */
 /* eslint-disable-next-line import/prefer-default-export */
-export const generateCSV = async <T>({
+const generateCSV = async <T>({
   data,
   fields,
   transformFunction,
@@ -59,3 +59,5 @@ export const generateCSV = async <T>({
   };
   return parseAsync<T>(data, options, transformOpts);
 };
+
+export default generateCSV;

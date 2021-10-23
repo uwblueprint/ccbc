@@ -71,7 +71,7 @@ const getFile = async (uuid: string): Promise<string> => {
       headers: { Authorization: bearerToken },
     });
 
-    return data.fileURL
+    return data.fileURL;
   } catch (error) {
     return error;
   }
