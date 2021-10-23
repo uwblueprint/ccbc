@@ -22,7 +22,6 @@ class AuthService implements IAuthService {
     this.emailService = emailService;
   }
 
-  /* eslint-disable class-methods-use-this */
   async generateToken(email: string, password: string): Promise<AuthDTO> {
     try {
       const token = await FirebaseRestClient.signInWithPassword(
@@ -37,7 +36,6 @@ class AuthService implements IAuthService {
     }
   }
 
-  /* eslint-disable class-methods-use-this */
   async generateTokenOAuth(idToken: string): Promise<AuthDTO> {
     try {
       const googleUser = await FirebaseRestClient.signInWithGoogleOAuth(
@@ -54,6 +52,7 @@ class AuthService implements IAuthService {
         // You may want to silence the logger for this special OAuth user lookup case
         const user = await this.userService.getUserByEmail(googleUser.email);
         return { ...token, ...user };
+        /* eslint-disable no-empty */
       } catch (error) {}
 
       const user = await this.userService.createUser(
@@ -93,6 +92,7 @@ class AuthService implements IAuthService {
     }
   }
 
+  /* eslint-disable class-methods-use-this */
   async renewToken(refreshToken: string): Promise<Token> {
     try {
       return await FirebaseRestClient.refreshToken(refreshToken);
