@@ -21,8 +21,8 @@ export const up: Migration = async ({ context: sequelize }) => {
         allowNull: true,
         type: DataType.INTEGER,
         references: {
-            table: 'series',
-            field: 'id'
+            model: 'series',
+            key: 'id'
         } 
       },
       series_order: {
