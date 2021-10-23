@@ -7,7 +7,7 @@ import { Role } from "../types";
 
 const authService: IAuthService = new AuthService(new UserService());
 
-export const getAccessToken = (req: Request) => {
+export const getAccessToken = (req: Request): string | null => {
   const authHeaderParts = req.headers.authorization?.split(" ");
   if (
     authHeaderParts &&
@@ -21,7 +21,11 @@ export const getAccessToken = (req: Request) => {
 
 /* Determine if request is authorized based on accessToken validity and role of client */
 export const isAuthorizedByRole = (roles: Set<Role>) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> => {
     const accessToken = getAccessToken(req);
     const authorized =
       accessToken && (await authService.isAuthorizedByRole(accessToken, roles));
@@ -38,7 +42,11 @@ export const isAuthorizedByRole = (roles: Set<Role>) => {
  * validity and if the userId that the token was issued to matches the requested userId
  * Note: userIdField is the name of the request parameter containing the requested userId */
 export const isAuthorizedByUserId = (userIdField: string) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> => {
     const accessToken = getAccessToken(req);
     const authorized =
       accessToken &&
@@ -59,7 +67,11 @@ export const isAuthorizedByUserId = (userIdField: string) => {
  * validity and if the email that the token was issued to matches the requested email
  * Note: emailField is the name of the request parameter containing the requested email */
 export const isAuthorizedByEmail = (emailField: string) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> => {
     const accessToken = getAccessToken(req);
     const authorized =
       accessToken &&

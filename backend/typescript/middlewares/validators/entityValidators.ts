@@ -7,12 +7,11 @@ import {
   validatePrimitive,
 } from "./util";
 
-/* eslint-disable-next-line import/prefer-default-export */
-export const entityRequestDtoValidator = async (
+const entityRequestDtoValidator = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<Response | void> => {
   let body;
   try {
     body = JSON.parse(req.body.body);
@@ -41,3 +40,5 @@ export const entityRequestDtoValidator = async (
   }
   return next();
 };
+
+export default entityRequestDtoValidator;

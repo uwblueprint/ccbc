@@ -5,7 +5,7 @@ export const createUserDtoValidator = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<Response | void> => {
   if (!validatePrimitive(req.body.firstName, "string")) {
     return res.status(400).send(getApiValidationError("firstName", "string"));
   }
@@ -29,7 +29,7 @@ export const updateUserDtoValidator = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<Response | void> => {
   if (!validatePrimitive(req.body.firstName, "string")) {
     return res.status(400).send(getApiValidationError("firstName", "string"));
   }

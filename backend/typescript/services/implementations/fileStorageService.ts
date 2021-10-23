@@ -12,7 +12,7 @@ class FileStorageService implements IFileStorageService {
     this.bucketName = bucketName;
   }
 
-  async getFile(fileName: string, expirationTimeMinutes: number = 60): Promise<string> {
+  async getFile(fileName: string, expirationTimeMinutes = 60): Promise<string> {
     const bucket = storage().bucket(this.bucketName);
     const expirationDate = new Date();
     expirationDate.setMinutes(

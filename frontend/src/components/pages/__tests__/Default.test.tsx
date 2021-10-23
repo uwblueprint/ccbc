@@ -7,7 +7,6 @@ import Default from "../Default";
 // https://jestjs.io/docs/tutorial-react
 // https://reactjs.org/docs/testing.html
 
-
 describe("Default page", () => {
   it("Should render Create Entity button", () => {
     const page = render(<Default />);
