@@ -2,8 +2,8 @@ import { DataType } from "sequelize-typescript";
 
 import { Migration } from "../umzug";
 
-export const up: Migration = async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('publishers', {
+export const up: Migration = async ({ context: sequelize }) => {
+    await sequelize.getQueryInterface().createTable('publishers', {
         id: {
             allowNull: false,
             type: DataType.INTEGER,
@@ -20,6 +20,6 @@ export const up: Migration = async (queryInterface, Sequelize) => {
     });
   };
 
-export const down: Migration = async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('publishers');
+export const down: Migration = async ({ context: sequelize }) => {
+    await sequelize.getQueryInterface().dropTable('publishers');
 };

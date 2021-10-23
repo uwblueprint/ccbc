@@ -1,4 +1,4 @@
-import { Column, DataType, Model, Table, BelongsToMany, DateDataType } from "sequelize-typescript";
+import { Column, DataType, Model, Table, BelongsToMany } from "sequelize-typescript";
 import Book from "./book.model";
 import BookPublisher from "./book_publisher.model";
 
@@ -11,7 +11,7 @@ export default class Publisher extends Model {
   full_name!: string;
 
   @Column({ type: DataType.DATE })
-  publish_date!: DateDataType;
+  publish_date!: Date;
 
   @BelongsToMany(() => Book, () => BookPublisher)
   books!: Book[];

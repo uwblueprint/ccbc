@@ -1,4 +1,5 @@
 import { Column, DataType, Model, Table, BelongsTo, BelongsToMany, ForeignKey } from "sequelize-typescript";
+import { IntegerDataType, RangeDataType } from "sequelize/types";
 import Author from "./author.model";
 import BookAuthor from "./book_author.model";
 import BookPublisher from "./book_publisher.model";
@@ -10,6 +11,7 @@ export default class Book extends Model {
   @Column({ type: DataType.INT })
   id!: number;
 
+  // TODO: label as foreign key after Omar's reviews ticket is merged
   @Column({ type: DataType.INT })
   review_id!: number;
 
@@ -30,10 +32,10 @@ export default class Book extends Model {
   translator?: string[];
 
   @Column({ type: DataType.JSON })
-  formats: any; // todo
+  formats: DataType.JSON;
 
   @Column({ type: DataType.RANGE(DataType.INTEGER) })
-  age_range?: any; // todo
+  age_range?: RangeDataType<IntegerDataType>;
 
   @BelongsTo(() => Series)
   series!: Series;

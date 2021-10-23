@@ -13,6 +13,9 @@ export default class Author extends Model {
   @Column({ type: DataType.STRING })
   display_name?: string;
 
+  @Column({ type: DataType.STRING })
+  attribution?: string;
+
   @BelongsToMany(() => Book, () => BookAuthor)
   books!: Book[];
 }
