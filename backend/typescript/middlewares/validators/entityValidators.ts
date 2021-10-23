@@ -7,12 +7,7 @@ import {
   validatePrimitive,
 } from "./util";
 
-<<<<<<< HEAD
-/* eslint-disable-next-line import/prefer-default-export, @typescript-eslint/explicit-module-boundary-types */
-export const entityRequestDtoValidator = async (
-=======
 const entityRequestDtoValidator = async (
->>>>>>> development
   req: Request,
   res: Response,
   next: NextFunction,
