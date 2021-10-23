@@ -24,9 +24,9 @@ export type AuthDTO = Token & UserDTO;
 export type Letters = "A" | "B" | "C" | "D";
 
 export type NodemailerConfig = {
-  service: "gmail";
+  service: string;
   auth: {
-    type: "OAuth2";
+    type: string;
     user: string;
     clientId: string;
     clientSecret: string;
