@@ -5,8 +5,8 @@ import {
   Table,
   ForeignKey,
 } from "sequelize-typescript";
-import Tag from "./tag.model";
-import Review from "./review.model";
+import type Tag from "./tag.model";
+import type Review from "./review.model";
 
 @Table({ tableName: "review_tag" })
 export default class ReviewTag extends Model {

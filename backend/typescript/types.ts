@@ -10,7 +10,7 @@ export type UserDTO = {
   firstName: string;
   lastName: string;
   email: string;
-  role: Role
+  role: Role;
 };
 
 export type CreateUserDTO = Omit<UserDTO, "id"> & { password: string };

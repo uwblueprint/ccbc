@@ -8,17 +8,17 @@ export const up: Migration = async ({ context: sequelize }) => {
       type: DataType.INTEGER,
       allowNull: false,
       references: {
-          model : "reviews",
-          key: "id"
-      }
+        model: "reviews",
+        key: "id",
+      },
     },
     tag_id: {
       type: DataType.INTEGER,
       allowNull: false,
       references: {
-          model: "tags",
-          key: "id",
-      }
+        model: "tags",
+        key: "id",
+      },
     },
   });
 };
