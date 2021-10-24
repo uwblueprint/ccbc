@@ -21,7 +21,6 @@ export const loginRequestValidator = async (
   return next();
 };
 
-// eslint-disable-next-line  @typescript-eslint/explicit-module-boundary-types
 export const registerRequestValidator = async (
   req: Request,
   res: Response,
