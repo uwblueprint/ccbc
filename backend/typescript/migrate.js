@@ -1,3 +1,5 @@
+import { migrator } from "./umzug";
+
 require("ts-node/register");
 
-require("./umzug").migrator.runAsCLI();
+migrator.runAsCLI();

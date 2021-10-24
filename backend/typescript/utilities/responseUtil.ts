@@ -1,9 +1,8 @@
 import { Response } from "express";
 import { Readable } from "stream";
-import { generateCSV } from "./CSVUtils";
+import generateCSV from "./CSVUtils";
 
-/* eslint-disable-next-line import/prefer-default-export */
-export const sendResponseByMimeType = async <T>(
+const sendResponseByMimeType = async <T>(
   res: Response,
   responseCode: number,
   contentType: string | undefined,
@@ -18,3 +17,5 @@ export const sendResponseByMimeType = async <T>(
   }
   return res.status(415).json(rawData);
 };
+
+export default sendResponseByMimeType;

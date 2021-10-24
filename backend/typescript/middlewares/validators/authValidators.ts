@@ -1,13 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { getApiValidationError, validatePrimitive } from "./util";
 
-/* eslint-disable-next-line import/prefer-default-export */
-// eslint-disable-next-line  @typescript-eslint/explicit-module-boundary-types
 export const loginRequestValidator = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<Response | void> => {
   if (req.body.idToken) {
     if (!validatePrimitive(req.body.idToken, "string")) {
       return res.status(400).json(getApiValidationError("idToken", "string"));
@@ -23,12 +21,11 @@ export const loginRequestValidator = async (
   return next();
 };
 
-// eslint-disable-next-line  @typescript-eslint/explicit-module-boundary-types
 export const registerRequestValidator = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<Response | void> => {
   if (!validatePrimitive(req.body.firstName, "string")) {
     return res.status(400).send(getApiValidationError("firstName", "string"));
   }

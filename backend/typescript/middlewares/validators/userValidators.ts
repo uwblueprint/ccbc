@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { getApiValidationError, validatePrimitive } from "./util";
 
-/* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types */
 export const createUserDtoValidator = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<Response | void> => {
   if (!validatePrimitive(req.body.firstName, "string")) {
     return res.status(400).send(getApiValidationError("firstName", "string"));
   }
@@ -26,12 +25,11 @@ export const createUserDtoValidator = async (
   return next();
 };
 
-/* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types */
 export const updateUserDtoValidator = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<Response | void> => {
   if (!validatePrimitive(req.body.firstName, "string")) {
     return res.status(400).send(getApiValidationError("firstName", "string"));
   }
