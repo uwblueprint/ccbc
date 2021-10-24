@@ -3,13 +3,16 @@ import {
   DataType,
   Model,
   Table,
+  BelongsToMany,
   ForeignKey,
 } from "sequelize-typescript";
-import User from "./user.model";
+import Tag from "./tag.model";
+import ReviewTag  from "./review_tag";
+// import User from "./user.model";
 
 @Table({ tableName: "reviews" })
 export default class Review extends Model {
-  @Column({ type: DataType.STRING })
+  @Column({ type: DataType.TEXT })
   body!: string;
 
   @Column({ type: DataType.ARRAY(DataType.STRING) })
@@ -21,10 +24,13 @@ export default class Review extends Model {
   @Column({ type: DataType.BOOLEAN })
   featured!: boolean;
 
-  @Column({ type: DataType.INTEGER })
-  @ForeignKey(() => User)
-  created_by!: number;
+//  @Column({ type: DataType.INTEGER })
+//  @ForeignKey(() => User)
+//  created_by!: number;
 
   @Column({ type: DataType.DATE })
   published_at!: Date;
+
+  @BelongsToMany(() => Tag, () => ReviewTag)
+  tags: Tag[]
 }
