@@ -5,8 +5,8 @@ import {
   Table,
   BelongsToMany,
 } from "sequelize-typescript";
-import type Review from "./review.model";
-import type ReviewTag from "./review_tag";
+import Review from "./review.model";
+import ReviewTag from "./review_tag.model";
 
 @Table({ tableName: "tags" })
 export default class Tag extends Model {
@@ -14,5 +14,5 @@ export default class Tag extends Model {
   name!: string;
 
   @BelongsToMany(() => Review, () => ReviewTag)
-  reviews: Review[];
+  reviews!: Review[];
 }
