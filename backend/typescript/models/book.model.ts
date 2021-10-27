@@ -4,6 +4,7 @@ import Author from "./author.model";
 import BookAuthor from "./book_author.model";
 import BookPublisher from "./book_publisher.model";
 import Publisher from "./publisher.model";
+import Review from "./review.model";
 import Series from "./series.model";
 
 @Table({ tableName: "books" })
@@ -11,7 +12,7 @@ export default class Book extends Model {
   @Column({ type: DataType.INT })
   id!: number;
 
-  // TODO: label as foreign key after Omar's reviews ticket is merged
+  @ForeignKey(() => Review)
   @Column({ type: DataType.INT })
   review_id!: number;
 
