@@ -14,7 +14,7 @@ export const up: Migration = async ({ context: sequelize }) => {
       allowNull: false,
     },
     role_type: {
-      type: DataType.ENUM("Admin", "Member", "Author"),
+      type: DataType.ENUM("Admin", "Subscriber", "Author"),
       allowNull: false,
     },
     first_name: {

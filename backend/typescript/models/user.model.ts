@@ -6,7 +6,7 @@ export default class User extends Model {
   @Column({ type: DataType.STRING })
   auth_id!: string;
 
-  @Column({ type: DataType.ENUM("Admin", "Member", "Author") })
+  @Column({ type: DataType.ENUM("Admin", "Subscriber", "Author") })
   role_type!: Role;
 
   @Column({ type: DataType.STRING })

@@ -454,7 +454,7 @@ paths:
                       type: string
                     roleType:
                       type: string
-                      enum: ["Admin", "Member", "Author"]
+                      enum: ["Admin", "Subscriber", "Author"]
                     active:
                       type: boolean
                     
@@ -487,7 +487,7 @@ paths:
                   type: string
                 roleType:
                   type: string
-                  enum: ["Admin", "Member", "Author"]
+                  enum: ["Admin", "Subscriber", "Author"]
                 email:
                   type: string
       responses:
@@ -512,7 +512,7 @@ paths:
                     type: string
                   roleType:
                     type: string
-                    enum: ["Admin", "Member", "Author"]
+                    enum: ["Admin", "Subscriber", "Author"]
                   active:
                     type: boolean
         '401':
@@ -582,7 +582,7 @@ paths:
                   type: string
                 role:
                   type: string
-                  enum: ["Admin", "Member", "Author"]
+                  enum: ["Admin", "Subscriber", "Author"]
                 email:
                   type: string
       responses:
@@ -607,7 +607,7 @@ paths:
                     type: string
                   roleType:
                     type: string
-                    enum: ["Admin", "Member", "Author"]
+                    enum: ["Admin", "Subscriber", "Author"]
                   active:
                     type: boolean
         '401':
