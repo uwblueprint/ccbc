@@ -1,4 +1,4 @@
-type Type = "string" | "integer" | "boolean";
+type Type = "string" | "integer" | "boolean" | "Role";
 
 const allowableContentTypes = new Set([
   "text/plain",

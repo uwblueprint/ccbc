@@ -24,10 +24,10 @@ const authService: IAuthService = new AuthService(userService, emailService);
 
 /* Get all users, optionally filter by a userId or email query parameter to retrieve a single user */
 userRouter.get("/", async (req, res) => {
-  const { userId, email } = req.query;
+  const { id, email } = req.query;
   const contentType = req.headers["content-type"];
 
-  if (userId && email) {
+  if (id && email) {
     await sendResponseByMimeType(res, 400, contentType, [
       {
         error: "Cannot query by both userId and email.",
@@ -36,31 +36,31 @@ userRouter.get("/", async (req, res) => {
     return;
   }
 
-  if (!userId && !email) {
+  if (!id && !email) {
     try {
       const users = await userService.getUsers();
       await sendResponseByMimeType<UserDTO>(res, 200, contentType, users);
     } catch (error) {
       await sendResponseByMimeType(res, 500, contentType, [
         {
-          error: error.message,
+          error: error,
         },
       ]);
     }
     return;
   }
 
-  if (userId) {
-    if (typeof userId !== "string") {
+  if (id) {
+    if (typeof id !== "number" || !Number.isInteger(id)) {
       res
         .status(400)
-        .json({ error: "userId query parameter must be a string." });
+        .json({ error: "id query parameter must be an integer." });
     } else {
       try {
-        const user = await userService.getUserById(userId);
+        const user = await userService.getUserById(id);
         res.status(200).json(user);
       } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error });
       }
     }
     return;
@@ -76,7 +76,7 @@ userRouter.get("/", async (req, res) => {
         const user = await userService.getUserByEmail(email);
         res.status(200).json(user);
       } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error });
       }
     }
   }
@@ -86,18 +86,20 @@ userRouter.get("/", async (req, res) => {
 userRouter.post("/", createUserDtoValidator, async (req, res) => {
   try {
     const newUser = await userService.createUser({
+      authId: req.body.authId,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
-      role: req.body.role,
+      roleType: req.body.roleType,
       password: req.body.password,
+      active: req.body.active,
     });
 
     await authService.sendEmailVerificationLink(req.body.email);
     
     res.status(201).json(newUser);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error });
   }
 });
 
@@ -105,37 +107,39 @@ userRouter.post("/", createUserDtoValidator, async (req, res) => {
 userRouter.put("/:userId", updateUserDtoValidator, async (req, res) => {
   try {
     const updatedUser = await userService.updateUserById(req.params.userId, {
+      authId: req.body.authId,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
-      role: req.body.role,
+      roleType: req.body.roleType,
+      active: req.body.active,
     });
     res.status(200).json(updatedUser);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error });
   }
 });
 
 /* Delete a user by userId or email, specified through a query parameter */
 userRouter.delete("/", async (req, res) => {
-  const { userId, email } = req.query;
+  const { id, email } = req.query;
 
-  if (userId && email) {
+  if (id && email) {
     res.status(400).json({ error: "Cannot delete by both userId and email." });
     return;
   }
 
-  if (userId) {
-    if (typeof userId !== "string") {
+  if (id) {
+    if (typeof id !== "number" || !Number.isInteger(id)) {
       res
         .status(400)
-        .json({ error: "userId query parameter must be a string." });
+        .json({ error: "id query parameter must be an integer." });
     } else {
       try {
-        await userService.deleteUserById(userId);
+        await userService.deleteUserById(id);
         res.status(204).send();
       } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error });
       }
     }
     return;
@@ -151,7 +155,7 @@ userRouter.delete("/", async (req, res) => {
         await userService.deleteUserByEmail(email);
         res.status(204).send();
       } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error });
       }
     }
     return;
