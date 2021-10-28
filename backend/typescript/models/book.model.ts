@@ -1,4 +1,13 @@
-import { Column, DataType, Model, Table, BelongsTo, BelongsToMany, ForeignKey } from "sequelize-typescript";
+/* eslint import/no-cycle: 0 */
+import {
+  Column,
+  DataType,
+  Model,
+  Table,
+  BelongsTo,
+  BelongsToMany,
+  ForeignKey,
+} from "sequelize-typescript";
 import { IntegerDataType, RangeDataType } from "sequelize/types";
 import Author from "./author.model";
 import BookAuthor from "./book_author.model";

@@ -1,4 +1,11 @@
-import { Column, DataType, Model, Table, ForeignKey } from "sequelize-typescript";
+/* eslint import/no-cycle: 0 */
+import {
+  Column,
+  DataType,
+  Model,
+  Table,
+  ForeignKey,
+} from "sequelize-typescript";
 import Book from "./book.model";
 import Publisher from "./publisher.model";
 

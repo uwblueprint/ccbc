@@ -1,4 +1,10 @@
-import { Column, DataType, Model, Table, BelongsToMany } from "sequelize-typescript";
+import {
+  Column,
+  DataType,
+  Model,
+  Table,
+  BelongsToMany,
+} from "sequelize-typescript";
 import Book from "./book.model";
 import BookAuthor from "./book_author.model";
 
