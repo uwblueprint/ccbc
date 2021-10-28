@@ -1,3 +1,5 @@
+/* eslint import/no-cycle: 0 */
+// Ignoring no-cycle as per: https://github.com/RobinBuschmann/sequelize-typescript/issues/1085
 import {
   Column,
   DataType,
