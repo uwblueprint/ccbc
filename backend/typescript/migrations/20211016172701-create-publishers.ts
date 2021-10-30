@@ -13,9 +13,9 @@ export const up: Migration = async ({ context: sequelize }) => {
       allowNull: false,
       type: DataType.STRING,
     },
-    publish_date: {
+    publish_year: {
       allowNull: false,
-      type: DataType.DATE,
+      type: DataType.INTEGER,
     },
   });
 };

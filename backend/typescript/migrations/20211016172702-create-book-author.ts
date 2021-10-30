@@ -3,12 +3,12 @@ import { DataType } from "sequelize-typescript";
 import { Migration } from "../umzug";
 
 export const up: Migration = async ({ context: sequelize }) => {
-  await sequelize.getQueryInterface().createTable("book_publishers", {
-    publisher_id: {
+  await sequelize.getQueryInterface().createTable("book_author", {
+    author_id: {
       allowNull: false,
       type: DataType.INTEGER,
       references: {
-        model: "publishers",
+        model: "authors",
         key: "id",
       },
     },
@@ -24,5 +24,5 @@ export const up: Migration = async ({ context: sequelize }) => {
 };
 
 export const down: Migration = async ({ context: sequelize }) => {
-  await sequelize.getQueryInterface().dropTable("book_publishers");
+  await sequelize.getQueryInterface().dropTable("book_author");
 };

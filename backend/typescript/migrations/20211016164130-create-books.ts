@@ -12,6 +12,10 @@ export const up: Migration = async ({ context: sequelize }) => {
     review_id: {
       allowNull: false,
       type: DataType.INTEGER,
+      references: {
+        model: "reviews",
+        key: "id",
+      },
     },
     title: {
       allowNull: false,
@@ -39,7 +43,7 @@ export const up: Migration = async ({ context: sequelize }) => {
     },
     formats: {
       allowNull: false,
-      type: DataType.JSON,
+      type: DataType.ARRAY(DataType.JSON),
     },
     age_range: {
       allowNull: true,

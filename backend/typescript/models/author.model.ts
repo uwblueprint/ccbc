@@ -12,9 +12,6 @@ import BookAuthor from "./book_author.model";
 
 @Table({ tableName: "authors" })
 export default class Author extends Model {
-  @Column({ type: DataType.INT })
-  id!: number;
-
   @Column({ type: DataType.STRING })
   full_name!: string;
 

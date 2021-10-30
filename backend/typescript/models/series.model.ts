@@ -4,11 +4,8 @@ import Book from "./books.model";
 
 @Table({ tableName: "series" })
 export default class Series extends Model {
-  @Column({ type: DataType.INT })
-  id!: number;
-
   @Column({ type: DataType.STRING })
-  review_id!: string;
+  name!: string;
 
   @HasMany(() => Book)
   books!: Book[];

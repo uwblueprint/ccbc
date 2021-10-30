@@ -9,7 +9,7 @@ import {
 import Author from "./author.model";
 import Book from "./book.model";
 
-@Table({ tableName: "book_authors" })
+@Table({ tableName: "book_author" })
 export default class BookAuthor extends Model {
   @ForeignKey(() => Author)
   @Column({ type: DataType.INT })

@@ -18,9 +18,6 @@ import Series from "./series.model";
 
 @Table({ tableName: "books" })
 export default class Book extends Model {
-  @Column({ type: DataType.INT })
-  id!: number;
-
   @ForeignKey(() => Review)
   @Column({ type: DataType.INT })
   review_id!: number;
@@ -41,8 +38,8 @@ export default class Book extends Model {
   @Column({ type: DataType.ARRAY(DataType.STRING) })
   translator?: string[];
 
-  @Column({ type: DataType.JSON })
-  formats: DataType.JSON;
+  @Column({ type: DataType.ARRAY(DataType.JSON) })
+  formats!: DataType.JSON[];
 
   @Column({ type: DataType.RANGE(DataType.INTEGER) })
   age_range?: RangeDataType<IntegerDataType>;
@@ -51,8 +48,8 @@ export default class Book extends Model {
   series!: Series;
 
   @BelongsToMany(() => Author, () => BookAuthor)
-  author!: Author[];
+  authors!: Author[];
 
   @BelongsToMany(() => Publisher, () => BookPublisher)
-  publisher!: Publisher[];
+  publishers!: Publisher[];
 }
