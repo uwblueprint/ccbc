@@ -26,11 +26,12 @@ class UserService implements IUserService {
     }
 
     return {
-      id: user.id,
+      authId: user.auth_id,
       firstName: user.first_name,
       lastName: user.last_name,
       email: firebaseUser.email ?? "",
-      role: user.role,
+      roleType: user.role_type,
+      active: user.active,
     };
   }
 
@@ -53,11 +54,12 @@ class UserService implements IUserService {
     }
 
     return {
-      id: user.id,
+      authId: user.auth_id,
       firstName: user.first_name,
       lastName: user.last_name,
       email: firebaseUser.email ?? "",
-      role: user.role,
+      roleType: user.role_type,
+      active: user.active,
     };
   }
 
@@ -69,7 +71,7 @@ class UserService implements IUserService {
       if (!user) {
         throw new Error(`userId with authId ${authId} not found.`);
       }
-      return user.role;
+      return user.role_type;
     } catch (error) {
       Logger.error(`Failed to get user role. Reason = ${error.message}`);
       throw error;
@@ -84,7 +86,7 @@ class UserService implements IUserService {
       if (!user) {
         throw new Error(`user with authId ${authId} not found.`);
       }
-      return user.id;
+      return user.auth_id;
     } catch (error) {
       Logger.error(`Failed to get user id. Reason = ${error.message}`);
       throw error;
@@ -123,11 +125,12 @@ class UserService implements IUserService {
           }
 
           return {
-            id: user.id,
+            authId: user.auth_id,
             firstName: user.first_name,
             lastName: user.last_name,
             email: firebaseUser.email ?? "",
-            role: user.role,
+            roleType: user.role_type,
+            active: user.active
           };
         }),
       );
@@ -163,7 +166,9 @@ class UserService implements IUserService {
           first_name: user.firstName,
           last_name: user.lastName,
           auth_id: firebaseUser.uid,
-          role: user.role,
+          email: firebaseUser.email,
+          role_type: user.roleType,
+          active: user.active,
         });
       } catch (postgresError) {
         try {
@@ -186,11 +191,12 @@ class UserService implements IUserService {
     }
 
     return {
-      id: newUser.id,
+      authId: newUser.auth_id,
       firstName: newUser.first_name,
       lastName: newUser.last_name,
       email: firebaseUser.email ?? "",
-      role: newUser.role,
+      roleType: newUser.role_type,
+      active: user.active,
     };
   }
 
@@ -202,7 +208,7 @@ class UserService implements IUserService {
         {
           first_name: user.firstName,
           last_name: user.lastName,
-          role: user.role,
+          role_type: user.roleType,
         },
         {
           where: { id: userId },
@@ -231,7 +237,7 @@ class UserService implements IUserService {
             {
               first_name: oldUser.first_name,
               last_name: oldUser.last_name,
-              role: oldUser.role,
+              role_type: oldUser.role_type,
             },
             {
               where: { id: userId },
@@ -242,7 +248,7 @@ class UserService implements IUserService {
             "Failed to rollback Postgres user update after Firebase user update failure. Reason =",
             postgresError.message,
             "Postgres user id with possibly inconsistent data =",
-            oldUser.id,
+            oldUser.auth_id,
           ];
           Logger.error(errorMessage.join(" "));
         }
@@ -255,11 +261,12 @@ class UserService implements IUserService {
     }
 
     return {
-      id: userId,
+      authId: userId,
       firstName: user.firstName,
       lastName: user.lastName,
       email: updatedFirebaseUser.email ?? "",
-      role: user.role,
+      roleType: user.roleType,
+      active: user.active,
     };
   }
 
@@ -289,7 +296,9 @@ class UserService implements IUserService {
             first_name: deletedUser.first_name,
             last_name: deletedUser.last_name,
             auth_id: deletedUser.auth_id,
-            role: deletedUser.role,
+            email: deletedUser.email,
+            role_type: deletedUser.role_type,
+            active: deletedUser.active,
           });
         } catch (postgresError) {
           const errorMessage = [
@@ -341,7 +350,9 @@ class UserService implements IUserService {
             first_name: deletedUser.first_name,
             last_name: deletedUser.last_name,
             auth_id: deletedUser.auth_id,
-            role: deletedUser.role,
+            email: deletedUser.email,
+            role_type: deletedUser.role_type,
+            active: deletedUser.active,
           });
         } catch (postgresError) {
           const errorMessage = [
