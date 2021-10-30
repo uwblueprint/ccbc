@@ -33,21 +33,23 @@ export interface ReviewRequestDTO {
   featured: boolean;
   createdBy: number;
   publishedAt: Date | null;
-  books: Book[];
+  // @TODO: uncomment when done testing with ReviewService
+  // books: Book[];
   tags: Tag[];
 }
 
 export interface ReviewResponseDTO {
   reviewId: number;
-  body: string;
-  cover_images: string[];
-  byline: string;
-  featured: boolean;
-  created_by: number;
-  published_at: Date | null;
-  books: Book[];
-  tags: Tag[];
-  createdAt: Date;
+  // @TODO: uncomment when done testing with ReviewService
+  // body: string;
+  // cover_images: string[];
+  // byline: string;
+  // featured: boolean;
+  // created_by: number;
+  // published_at: Date | null;
+  // books: Book[];
+  // tags: Tag[];
+  updatedAt: Date;
   publishedAt: Date;
 }
 
