@@ -11,6 +11,7 @@ const sequelizeOptions: SequelizeOptions = process.env.DATABASE_URL
       protocol: "postgres",
       dialectOptions: {
         ssl: true,
+        rejectUnauthorized: false,
       },
       models: [path.join(__dirname, "/*.model.ts")],
     }
