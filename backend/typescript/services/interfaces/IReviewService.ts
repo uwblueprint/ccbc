@@ -47,6 +47,8 @@ export interface ReviewResponseDTO {
   published_at: Date | null;
   books: Book[];
   tags: Tag[];
+  createdAt: Date;
+  publishedAt: Date;
 }
 
 export interface IReviewService {
