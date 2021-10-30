@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
-import { Box } from "@chakra-ui/react";
+// import { Box } from "@chakra-ui/react";
 import {
   GoogleLogin,
   GoogleLoginResponse,
