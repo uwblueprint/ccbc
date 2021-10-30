@@ -24,13 +24,13 @@ export type AuthDTO = Token & UserDTO;
 export type Letters = "A" | "B" | "C" | "D";
 
 export type NodemailerConfig = {
-  service: string;
+  service?: string;
   auth: {
-    type: string;
-    user: string;
-    clientId: string;
-    clientSecret: string;
-    refreshToken: string;
+    type?: string;
+    user?: string;
+    clientId?: string;
+    clientSecret?: string;
+    refreshToken?: string;
   };
 };
 
