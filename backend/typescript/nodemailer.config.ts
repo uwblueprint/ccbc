@@ -1,9 +1,9 @@
 import { NodemailerConfig } from "./types";
 
 const config: NodemailerConfig = {
-  service: process.env.NODEMAILER_SERVICE,
+  service: "gmail",
   auth: {
-    type: process.env.NODEMAILER_TYPE,
+    type: "OAuth2",
     user: process.env.NODEMAILER_USER,
     clientId: process.env.NODEMAILER_CLIENT_ID,
     clientSecret: process.env.NODEMAILER_CLIENT_SECRET,
