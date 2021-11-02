@@ -12,10 +12,10 @@ import Book from "./book.model";
 @Table({ tableName: "book_author" })
 export default class BookAuthor extends Model {
   @ForeignKey(() => Author)
-  @Column({ type: DataType.INT })
+  @Column({ type: DataType.INTEGER })
   author_id!: number;
 
   @ForeignKey(() => Book)
-  @Column({ type: DataType.INT })
+  @Column({ type: DataType.INTEGER })
   book_id!: number;
 }
