@@ -42,10 +42,13 @@ export default class Book extends Model {
   formats!: DataType.JSON[];
 
   @Column({ type: DataType.RANGE(DataType.INTEGER) })
-  age_range?: RangeDataType<IntegerDataType>;
+  age_range!: RangeDataType<IntegerDataType>;
 
   @BelongsTo(() => Series)
   series!: Series;
+
+  @BelongsTo(() => Review)
+  review!: Review;
 
   @BelongsToMany(() => Author, () => BookAuthor)
   authors!: Author[];
