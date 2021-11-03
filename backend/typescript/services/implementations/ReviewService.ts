@@ -1,7 +1,9 @@
 import { resolve } from "path";
+import sequelize from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import PgReview from "../../models/review.model";
 import PgTag from "../../models/tag.model";
+import PgReviewTag from "../../models/review_tag.model";
 import logger from "../../utilities/logger";
 import {
   ReviewRequestDTO,
@@ -26,39 +28,44 @@ class ReviewService implements IReviewService {
 
   /* eslint-disable class-methods-use-this */
   async createEntity(review: ReviewRequestDTO): Promise<ReviewResponseDTO> {
-    const t = await this.db.transaction();
     let newReview: PgReview;
     let tag: PgTag;
     let tagCreated: boolean;
+    let result;
 
     try {
-      newReview = await PgReview.create(
-        {
-          body: review.reviewBody,
-          cover_images: review.reviewCoverImages,
-          byline: review.reviewByline,
-          featured: review.reviewFeatured,
-          published_at: review.reviewPublishedAt,
-        },
-        { transaction: t },
-      );
+      result = await this.db.transaction(async (t) => {
+        newReview = await PgReview.create(
+          {
+            body: review.body,
+            cover_images: review.coverImages,
+            byline: review.byline,
+            featured: review.featured,
+            published_at: review.publishedAt,
+          },
+          { transaction: t },
+        );
 
-      [tag, tagCreated] = await PgTag.findOrCreate({
-        where: { name: review.tagName },
-        transaction: t,
+        await Promise.all(
+          review.tags.map(async (reviewTag) => {
+            [tag, tagCreated] = await PgTag.findOrCreate({
+              where: { name: reviewTag.name },
+              transaction: t,
+            });
+
+            await newReview.$add("tags", tag, { transaction: t });
+          }),
+        );
+
+        return newReview;
       });
-
-      newReview.tags.push(tag);
-
-      await t.commit();
     } catch (error) {
-      await t.rollback();
       Logger.error(`Failed to create entity. Reason = ${error.message}`);
       throw error;
     }
 
     return {
-      ReviewId: newReview.id,
+      reviewId: result.id,
     };
   }
 }
