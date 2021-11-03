@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import {
   GoogleLogin,

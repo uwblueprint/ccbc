@@ -4,18 +4,17 @@ import { ChakraProvider } from "@chakra-ui/react";
 import React, { useReducer, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-/* Pages */
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/auth/routes/PrivateRoute";
 import Signup from "./components/auth/Signup";
 import AdminDashboard from "./components/pages/AdminDashboard";
+import Default from "./components/pages/Default";
 import MagazineReview from "./components/pages/MagazineReview";
 import NotFound from "./components/pages/NotFound";
 import Profile from "./components/pages/Profile";
 import Unauthorized from "./components/pages/UnauthorizedPage";
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
 import { UserRole } from "./constants/Enums";
-/* Routes */
 import * as Routes from "./constants/Routes";
 import AuthContext from "./contexts/AuthContext";
 import SampleContext, {
@@ -79,6 +78,12 @@ const App = (): React.ReactElement => {
                   path={Routes.ADMIN_DASHBOARD_PAGE}
                   component={AdminDashboard}
                   requiredRoles={[UserRole.Admin]}
+                />
+                <PrivateRoute
+                  exact
+                  path={Routes.DEFAULT_PAGE}
+                  component={Default}
+                  requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
                 />
                 <Route exact path="*" component={NotFound} />
               </Switch>

@@ -19,3 +19,5 @@ export const HOOKS_PAGE = "/hooks";
 export const PROFILE_PAGE = "/users/:userid";
 
 export const ADMIN_DASHBOARD_PAGE = "/dashboard";
+
+export const DEFAULT_PAGE = "/default"; // FOR TESTING ONLY
