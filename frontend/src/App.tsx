@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState, useReducer } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { ChakraProvider } from "@chakra-ui/react";
 
 /* Routes */
 import * as Routes from "./constants/Routes";
@@ -26,6 +27,7 @@ import sampleContextReducer from "./reducers/SampleContextReducer";
 import SampleContextDispatcherContext from "./contexts/SampleContextDispatcherContext";
 
 import { AuthenticatedUser } from "./types/AuthTypes";
+import customTheme from "./theme/index";
 
 const App = (): React.ReactElement => {
   const currentUser: AuthenticatedUser = getLocalStorageObj<AuthenticatedUser>(
@@ -45,46 +47,48 @@ const App = (): React.ReactElement => {
   );
 
   return (
-    <SampleContext.Provider value={sampleContext}>
-      <SampleContextDispatcherContext.Provider
-        value={dispatchSampleContextUpdate}
-      >
-        <AuthContext.Provider
-          value={{ authenticatedUser, setAuthenticatedUser }}
+    <ChakraProvider theme={customTheme}>
+      <SampleContext.Provider value={sampleContext}>
+        <SampleContextDispatcherContext.Provider
+          value={dispatchSampleContextUpdate}
         >
-          <Router>
-            <Switch>
-              <Route exact path={Routes.LOGIN_PAGE} component={Login} />
-              <Route exact path={Routes.SIGNUP_PAGE} component={Signup} />
-              <Route
-                exact
-                path={Routes.UNAUTHORIZED_PAGE}
-                component={Unauthorized}
-              />
-              <PrivateRoute
-                exact
-                path={Routes.HOME_PAGE}
-                component={MagazineReview}
-                requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
-              />
-              <PrivateRoute
-                exact
-                path={Routes.PROFILE_PAGE}
-                component={Profile}
-                requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
-              />
-              <PrivateRoute
-                exact
-                path={Routes.ADMIN_DASHBOARD_PAGE}
-                component={AdminDashboard}
-                requiredRoles={[UserRole.Admin]}
-              />
-              <Route exact path="*" component={NotFound} />
-            </Switch>
-          </Router>
-        </AuthContext.Provider>
-      </SampleContextDispatcherContext.Provider>
-    </SampleContext.Provider>
+          <AuthContext.Provider
+            value={{ authenticatedUser, setAuthenticatedUser }}
+          >
+            <Router>
+              <Switch>
+                <Route exact path={Routes.LOGIN_PAGE} component={Login} />
+                <Route exact path={Routes.SIGNUP_PAGE} component={Signup} />
+                <Route
+                  exact
+                  path={Routes.UNAUTHORIZED_PAGE}
+                  component={Unauthorized}
+                />
+                <PrivateRoute
+                  exact
+                  path={Routes.HOME_PAGE}
+                  component={MagazineReview}
+                  requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
+                />
+                <PrivateRoute
+                  exact
+                  path={Routes.PROFILE_PAGE}
+                  component={Profile}
+                  requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
+                />
+                <PrivateRoute
+                  exact
+                  path={Routes.ADMIN_DASHBOARD_PAGE}
+                  component={AdminDashboard}
+                  requiredRoles={[UserRole.Admin]}
+                />
+                <Route exact path="*" component={NotFound} />
+              </Switch>
+            </Router>
+          </AuthContext.Provider>
+        </SampleContextDispatcherContext.Provider>
+      </SampleContext.Provider>
+    </ChakraProvider>
   );
 };
 
