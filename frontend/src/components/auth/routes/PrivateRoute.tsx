@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import { Route, Redirect } from "react-router-dom";
-import { UserRole } from "../../../constants/Enums";
+import { Redirect, Route } from "react-router-dom";
 
-import AuthContext from "../../../contexts/AuthContext";
+import { UserRole } from "../../../constants/Enums";
 import { LOGIN_PAGE, UNAUTHORIZED_PAGE } from "../../../constants/Routes";
+import AuthContext from "../../../contexts/AuthContext";
 
 type PrivateRouteProps = {
   component: React.FC;

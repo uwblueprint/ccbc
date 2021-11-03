@@ -1,33 +1,31 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useState, useReducer } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { ChakraProvider } from "@chakra-ui/react";
 
-/* Routes */
-import * as Routes from "./constants/Routes";
-import PrivateRoute from "./components/auth/routes/PrivateRoute";
+import { ChakraProvider } from "@chakra-ui/react";
+import React, { useReducer, useState } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 /* Pages */
 import Login from "./components/auth/Login";
+import PrivateRoute from "./components/auth/routes/PrivateRoute";
 import Signup from "./components/auth/Signup";
 import AdminDashboard from "./components/pages/AdminDashboard";
 import MagazineReview from "./components/pages/MagazineReview";
-import Profile from "./components/pages/Profile";
 import NotFound from "./components/pages/NotFound";
+import Profile from "./components/pages/Profile";
 import Unauthorized from "./components/pages/UnauthorizedPage";
-
 import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
-import AuthContext from "./contexts/AuthContext";
-import { getLocalStorageObj } from "./utils/LocalStorageUtils";
 import { UserRole } from "./constants/Enums";
+/* Routes */
+import * as Routes from "./constants/Routes";
+import AuthContext from "./contexts/AuthContext";
 import SampleContext, {
   DEFAULT_SAMPLE_CONTEXT,
 } from "./contexts/SampleContext";
-import sampleContextReducer from "./reducers/SampleContextReducer";
 import SampleContextDispatcherContext from "./contexts/SampleContextDispatcherContext";
-
-import { AuthenticatedUser } from "./types/AuthTypes";
+import sampleContextReducer from "./reducers/SampleContextReducer";
 import customTheme from "./theme/index";
+import { AuthenticatedUser } from "./types/AuthTypes";
+import { getLocalStorageObj } from "./utils/LocalStorageUtils";
 
 const App = (): React.ReactElement => {
   const currentUser: AuthenticatedUser = getLocalStorageObj<AuthenticatedUser>(

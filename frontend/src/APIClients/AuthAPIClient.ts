@@ -1,10 +1,10 @@
 import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
 import { AuthenticatedUser } from "../types/AuthTypes";
-import baseAPIClient from "./BaseAPIClient";
 import {
   getLocalStorageObjProperty,
   setLocalStorageObjProperty,
 } from "../utils/LocalStorageUtils";
+import baseAPIClient from "./BaseAPIClient";
 
 const login = async (
   email: string,
