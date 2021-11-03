@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
-import { Redirect, useHistory } from "react-router-dom";
 import {
   GoogleLogin,
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
 } from "react-google-login";
+import { Redirect, useHistory } from "react-router-dom";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import { HOME_PAGE, SIGNUP_PAGE } from "../../constants/Routes";

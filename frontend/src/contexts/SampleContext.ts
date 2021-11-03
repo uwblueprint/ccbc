@@ -1,4 +1,5 @@
 import { createContext } from "react";
+
 import { SampleContextType } from "../types/SampleContextTypes";
 
 export const DEFAULT_SAMPLE_CONTEXT = {

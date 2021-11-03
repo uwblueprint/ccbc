@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { JSONSchema7 } from "json-schema";
 import { Form } from "@rjsf/bootstrap-4";
+import { JSONSchema7 } from "json-schema";
+import React, { useState } from "react";
+
 import EntityAPIClient, {
   EntityRequest,
   EntityResponse,

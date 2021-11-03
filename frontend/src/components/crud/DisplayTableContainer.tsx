@@ -1,7 +1,7 @@
 /* eslint  react/jsx-props-no-spreading: 0 */ // --> OFF
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import BTable from "react-bootstrap/Table";
-import { HeaderGroup, useTable, Column } from "react-table";
+import { Column, HeaderGroup, useTable } from "react-table";
 
 import EntityAPIClient, {
   EntityResponse,
