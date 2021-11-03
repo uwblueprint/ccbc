@@ -1,6 +1,7 @@
 import React from "react";
-import DisplayTableContainer from "../crud/DisplayTableContainer";
+
 import MainPageButton from "../common/MainPageButton";
+import DisplayTableContainer from "../crud/DisplayTableContainer";
 
 const GetPage = (): React.ReactElement => {
   return (
