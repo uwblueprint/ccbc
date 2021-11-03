@@ -1,11 +1,11 @@
+import { Box } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
-import { Redirect, useHistory } from "react-router-dom";
-// import { Box } from "@chakra-ui/react";
 import {
   GoogleLogin,
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
 } from "react-google-login";
+import { Redirect, useHistory } from "react-router-dom";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import { HOME_PAGE, SIGNUP_PAGE } from "../../constants/Routes";
