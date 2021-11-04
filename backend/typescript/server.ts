@@ -37,7 +37,8 @@ firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.applicationDefault(),
 });
 
-app.listen({ port: 5000 }, () => {
+const PORT = process.env.PORT || 5000;
+app.listen({ port: PORT }, () => {
   /* eslint-disable-next-line no-console */
-  console.info("Server is listening on port 5000!");
+  console.info(`Server is listening on port ${PORT}!`);
 });
