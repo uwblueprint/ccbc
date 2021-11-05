@@ -24,5 +24,5 @@ jobs:
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_UW_BLUEPRINT_STARTER_CODE }}"
-          projectId: uw-blueprint-starter-code
+          projectId: ccbc-95e66
           entryPoint: ./frontend
