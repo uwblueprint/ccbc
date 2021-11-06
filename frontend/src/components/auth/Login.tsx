@@ -6,6 +6,8 @@ import {
 } from "react-google-login";
 import { Redirect, useHistory } from "react-router-dom";
 
+import { Box, Grid, Text, GridItem, Stack, FormHelperText, FormErrorMessage, Link, FormControl, Button, Input, FormLabel, Heading } from "@chakra-ui/react";
+
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import { HOME_PAGE, SIGNUP_PAGE } from "../../constants/Routes";
 import AuthContext from "../../contexts/AuthContext";
@@ -15,23 +17,17 @@ type GoogleResponse = GoogleLoginResponse | GoogleLoginResponseOffline;
 
 const Login = (): React.ReactElement => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
+  const [show, setShow] = useState(false)
+  const [isInvalid, setInvalid] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
 
   const onLogInClick = async () => {
     const user: AuthenticatedUser = await authAPIClient.login(email, password);
-    setAuthenticatedUser(user);
-  };
-
-  const onSignUpClick = () => {
-    history.push(SIGNUP_PAGE);
-  };
-
-  const onGoogleLoginSuccess = async (tokenId: string) => {
-    const user: AuthenticatedUser = await authAPIClient.loginWithGoogle(
-      tokenId,
-    );
+    if (!user) {
+      setInvalid(true);
+    }
     setAuthenticatedUser(user);
   };
 
@@ -40,59 +36,55 @@ const Login = (): React.ReactElement => {
   }
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <h1>Login</h1>
-      <form>
-        <div>
-          <input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="username@domain.com"
-          />
-        </div>
-        <div>
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            placeholder="password"
-          />
-        </div>
-        <div>
-          <button
-            className="btn btn-primary"
-            type="button"
-            onClick={onLogInClick}
-          >
-            Log In
-          </button>
-        </div>
-        <GoogleLogin
-          clientId={process.env.REACT_APP_OAUTH_CLIENT_ID || ""}
-          buttonText="Login with Google"
-          onSuccess={(response: GoogleResponse): void => {
-            if ("tokenId" in response) {
-              onGoogleLoginSuccess(response.tokenId);
-            } else {
-              // eslint-disable-next-line no-alert
-              window.alert(response);
-            }
-          }}
-          // eslint-disable-next-line no-alert
-          onFailure={(error) => window.alert(error)}
-        />
-      </form>
-      <div>
-        <button
-          className="btn btn-primary"
-          type="button"
-          onClick={onSignUpClick}
-        >
-          Sign Up
-        </button>
-      </div>
-    </div>
+    <Grid templateColumns="repeat(2, 1fr)">
+      <GridItem w="100%" h="100%" bg="papayawhip"/>
+      <GridItem>
+        <Stack justify="center" p="20%">
+          <Heading as="h1">Log in</Heading>
+          <Text color="gray.700">Enter your credentials to access your account.</Text>
+          <FormControl mt="1rem">
+            <Box mt="4%"> 
+              <FormLabel>Email address</FormLabel>
+              <Input 
+                value={email}
+                name="email"
+                placeholder="Email address"
+                onChange={(event) => setEmail(event.target.value)}
+              />
+            </Box>
+            <Box mt="4%" mb="10%">
+              <FormLabel>Password</FormLabel>
+              <Input 
+                isInvalid={isInvalid}
+                value={password}
+                type="password"
+                name="password"
+                placeholder="Password"
+                onChange={(event) => {
+                  setPassword(event.target.value)
+                  setInvalid(false);
+                }}
+                errorBorderColor="crimson"
+              />
+              {isInvalid ? (
+                <FormHelperText color="crimson">
+                  The username or password you entered is incorrect.
+                </FormHelperText>
+              ) : null}
+            </Box>
+            <Button
+              type="submit"
+              w="100%"
+              colorScheme="teal"
+              size="md"
+              onClick={onLogInClick}
+            >
+              Log in
+            </Button>
+          </FormControl>
+        </Stack>
+      </GridItem>
+    </Grid>
   );
 };
 
