@@ -11,7 +11,7 @@ const customTheme = extendTheme({
     },
     body: {
       fontFamily: "Open Sans",
-      fontSize: "15px"
+      fontSize: "15px",
     },
   },
   config: {

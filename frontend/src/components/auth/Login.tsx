@@ -6,32 +6,27 @@ import {
   FormLabel,
   Grid,
   GridItem,
+  Image,
   Input,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
-import {
-  GoogleLogin,
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
-} from "react-google-login";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
-import { HOME_PAGE, SIGNUP_PAGE } from "../../constants/Routes";
+import { HOME_PAGE } from "../../constants/Routes";
 import AuthContext from "../../contexts/AuthContext";
+/* Images */
+import CCBCLogo from "../../images/ccbc-logo.png";
+import LoginGraphic from "../../images/Login-graphic.png";
 import { AuthenticatedUser } from "../../types/AuthTypes";
-
-type GoogleResponse = GoogleLoginResponse | GoogleLoginResponseOffline;
 
 const Login = (): React.ReactElement => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
-  const [show, setShow] = useState(false);
   const [isInvalid, setInvalid] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const history = useHistory();
 
   const onLogInClick = async () => {
     const user: AuthenticatedUser = await authAPIClient.login(email, password);
@@ -46,10 +41,19 @@ const Login = (): React.ReactElement => {
   }
 
   return (
-    <Grid templateColumns="repeat(2, 1fr)">
-      <GridItem w="100%" h="100%" bg="papayawhip" />
+    <Grid w="100vw" h="100vh" templateColumns="repeat(2, 1fr)">
+      <GridItem bg="papayawhip">
+        <Image
+          boxSize="50px"
+          m="5vh 5vw"
+          src={CCBCLogo}
+          alt="ccbc-logo"
+          objectFit="cover"
+        />
+        <Image src={LoginGraphic} boxSize="8% 9%" pl="22%" />
+      </GridItem>
       <GridItem>
-        <Stack justify="center" p="20%">
+        <Stack justify="center" p="30% 20% 20% 20%">
           <Text textStyle="heading">Log in</Text>
           <Text textStyle="body" color="gray.700">
             Enter your credentials to access your account.
