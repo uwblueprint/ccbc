@@ -3,7 +3,7 @@ import * as firebaseAdmin from "firebase-admin";
 import IAuthService from "../interfaces/authService";
 import IEmailService from "../interfaces/emailService";
 import IUserService from "../interfaces/userService";
-import { AuthDTO, Role, Token } from "../../types";
+import { AuthDTO, Role, Token, UserDTO } from "../../types";
 import FirebaseRestClient from "../../utilities/firebaseRestClient";
 import logger from "../../utilities/logger";
 
@@ -156,6 +156,35 @@ class AuthService implements IAuthService {
     } catch (error) {
       Logger.error(
         `Failed to generate email verification link for user with email ${email}`,
+      );
+      throw error;
+    }
+  }
+
+  async sendPasswordSetupLink(email: string, password: string, user: UserDTO): Promise<void> {
+    if (!this.emailService) {
+      const errorMessage =
+        "Attempted to call sendPasswordSetupLink but this instance of AuthService does not have an EmailService instance";
+      Logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    try {
+    
+      const emailBody = `
+      Hello,
+      <br><br>
+      You have been invited to join CCBC as a ${user.role.toLowerCase}. Here are your account details:
+      <br>
+      Email: ${user.email}
+      <br>
+      Password: ${password}
+      <br>`;
+
+      this.emailService.sendEmail(email, "CCBC acccount created", emailBody);
+    } catch (error) {
+      Logger.error(
+        `Failed to send password set up link for user with email ${email}`,
       );
       throw error;
     }
