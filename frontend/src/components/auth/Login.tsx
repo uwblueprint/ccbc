@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -43,17 +44,21 @@ const Login = (): React.ReactElement => {
   return (
     <Grid w="100vw" h="100vh" templateColumns="repeat(2, 1fr)">
       <GridItem bg="papayawhip">
-        <Image
-          boxSize="50px"
-          m="5vh 5vw"
-          src={CCBCLogo}
-          alt="ccbc-logo"
-          objectFit="cover"
-        />
-        <Image src={LoginGraphic} boxSize="8% 9%" pl="22%" />
+        <Stack>
+          <Image
+            boxSize="50px"
+            m="5vh 5vw"
+            src={CCBCLogo}
+            alt="ccbc-logo"
+            objectFit="cover"
+          />
+          <Center p="5vh">
+            <Image src={LoginGraphic} />
+          </Center>
+        </Stack>
       </GridItem>
       <GridItem>
-        <Stack justify="center" p="30% 20% 20% 20%">
+        <Stack justify="center" p="25vh 10vw">
           <Text textStyle="heading">Log in</Text>
           <Text textStyle="body" color="gray.700">
             Enter your credentials to access your account.
