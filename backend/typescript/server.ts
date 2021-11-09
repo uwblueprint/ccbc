@@ -10,7 +10,7 @@ import authRouter from "./rest/authRoutes";
 import entityRouter from "./rest/entityRoutes";
 import userRouter from "./rest/userRoutes";
 
-const CORS_ALLOW_LIST = ["http://localhost:3000"]; // TODO : Add frontend host once deployed
+const CORS_ALLOW_LIST = ["http://localhost:3000", "https://ccbc-95e66.web.app"];
 
 const CORS_OPTIONS: cors.CorsOptions = {
   origin: CORS_ALLOW_LIST,
