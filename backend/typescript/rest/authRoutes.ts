@@ -1,11 +1,11 @@
 import { Router } from "express";
 
+import password from "secure-random-password";
 import { isAuthorizedByEmail, isAuthorizedByUserId } from "../middlewares/auth";
 import {
   loginRequestValidator,
   registerRequestValidator,
 } from "../middlewares/validators/authValidators";
-import password from 'secure-random-password';
 import nodemailerConfig from "../nodemailer.config";
 import AuthService from "../services/implementations/authService";
 import EmailService from "../services/implementations/emailService";
@@ -14,12 +14,10 @@ import IAuthService from "../services/interfaces/authService";
 import IEmailService from "../services/interfaces/emailService";
 import IUserService from "../services/interfaces/userService";
 
-
 const authRouter: Router = Router();
 const userService: IUserService = new UserService();
 const emailService: IEmailService = new EmailService(nodemailerConfig);
 const authService: IAuthService = new AuthService(userService, emailService);
-
 
 /* Returns access token and user info in response body and sets refreshToken as an httpOnly cookie */
 authRouter.post("/login", loginRequestValidator, async (req, res) => {
@@ -46,16 +44,17 @@ authRouter.post("/login", loginRequestValidator, async (req, res) => {
 
 /* Register a user, returns access token and user info in response body and sets refreshToken as an httpOnly cookie */
 authRouter.post("/register", registerRequestValidator, async (req, res) => {
-  
-  var randomPassword = password.randomPassword({
+  const randomPassword = password.randomPassword({
     length: 8, // length of the password
-    characters: [ //acceptable characters in the password
-      password.lower, 
-      password.upper, 
-      password.digits]
+    characters: [
+      // acceptable characters in the password
+      password.lower,
+      password.upper,
+      password.digits,
+    ],
   });
 
-  var createdUser = null;
+  let createdUser = null;
 
   try {
     createdUser = await userService.createUser({
@@ -63,10 +62,10 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
       lastName: req.body.lastName,
       email: req.body.email,
       role: "Admin",
-      password: randomPassword
+      password: randomPassword,
     });
 
-    //try to sign in the user and return the expiring token
+    // try to sign in the user and return the expiring token
     const authDTO = await authService.generateToken(
       req.body.email,
       randomPassword,
@@ -77,7 +76,11 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
     // Send email with login details and ask to change password
     // once they change the password, admin should be verified
     // TODO: change this in part 2 of the ticket @Dhruv
-    await authService.sendPasswordSetupLink(req.body.email, randomPassword, createdUser);
+    await authService.sendPasswordSetupLink(
+      req.body.email,
+      randomPassword,
+      createdUser,
+    );
 
     res
       .cookie("refreshToken", refreshToken, {
@@ -88,7 +91,8 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
       .status(200)
       .json(rest);
   } catch (error) {
-    if(createdUser != null){ //rollback created user if we could not log them in
+    if (createdUser != null) {
+      // rollback created user if we could not log them in
       await userService.deleteUserByEmail(createdUser.email);
     }
     res.status(500).json({ error: error.message });

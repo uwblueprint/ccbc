@@ -161,7 +161,11 @@ class AuthService implements IAuthService {
     }
   }
 
-  async sendPasswordSetupLink(email: string, password: string, user: UserDTO): Promise<void> {
+  async sendPasswordSetupLink(
+    email: string,
+    password: string,
+    user: UserDTO,
+  ): Promise<void> {
     if (!this.emailService) {
       const errorMessage =
         "Attempted to call sendPasswordSetupLink but this instance of AuthService does not have an EmailService instance";
@@ -170,7 +174,6 @@ class AuthService implements IAuthService {
     }
 
     try {
-    
       const emailBody = `
       Hello,
       <br><br>
