@@ -177,7 +177,7 @@ class AuthService implements IAuthService {
       const emailBody = `
       Hello,
       <br><br>
-      You have been invited to join CCBC as a ${user.role.toLowerCase}. Here are your account details:
+      You have been invited to join CCBC as a ${user.role.toLowerCase()}. Here are your account details:
       <br>
       Email: ${user.email}
       <br>
