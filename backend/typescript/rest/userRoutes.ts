@@ -13,6 +13,7 @@ import IAuthService from "../services/interfaces/authService";
 import IEmailService from "../services/interfaces/emailService";
 import IUserService from "../services/interfaces/userService";
 import { UserDTO } from "../types";
+import sendErrorResponse from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
 
 const userRouter: Router = Router();
@@ -41,13 +42,15 @@ userRouter.get("/", async (req, res) => {
       const users = await userService.getUsers();
       await sendResponseByMimeType<UserDTO>(res, 200, contentType, users);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        await sendResponseByMimeType(res, 500, contentType, [
-          {
-            error: error.message,
-          },
-        ]);
-      }
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Error: Caught error of invalid type ";
+      await sendResponseByMimeType(res, 500, contentType, [
+        {
+          error: errorMessage,
+        },
+      ]);
     }
     return;
   }
@@ -62,9 +65,7 @@ userRouter.get("/", async (req, res) => {
         const user = await userService.getUserById(userId);
         res.status(200).json(user);
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          res.status(500).json({ error: error.message });
-        }
+        sendErrorResponse(error, res);
       }
     }
     return;
@@ -80,9 +81,7 @@ userRouter.get("/", async (req, res) => {
         const user = await userService.getUserByEmail(email);
         res.status(200).json(user);
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          res.status(500).json({ error: error.message });
-        }
+        sendErrorResponse(error, res);
       }
     }
   }
@@ -103,9 +102,7 @@ userRouter.post("/", createUserDtoValidator, async (req, res) => {
 
     res.status(201).json(newUser);
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-    }
+    sendErrorResponse(error, res);
   }
 });
 
@@ -120,9 +117,7 @@ userRouter.put("/:userId", updateUserDtoValidator, async (req, res) => {
     });
     res.status(200).json(updatedUser);
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-    }
+    sendErrorResponse(error, res);
   }
 });
 
@@ -145,9 +140,7 @@ userRouter.delete("/", async (req, res) => {
         await userService.deleteUserById(userId);
         res.status(204).send();
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          res.status(500).json({ error: error.message });
-        }
+        sendErrorResponse(error, res);
       }
     }
     return;
@@ -163,9 +156,7 @@ userRouter.delete("/", async (req, res) => {
         await userService.deleteUserByEmail(email);
         res.status(204).send();
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          res.status(500).json({ error: error.message });
-        }
+        sendErrorResponse(error, res);
       }
     }
     return;
