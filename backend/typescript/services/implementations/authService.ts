@@ -3,7 +3,7 @@ import * as firebaseAdmin from "firebase-admin";
 import IAuthService from "../interfaces/authService";
 import IEmailService from "../interfaces/emailService";
 import IUserService from "../interfaces/userService";
-import { AuthDTO, Role, Token } from "../../types";
+import { AuthDTO, Role, Token, UserDTO } from "../../types";
 import FirebaseRestClient from "../../utilities/firebaseRestClient";
 import logger from "../../utilities/logger";
 
@@ -22,7 +22,6 @@ class AuthService implements IAuthService {
     this.emailService = emailService;
   }
 
-  /* eslint-disable class-methods-use-this */
   async generateToken(email: string, password: string): Promise<AuthDTO> {
     try {
       const token = await FirebaseRestClient.signInWithPassword(
@@ -37,7 +36,6 @@ class AuthService implements IAuthService {
     }
   }
 
-  /* eslint-disable class-methods-use-this */
   async generateTokenOAuth(idToken: string): Promise<AuthDTO> {
     try {
       const googleUser = await FirebaseRestClient.signInWithGoogleOAuth(
@@ -54,6 +52,7 @@ class AuthService implements IAuthService {
         // You may want to silence the logger for this special OAuth user lookup case
         const user = await this.userService.getUserByEmail(googleUser.email);
         return { ...token, ...user };
+        /* eslint-disable no-empty */
       } catch (error) {}
 
       const user = await this.userService.createUser(
@@ -93,6 +92,7 @@ class AuthService implements IAuthService {
     }
   }
 
+  /* eslint-disable class-methods-use-this */
   async renewToken(refreshToken: string): Promise<Token> {
     try {
       return await FirebaseRestClient.refreshToken(refreshToken);
@@ -161,14 +161,45 @@ class AuthService implements IAuthService {
     }
   }
 
+  async sendPasswordSetupLink(
+    email: string,
+    password: string,
+    user: UserDTO,
+  ): Promise<void> {
+    if (!this.emailService) {
+      const errorMessage =
+        "Attempted to call sendPasswordSetupLink but this instance of AuthService does not have an EmailService instance";
+      Logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    try {
+      const emailBody = `
+      Hello,
+      <br><br>
+      You have been invited to join CCBC as a ${user.role.toLowerCase()}. Here are your account details:
+      <br>
+      Email: ${user.email}
+      <br>
+      Password: ${password}
+      <br>`;
+
+      this.emailService.sendEmail(email, "CCBC acccount created", emailBody);
+    } catch (error) {
+      Logger.error(
+        `Failed to send password set up link for user with email ${email}`,
+      );
+      throw error;
+    }
+  }
+
   async isAuthorizedByRole(
     accessToken: string,
     roles: Set<Role>,
   ): Promise<boolean> {
     try {
-      const decodedIdToken: firebaseAdmin.auth.DecodedIdToken = await firebaseAdmin
-        .auth()
-        .verifyIdToken(accessToken, true);
+      const decodedIdToken: firebaseAdmin.auth.DecodedIdToken =
+        await firebaseAdmin.auth().verifyIdToken(accessToken, true);
       const userRole = await this.userService.getUserRoleByAuthId(
         decodedIdToken.uid,
       );
@@ -188,9 +219,8 @@ class AuthService implements IAuthService {
     requestedUserId: string,
   ): Promise<boolean> {
     try {
-      const decodedIdToken: firebaseAdmin.auth.DecodedIdToken = await firebaseAdmin
-        .auth()
-        .verifyIdToken(accessToken, true);
+      const decodedIdToken: firebaseAdmin.auth.DecodedIdToken =
+        await firebaseAdmin.auth().verifyIdToken(accessToken, true);
       const tokenUserId = await this.userService.getUserIdByAuthId(
         decodedIdToken.uid,
       );
@@ -212,9 +242,8 @@ class AuthService implements IAuthService {
     requestedEmail: string,
   ): Promise<boolean> {
     try {
-      const decodedIdToken: firebaseAdmin.auth.DecodedIdToken = await firebaseAdmin
-        .auth()
-        .verifyIdToken(accessToken, true);
+      const decodedIdToken: firebaseAdmin.auth.DecodedIdToken =
+        await firebaseAdmin.auth().verifyIdToken(accessToken, true);
 
       const firebaseUser = await firebaseAdmin
         .auth()

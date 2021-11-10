@@ -34,11 +34,12 @@
 // and retain values between renders of the component.
 // ***************************************************************
 
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import EmojiSection from "./EmojiSection";
+import "./styles.css";
+
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { EMOJIS } from "./emojis";
-import "./styles.css";
+import EmojiSection from "./EmojiSection";
 
 type BannerState = {
   emoji: string;

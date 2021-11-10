@@ -1,6 +1,6 @@
-import baseAPIClient from "./BaseAPIClient";
 import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
 import { getLocalStorageObjProperty } from "../utils/LocalStorageUtils";
+import baseAPIClient from "./BaseAPIClient";
 
 enum EnumField {
   "A",
@@ -71,7 +71,7 @@ const getFile = async (uuid: string): Promise<string> => {
       headers: { Authorization: bearerToken },
     });
 
-    return data.fileURL
+    return data.fileURL;
   } catch (error) {
     return error;
   }

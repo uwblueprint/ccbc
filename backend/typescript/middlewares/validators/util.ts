@@ -8,7 +8,7 @@ const allowableContentTypes = new Set([
   "image/gif",
 ]);
 
-export const validatePrimitive = (value: any, type: Type): boolean => {
+export const validatePrimitive = (value: unknown, type: Type): boolean => {
   if (value === undefined || value === null) return false;
 
   switch (type) {
@@ -27,7 +27,7 @@ export const validatePrimitive = (value: any, type: Type): boolean => {
   }
 };
 
-export const validateArray = (value: any, type: Type): boolean => {
+export const validateArray = (value: unknown, type: Type): boolean => {
   return (
     value !== undefined &&
     value !== null &&

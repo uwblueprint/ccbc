@@ -49,11 +49,12 @@ cd ccbc
 vault kv get -format=json kv/ccbc | python update_secret_files.py
 ```
 
-You should have three new files in your repo after this:
+You should have four new files in your repo after this:
 
 - `.env`
 - `frontend/.env`
 - `backend/typescript/firebaseServiceAccount.json`
+- `backend/typescript/nodemailer.config.ts`
 
 4. Run the application
 
@@ -91,7 +92,7 @@ docker-compose up --build -d
 
 ```bash
 # run a bash shell in the container
-docker exec -it <container-name> /bin/bash
+docker-compose exec db bash
 
 # in container now
 psql -U postgres -d ccbc
@@ -110,17 +111,20 @@ SELECT * FROM <table-name>;
 TypeScript backend and frontend:
 ```bash
 # linting & formatting warnings only
-docker exec -it <container-name> /bin/bash -c "yarn lint"
+docker-compose exec ts-backend yarn lint  # backend
+docker-compose exec frontend yarn lint    # frontend
 
 # linting with fix & formatting
-docker exec -it <container-name> /bin/bash -c "yarn fix"
+docker-compose exec <service-name> yarn fix
+# service-name: ts-backend or frontend
 ```
 
 ### Running Tests
 
 TypeScript backend and frontend:
 ```bash
-docker exec -it <container-name> /bin/bash -c "yarn test"
+docker-compose exec <service-name> yarn test
+# service-name: ts-backend or frontend
 ```
 
 ### Running Migrations
@@ -139,7 +143,7 @@ cd backend/typescript
 # get container name
 $ docker ps
 # run a bash shell
-$ docker exec -it ccbc_ts-backend_1 /bin/bash  
+$ docker-compose exec ts-backend bash  
 ```
 
 4. Ensure you have migration files in the migrations folder

@@ -1,8 +1,7 @@
 /* eslint  react/jsx-props-no-spreading: 0 */ // --> OFF
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import BTable from "react-bootstrap/Table";
-import { HeaderGroup, useTable, Column } from "react-table";
-
+import { Column, HeaderGroup, useTable } from "react-table";
 
 import EntityAPIClient, {
   EntityResponse,
@@ -146,7 +145,6 @@ const DisplayTableContainer: React.FC = (): React.ReactElement | null => {
   }, []);
 
   const downloadEntityFile = async (fileUUID: string) => {
-
     const data = await EntityAPIClient.getFile(fileUUID);
     downloadFile(data, "file");
   };
@@ -166,7 +164,9 @@ const DisplayTableContainer: React.FC = (): React.ReactElement | null => {
       <button type="button" onClick={downloadEntitiesCSV}>
         Download CSV
       </button>
-      {entities && <DisplayTable data={entities} downloadEntityFile={downloadEntityFile} />}
+      {entities && (
+        <DisplayTable data={entities} downloadEntityFile={downloadEntityFile} />
+      )}
     </>
   );
 };
