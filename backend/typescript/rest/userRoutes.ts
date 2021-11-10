@@ -40,12 +40,14 @@ userRouter.get("/", async (req, res) => {
     try {
       const users = await userService.getUsers();
       await sendResponseByMimeType<UserDTO>(res, 200, contentType, users);
-    } catch (error) {
-      await sendResponseByMimeType(res, 500, contentType, [
-        {
-          error: error.message,
-        },
-      ]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        await sendResponseByMimeType(res, 500, contentType, [
+          {
+            error: error.message,
+          },
+        ]);
+      }
     }
     return;
   }
@@ -59,8 +61,10 @@ userRouter.get("/", async (req, res) => {
       try {
         const user = await userService.getUserById(userId);
         res.status(200).json(user);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          res.status(500).json({ error: error.message });
+        }
       }
     }
     return;
@@ -75,8 +79,10 @@ userRouter.get("/", async (req, res) => {
       try {
         const user = await userService.getUserByEmail(email);
         res.status(200).json(user);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          res.status(500).json({ error: error.message });
+        }
       }
     }
   }
@@ -96,8 +102,10 @@ userRouter.post("/", createUserDtoValidator, async (req, res) => {
     await authService.sendEmailVerificationLink(req.body.email);
 
     res.status(201).json(newUser);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    }
   }
 });
 
@@ -111,8 +119,10 @@ userRouter.put("/:userId", updateUserDtoValidator, async (req, res) => {
       role: req.body.role,
     });
     res.status(200).json(updatedUser);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    }
   }
 });
 
@@ -134,8 +144,10 @@ userRouter.delete("/", async (req, res) => {
       try {
         await userService.deleteUserById(userId);
         res.status(204).send();
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          res.status(500).json({ error: error.message });
+        }
       }
     }
     return;
@@ -150,8 +162,10 @@ userRouter.delete("/", async (req, res) => {
       try {
         await userService.deleteUserByEmail(email);
         res.status(204).send();
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          res.status(500).json({ error: error.message });
+        }
       }
     }
     return;
