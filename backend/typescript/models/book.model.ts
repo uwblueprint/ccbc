@@ -8,7 +8,6 @@ import {
   BelongsToMany,
   ForeignKey,
 } from "sequelize-typescript";
-import { IntegerDataType, RangeDataType } from "sequelize/types";
 import Author from "./author.model";
 import BookAuthor from "./book_author.model";
 import BookPublisher from "./book_publisher.model";
