@@ -15,6 +15,7 @@ import BookPublisher from "./book_publisher.model";
 import Publisher from "./publisher.model";
 import Review from "./review.model";
 import Series from "./series.model";
+import { Format, Range } from "../services/interfaces/IReviewService";
 
 @Table({ tableName: "books" })
 export default class Book extends Model {
@@ -39,10 +40,10 @@ export default class Book extends Model {
   translator?: string[];
 
   @Column({ type: DataType.ARRAY(DataType.JSON) })
-  formats!: JSON[];
+  formats!: Format[];
 
   @Column({ type: DataType.RANGE(DataType.INTEGER) })
-  age_range!: RangeDataType<IntegerDataType>;
+  age_range!: Range[];
 
   @BelongsTo(() => Series)
   series!: Series;
