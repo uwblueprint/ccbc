@@ -42,7 +42,12 @@ const Login = (): React.ReactElement => {
   }
 
   return (
-    <Grid overflow="hidden" w="100vw" h="100vh" templateColumns="repeat(2, 1fr)">
+    <Grid
+      overflow="hidden"
+      w="100vw"
+      h="100vh"
+      templateColumns="repeat(2, 1fr)"
+    >
       <GridItem bg="papayawhip">
         <Stack>
           <Image
