@@ -2,6 +2,7 @@ import nodemailer, { Transporter } from "nodemailer";
 import IEmailService from "../interfaces/emailService";
 import { NodemailerConfig } from "../../types";
 import logger from "../../utilities/logger";
+import { getErrorMessage } from "../../utilities/errorResponse";
 
 const Logger = logger(__filename);
 
@@ -34,11 +35,7 @@ class EmailService implements IEmailService {
     try {
       return await this.transporter.sendMail(mailOptions);
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Error: Caught error of invalid type ";
-      Logger.error(`Failed to send email. Reason = ${errorMessage}`);
+      Logger.error(`Failed to send email. Reason = ${getErrorMessage(error)}`);
       throw error;
     }
   }

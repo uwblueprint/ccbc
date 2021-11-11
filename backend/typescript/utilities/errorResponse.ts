@@ -1,14 +1,16 @@
 import { Response } from "express";
 
+const getErrorMessage = (error: unknown): string => {
+  return error instanceof Error
+    ? error.message
+    : "Error: Caught error of invalid type ";
+};
+
 const sendErrorResponse = async (
   error: unknown,
   res: Response,
 ): Promise<Response> => {
-  const errorMessage =
-    error instanceof Error
-      ? error.message
-      : "Error: Caught error of invalid type ";
-  return res.status(500).json({ error: errorMessage });
+  return res.status(500).json({ error: getErrorMessage(error) });
 };
 
-export default sendErrorResponse;
+export { sendErrorResponse, getErrorMessage };
