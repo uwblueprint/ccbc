@@ -1,27 +1,8 @@
-import * as path from "path";
-
 import { Umzug, SequelizeStorage } from "umzug";
 import { Sequelize, SequelizeOptions } from "sequelize-typescript";
+import { dbURL, SQLOptions } from "./utilities/dbUtils";
 
-const dbURL =
-  process.env.DATABASE_URL ||
-  `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.DB_HOST}:5432/${process.env.POSTGRES_DB}`;
-
-const sequelizeOptions: SequelizeOptions = process.env.DATABASE_URL
-  ? {
-      dialect: "postgres",
-      protocol: "postgres",
-      dialectOptions: {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false,
-        },
-      },
-      models: [path.join(__dirname, "/*.pgmodel.ts")],
-    }
-  : {
-      models: [path.join(__dirname, "/*.pgmodel.ts")],
-    };
+const sequelizeOptions: SequelizeOptions = SQLOptions("/*.pgmodel.ts", false);
 
 const sequelize = new Sequelize(dbURL, sequelizeOptions);
 
