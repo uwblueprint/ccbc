@@ -2,6 +2,7 @@ import { storage } from "firebase-admin";
 
 import IFileStorageService from "../interfaces/fileStorageService";
 import logger from "../../utilities/logger";
+import { getErrorMessage } from "../../utilities/errorResponse";
 
 const Logger = logger(__filename);
 
@@ -29,7 +30,9 @@ class FileStorageService implements IFileStorageService {
       });
       return res[0];
     } catch (error) {
-      Logger.error(`Failed to retrieve file. Reason = ${error.message}`);
+      Logger.error(
+        `Failed to retrieve file. Reason = ${getErrorMessage(error)}`,
+      );
       throw error;
     }
   }
@@ -50,7 +53,7 @@ class FileStorageService implements IFileStorageService {
         metadata: { contentType },
       });
     } catch (error) {
-      Logger.error(`Failed to upload file. Reason = ${error.message}`);
+      Logger.error(`Failed to upload file. Reason = ${getErrorMessage(error)}`);
       throw error;
     }
   }
@@ -71,7 +74,7 @@ class FileStorageService implements IFileStorageService {
         metadata: { contentType },
       });
     } catch (error) {
-      Logger.error(`Failed to update file. Reason = ${error.message}`);
+      Logger.error(`Failed to update file. Reason = ${getErrorMessage(error)}`);
       throw error;
     }
   }
@@ -85,7 +88,7 @@ class FileStorageService implements IFileStorageService {
       }
       await currentBlob.delete();
     } catch (error) {
-      Logger.error(`Failed to delete file. Reason = ${error.message}`);
+      Logger.error(`Failed to delete file. Reason = ${getErrorMessage(error)}`);
       throw error;
     }
   }
