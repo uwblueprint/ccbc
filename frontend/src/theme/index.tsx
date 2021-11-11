@@ -7,11 +7,11 @@ const customTheme = extendTheme({
   textStyles: {
     heading: {
       fontFamily: "Coustard",
-      fontSize: "2.4vw",
+      fontSize: "2vw",
     },
     body: {
       fontFamily: "Open Sans",
-      fontSize: "1.2vw",
+      fontSize: "1vw",
     },
   },
   config: {
