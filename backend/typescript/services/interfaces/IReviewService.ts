@@ -1,22 +1,35 @@
-interface Author {
+import { RangeDataType, IntegerDataType } from "sequelize/types";
+
+export interface Range extends RangeDataType<IntegerDataType> {
+  value: number;
+  inclusive: boolean;
+}
+export interface Author {
   fullName: string;
-  displayName: string | null;
-  attribution: string | null;
+  displayName?: string;
+  attribution?: string;
 }
 
-interface Publisher {
+export interface Publisher {
   fullName: string;
-  publishDate: Date;
+  publishYear: number;
 }
 
-interface Book {
+export interface Format {
+  format: string;
+  price: string;
+  isbn: string;
+}
+
+export interface Book {
   title: string;
-  seriesOrder: string | null;
-  illustrator: string[];
-  translator: string[];
-  formats: string[];
-  minAge: number | null;
-  maxAge: number | null;
+  seriesOrder?: string;
+  illustrator?: string[];
+  translator?: string[];
+  // @TODO: change formats to be typed with 3 fields?
+  formats: Format[];
+  minAge: number;
+  maxAge: number;
   authors: Author[];
   publishers: Publisher[];
   seriesName: string;
@@ -32,23 +45,21 @@ export interface ReviewRequestDTO {
   byline: string;
   featured: boolean;
   createdBy: number;
-  publishedAt: Date | null;
-  // @TODO: uncomment when done testing with ReviewService
-  // books: Book[];
+  publishedAt?: Date;
+  books: Book[];
   tags: Tag[];
 }
 
 export interface ReviewResponseDTO {
   reviewId: number;
-  // @TODO: uncomment when done testing with ReviewService
-  // body: string;
-  // cover_images: string[];
-  // byline: string;
-  // featured: boolean;
+  body: string;
+  cover_images: string[];
+  byline: string;
+  featured: boolean;
+  // @TODO: uncomment when christine changes are merged
   // created_by: number;
-  // published_at: Date | null;
-  // books: Book[];
-  // tags: Tag[];
+  books: Book[];
+  tags: Tag[];
   updatedAt: Date;
   publishedAt: Date;
 }
@@ -61,5 +72,5 @@ export interface IReviewService {
    * @throws Error if creation fails
    */
 
-  createEntity(entity: ReviewRequestDTO): Promise<ReviewResponseDTO>;
+  createReview(entity: ReviewRequestDTO): Promise<ReviewResponseDTO>;
 }
