@@ -98,13 +98,7 @@ const Login = (): React.ReactElement => {
                 </FormHelperText>
               ) : null}
             </Box>
-            <Button
-              type="submit"
-              w="100%"
-              colorScheme="teal"
-              size="md"
-              onClick={onLogInClick}
-            >
+            <Button variant="submit" type="submit" onClick={onLogInClick}>
               Log in
             </Button>
           </FormControl>

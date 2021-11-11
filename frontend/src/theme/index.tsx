@@ -14,6 +14,18 @@ const customTheme = extendTheme({
       fontSize: "1vw",
     },
   },
+  components: {
+    Button: {
+      variants: {
+        submit: {
+          width: "100%",
+          bg: "teal.500",
+          color: "white",
+          size: "md",
+        },
+      },
+    },
+  },
   config: {
     initialColorMode: "light",
   },
