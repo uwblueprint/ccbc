@@ -129,7 +129,6 @@ class ReviewService implements IReviewService {
               illustrator: newBook.illustrator,
               translator: newBook.translator,
               formats: newBook.formats,
-              // TODO: change hard-coded values
               minAge: newBook.age_range[0].value,
               maxAge: newBook.age_range[1].value,
               authors: authorsRet,
