@@ -13,6 +13,7 @@ import UserService from "../services/implementations/userService";
 import IAuthService from "../services/interfaces/authService";
 import IEmailService from "../services/interfaces/emailService";
 import IUserService from "../services/interfaces/userService";
+import { sendErrorResponse } from "../utilities/errorResponse";
 
 const authRouter: Router = Router();
 const userService: IUserService = new UserService();
@@ -37,8 +38,8 @@ authRouter.post("/login", loginRequestValidator, async (req, res) => {
       })
       .status(200)
       .json(rest);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    sendErrorResponse(error, res);
   }
 });
 
@@ -90,12 +91,12 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
       })
       .status(200)
       .json(rest);
-  } catch (error) {
+  } catch (error: unknown) {
     if (createdUser != null) {
       // rollback created user if we could not log them in
       await userService.deleteUserByEmail(createdUser.email);
     }
-    res.status(500).json({ error: error.message });
+    sendErrorResponse(error, res);
   }
 });
 
@@ -112,8 +113,8 @@ authRouter.post("/refresh", async (req, res) => {
       })
       .status(200)
       .json({ accessToken: token.accessToken });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    sendErrorResponse(error, res);
   }
 });
 
@@ -125,8 +126,8 @@ authRouter.post(
     try {
       await authService.revokeTokens(req.params.userId);
       res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      sendErrorResponse(error, res);
     }
   },
 );
@@ -139,8 +140,8 @@ authRouter.post(
     try {
       await authService.resetPassword(req.params.email);
       res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      sendErrorResponse(error, res);
     }
   },
 );
