@@ -27,7 +27,7 @@ class UserService implements IUserService {
     }
 
     return {
-      authId: user.auth_id,
+      id: user.id,
       firstName: user.first_name,
       lastName: user.last_name,
       email: firebaseUser.email ?? "",
@@ -55,7 +55,7 @@ class UserService implements IUserService {
     }
 
     return {
-      authId: user.auth_id,
+      id: user.id,
       firstName: user.first_name,
       lastName: user.last_name,
       email: firebaseUser.email ?? "",
@@ -89,7 +89,7 @@ class UserService implements IUserService {
       if (!user) {
         throw new Error(`user with authId ${authId} not found.`);
       }
-      return user.auth_id;
+      return user.id;
     } catch (error) {
       Logger.error(`Failed to get user id. Reason = ${getErrorMessage(error)}`);
       throw error;
@@ -128,7 +128,7 @@ class UserService implements IUserService {
           }
 
           return {
-            authId: user.auth_id,
+            id: user.id,
             firstName: user.first_name,
             lastName: user.last_name,
             email: firebaseUser.email ?? "",
@@ -197,7 +197,7 @@ class UserService implements IUserService {
     }
 
     return {
-      authId: newUser.auth_id,
+      id: newUser.id,
       firstName: newUser.first_name,
       lastName: newUser.last_name,
       email: firebaseUser.email ?? "",
@@ -254,7 +254,7 @@ class UserService implements IUserService {
             "Failed to rollback Postgres user update after Firebase user update failure. Reason =",
             getErrorMessage(postgresError),
             "Postgres user id with possibly inconsistent data =",
-            oldUser.auth_id,
+            oldUser.id,
           ];
           Logger.error(errorMessage.join(" "));
         }
@@ -267,7 +267,7 @@ class UserService implements IUserService {
     }
 
     return {
-      authId: userId,
+      id: userId,
       firstName: user.firstName,
       lastName: user.lastName,
       email: updatedFirebaseUser.email ?? "",

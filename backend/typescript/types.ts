@@ -6,7 +6,7 @@ export type Token = {
 };
 
 export type UserDTO = {
-  authId: string;
+  id: string;
   roleType: Role;
   firstName: string;
   lastName: string;

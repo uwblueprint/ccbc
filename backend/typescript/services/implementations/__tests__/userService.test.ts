@@ -37,7 +37,6 @@ jest.mock("firebase-admin", () => {
   const auth = jest.fn().mockReturnValue({
     getUser: jest.fn().mockReturnValue({ email: "test@test.com" }),
     createUser: jest.fn().mockReturnValue({
-      authId: "",
       firstName: "firstName",
       lastName: "lastName",
       email: "email",
@@ -45,7 +44,6 @@ jest.mock("firebase-admin", () => {
       active: true,
     }),
     deleteUser: jest.fn().mockReturnValue({
-      authId: "",
       firstName: "firstName",
       lastName: "lastName",
       email: "email",
@@ -71,7 +69,6 @@ describe("pg userService", () => {
 
   it("createUser", async () => {
     const res = await userService.createUser({
-      authId: "",
       firstName: "firstName",
       lastName: "lastName",
       email: "email",

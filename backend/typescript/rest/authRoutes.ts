@@ -59,7 +59,6 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
 
   try {
     createdUser = await userService.createUser({
-      authId: "",
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,

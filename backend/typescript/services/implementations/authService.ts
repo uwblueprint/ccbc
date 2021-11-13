@@ -58,7 +58,6 @@ class AuthService implements IAuthService {
 
       const user = await this.userService.createUser(
         {
-          authId: "",
           firstName: googleUser.firstName,
           lastName: googleUser.lastName,
           email: googleUser.email,

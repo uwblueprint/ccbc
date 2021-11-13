@@ -85,7 +85,6 @@ userRouter.get("/", async (req, res) => {
 userRouter.post("/", createUserDtoValidator, async (req, res) => {
   try {
     const newUser = await userService.createUser({
-      authId: req.body.authId,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
@@ -106,7 +105,6 @@ userRouter.post("/", createUserDtoValidator, async (req, res) => {
 userRouter.put("/:userId", updateUserDtoValidator, async (req, res) => {
   try {
     const updatedUser = await userService.updateUserById(req.params.userId, {
-      authId: req.body.authId,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,

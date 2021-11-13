@@ -24,7 +24,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
     return <Redirect to={LOGIN_PAGE} />;
   }
 
-  const userHasRequiredRole = requiredRoles.includes(authenticatedUser.role);
+  const userHasRequiredRole = requiredRoles.includes(authenticatedUser.roleType);
 
   return userHasRequiredRole ? (
     <Route path={path} exact={exact} component={component} />
