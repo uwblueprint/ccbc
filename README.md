@@ -139,7 +139,7 @@ docker-compose exec <service-name> yarn test
 # service-name: ts-backend or frontend
 ```
 
-### Running Migrations
+### Running Migrations & Seeding Database
 
 1. Run both the TypeScript backend and database containers, you can use 
 ```bash
@@ -163,6 +163,12 @@ $ docker-compose exec ts-backend bash
 5. Run the following command
 ```bash
 node migrate up
+```
+
+6. Seeding commands
+``` bash
+node seed up # to seed with sample data
+node seed down --to 0  # to remove all seed data
 ```
 
 
