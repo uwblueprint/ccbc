@@ -1,4 +1,3 @@
-import * as path from "path";
 import { SequelizeOptions } from "sequelize-typescript";
 
 export const dbURL =
@@ -6,13 +5,9 @@ export const dbURL =
   `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.DB_HOST}:5432/${process.env.POSTGRES_DB}`;
 
 export const SQLOptions = (
-  modelPath: string,
+  modelPath: string[],
   testdb: boolean,
 ): SequelizeOptions => {
-  const modelsPath: string[] = testdb
-    ? [path.resolve(__dirname, "../models/*.model.ts")]
-    : [path.join(__dirname, modelPath)];
-
   return process.env.DATABASE_URL
     ? {
         dialect: "postgres",
@@ -23,11 +18,11 @@ export const SQLOptions = (
             rejectUnauthorized: false,
           },
         },
-        models: modelsPath,
-        logging: !testdb,
+        models: modelPath,
+        logging: testdb ? false : undefined,
       }
     : {
-        models: modelsPath,
-        logging: !testdb,
+        models: modelPath,
+        logging: testdb ? false : undefined,
       };
 };

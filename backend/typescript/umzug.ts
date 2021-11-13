@@ -1,8 +1,12 @@
+import * as path from "path";
 import { Umzug, SequelizeStorage } from "umzug";
 import { Sequelize, SequelizeOptions } from "sequelize-typescript";
 import { dbURL, SQLOptions } from "./utilities/dbUtils";
 
-const sequelizeOptions: SequelizeOptions = SQLOptions("/*.pgmodel.ts", false);
+const sequelizeOptions: SequelizeOptions = SQLOptions(
+  [path.join(__dirname, "/*.pgmodel.ts")],
+  false,
+);
 
 const sequelize = new Sequelize(dbURL, sequelizeOptions);
 
