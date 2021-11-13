@@ -77,6 +77,7 @@ class ReviewService implements IReviewService {
             newBook = await PgBook.create(
               {
                 review_id: newReview.id,
+                title_prefix: book.titlePrefix,
                 title: book.title,
                 series_id: series.id,
                 series_order: book.seriesOrder || null,
