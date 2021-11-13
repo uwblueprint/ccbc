@@ -18,6 +18,9 @@ import {
 
 const Logger = logger(__filename);
 
+// Delete: can delete the book, book_author, and book_publisher
+// Get: return review - but it contains all other info
+
 class ReviewService implements IReviewService {
   db: Sequelize;
 
@@ -29,6 +32,43 @@ class ReviewService implements IReviewService {
         logging: false,
       },
     );
+  }
+
+  async getReview(id: string): Promise<ReviewResponseDTO> {
+    let review: PgReview;
+    try {
+      review = await PgReview.findByPk(id, { raw: true });
+      if (!review) {
+        throw new Error(`Review id ${id} not found`);
+      }
+    } catch (error) {
+      Logger.error(`Failed to get review. Reason = ${error.message}`);
+      throw error;
+    }
+
+    return {
+        reviewId: review.id,
+        body: review.body,
+        cover_images: review.cover_images,
+        byline: review.byline,
+        featured: review.featured,
+        books: review.$get("books"),
+        tags: review.$get("tags"),
+        updatedAt: review.updatedAt,
+        publishedAt: review.published_at,
+    };
+
+    reviewId: number;
+    body: string;
+    cover_images: string[];
+    byline: string;
+    featured: boolean;
+    // @TODO: uncomment when christine changes are merged
+    // created_by: number;
+    books: Book[];
+    tags: Tag[];
+    updatedAt: Date;
+    publishedAt: Date;
   }
 
   /* eslint-disable class-methods-use-this */

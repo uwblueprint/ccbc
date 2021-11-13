@@ -72,5 +72,6 @@ export interface IReviewService {
    * @throws Error if creation fails
    */
 
-  createReview(entity: ReviewRequestDTO): Promise<ReviewResponseDTO>;
+  createEntity(entity: ReviewRequestDTO): Promise<ReviewResponseDTO>;
+  getEntity(id: string): Promise<ReviewResponseDTO>;
 }
