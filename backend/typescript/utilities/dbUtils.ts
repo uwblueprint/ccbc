@@ -19,10 +19,10 @@ export const SQLOptions = (
           },
         },
         models: modelPath,
-        logging: testdb ? false : undefined,
+        logging: testdb ? false : console.log,
       }
     : {
         models: modelPath,
-        logging: testdb ? false : undefined,
+        logging: testdb ? false : console.log,
       };
 };
