@@ -1,4 +1,4 @@
-import { AuthDTO, Role, Token } from "../../types";
+import { AuthDTO, Role, Token, UserDTO } from "../../types";
 
 interface IAuthService {
   /**
@@ -50,6 +50,19 @@ interface IAuthService {
    * @throws Error if unable to generate link or send email
    */
   sendEmailVerificationLink(email: string): Promise<void>;
+
+  /**
+   * Sends an email to the created user with their login details and a
+   * link to change their password
+   * @param email email of user that needs to set up password
+   * @param password the temporary random password assigned to that user
+   * @param user the UserDTO that has user information
+   */
+  sendPasswordSetupLink(
+    email: string,
+    password: string,
+    user: UserDTO,
+  ): Promise<void>;
 
   /**
    * Determine if the provided access token is valid and authorized for at least

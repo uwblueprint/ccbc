@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import password from "secure-random-password";
 import { isAuthorizedByEmail, isAuthorizedByUserId } from "../middlewares/auth";
 import {
   loginRequestValidator,
@@ -12,6 +13,7 @@ import UserService from "../services/implementations/userService";
 import IAuthService from "../services/interfaces/authService";
 import IEmailService from "../services/interfaces/emailService";
 import IUserService from "../services/interfaces/userService";
+import { sendErrorResponse } from "../utilities/errorResponse";
 
 const authRouter: Router = Router();
 const userService: IUserService = new UserService();
@@ -36,29 +38,50 @@ authRouter.post("/login", loginRequestValidator, async (req, res) => {
       })
       .status(200)
       .json(rest);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    sendErrorResponse(error, res);
   }
 });
 
 /* Register a user, returns access token and user info in response body and sets refreshToken as an httpOnly cookie */
 authRouter.post("/register", registerRequestValidator, async (req, res) => {
+  const randomPassword = password.randomPassword({
+    length: 8, // length of the password
+    characters: [
+      // acceptable characters in the password
+      password.lower,
+      password.upper,
+      password.digits,
+    ],
+  });
+
+  let createdUser = null;
+
   try {
-    await userService.createUser({
+    createdUser = await userService.createUser({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
-      role: "User",
-      password: req.body.password,
+      role: "Admin", // TODO: pass in the role as a parameter to function for author and subscriber
+      password: randomPassword,
     });
 
+    // try to sign in the user and return the expiring token
     const authDTO = await authService.generateToken(
       req.body.email,
-      req.body.password,
+      randomPassword,
     );
+
     const { refreshToken, ...rest } = authDTO;
 
-    await authService.sendEmailVerificationLink(req.body.email);
+    // Send email with login details and ask to change password
+    // once they change the password, admin should be verified
+    // TODO: change this in part 2 of the ticket @Dhruv
+    await authService.sendPasswordSetupLink(
+      req.body.email,
+      randomPassword,
+      createdUser,
+    );
 
     res
       .cookie("refreshToken", refreshToken, {
@@ -68,8 +91,12 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
       })
       .status(200)
       .json(rest);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    if (createdUser != null) {
+      // rollback created user if we could not log them in
+      await userService.deleteUserByEmail(createdUser.email);
+    }
+    sendErrorResponse(error, res);
   }
 });
 
@@ -86,8 +113,8 @@ authRouter.post("/refresh", async (req, res) => {
       })
       .status(200)
       .json({ accessToken: token.accessToken });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    sendErrorResponse(error, res);
   }
 });
 
@@ -99,8 +126,8 @@ authRouter.post(
     try {
       await authService.revokeTokens(req.params.userId);
       res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      sendErrorResponse(error, res);
     }
   },
 );
@@ -113,8 +140,8 @@ authRouter.post(
     try {
       await authService.resetPassword(req.params.email);
       res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      sendErrorResponse(error, res);
     }
   },
 );

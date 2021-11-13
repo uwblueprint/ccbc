@@ -2,6 +2,7 @@ import nodemailer, { Transporter } from "nodemailer";
 import IEmailService from "../interfaces/emailService";
 import { NodemailerConfig } from "../../types";
 import logger from "../../utilities/logger";
+import { getErrorMessage } from "../../utilities/errorResponse";
 
 const Logger = logger(__filename);
 
@@ -33,8 +34,8 @@ class EmailService implements IEmailService {
 
     try {
       return await this.transporter.sendMail(mailOptions);
-    } catch (error) {
-      Logger.error(`Failed to send email. Reason = ${error.message}`);
+    } catch (error: unknown) {
+      Logger.error(`Failed to send email. Reason = ${getErrorMessage(error)}`);
       throw error;
     }
   }

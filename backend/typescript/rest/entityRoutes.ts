@@ -10,6 +10,7 @@ import {
   EntityResponseDTO,
   IEntityService,
 } from "../services/interfaces/IEntityService";
+import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
 
 const upload = multer({ dest: "uploads/" });
@@ -44,8 +45,8 @@ entityRouter.post(
         fs.unlinkSync(req.file.path);
       }
       res.status(201).json(newEntity);
-    } catch (e) {
-      res.status(500).send(e.message);
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
     }
   },
 );
@@ -61,10 +62,10 @@ entityRouter.get("/", async (req, res) => {
       contentType,
       entities,
     );
-  } catch (e) {
+  } catch (e: unknown) {
     await sendResponseByMimeType(res, 500, contentType, [
       {
-        error: e.message,
+        error: getErrorMessage(e),
       },
     ]);
   }
@@ -77,8 +78,8 @@ entityRouter.get("/:id", async (req, res) => {
   try {
     const entity = await entityService.getEntity(id);
     res.status(200).json(entity);
-  } catch (e) {
-    res.status(500).send(e.message);
+  } catch (e: unknown) {
+    sendErrorResponse(e, res);
   }
 });
 
@@ -104,8 +105,8 @@ entityRouter.put(
         fs.unlinkSync(req.file.path);
       }
       res.status(200).json(entity);
-    } catch (e) {
-      res.status(500).send(e.message);
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
     }
   },
 );
@@ -117,8 +118,8 @@ entityRouter.delete("/:id", async (req, res) => {
   try {
     await entityService.deleteEntity(id);
     res.status(204).send();
-  } catch (e) {
-    res.status(500).send(e.message);
+  } catch (e: unknown) {
+    sendErrorResponse(e, res);
   }
 });
 
@@ -128,8 +129,8 @@ entityRouter.get("/files/:fileUUID", async (req, res) => {
   try {
     const fileURL = await fileStorageService.getFile(fileUUID);
     res.status(200).json({ fileURL });
-  } catch (e) {
-    res.status(500).send(e.message);
+  } catch (e: unknown) {
+    sendErrorResponse(e, res);
   }
 });
 
