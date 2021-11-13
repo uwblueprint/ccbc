@@ -8,6 +8,7 @@ import YAML from "yamljs";
 import sequelize from "./models";
 import authRouter from "./rest/authRoutes";
 import entityRouter from "./rest/entityRoutes";
+import reviewRouter from "./rest/reviewRoutes";
 import userRouter from "./rest/userRoutes";
 
 const CORS_ALLOW_LIST = ["http://localhost:3000"];
@@ -27,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/auth", authRouter);
 app.use("/entities", entityRouter);
+app.use("/reviews", reviewRouter);
 app.use("/users", userRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
