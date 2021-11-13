@@ -41,7 +41,7 @@ jest.mock("firebase-admin", () => {
       firstName: "firstName",
       lastName: "lastName",
       email: "email",
-      roleType: "Admin", 
+      roleType: "Admin",
       active: true,
     }),
     deleteUser: jest.fn().mockReturnValue({
@@ -49,7 +49,7 @@ jest.mock("firebase-admin", () => {
       firstName: "firstName",
       lastName: "lastName",
       email: "email",
-      roleType: "Admin", 
+      roleType: "Admin",
       active: true,
     }),
   });
@@ -75,7 +75,7 @@ describe("pg userService", () => {
       firstName: "firstName",
       lastName: "lastName",
       email: "email",
-      roleType: "Admin", 
+      roleType: "Admin",
       active: true,
       password: "randomPassword",
     });
@@ -97,9 +97,9 @@ describe("pg userService", () => {
     await User.bulkCreate(users);
 
     await userService.deleteUserById(testId);
-    await expect(userService.getUserById(testId))
-    .rejects
-    .toThrow(`userId ${testId} not found.`);
+    await expect(userService.getUserById(testId)).rejects.toThrow(
+      `userId ${testId} not found.`,
+    );
   });
 
   it("getUserById", async () => {

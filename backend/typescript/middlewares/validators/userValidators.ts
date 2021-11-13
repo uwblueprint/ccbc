@@ -15,8 +15,11 @@ export const createUserDtoValidator = async (
   if (!validatePrimitive(req.body.email, "string")) {
     return res.status(400).send(getApiValidationError("email", "string"));
   }
-  if (req.body.roleType !== "Admin" || req.body.roleType !== "Subscriber" || 
-      req.body.roleType !== "Author") {
+  if (
+    req.body.roleType !== "Admin" ||
+    req.body.roleType !== "Subscriber" ||
+    req.body.roleType !== "Author"
+  ) {
     return res.status(400).send(getApiValidationError("roleType", "Role"));
   }
   if (!validatePrimitive(req.body.password, "string")) {
@@ -43,8 +46,11 @@ export const updateUserDtoValidator = async (
   if (!validatePrimitive(req.body.email, "string")) {
     return res.status(400).send(getApiValidationError("email", "string"));
   }
-  if (req.body.roleType !== "Admin" || req.body.roleType !== "Subscriber" || 
-      req.body.roleType !== "Author") {
+  if (
+    req.body.roleType !== "Admin" ||
+    req.body.roleType !== "Subscriber" ||
+    req.body.roleType !== "Author"
+  ) {
     return res.status(400).send(getApiValidationError("roleType", "Role"));
   }
   if (!validatePrimitive(req.body.active, "boolean")) {
