@@ -74,6 +74,23 @@ const register = async (
   }
 };
 
+const setPassword = async (
+  email: string,
+  newPassword: string,
+  curPassword: string,
+): Promise<AuthenticatedUser> => {
+  try {
+    const { data } = await baseAPIClient.post(
+      `/auth/setPassword/${email}`,
+      { newPassword, curPassword },
+      {},
+    );
+    return data;
+  } catch (error) {
+    return null;
+  }
+};
+
 const resetPassword = async (email: string | undefined): Promise<boolean> => {
   const bearerToken = `Bearer ${getLocalStorageObjProperty(
     AUTHENTICATED_USER_KEY,
@@ -117,4 +134,5 @@ export default {
   register,
   resetPassword,
   refresh,
+  setPassword,
 };
