@@ -58,10 +58,12 @@ class AuthService implements IAuthService {
 
       const user = await this.userService.createUser(
         {
+          authId: "",
           firstName: googleUser.firstName,
           lastName: googleUser.lastName,
           email: googleUser.email,
-          role: "User",
+          roleType: "Admin", // TODO: pass in the role as a parameter to function for author and subscriber
+          active: true,
           password: "",
         },
         googleUser.localId,
@@ -178,7 +180,7 @@ class AuthService implements IAuthService {
       const emailBody = `
       Hello,
       <br><br>
-      You have been invited to join CCBC as a ${user.role.toLowerCase()}. Here are your account details:
+      You have been invited to join CCBC as a ${user.roleType.toLowerCase()}. Here are your account details:
       <br>
       Email: ${user.email}
       <br>
