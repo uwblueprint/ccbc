@@ -45,7 +45,7 @@ export interface ReviewRequestDTO {
   byline: string;
   featured: boolean;
   createdBy: number;
-  publishedAt?: Date;
+  publishedAt?: number;
   books: Book[];
   tags: Tag[];
 }
@@ -60,8 +60,8 @@ export interface ReviewResponseDTO {
   // created_by: number;
   books: Book[];
   tags: Tag[];
-  updatedAt: Date;
-  publishedAt: Date;
+  updatedAt: number;
+  publishedAt: number;
 }
 
 export interface IReviewService {

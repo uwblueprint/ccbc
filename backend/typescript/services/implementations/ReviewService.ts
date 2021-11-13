@@ -49,7 +49,9 @@ class ReviewService implements IReviewService {
             cover_images: review.coverImages,
             byline: review.byline,
             featured: review.featured,
-            published_at: review.publishedAt || null,
+            published_at: review.publishedAt
+              ? new Date(review.publishedAt * 1000)
+              : null,
           },
           { transaction: t },
         );
@@ -146,8 +148,8 @@ class ReviewService implements IReviewService {
           featured: newReview.featured,
           books: booksRet,
           tags: tagsRet,
-          updatedAt: newReview.updatedAt,
-          publishedAt: newReview.published_at,
+          updatedAt: newReview.updatedAt.getTime(),
+          publishedAt: newReview.published_at.getTime(),
         };
       });
     } catch (error) {
