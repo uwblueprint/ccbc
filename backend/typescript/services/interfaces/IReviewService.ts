@@ -26,7 +26,6 @@ export interface Book {
   seriesOrder?: string;
   illustrator?: string[];
   translator?: string[];
-  // @TODO: change formats to be typed with 3 fields?
   formats: Format[];
   minAge: number;
   maxAge: number;
