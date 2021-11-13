@@ -1,9 +1,5 @@
 import { initializeApp } from "firebase/app";
-import {
-  confirmPasswordReset,
-  getAuth,
-  verifyPasswordResetCode,
-} from "firebase/auth";
+import { getAuth, verifyPasswordResetCode } from "firebase/auth";
 import React, { useContext, useEffect, useState } from "react";
 import { Redirect, useParams } from "react-router-dom";
 
@@ -50,24 +46,17 @@ const SetPassword = ({
   }, [firebaseAuth, oobCode]);
 
   const onSetPasswordClick = async () => {
-    confirmPasswordReset(firebaseAuth, oobCode, newPassword)
-      .then((resp) => {
-        console.log(resp);
-        console.log("USER ABLE TO REST PASSWORD");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    /* 
     const user: AuthenticatedUser = await authAPIClient.setPassword(
       userEmail,
-      currentPassword,
       newPassword,
+      firebaseAuth,
+      oobCode,
     );
-    setAuthenticatedUser(user); */
+    setAuthenticatedUser(user);
   };
 
-  /* if (authenticatedUser) {
+  /* 
+  if (authenticatedUser) {
     return <Redirect to={HOME_PAGE} />;
   } */
 

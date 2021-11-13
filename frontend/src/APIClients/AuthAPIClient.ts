@@ -1,3 +1,5 @@
+import { Auth, confirmPasswordReset } from "firebase/auth";
+
 import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
 import { AuthenticatedUser } from "../types/AuthTypes";
 import {
@@ -77,16 +79,16 @@ const register = async (
 const setPassword = async (
   email: string,
   newPassword: string,
-  curPassword: string,
+  firebaseAuth: Auth,
+  oobCode: string,
 ): Promise<AuthenticatedUser> => {
   try {
-    const { data } = await baseAPIClient.post(
-      `/auth/setPassword/${email}`,
-      { newPassword, curPassword },
-      {},
-    );
-    return data;
+    await confirmPasswordReset(firebaseAuth, oobCode, newPassword);
+    console.log("USER ABLE TO REST PASSWORD");
+    const authenticatedUser = await login(email, newPassword);
+    return authenticatedUser;
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
