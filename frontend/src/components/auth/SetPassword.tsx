@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, verifyPasswordResetCode } from "firebase/auth";
 import React, { useContext, useEffect, useState } from "react";
-import { Redirect, useParams } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import { HOME_PAGE } from "../../constants/Routes";
@@ -9,25 +9,20 @@ import AuthContext from "../../contexts/AuthContext";
 import { AuthenticatedUser } from "../../types/AuthTypes";
 
 export type SetPasswordProps = {
-  mode: string;
   oobCode: string;
   apiKey: string;
 };
 
 const SetPassword = ({
-  mode,
   oobCode,
   apiKey,
 }: SetPasswordProps): React.ReactElement => {
   const config = { apiKey };
 
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
-  const [currentPassword, setCurrentPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [firebaseAuth, setFiresebaseAuth] = useState(
-    getAuth(initializeApp(config)),
-  );
-  const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [firebaseAuth] = useState(getAuth(initializeApp(config)));
   const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
@@ -35,30 +30,32 @@ const SetPassword = ({
     async function verifyPasswordCode() {
       verifyPasswordResetCode(firebaseAuth, oobCode)
         .then((email) => {
-          setIsCodeVerified(true);
           setUserEmail(email);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          return null; // TODO: Show error on the screen
         });
     }
     verifyPasswordCode();
   }, [firebaseAuth, oobCode]);
 
   const onSetPasswordClick = async () => {
-    const user: AuthenticatedUser = await authAPIClient.setPassword(
-      userEmail,
-      newPassword,
-      firebaseAuth,
-      oobCode,
-    );
-    setAuthenticatedUser(user);
+    if (newPassword !== confirmNewPassword) {
+      // TODO: handle user fields verification
+    } else {
+      const user: AuthenticatedUser = await authAPIClient.setPassword(
+        userEmail,
+        newPassword,
+        firebaseAuth,
+        oobCode,
+      );
+      setAuthenticatedUser(user);
+    }
   };
 
-  /* 
   if (authenticatedUser) {
     return <Redirect to={HOME_PAGE} />;
-  } */
+  }
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -67,17 +64,17 @@ const SetPassword = ({
         <div>
           <input
             type="text"
-            value={currentPassword}
-            onChange={(event) => setCurrentPassword(event.target.value)}
-            placeholder="Current Password"
+            value={newPassword}
+            onChange={(event) => setNewPassword(event.target.value)}
+            placeholder="New Password"
           />
         </div>
         <div>
           <input
             type="text"
-            value={newPassword}
-            onChange={(event) => setNewPassword(event.target.value)}
-            placeholder="New Password"
+            value={confirmNewPassword}
+            onChange={(event) => setConfirmNewPassword(event.target.value)}
+            placeholder="Confirm Password"
           />
         </div>
         <div>

@@ -11,14 +11,12 @@ const Signup = (): React.ReactElement => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const onSignupClick = async () => {
     const user: AuthenticatedUser = await authAPIClient.register(
       firstName,
       lastName,
       email,
-      password,
     );
     setAuthenticatedUser(user);
   };
@@ -53,14 +51,6 @@ const Signup = (): React.ReactElement => {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder="username@domain.com"
-          />
-        </div>
-        <div>
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            placeholder="password"
           />
         </div>
         <div>

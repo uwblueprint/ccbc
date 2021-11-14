@@ -61,14 +61,15 @@ const register = async (
   firstName: string,
   lastName: string,
   email: string,
-  password: string,
 ): Promise<AuthenticatedUser> => {
   try {
+    console.log("Trying to register user");
     const { data } = await baseAPIClient.post(
       "/auth/register",
-      { firstName, lastName, email, password },
+      { firstName, lastName, email },
       { withCredentials: true },
     );
+    console.log(data);
     localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
     return data;
   } catch (error) {
@@ -84,11 +85,9 @@ const setPassword = async (
 ): Promise<AuthenticatedUser> => {
   try {
     await confirmPasswordReset(firebaseAuth, oobCode, newPassword);
-    console.log("USER ABLE TO REST PASSWORD");
     const authenticatedUser = await login(email, newPassword);
     return authenticatedUser;
   } catch (error) {
-    console.log(error);
     return null;
   }
 };

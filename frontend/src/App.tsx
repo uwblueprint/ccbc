@@ -80,11 +80,10 @@ const App = (): React.ReactElement => {
                   component={AdminDashboard}
                   requiredRoles={[UserRole.Admin]}
                 />
-                <PrivateRoute
+                <Route
                   exact={false}
                   path={Routes.AUTH_ACTIONS}
                   component={AuthActions}
-                  requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
                 />
                 <PrivateRoute
                   exact
