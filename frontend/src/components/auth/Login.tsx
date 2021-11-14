@@ -42,7 +42,12 @@ const Login = (): React.ReactElement => {
   }
 
   return (
-    <Grid w="100vw" h="100vh" templateColumns="repeat(2, 1fr)">
+    <Grid
+      overflow="hidden"
+      w="100vw"
+      h="100vh"
+      templateColumns="repeat(2, 1fr)"
+    >
       <GridItem bg="papayawhip">
         <Stack>
           <Image
@@ -93,13 +98,7 @@ const Login = (): React.ReactElement => {
                 </FormHelperText>
               ) : null}
             </Box>
-            <Button
-              type="submit"
-              w="100%"
-              colorScheme="teal"
-              size="md"
-              onClick={onLogInClick}
-            >
+            <Button variant="submit" type="submit" onClick={onLogInClick}>
               Log in
             </Button>
           </FormControl>

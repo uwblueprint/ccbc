@@ -6,6 +6,7 @@ import IUserService from "../interfaces/userService";
 import { AuthDTO, Role, Token, UserDTO } from "../../types";
 import FirebaseRestClient from "../../utilities/firebaseRestClient";
 import logger from "../../utilities/logger";
+import { getErrorMessage } from "../../utilities/errorResponse";
 
 const Logger = logger(__filename);
 
@@ -79,12 +80,12 @@ class AuthService implements IAuthService {
       const authId = await this.userService.getAuthIdById(userId);
 
       await firebaseAdmin.auth().revokeRefreshTokens(authId);
-    } catch (error) {
+    } catch (error: unknown) {
       const errorMessage = [
         "Failed to revoke refresh tokens of user with id",
         `${userId}.`,
         "Reason =",
-        error.message,
+        getErrorMessage(error),
       ];
       Logger.error(errorMessage.join(" "));
 
