@@ -63,13 +63,11 @@ const register = async (
   email: string,
 ): Promise<AuthenticatedUser> => {
   try {
-    console.log("Trying to register user");
     const { data } = await baseAPIClient.post(
       "/auth/register",
       { firstName, lastName, email },
       { withCredentials: true },
     );
-    console.log(data);
     localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
     return data;
   } catch (error) {
