@@ -3,7 +3,7 @@ import { Sequelize, SequelizeOptions } from "sequelize-typescript";
 import { dbURL, SQLOptions } from "../utilities/dbUtils";
 
 const sequelizeOptions: SequelizeOptions = SQLOptions(
-  [resolve(__dirname, "../models/*.model.ts")],
+  [resolve(__dirname, "../models/*.model.{ts,js}")],
   true,
 );
 
