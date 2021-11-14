@@ -115,9 +115,9 @@ class AuthService implements IAuthService {
         .auth()
         .generatePasswordResetLink(email);
 
-      // first-time determines if we are setting a new account password 
+      // first-time determines if we are setting a new account password
       // (account will be verified) or reseting an old account's password
-      const resetPasswordLink = resetLink.concat("&first-time=false"); 
+      const resetPasswordLink = resetLink.concat("&first-time=false");
 
       const emailBody = `
       Hello,
@@ -166,11 +166,7 @@ class AuthService implements IAuthService {
     }
   }
 
-  async sendPasswordSetupLink(
-    email: string,
-    password: string,
-    user: UserDTO,
-  ): Promise<void> {
+  async sendPasswordSetupLink(email: string, user: UserDTO): Promise<void> {
     if (!this.emailService) {
       const errorMessage =
         "Attempted to call sendPasswordSetupLink but this instance of AuthService does not have an EmailService instance";
@@ -179,24 +175,18 @@ class AuthService implements IAuthService {
     }
 
     try {
-
       const passwordResetLink = await firebaseAdmin
-      .auth()
-      .generatePasswordResetLink(email);
-      // first-time determines if we are setting a new account password 
+        .auth()
+        .generatePasswordResetLink(email);
+      // first-time determines if we are setting a new account password
       // (account will be verified) or reseting an old account's password
       const setPasswordLink = passwordResetLink.concat("&first-time=true");
 
       const emailBody = `
       Hello,
       <br><br>
-      You have been invited to join CCBC as a ${user.role.toLowerCase()}. Here are your account details:
-      <br>
-      Email: ${user.email}
-      <br>
-      Password: ${password}
-      <br><br>
-      Please use the link below to set your new password and verify your account. The link expires in 1 hour.
+      You have been invited to join CCBC as a ${user.role.toLowerCase()}. Please use the link 
+      below to set your new password and verify your account. The link expires in 1 hour.
       <br><br>
       <a href=${setPasswordLink}>Set password and verify account</a>
       `;
