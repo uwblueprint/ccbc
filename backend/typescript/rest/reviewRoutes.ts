@@ -1,22 +1,25 @@
-import { Router } from "express";
+import { Router, json } from "express";
 import ReviewService from "../services/implementations/ReviewService";
-import { IReviewService } from "../services/interfaces/IReviewService";
+import {
+  IReviewService,
+  Tag,
+  Book,
+} from "../services/interfaces/IReviewService";
 
 const reviewRouter: Router = Router();
 const reviewService: IReviewService = new ReviewService();
 
 reviewRouter.post("/", async (req, res) => {
   try {
-    const body = JSON.parse(req.body.body);
     const newReview = await reviewService.createReview({
-      body: body.body,
-      coverImages: body.coverImages,
-      byline: body.byline,
-      featured: body.featured,
-      createdBy: body.createdBy,
-      books: body.books,
-      tags: body.tags,
-      publishedAt: body.publishedAt,
+      body: req.body.body,
+      coverImages: req.body.coverImages,
+      byline: req.body.byline,
+      featured: req.body.featured,
+      createdBy: req.body.createdBy,
+      books: req.body.books as Book[],
+      tags: req.body.tags as Tag[],
+      publishedAt: req.body.publishedAt,
     });
     res.status(201).json(newReview);
   } catch (e) {
