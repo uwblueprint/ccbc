@@ -23,6 +23,6 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_UW_BLUEPRINT_STARTER_CODE }}"
-          projectId: uw-blueprint-starter-code
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CCBC_95E66 }}"
+          projectId: ccbc-95e66
           entryPoint: ./frontend
