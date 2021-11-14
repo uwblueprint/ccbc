@@ -23,6 +23,7 @@ export interface Format {
 
 export interface Book {
   title: string;
+  titlePrefix?: string;
   seriesOrder?: string;
   illustrator?: string[];
   translator?: string[];
