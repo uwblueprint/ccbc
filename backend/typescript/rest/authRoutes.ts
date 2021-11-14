@@ -55,8 +55,6 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
     ],
   });
 
-  console.log("HELLO FROM BACKEND");
-
   let createdUser = null;
 
   try {

@@ -192,7 +192,7 @@ class AuthService implements IAuthService {
       <a href=${setPasswordLink}>Set password and verify account</a>
       `;
 
-      this.emailService.sendEmail(email, "CCBC acccount created", emailBody);
+      this.emailService.sendEmail(email, "CCBC Account Created", emailBody);
     } catch (error) {
       Logger.error(
         `Failed to send password set up link for user with email ${email}`,
