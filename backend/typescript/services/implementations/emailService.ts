@@ -9,7 +9,7 @@ const Logger = logger(__filename);
 class EmailService implements IEmailService {
   transporter: Transporter;
 
-  sender: string;
+  sender?: string;
 
   constructor(nodemailerConfig: NodemailerConfig, displayName?: string) {
     this.transporter = nodemailer.createTransport(nodemailerConfig);

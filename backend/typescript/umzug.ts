@@ -1,12 +1,14 @@
 import * as path from "path";
-
 import { Umzug, SequelizeStorage } from "umzug";
-import { Sequelize } from "sequelize-typescript";
+import { Sequelize, SequelizeOptions } from "sequelize-typescript";
+import { dbURL, SQLOptions } from "./utilities/dbUtils";
 
-const sequelize = new Sequelize(
-  `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.DB_HOST}:5432/${process.env.POSTGRES_DB}`,
-  { models: [path.join(__dirname, "/*.pgmodel.ts")] },
+const sequelizeOptions: SequelizeOptions = SQLOptions(
+  [path.join(__dirname, "/*.pgmodel.{ts,js}")],
+  false,
 );
+
+const sequelize = new Sequelize(dbURL, sequelizeOptions);
 
 export const migrator = new Umzug({
   migrations: {

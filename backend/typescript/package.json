@@ -4,6 +4,9 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
+    "start": "node build/server.js",
+    "build": "tsc",
+    "postinstall": "if [ $PROJECT_PATH ]; then yarn run build; fi",
     "test": "jest --runInBand --forceExit --detectOpenHandles",
     "dev": "nodemon -L",
     "lint": "eslint . --ext .ts,.js",

@@ -6,7 +6,6 @@
 **/*.log
 **/firebaseServiceAccount.json
 **/.DS_Store
-**/nodemailer.config.ts
 .vscode
 **/*.cache
 **/*.egg-info

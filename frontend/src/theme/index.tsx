@@ -7,11 +7,23 @@ const customTheme = extendTheme({
   textStyles: {
     heading: {
       fontFamily: "Coustard",
-      fontSize: "2.4vw",
+      fontSize: "2vw",
     },
     body: {
       fontFamily: "Open Sans",
-      fontSize: "1.2vw",
+      fontSize: "1vw",
+    },
+  },
+  components: {
+    Button: {
+      variants: {
+        submit: {
+          width: "100%",
+          bg: "teal.500",
+          color: "white",
+          size: "md",
+        },
+      },
     },
   },
   config: {
