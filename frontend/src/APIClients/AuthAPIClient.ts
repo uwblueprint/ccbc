@@ -1,3 +1,5 @@
+import { Auth, confirmPasswordReset } from "firebase/auth";
+
 import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
 import { AuthenticatedUser } from "../types/AuthTypes";
 import {
@@ -59,16 +61,30 @@ const register = async (
   firstName: string,
   lastName: string,
   email: string,
-  password: string,
 ): Promise<AuthenticatedUser> => {
   try {
     const { data } = await baseAPIClient.post(
       "/auth/register",
-      { firstName, lastName, email, password },
+      { firstName, lastName, email },
       { withCredentials: true },
     );
     localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
     return data;
+  } catch (error) {
+    return null;
+  }
+};
+
+const setPassword = async (
+  email: string,
+  newPassword: string,
+  firebaseAuth: Auth,
+  oobCode: string,
+): Promise<AuthenticatedUser> => {
+  try {
+    await confirmPasswordReset(firebaseAuth, oobCode, newPassword);
+    const authenticatedUser = await login(email, newPassword);
+    return authenticatedUser;
   } catch (error) {
     return null;
   }
@@ -117,4 +133,5 @@ export default {
   register,
   resetPassword,
   refresh,
+  setPassword,
 };

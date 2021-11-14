@@ -76,12 +76,7 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
 
     // Send email with login details and ask to change password
     // once they change the password, admin should be verified
-    // TODO: change this in part 2 of the ticket @Dhruv
-    await authService.sendPasswordSetupLink(
-      req.body.email,
-      randomPassword,
-      createdUser,
-    );
+    await authService.sendPasswordSetupLink(req.body.email, createdUser);
 
     res
       .cookie("refreshToken", refreshToken, {
