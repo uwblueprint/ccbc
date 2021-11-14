@@ -19,7 +19,7 @@ export const SQLOptions = (
           },
         },
         models: modelPath,
-        logging: testdb ? false : console.log,
+        ...(testdb && { logging: false }), // https://stackoverflow.com/questions/11704267/in-javascript-how-to-conditionally-add-a-member-to-an-object
       }
     : {
         models: modelPath,
