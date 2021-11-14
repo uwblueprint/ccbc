@@ -23,6 +23,6 @@ export const SQLOptions = (
       }
     : {
         models: modelPath,
-        logging: testdb ? false : console.log,
+        ...(testdb && { logging: false }),
       };
 };
