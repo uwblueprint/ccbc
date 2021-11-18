@@ -148,7 +148,7 @@ paths:
           schema:
             # type: integer (postgres)
             # minimum: 1
-            type: integer
+            type: string
           description: The user ID
       tags:
         - Auth
@@ -194,7 +194,7 @@ paths:
           schema:
             # type: integer (postgres)
             # minimum: 1
-            type: integer
+            type: string
           description: The user ID
         - in: query
           name: email
@@ -217,7 +217,7 @@ paths:
                       - id, authId, firstName, lastName, email, roleType, active
                   properties:
                     id:
-                      type: integer
+                      type: string
                     authId:
                       type: string
                     firstName:
@@ -304,7 +304,7 @@ paths:
           schema:
             # type: integer (postgres)
             # minimum: 1
-            type: integer
+            type: string
           description: The user ID
         - in: query
           name: email
@@ -370,7 +370,7 @@ paths:
                     - id, authId, firstName, lastName, email, roleType, active
                 properties:
                   id:
-                    type: integer
+                    type: string
                   authId:
                     type: string
                   firstName:

@@ -52,8 +52,8 @@ userRouter.get("/", async (req, res) => {
   }
 
   if (id) {
-    if (typeof id !== "number" || !Number.isInteger(id)) {
-      res.status(400).json({ error: "id query parameter must be an integer." });
+    if (typeof id !== "string") {
+      res.status(400).json({ error: "id query parameter must be a string." });
     } else {
       try {
         const user = await userService.getUserById(id);
@@ -127,8 +127,8 @@ userRouter.delete("/", async (req, res) => {
   }
 
   if (id) {
-    if (typeof id !== "number" || !Number.isInteger(id)) {
-      res.status(400).json({ error: "id query parameter must be an integer." });
+    if (typeof id !== "string") {
+      res.status(400).json({ error: "id query parameter must be a string." });
     } else {
       try {
         await userService.deleteUserById(id);
