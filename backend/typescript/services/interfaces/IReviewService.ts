@@ -32,7 +32,7 @@ export interface Book {
   maxAge: number;
   authors: Author[];
   publishers: Publisher[];
-  seriesName: string;
+  seriesName?: string;
 }
 
 export interface Tag {
@@ -73,4 +73,5 @@ export interface IReviewService {
    */
 
   createReview(entity: ReviewRequestDTO): Promise<ReviewResponseDTO>;
+  getReview(id: string): Promise<ReviewResponseDTO>;
 }

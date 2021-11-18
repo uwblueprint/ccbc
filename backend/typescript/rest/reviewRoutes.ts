@@ -5,6 +5,7 @@ import {
   Tag,
   Book,
 } from "../services/interfaces/IReviewService";
+import { sendErrorResponse } from "../utilities/errorResponse";
 
 const reviewRouter: Router = Router();
 const reviewService: IReviewService = new ReviewService();
@@ -22,8 +23,8 @@ reviewRouter.post("/", async (req, res) => {
       publishedAt: req.body.publishedAt,
     });
     res.status(201).json(newReview);
-  } catch (e) {
-    res.status(500).send(e.message);
+  } catch (e: unknown) {
+    sendErrorResponse(e, res);
   }
 });
 

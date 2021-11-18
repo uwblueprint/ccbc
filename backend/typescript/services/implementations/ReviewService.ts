@@ -14,9 +14,13 @@ import {
   Book,
   Author,
   Publisher,
+  Tag,
 } from "../interfaces/IReviewService";
 
 const Logger = logger(__filename);
+
+// Delete: can delete the book, book_author, and book_publisher
+// Get: return review - but it contains all other info
 
 class ReviewService implements IReviewService {
   db: Sequelize;
@@ -29,6 +33,85 @@ class ReviewService implements IReviewService {
         logging: false,
       },
     );
+  }
+
+  async getReview(id: string): Promise<ReviewResponseDTO> {
+    let review: PgReview | null;
+    let result: ReviewResponseDTO;
+
+    try {
+        result = await this.db.transaction(async (t) => {
+            review = await PgReview.findByPk(id, { raw: true, transaction: t });
+            if (!review) {
+                throw new Error(`Review id ${id} not found`);
+            }
+
+            let pgBooks = await review.$get("books");
+            const books: Book[] = await Promise.all(
+                pgBooks.map(async (book: PgBook) => {
+                  let series = await book.$get("series");
+      
+                  const authorsRet: Author[] = await Promise.all(
+                    book.authors.map((a: PgAuthor) => {
+                      return {
+                        fullName: a.full_name,
+                        displayName: a.display_name,
+                        attribution: a.attribution,
+                      };
+                    }),
+                  );
+      
+                  const publishersRet: Publisher[] = await Promise.all(
+                    book.publishers.map(async (p: PgPublisher) => {
+                      return {
+                        fullName: p.full_name,
+                        publishYear: p.publish_year,
+                      };
+                    }),
+                  );
+
+                  return {
+                    title: book.title,
+                    seriesOrder: book.series_order,
+                    illustrator: book.illustrator,
+                    translator: book.translator,
+                    formats: book.formats,
+                    minAge: book.age_range[0].value,
+                    maxAge: book.age_range[1].value,
+                    authors: authorsRet,
+                    publishers: publishersRet,
+                    seriesName: series?.name,
+                  };
+                }),
+              );
+
+            let pgTags = await review.$get("tags");
+            const tags: Tag[] = await Promise.all(
+                pgTags.map((t: PgTag) => {
+                  return {
+                      name: t.name
+                  };
+                }),
+              );
+
+            return {
+                reviewId: review.id,
+                body: review.body,
+                cover_images: review.cover_images,
+                byline: review.byline,
+                featured: review.featured,
+                books: books,
+                tags: tags,
+                updatedAt: review.updatedAt.getTime(),
+                publishedAt: review.published_at.getTime(),
+            };
+        });
+    } catch (error: unknown) {
+      Logger.error(`Failed to get review. Reason = ${error}`);
+      throw error;
+    }
+
+    return result;
   }
 
   /* eslint-disable class-methods-use-this */
@@ -153,8 +236,8 @@ class ReviewService implements IReviewService {
           publishedAt: newReview.published_at.getTime(),
         };
       });
-    } catch (error) {
-      Logger.error(`Failed to create entity. Reason = ${error.message}`);
+    } catch (error: unknown) {
+      Logger.error(`Failed to create entity. Reason = ${error}`);
       throw error;
     }
 
