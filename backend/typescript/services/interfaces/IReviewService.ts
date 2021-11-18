@@ -32,10 +32,10 @@ export interface Book {
   maxAge: number;
   authors: Author[];
   publishers: Publisher[];
-  seriesName: string;
+  seriesName?: string;
 }
 
-interface Tag {
+export interface Tag {
   name: string;
 }
 
@@ -72,6 +72,6 @@ export interface IReviewService {
    * @throws Error if creation fails
    */
 
-  createEntity(entity: ReviewRequestDTO): Promise<ReviewResponseDTO>;
-  getEntity(id: string): Promise<ReviewResponseDTO>;
+  createReview(entity: ReviewRequestDTO): Promise<ReviewResponseDTO>;
+  getReview(id: string): Promise<ReviewResponseDTO>;
 }
