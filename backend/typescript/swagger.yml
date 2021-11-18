@@ -336,7 +336,7 @@ paths:
           schema:
             # type: integer (postgres)
             # minimum: 1
-            type: integer
+            type: string
           description: The user ID
       tags:
         - User
