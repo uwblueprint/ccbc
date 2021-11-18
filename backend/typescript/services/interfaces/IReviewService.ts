@@ -35,7 +35,7 @@ export interface Book {
   seriesName: string;
 }
 
-interface Tag {
+export interface Tag {
   name: string;
 }
 
