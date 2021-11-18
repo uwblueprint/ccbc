@@ -6,7 +6,7 @@ name: Deploy to Firebase Hosting on merge to main
 on:
   push:
     branches:
-      - main
+      - development
     paths:
       - "frontend/**"
 
@@ -24,7 +24,7 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_UW_BLUEPRINT_STARTER_CODE }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CCBC_95E66 }}"
           channelId: live
-          projectId: uw-blueprint-starter-code
+          projectId: ccbc-95e66
           entryPoint: ./frontend

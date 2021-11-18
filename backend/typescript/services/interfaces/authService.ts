@@ -58,11 +58,7 @@ interface IAuthService {
    * @param password the temporary random password assigned to that user
    * @param user the UserDTO that has user information
    */
-  sendPasswordSetupLink(
-    email: string,
-    password: string,
-    user: UserDTO,
-  ): Promise<void>;
+  sendPasswordSetupLink(email: string, user: UserDTO): Promise<void>;
 
   /**
    * Determine if the provided access token is valid and authorized for at least

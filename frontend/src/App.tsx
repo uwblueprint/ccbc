@@ -4,6 +4,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import React, { useReducer, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
+import AuthActions from "./components/auth/AuthActions";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/auth/routes/PrivateRoute";
 import Signup from "./components/auth/Signup";
@@ -78,6 +79,11 @@ const App = (): React.ReactElement => {
                   path={Routes.ADMIN_DASHBOARD_PAGE}
                   component={AdminDashboard}
                   requiredRoles={[UserRole.Admin]}
+                />
+                <Route
+                  exact={false}
+                  path={Routes.AUTH_ACTIONS}
+                  component={AuthActions}
                 />
                 <PrivateRoute
                   exact

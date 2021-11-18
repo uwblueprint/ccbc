@@ -13,7 +13,10 @@ import reviewRouter from "./rest/reviewRoutes";
 import userRouter from "./rest/userRoutes";
 import ReviewService from "./services/implementations/ReviewService";
 
-const CORS_ALLOW_LIST = ["http://localhost:3000"];
+const clientHost = new RegExp(
+  "https://ccbc-95e66(--([A-Za-z0-9-])+-[A-Za-z0-9]+)?.web.app",
+);
+const CORS_ALLOW_LIST = ["http://localhost:3000", clientHost];
 
 const CORS_OPTIONS: cors.CorsOptions = {
   origin: CORS_ALLOW_LIST,
@@ -41,9 +44,10 @@ firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.applicationDefault(),
 });
 
-app.listen({ port: 5000 }, () => {
+const PORT = process.env.PORT || 5000;
+app.listen({ port: PORT }, () => {
   /* eslint-disable-next-line no-console */
-  console.info("Server is listening on port 5000!");
+  console.info(`Server is listening on port ${PORT}!`);
 });
 
 // TODO: this is for testing only
