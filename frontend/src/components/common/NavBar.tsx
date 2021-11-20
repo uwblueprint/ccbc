@@ -11,24 +11,9 @@ const NavBar = (): React.ReactElement => {
   const isAdmin = authenticatedUser?.role === UserRole.Admin;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        height: "calc(96px - 32px)",
-        width: "calc(100vw - 160px)",
-        backgroundColor: "#2D5577",
-        alignItems: "center",
-        padding: "16px 80px",
-        position: "absolute",
-        justifyContent: "space-between",
-        top: 0,
-      }}
-    >
-      <div
-        style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
-      >
-        <Link to="/app/home">
+    <div variant="default"> 
+      <div style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+        <Link to="/">
           <img
             src={logo}
             alt="CCBC Logo"
@@ -40,9 +25,11 @@ const NavBar = (): React.ReactElement => {
           />
         </Link>
         <h4 style={{ color: "#fff", margin: "30px" }}>Home</h4>
+        <Link to="/dashboard"></Link>
         {isAdmin && (
           <h4 style={{ color: "#fff", margin: "30px" }}>Admin Dashboard</h4>
         )}
+        </Link>
       </div>
       <div>
         <HiUser style={{ color: "#fff", height: "40px", width: "40px" }} />
