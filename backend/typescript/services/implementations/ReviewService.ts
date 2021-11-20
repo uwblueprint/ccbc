@@ -16,6 +16,7 @@ import {
   Publisher,
   Tag,
 } from "../interfaces/IReviewService";
+import BookAuthor from "../../models/book_author.model";
 
 const Logger = logger(__filename);
 
@@ -41,15 +42,20 @@ class ReviewService implements IReviewService {
 
     try {
       result = await this.db.transaction(async (t) => {
-        review = await PgReview.findByPk(id, { raw: true, transaction: t });
+        review = await PgReview.findByPk(id, {
+          raw: true,
+          transaction: t,
+          include: [PgBook, PgTag],
+        });
+
         if (!review) {
           throw new Error(`Review id ${id} not found`);
         }
 
-        const pgBooks = await review.$get("books");
+        // const pgBooks = await review.$get("books");
         const books: Book[] = await Promise.all(
-          pgBooks.map(async (book: PgBook) => {
-            const series = await book.$get("series");
+          review.books.map(async (book: PgBook) => {
+            // const series = await book.$get("series");
 
             const authorsRet: Author[] = await Promise.all(
               book.authors.map((a: PgAuthor) => {
@@ -80,16 +86,16 @@ class ReviewService implements IReviewService {
               maxAge: book.age_range[1].value,
               authors: authorsRet,
               publishers: publishersRet,
-              seriesName: series?.name,
+              seriesName: "placeholder",
             };
           }),
         );
 
-        const pgTags = await review.$get("tags");
+        // const pgTags = await review.$get("tags");
         const tags: Tag[] = await Promise.all(
-          pgTags.map((t: PgTag) => {
+          review.tags.map((tag: PgTag) => {
             return {
-              name: t.name,
+              name: tag.name,
             };
           }),
         );
@@ -116,17 +122,12 @@ class ReviewService implements IReviewService {
 
   /* eslint-disable class-methods-use-this */
   async createReview(review: ReviewRequestDTO): Promise<ReviewResponseDTO> {
-    let newReview: PgReview;
-    let newBook: PgBook;
-    let tag: PgTag;
-    let series: PgSeries;
-    let author: PgAuthor;
     let publisher: PgPublisher;
     let result: ReviewResponseDTO;
 
     try {
       result = await this.db.transaction(async (t) => {
-        newReview = await PgReview.create(
+        const newReview = await PgReview.create(
           {
             body: review.body,
             cover_images: review.coverImages,
@@ -141,7 +142,7 @@ class ReviewService implements IReviewService {
 
         const tagsRet: PgTag[] = await Promise.all(
           review.tags.map(async (reviewTag) => {
-            tag = await PgTag.findOrCreate({
+            const tag = await PgTag.findOrCreate({
               where: { name: reviewTag.name },
               transaction: t,
             }).then((data) => data[0]);
@@ -152,12 +153,12 @@ class ReviewService implements IReviewService {
 
         const booksRet: Book[] = await Promise.all(
           review.books.map(async (book: Book) => {
-            series = await PgSeries.findOrCreate({
+            const series = await PgSeries.findOrCreate({
               where: { name: book.seriesName },
               transaction: t,
             }).then((data) => data[0]);
 
-            newBook = await PgBook.create(
+            const newBook = await PgBook.create(
               {
                 review_id: newReview.id,
                 title_prefix: book.titlePrefix,
@@ -174,7 +175,7 @@ class ReviewService implements IReviewService {
 
             const authorsRet: Author[] = await Promise.all(
               book.authors.map(async (a) => {
-                author = await PgAuthor.findOrCreate({
+                const author = await PgAuthor.findOrCreate({
                   where: {
                     full_name: a.fullName,
                     display_name: a.displayName || null,
@@ -183,6 +184,7 @@ class ReviewService implements IReviewService {
                   transaction: t,
                 }).then((data) => data[0]);
                 newBook.$add("authors", author, { transaction: t });
+
                 return {
                   fullName: author.full_name,
                   displayName: author.display_name,
