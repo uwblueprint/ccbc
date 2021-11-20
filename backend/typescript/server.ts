@@ -56,7 +56,7 @@ console.log(reviewService.getReview("1"));
 
 // reviewService.createReview(
 //   {
-//       body: "review1",
+//       body: "review2",
 //       coverImages: ["cover1"],
 //       byline: "byline1",
 //       featured: true,
@@ -86,8 +86,32 @@ console.log(reviewService.getReview("1"));
 //           ],
 //           seriesName: "seriesName",
 //         },
+//         {
+//             title: "title2",
+//             titlePrefix: "titlePrefix2",
+//             seriesOrder: "1",
+//             illustrator: ["illustrator2"],
+//             translator: ["translator2"],
+//             formats: [
+//               {
+//                 format: "format2",
+//                 price: "$15.0",
+//                 isbn: "1234-5678-931",
+//               },
+//             ],
+//             minAge: 3,
+//             maxAge: 18,
+//             authors: [{ fullName: "author2" }],
+//             publishers: [
+//               {
+//                 fullName: "publisher",
+//                 publishYear: 2002,
+//               },
+//             ],
+//             seriesName: "seriesName",
+//           },
 //       ],
-//       tags: [{ name: "tag1" }],
+//       tags: [{ name: "tag2" }],
 //       createdBy: 1,
 //     }
 // );
