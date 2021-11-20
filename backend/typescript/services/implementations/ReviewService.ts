@@ -53,7 +53,7 @@ class ReviewService implements IReviewService {
         // const pgBooks = await review.$get("books");
         const books: Book[] = await Promise.all(
           review.books.map(async (book: PgBook) => {
-            // const series = await book.$get("series");
+            const series = await book.$get("series");
 
             const authorsRet: Author[] = await Promise.all(
               book.authors.map((a: PgAuthor) => {
@@ -84,7 +84,7 @@ class ReviewService implements IReviewService {
               maxAge: book.age_range[1].value,
               authors: authorsRet,
               publishers: publishersRet,
-              seriesName: "placeholder",
+              seriesName: series?.name,
             };
           }),
         );
