@@ -6,11 +6,12 @@ import {
   Book,
 } from "../services/interfaces/IReviewService";
 import { sendErrorResponse } from "../utilities/errorResponse";
+import reviewRequestDtoValidator from "../middlewares/validators/reviewValidators";
 
 const reviewRouter: Router = Router();
 const reviewService: IReviewService = new ReviewService();
 
-reviewRouter.post("/", async (req, res) => {
+reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
   try {
     const newReview = await reviewService.createReview({
       body: req.body.body,
