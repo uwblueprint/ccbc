@@ -5,66 +5,69 @@ import * as t from "ts-interface-checker";
 // tslint:disable:object-literal-key-quotes
 
 export const Author = t.iface([], {
-  "fullName": "string",
-  "displayName": t.opt("string"),
-  "attribution": t.opt("string"),
+  fullName: "string",
+  displayName: t.opt("string"),
+  attribution: t.opt("string"),
 });
 
 export const Publisher = t.iface([], {
-  "fullName": "string",
-  "publishYear": "number",
+  fullName: "string",
+  publishYear: "number",
 });
 
 export const Format = t.iface([], {
-  "format": "string",
-  "price": "string",
-  "isbn": "string",
+  format: "string",
+  price: "string",
+  isbn: "string",
 });
 
 export const Book = t.iface([], {
-  "title": "string",
-  "titlePrefix": t.opt("string"),
-  "seriesOrder": t.opt("string"),
-  "illustrator": t.opt(t.array("string")),
-  "translator": t.opt(t.array("string")),
-  "formats": t.array("Format"),
-  "minAge": "number",
-  "maxAge": "number",
-  "authors": t.array("Author"),
-  "publishers": t.array("Publisher"),
-  "seriesName": t.opt("string"),
+  title: "string",
+  titlePrefix: t.opt("string"),
+  seriesOrder: t.opt("string"),
+  illustrator: t.opt(t.array("string")),
+  translator: t.opt(t.array("string")),
+  formats: t.array("Format"),
+  minAge: "number",
+  maxAge: "number",
+  authors: t.array("Author"),
+  publishers: t.array("Publisher"),
+  seriesName: t.opt("string"),
 });
 
 export const Tag = t.iface([], {
-  "name": "string",
+  name: "string",
 });
 
 export const ReviewRequestDTO = t.iface([], {
-  "body": "string",
-  "coverImages": t.array("string"),
-  "byline": "string",
-  "featured": "boolean",
-  "createdBy": "number",
-  "publishedAt": t.opt("number"),
-  "books": t.array("Book"),
-  "tags": t.array("Tag"),
+  body: "string",
+  coverImages: t.array("string"),
+  byline: "string",
+  featured: "boolean",
+  createdBy: "number",
+  publishedAt: t.opt("number"),
+  books: t.array("Book"),
+  tags: t.array("Tag"),
 });
 
 export const ReviewResponseDTO = t.iface([], {
-  "reviewId": "number",
-  "body": "string",
-  "cover_images": t.array("string"),
-  "byline": "string",
-  "featured": "boolean",
-  "books": t.array("Book"),
-  "tags": t.array("Tag"),
-  "updatedAt": "number",
-  "publishedAt": "number",
+  reviewId: "number",
+  body: "string",
+  cover_images: t.array("string"),
+  byline: "string",
+  featured: "boolean",
+  books: t.array("Book"),
+  tags: t.array("Tag"),
+  updatedAt: "number",
+  publishedAt: "number",
 });
 
 export const IReviewService = t.iface([], {
-  "createReview": t.func("ReviewResponseDTO", t.param("entity", "ReviewRequestDTO")),
-  "getReview": t.func("ReviewResponseDTO", t.param("id", "string")),
+  createReview: t.func(
+    "ReviewResponseDTO",
+    t.param("entity", "ReviewRequestDTO"),
+  ),
+  getReview: t.func("ReviewResponseDTO", t.param("id", "string")),
 });
 
 const exportedTypeSuite: t.ITypeSuite = {
