@@ -30,13 +30,13 @@ reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
 });
 
 reviewRouter.get("/:id", async (req, res) => {
-    const { id } = req.params;
-    try {
-      const review = await reviewService.getReview(id);
-      res.status(200).json(review);
-    } catch (e: unknown) {
-      sendErrorResponse(e, res);
-    }
-  });
+  const { id } = req.params;
+  try {
+    const review = await reviewService.getReview(id);
+    res.status(200).json(review);
+  } catch (e: unknown) {
+    sendErrorResponse(e, res);
+  }
+});
 
 export default reviewRouter;
