@@ -16,7 +16,6 @@ import {
   Publisher,
   Tag,
 } from "../interfaces/IReviewService";
-import BookAuthor from "../../models/book_author.model";
 
 const Logger = logger(__filename);
 
