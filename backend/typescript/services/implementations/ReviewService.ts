@@ -43,9 +43,8 @@ class ReviewService implements IReviewService {
     try {
       result = await this.db.transaction(async (t) => {
         review = await PgReview.findByPk(id, {
-          raw: true,
           transaction: t,
-          include: [PgBook, PgTag],
+          include: [{ all: true, nested: true }],
         });
 
         if (!review) {
