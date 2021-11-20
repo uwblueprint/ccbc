@@ -1,4 +1,4 @@
-import { Router, json } from "express";
+import { Router } from "express";
 import ReviewService from "../services/implementations/ReviewService";
 import {
   IReviewService,
