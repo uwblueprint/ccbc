@@ -4,11 +4,6 @@
 import * as t from "ts-interface-checker";
 // tslint:disable:object-literal-key-quotes
 
-export const Range = t.iface(["RangeDataType"], {
-  "value": "number",
-  "inclusive": "boolean",
-});
-
 export const Author = t.iface([], {
   "fullName": "string",
   "displayName": t.opt("string"),
@@ -73,7 +68,6 @@ export const IReviewService = t.iface([], {
 });
 
 const exportedTypeSuite: t.ITypeSuite = {
-  Range,
   Author,
   Publisher,
   Format,
