@@ -1,9 +1,3 @@
-import { RangeDataType, IntegerDataType } from "sequelize/types";
-
-export interface Range extends RangeDataType<IntegerDataType> {
-  value: number;
-  inclusive: boolean;
-}
 export interface Author {
   fullName: string;
   displayName?: string;
