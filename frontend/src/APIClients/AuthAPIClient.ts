@@ -1,6 +1,6 @@
-import { Auth, confirmPasswordReset } from "firebase/auth";
+import { User } from "firebase/auth";
 
-import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
+import { AUTHENTICATED_USER_KEY } from "../constants/AuthConstants";
 import { AuthenticatedUser } from "../types/AuthTypes";
 import {
   getLocalStorageObjProperty,
@@ -75,21 +75,6 @@ const register = async (
   }
 };
 
-const setPassword = async (
-  email: string,
-  newPassword: string,
-  firebaseAuth: Auth,
-  oobCode: string,
-): Promise<AuthenticatedUser> => {
-  try {
-    await confirmPasswordReset(firebaseAuth, oobCode, newPassword);
-    const authenticatedUser = await login(email, newPassword);
-    return authenticatedUser;
-  } catch (error) {
-    return null;
-  }
-};
-
 const resetPassword = async (email: string | undefined): Promise<boolean> => {
   const bearerToken = `Bearer ${getLocalStorageObjProperty(
     AUTHENTICATED_USER_KEY,
@@ -126,6 +111,20 @@ const refresh = async (): Promise<boolean> => {
   }
 };
 
+/**
+ * Retrieve the firebase user given a user id
+ * @param uid user's id
+ * @returns User: a firebase user instance
+ * @throws error if could not retrieve user by uid
+ */
+const getFirebaseUserByUid = async (uid: string): Promise<User> => {
+  console.log(`FROM AUTHAPICLIENT: ${uid}`);
+  const { data } = await baseAPIClient.get(`/auth/${uid}`, {
+    withCredentials: true,
+  });
+  return data;
+};
+
 export default {
   login,
   logout,
@@ -133,5 +132,5 @@ export default {
   register,
   resetPassword,
   refresh,
-  setPassword,
+  getFirebaseUserByUid,
 };

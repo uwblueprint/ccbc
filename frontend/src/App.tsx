@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { ChakraProvider } from "@chakra-ui/react";
+import { initializeApp } from "firebase/app";
 import React, { useReducer, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
@@ -14,7 +15,7 @@ import MagazineReview from "./components/pages/MagazineReview";
 import NotFound from "./components/pages/NotFound";
 import Profile from "./components/pages/Profile";
 import Unauthorized from "./components/pages/UnauthorizedPage";
-import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
+import { AUTHENTICATED_USER_KEY } from "./constants/AuthConstants";
 import { UserRole } from "./constants/Enums";
 import * as Routes from "./constants/Routes";
 import AuthContext from "./contexts/AuthContext";

@@ -1,43 +1,37 @@
 import React from "react";
 import { Redirect, useLocation } from "react-router-dom";
 
+import {
+  RECOVER_EMAIL_MODE,
+  RESET_PASSWORD_MODE,
+  SETUP_PASSWORD_MODE,
+} from "../../constants/AuthConstants";
 import { HOME_PAGE } from "../../constants/Routes";
-import { SetPassword, SetPasswordProps } from "./SetPassword";
+import { SetPassword } from "./SetPassword";
 
 const AuthActions = (): React.ReactElement => {
   const { search } = useLocation();
 
   const searchParams = new URLSearchParams(search);
   const mode = searchParams.get("mode");
-  const oobCode = searchParams.get("oobCode");
-  const apiKey = searchParams.get("apiKey");
-  const firstTime = searchParams.get("first-time");
+  const uid = searchParams.get("uid");
 
-  if (oobCode === null || apiKey === null || mode === null) {
-    // Checking that we have necessary fields from url
+  if (mode === null) {
+    // Checking that we have a mode
     return <Redirect to={HOME_PAGE} />;
   }
-
-  const passwordResetProps: SetPasswordProps = { oobCode, apiKey };
 
   return (
     <div>
       {(() => {
         switch (mode) {
-          case "resetPassword":
-            if (firstTime === "true") {
-              return (
-                <SetPassword
-                  oobCode={passwordResetProps.oobCode}
-                  apiKey={passwordResetProps.apiKey}
-                />
-              );
-            }
+          case SETUP_PASSWORD_MODE:
+            if (uid === null) return <Redirect to={HOME_PAGE} />;
+            return <SetPassword uid={uid} />;
+          case RESET_PASSWORD_MODE:
             return <div> RESET PASSWORD </div>; // TODO: replace this with relevant component when completed
-          case "recoverEmail":
+          case RECOVER_EMAIL_MODE:
             return <div> RECOVER EMAIL</div>; // TODO: replace this with relevant component when completed
-          case "verifyEmail":
-            return <div> VERIFY EMAIL</div>; // TODO: replace this with relevant component when completed
           default:
             return null;
         }

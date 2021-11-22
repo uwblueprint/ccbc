@@ -167,7 +167,10 @@ class AuthService implements IAuthService {
     }
   }
 
-  async sendPasswordSetupLink(email: string, user: UserDTO): Promise<void> {
+  async sendPasswordSetupLink(
+    user: UserDTO,
+    accessCode: string,
+  ): Promise<void> {
     if (!this.emailService) {
       const errorMessage =
         "Attempted to call sendPasswordSetupLink but this instance of AuthService does not have an EmailService instance";
@@ -176,26 +179,27 @@ class AuthService implements IAuthService {
     }
 
     try {
-      const passwordResetLink = await firebaseAdmin
-        .auth()
-        .generatePasswordResetLink(email);
-      // first-time determines if we are setting a new account password
-      // (account will be verified) or reseting an old account's password
-      const setPasswordLink = passwordResetLink.concat("&first-time=true");
+      const authId = await this.userService.getAuthIdById(user.id);
+
+      const setPasswordLink = `http://localhost:3000/auth/action?mode=setup-password&uid=${authId}`;
 
       const emailBody = `
       Hello,
       <br><br>
       You have been invited to join CCBC as a ${user.role.toLowerCase()}. Please use the link 
-      below to set your new password and verify your account. The link expires in 1 hour.
+      below to set your new password and verify your account. Your unique access code is ${accessCode}.
       <br><br>
       <a href=${setPasswordLink}>Set password and verify account</a>
       `;
 
-      this.emailService.sendEmail(email, "CCBC Account Created", emailBody);
+      this.emailService.sendEmail(
+        user.email,
+        "CCBC Account Created",
+        emailBody,
+      );
     } catch (error) {
       Logger.error(
-        `Failed to send password set up link for user with email ${email}`,
+        `Failed to send password set up link for user with email ${user.email}`,
       );
       throw error;
     }
@@ -264,6 +268,26 @@ class AuthService implements IAuthService {
       return false;
     }
   }
+
+  async getFirebaseUserByUid(
+    userId: string,
+  ): Promise<firebaseAdmin.auth.UserRecord> {
+    let firebaseUser: firebaseAdmin.auth.UserRecord;
+    try {
+      firebaseUser = await firebaseAdmin.auth().getUser(userId);
+      if (!firebaseUser)
+        throw new Error(`No user found with userId: ${userId}`);
+      return firebaseUser;
+    } catch (error) {
+      Logger.error(
+        `Failed to get firebase user by userId: ${userId}. Reason = ${getErrorMessage(
+          error,
+        )}`,
+      );
+      throw error;
+    }
+  }
+
 }
 
 export default AuthService;

@@ -43,9 +43,19 @@ authRouter.post("/login", loginRequestValidator, async (req, res) => {
   }
 });
 
+/* returns a firebase user given a user id */
+authRouter.get("/:uid", async (req, res) => {
+  try {
+    const firebaseUser = await authService.getFirebaseUserByUid(req.params.uid);
+    res.status(200).json(firebaseUser);
+  } catch (error) {
+    sendErrorResponse(error, res);
+  }
+});
+
 /* Register a user, returns access token and user info in response body and sets refreshToken as an httpOnly cookie */
 authRouter.post("/register", registerRequestValidator, async (req, res) => {
-  const randomPassword = password.randomPassword({
+  const accessCode = password.randomPassword({
     length: 8, // length of the password
     characters: [
       // acceptable characters in the password
@@ -63,20 +73,17 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
       lastName: req.body.lastName,
       email: req.body.email,
       role: "Admin", // TODO: pass in the role as a parameter to function for author and subscriber
-      password: randomPassword,
+      password: accessCode,
     });
 
     // try to sign in the user and return the expiring token
-    const authDTO = await authService.generateToken(
-      req.body.email,
-      randomPassword,
-    );
+    const authDTO = await authService.generateToken(req.body.email, accessCode);
 
     const { refreshToken, ...rest } = authDTO;
 
     // Send email with login details and ask to change password
-    // once they change the password, admin should be verified
-    await authService.sendPasswordSetupLink(req.body.email, createdUser);
+    // once they change the password, user should be verified
+    await authService.sendPasswordSetupLink(createdUser, accessCode);
 
     res
       .cookie("refreshToken", refreshToken, {
