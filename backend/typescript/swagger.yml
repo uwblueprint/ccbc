@@ -208,13 +208,6 @@ paths:
       security:
         - bearerAuth: []
       parameters:
- 
- Tahmeed27 11 hours ago Member
-
-Can you actually keep the entity documentation for now? We'll remove these as a part of the review service ticket because we modify entity routes there. So just undelete the entity parts
-
-	Reply…
-Resolve conversation
         - in: path
           name: id
           required: true
@@ -264,7 +257,7 @@ Resolve conversation
           description: Unauthorized
         '500':
           description: Invalid fileName
-          
+
   /auth/login:
     post:
       tags:
