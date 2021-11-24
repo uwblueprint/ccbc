@@ -118,11 +118,33 @@ const refresh = async (): Promise<boolean> => {
  * @throws error if could not retrieve user by uid
  */
 const getFirebaseUserByUid = async (uid: string): Promise<User> => {
-  console.log(`FROM AUTHAPICLIENT: ${uid}`);
   const { data } = await baseAPIClient.get(`/auth/${uid}`, {
     withCredentials: true,
   });
   return data;
+};
+
+/**
+ * Sets the verify status of a user to true on firebase
+ * @param uid user's id to identify record in firebase
+ * @returns true if able to verify the user by uid
+ * @throws error if could not verify user by uid
+ */
+const verifyEmail = async (uid: string): Promise<boolean> => {
+  const bearerToken = `Bearer ${getLocalStorageObjProperty(
+    AUTHENTICATED_USER_KEY,
+    "accessToken",
+  )}`;
+  try {
+    await baseAPIClient.post(
+      `/auth/verifyEmail/${uid}`,
+      {},
+      { headers: { Authorization: bearerToken } },
+    );
+    return true;
+  } catch (error) {
+    return false;
+  }
 };
 
 export default {
@@ -133,4 +155,5 @@ export default {
   resetPassword,
   refresh,
   getFirebaseUserByUid,
+  verifyEmail,
 };

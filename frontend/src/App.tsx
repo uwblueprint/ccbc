@@ -26,6 +26,7 @@ import SampleContextDispatcherContext from "./contexts/SampleContextDispatcherCo
 import sampleContextReducer from "./reducers/SampleContextReducer";
 import customTheme from "./theme/index";
 import { AuthenticatedUser } from "./types/AuthTypes";
+import firebaseApp from "./utils/Firebase";
 import { getLocalStorageObj } from "./utils/LocalStorageUtils";
 
 const App = (): React.ReactElement => {

@@ -48,22 +48,25 @@ const SetPassword = ({ uid }: SetPasswordProps): React.ReactElement => {
     } else {
       console.log("onSetPasswordClick called");
       try {
-        const auth = getAuth(firebaseApp.getApp());
+        const auth = getAuth(firebaseApp);
         console.log("Initialized firebase app");
         // try to login the user to get the currentUser from firebase-auth
         await signInWithEmailAndPassword(auth, userEmail, accessCode);
         console.log("Signed in with email and password");
+
         // update the password for the loggedin user
         const { currentUser } = auth;
         if (currentUser === null)
           throw new Error("Unable to retreive current user");
         await updatePassword(currentUser, newPassword);
         console.log("updated user password");
+
         // verify the user
-        const verifiedUser = { ...currentUser };
-        verifiedUser.emailVerified = true;
-        await auth.updateCurrentUser(verifiedUser);
-        console.log("updated user");
+        const couldVerify = await authAPIClient.verifyEmail(uid);
+        if (!couldVerify) {
+          throw new Error("Could not verify user");
+        }
+        console.log("verified user");
 
         // log the user in if password reset was successful
         const user: AuthenticatedUser = await authAPIClient.login(

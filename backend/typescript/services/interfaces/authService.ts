@@ -92,15 +92,21 @@ interface IAuthService {
     requestedEmail: string,
   ): Promise<boolean>;
 
-
   /**
    * returns the firebase user record given the userId
-   * @param userId user's id
+   * @param uid user's id on firebase
    * @returns a firebase UserRecord representing the user on firebase auth
    * @throws Error if user retrieval fails
    */
-   getFirebaseUserByUid(userId: string): Promise<firebaseAdmin.auth.UserRecord>;
+  getFirebaseUserByUid(uid: string): Promise<firebaseAdmin.auth.UserRecord>;
 
+  /**
+   * verifies the user with the uid account
+   * @param uid user's id on firebase
+   * @returns void
+   * @throws Error if user can't be verified
+   */
+  verifyEmail(uid: string): Promise<void>;
 }
 
 export default IAuthService;

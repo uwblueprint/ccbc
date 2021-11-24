@@ -270,17 +270,16 @@ class AuthService implements IAuthService {
   }
 
   async getFirebaseUserByUid(
-    userId: string,
+    uid: string,
   ): Promise<firebaseAdmin.auth.UserRecord> {
     let firebaseUser: firebaseAdmin.auth.UserRecord;
     try {
-      firebaseUser = await firebaseAdmin.auth().getUser(userId);
-      if (!firebaseUser)
-        throw new Error(`No user found with userId: ${userId}`);
+      firebaseUser = await firebaseAdmin.auth().getUser(uid);
+      if (!firebaseUser) throw new Error(`No user found with uid: ${uid}`);
       return firebaseUser;
     } catch (error) {
       Logger.error(
-        `Failed to get firebase user by userId: ${userId}. Reason = ${getErrorMessage(
+        `Failed to get firebase user by uid: ${uid}. Reason = ${getErrorMessage(
           error,
         )}`,
       );
@@ -288,6 +287,20 @@ class AuthService implements IAuthService {
     }
   }
 
+  async verifyEmail(uid: string): Promise<void> {
+    try {
+      await firebaseAdmin.auth().updateUser(uid, {
+        emailVerified: true,
+      });
+    } catch (error) {
+      Logger.error(
+        `Failed to verify firebase user by uid: ${uid}. Reason = ${getErrorMessage(
+          error,
+        )}`,
+      );
+      throw error;
+    }
+  }
 }
 
 export default AuthService;
