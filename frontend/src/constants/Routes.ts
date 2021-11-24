@@ -20,6 +20,8 @@ export const PROFILE_PAGE = "/users/:userid";
 
 export const ADMIN_DASHBOARD_PAGE = "/dashboard";
 
+export const CREATE_REVIEW_PAGE = "/create-review";
+
 export const AUTH_ACTIONS = "/auth/action";
 
 export const DEFAULT_PAGE = "/default"; // FOR TESTING ONLY
