@@ -674,8 +674,10 @@ paths:
   /reviews:
     post:
       summary: Create a review
+      tags: 
+        - Review
       requestBody:
-        required: true:
+        required: true
         content:
           application/json:
             schema:
@@ -689,10 +691,14 @@ paths:
                   type: array
                   items:
                     type: string
-                byline: string
-                featured: boolean
-                createdBy: number
-                publishedAt: number
+                byline:
+                  type: string
+                featured:
+                  type: boolean
+                createdBy: 
+                  type: number
+                publishedAt: 
+                  type: number
                 books: 
                   type: array
                   items: 
@@ -701,3 +707,42 @@ paths:
                   type: array
                   items: 
                     $ref: '#/components/schemas/Tag'
+      responses:
+        '201':
+          description: Successfully created a new review
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                    - reviewId, body, cover_images, byline, featured, books, tags, updatedAt, publishedAt
+                properties:
+                  reviewId:
+                    type: number
+                  body: 
+                    type: string
+                  cover_images:
+                    type: array
+                    items:
+                      type: string
+                  byline:
+                    type: string
+                  featured:
+                    type: boolean
+                  books:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+                  tags:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+                  updatedAt: 
+                    type: number
+                  publishedAt: 
+                    type: number
+        '401':
+          description: Unauthorized
+        '500':
+          description: Invalid request
+          
