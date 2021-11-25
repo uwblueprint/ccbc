@@ -187,7 +187,7 @@ class AuthService implements IAuthService {
       const emailBody = `
       Hello,
       <br><br>
-      You have been invited to join CCBC as a ${user.role.toLowerCase()}. Please use the link 
+      You have been invited to join CCBC as a ${user.roleType.toLowerCase()}. Please use the link 
       below to set your new password and verify your account. Your unique access code is ${accessCode}.
       <br><br>
       <a href=${setPasswordLink}>Set password and verify account</a>
