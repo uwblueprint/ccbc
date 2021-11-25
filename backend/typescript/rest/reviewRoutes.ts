@@ -1,4 +1,4 @@
-import { Router, json } from "express";
+import { Router } from "express";
 import ReviewService from "../services/implementations/ReviewService";
 import {
   IReviewService,
@@ -8,11 +8,12 @@ import {
 } from "../services/interfaces/IReviewService";
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
+import reviewRequestDtoValidator from "../middlewares/validators/reviewValidators";
 
 const reviewRouter: Router = Router();
 const reviewService: IReviewService = new ReviewService();
 
-reviewRouter.post("/", async (req, res) => {
+reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
   try {
     const newReview = await reviewService.createReview({
       body: req.body.body,

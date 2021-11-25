@@ -228,6 +228,7 @@ class ReviewService implements IReviewService {
 
             await newBook.$add("publishers", publisher, { transaction: t });
             await newReview.$add("books", newBook, { transaction: t });
+
             return {
               title: newBook.title,
               seriesOrder: newBook.series_order,

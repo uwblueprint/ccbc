@@ -14,7 +14,8 @@ import BookPublisher from "./book_publisher.model";
 import Publisher from "./publisher.model";
 import Review from "./review.model";
 import Series from "./series.model";
-import { Format, Range } from "../services/interfaces/IReviewService";
+import { Format } from "../services/interfaces/IReviewService";
+import { Range } from "./interfaces/range";
 
 @Table({ tableName: "books" })
 export default class Book extends Model {

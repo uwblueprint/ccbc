@@ -6,12 +6,10 @@ import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 
 import sequelize from "./models";
-import Review from "./models/review.model";
 import authRouter from "./rest/authRoutes";
 import entityRouter from "./rest/entityRoutes";
 import reviewRouter from "./rest/reviewRoutes";
 import userRouter from "./rest/userRoutes";
-import ReviewService from "./services/implementations/ReviewService";
 
 const clientHost = new RegExp(
   "https://ccbc-95e66(--([A-Za-z0-9-])+-[A-Za-z0-9]+)?.web.app",
@@ -49,69 +47,3 @@ app.listen({ port: PORT }, () => {
   /* eslint-disable-next-line no-console */
   console.info(`Server is listening on port ${PORT}!`);
 });
-
-// TODO: this is for testing only
-const reviewService = new ReviewService();
-console.log(reviewService.getReview("1"));
-
-// reviewService.createReview(
-//   {
-//       body: "review2",
-//       coverImages: ["cover1"],
-//       byline: "byline1",
-//       featured: true,
-//       publishedAt: 12445,
-//       books: [
-//         {
-//           title: "title1",
-//           titlePrefix: "titlePrefix1",
-//           seriesOrder: "1",
-//           illustrator: ["illustrator1"],
-//           translator: ["translator1"],
-//           formats: [
-//             {
-//               format: "format1",
-//               price: "$15.0",
-//               isbn: "1234-5678-931",
-//             },
-//           ],
-//           minAge: 3,
-//           maxAge: 18,
-//           authors: [{ fullName: "author1" }],
-//           publishers: [
-//             {
-//               fullName: "publisher",
-//               publishYear: 2002,
-//             },
-//           ],
-//           seriesName: "seriesName",
-//         },
-//         {
-//             title: "title2",
-//             titlePrefix: "titlePrefix2",
-//             seriesOrder: "1",
-//             illustrator: ["illustrator2"],
-//             translator: ["translator2"],
-//             formats: [
-//               {
-//                 format: "format2",
-//                 price: "$15.0",
-//                 isbn: "1234-5678-931",
-//               },
-//             ],
-//             minAge: 3,
-//             maxAge: 18,
-//             authors: [{ fullName: "author2" }],
-//             publishers: [
-//               {
-//                 fullName: "publisher",
-//                 publishYear: 2002,
-//               },
-//             ],
-//             seriesName: "seriesName",
-//           },
-//       ],
-//       tags: [{ name: "tag2" }],
-//       createdBy: 1,
-//     }
-// );
