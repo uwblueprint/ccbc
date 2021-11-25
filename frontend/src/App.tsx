@@ -1,7 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { ChakraProvider } from "@chakra-ui/react";
-import { initializeApp } from "firebase/app";
 import React, { useReducer, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
@@ -26,7 +25,6 @@ import SampleContextDispatcherContext from "./contexts/SampleContextDispatcherCo
 import sampleContextReducer from "./reducers/SampleContextReducer";
 import customTheme from "./theme/index";
 import { AuthenticatedUser } from "./types/AuthTypes";
-import firebaseApp from "./utils/Firebase";
 import { getLocalStorageObj } from "./utils/LocalStorageUtils";
 
 const App = (): React.ReactElement => {

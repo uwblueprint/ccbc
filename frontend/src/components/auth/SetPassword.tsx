@@ -1,4 +1,3 @@
-import { initializeApp } from "firebase/app";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -35,7 +34,6 @@ const SetPassword = ({ uid }: SetPasswordProps): React.ReactElement => {
           throw new Error("Retrieved firebase user does not have email set up");
         setUserEmail(firebaseUser.email);
       } catch (error) {
-        console.log(error.message);
         setErrorMessage("Link has expired");
       }
     }
@@ -46,27 +44,22 @@ const SetPassword = ({ uid }: SetPasswordProps): React.ReactElement => {
     if (newPassword !== confirmNewPassword) {
       // TODO: handle user fields verification
     } else {
-      console.log("onSetPasswordClick called");
       try {
         const auth = getAuth(firebaseApp);
-        console.log("Initialized firebase app");
         // try to login the user to get the currentUser from firebase-auth
         await signInWithEmailAndPassword(auth, userEmail, accessCode);
-        console.log("Signed in with email and password");
 
         // update the password for the loggedin user
         const { currentUser } = auth;
         if (currentUser === null)
           throw new Error("Unable to retreive current user");
         await updatePassword(currentUser, newPassword);
-        console.log("updated user password");
 
         // verify the user
         const couldVerify = await authAPIClient.verifyEmail(uid);
         if (!couldVerify) {
           throw new Error("Could not verify user");
         }
-        console.log("verified user");
 
         // log the user in if password reset was successful
         const user: AuthenticatedUser = await authAPIClient.login(
@@ -79,8 +72,7 @@ const SetPassword = ({ uid }: SetPasswordProps): React.ReactElement => {
         setAuthenticatedUser(user);
 
         // await authAPIClient.verifyUserByUid(user.id);
-      } catch (error: any) {
-        console.log(error);
+      } catch (error) {
         setErrorMessage(error.message);
       }
     }

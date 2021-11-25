@@ -410,6 +410,26 @@ paths:
           description: Invalid request
 
 
+  /auth/verifyEmail/{uid}:
+      post:
+        security:
+          - bearerAuth: []
+        parameters:
+          - in: path
+            name: uid
+            required: true
+            schema:
+              type: string
+        tags:
+          - Auth
+        description: Verifies a user with the given uid
+        responses:
+          '200':
+            description: Successfully verified the user
+          '500':
+            description: Invalid request
+
+            
   /users:
     get:
       security:
