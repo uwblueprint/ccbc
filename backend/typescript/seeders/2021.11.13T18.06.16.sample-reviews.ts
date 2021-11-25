@@ -15,86 +15,11 @@ const seedReviews = [
   },
 ];
 
-const seedTags = [
-  {
-    id: 1,
-    name: "Funny",
-  },
-  {
-    id: 2,
-    name: "Fiction",
-  },
-  {
-    id: 3,
-    name: "Horror",
-  },
-];
-
-const seedSeries = [
-  {
-    id: 1,
-    name: "Bloom Trilogy",
-  },
-];
-
-const seedAuthors = [
-  {
-    id: 1,
-    full_name: "Kenneth Oppel",
-  },
-  {
-    id: 2,
-    full_name: "Second Author",
-    display_name: "Second displayed name",
-    attribution: "written and illustred by",
-  },
-];
-
-const seedPublishers = [
-  {
-    id: 1,
-    full_name: "HarperCollins Canada",
-    publish_year: 2020,
-  },
-];
-
-const seedBooks = [
-  {
-    id: 1,
-    review_id: 1,
-    title: "Bloom",
-    series_id: 1,
-    series_order: "Book 1",
-    formats: [],
-    age_range: [4, 10],
-  },
-];
-
 export const up: Seeder = async ({ context: sequelize }) => {
-  await sequelize.getQueryInterface().bulkInsert("tags", seedTags);
-  await sequelize.getQueryInterface().bulkInsert("series", seedSeries);
-  await sequelize.getQueryInterface().bulkInsert("authors", seedAuthors);
-  await sequelize.getQueryInterface().bulkInsert("publishers", seedPublishers);
   await sequelize.getQueryInterface().bulkInsert("reviews", seedReviews);
-  await sequelize.getQueryInterface().bulkInsert("books", seedBooks);
 };
 export const down: Seeder = async ({ context: sequelize }) => {
   await sequelize
     .getQueryInterface()
-    .bulkDelete("tags", { id: seedTags.map((u) => u.id) });
-  await sequelize
-    .getQueryInterface()
-    .bulkDelete("series", { id: seedSeries.map((u) => u.id) });
-  await sequelize
-    .getQueryInterface()
-    .bulkDelete("authors", { id: seedAuthors.map((u) => u.id) });
-  await sequelize
-    .getQueryInterface()
-    .bulkDelete("publishers", { id: seedPublishers.map((u) => u.id) });
-  await sequelize
-    .getQueryInterface()
     .bulkDelete("reviews", { id: seedReviews.map((u) => u.id) });
-  await sequelize
-    .getQueryInterface()
-    .bulkDelete("books", { id: seedBooks.map((u) => u.id) });
 };
