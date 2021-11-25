@@ -34,6 +34,62 @@ class ReviewService implements IReviewService {
       },
     );
   }
+  
+  pgReviewToRet(review: PgReview): ReviewResponseDTO {
+    const books: Book[] =
+        review.books.map((book: PgBook) => {
+
+            const authorsRet: Author[] =
+            book.authors.map((a: PgAuthor) => {
+                return {
+                fullName: a.full_name,
+                displayName: a.display_name,
+                attribution: a.attribution,
+                };
+            });
+
+            const publishersRet: Publisher[] = 
+            book.publishers.map((p: PgPublisher) => {
+                return {
+                fullName: p.full_name,
+                publishYear: p.publish_year,
+                };
+            });
+
+            return {
+            title: book.title,
+            seriesOrder: book.series_order,
+            illustrator: book.illustrator,
+            translator: book.translator,
+            formats: book.formats,
+            minAge: book.age_range[0].value,
+            maxAge: book.age_range[1].value,
+            authors: authorsRet,
+            publishers: publishersRet,
+            seriesName: "placeholder",
+            };
+        });
+
+    // const pgTags = await review.$get("tags");
+    const tags: Tag[] = 
+        review.tags.map((tag: PgTag) => {
+            return {
+            name: tag.name,
+            };
+        });
+
+    return {
+        reviewId: review.id,
+        body: review.body,
+        cover_images: review.cover_images,
+        byline: review.byline,
+        featured: review.featured,
+        books,
+        tags,
+        updatedAt: review.updatedAt.getTime(),
+        publishedAt: review.published_at.getTime(),
+    };
+  }
 
   async getReview(id: string): Promise<ReviewResponseDTO> {
     let review: PgReview | null;
@@ -50,65 +106,28 @@ class ReviewService implements IReviewService {
           throw new Error(`Review id ${id} not found`);
         }
 
-        // const pgBooks = await review.$get("books");
-        const books: Book[] = await Promise.all(
-          review.books.map(async (book: PgBook) => {
-            // const series = await book.$get("series");
+        return this.pgReviewToRet(review);
+      });
+    } catch (error: unknown) {
+      Logger.error(`Failed to get review. Reason = ${error}`);
+      throw error;
+    }
 
-            const authorsRet: Author[] = await Promise.all(
-              book.authors.map((a: PgAuthor) => {
-                return {
-                  fullName: a.full_name,
-                  displayName: a.display_name,
-                  attribution: a.attribution,
-                };
-              }),
-            );
+    return result;
+  }
 
-            const publishersRet: Publisher[] = await Promise.all(
-              book.publishers.map(async (p: PgPublisher) => {
-                return {
-                  fullName: p.full_name,
-                  publishYear: p.publish_year,
-                };
-              }),
-            );
+  async getReviews(): Promise<ReviewResponseDTO[]> {
+    let reviews: PgReview[];
+    let result: ReviewResponseDTO[];
 
-            return {
-              title: book.title,
-              seriesOrder: book.series_order,
-              illustrator: book.illustrator,
-              translator: book.translator,
-              formats: book.formats,
-              minAge: book.age_range[0].value,
-              maxAge: book.age_range[1].value,
-              authors: authorsRet,
-              publishers: publishersRet,
-              seriesName: "placeholder",
-            };
-          }),
-        );
-
-        // const pgTags = await review.$get("tags");
-        const tags: Tag[] = await Promise.all(
-          review.tags.map((tag: PgTag) => {
-            return {
-              name: tag.name,
-            };
-          }),
-        );
-
-        return {
-          reviewId: review.id,
-          body: review.body,
-          cover_images: review.cover_images,
-          byline: review.byline,
-          featured: review.featured,
-          books,
-          tags,
-          updatedAt: review.updatedAt.getTime(),
-          publishedAt: review.published_at.getTime(),
-        };
+    try {
+      result = await this.db.transaction(async (t) => {
+        reviews = await PgReview.findAll({
+          transaction: t,
+          include: [{ all: true, nested: true }],
+        });
+        
+        return reviews.map((r) => this.pgReviewToRet(r));
       });
     } catch (error: unknown) {
       Logger.error(`Failed to get review. Reason = ${error}`);
