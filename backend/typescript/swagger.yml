@@ -30,8 +30,32 @@ components:
         idToken:
           type: string
 
-
 paths:
+  /tags:
+    get:
+      description: Returns a list of existing tags
+      responses:
+        '200':
+          description: Successfully returned a list of existing tags. 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+        
+        '401':
+          description: Unauthorized Request.
+        '404':
+          description: Not Found.
+        '500':
+          description: Invalid Request.
+
   /entities:
     get:
       security:
