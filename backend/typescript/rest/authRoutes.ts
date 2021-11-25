@@ -72,8 +72,9 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
-      role: "Admin", // TODO: pass in the role as a parameter to function for author and subscriber
-      password: accessCode,
+      roleType: "Admin", // TODO: pass in the role as a parameter to function for author and subscriber
+      active: true,
+      password: accessCode
     });
 
     // try to sign in the user and return the expiring token

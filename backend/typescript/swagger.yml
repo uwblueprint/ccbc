@@ -119,8 +119,8 @@ paths:
           description: Unauthorized
         '500':
           description: Invalid request
-  
-  
+
+
   /entities/{id}:
     get:
       security:
@@ -289,7 +289,7 @@ paths:
                     type: string
                   email:
                     type: string
-                  role:
+                  roleType:
                     type: string
         '500':
           description: Invalid request
@@ -334,7 +334,7 @@ paths:
                     type: string
                   email:
                     type: string
-                  role:
+                  roleType:
                     type: string
         '500':
           description: Invalid request
@@ -363,13 +363,13 @@ paths:
           description: Invalid request
                   
                 
-  /auth/logout/{userid}:
+  /auth/logout/{id}:
     post:
       security:
         - bearerAuth: []
       parameters:
         - in: path
-          name: userid
+          name: id
           required: true
           schema:
             # type: integer (postgres)
@@ -436,7 +436,7 @@ paths:
         - bearerAuth: []
       parameters:
         - in: query
-          name: userId
+          name: id
           schema:
             # type: integer (postgres)
             # minimum: 1
@@ -460,9 +460,11 @@ paths:
                 items:
                   type: object
                   required:
-                      - id, firstName, lastName, email, role
+                      - id, authId, firstName, lastName, email, roleType, active
                   properties:
                     id:
+                      type: string
+                    authId:
                       type: string
                     firstName:
                       type: string
@@ -470,8 +472,12 @@ paths:
                       type: string
                     email:
                       type: string
-                    role:
+                    roleType:
                       type: string
+                      enum: ["Admin", "Subscriber", "Author"]
+                    active:
+                      type: boolean
+                    
         '400':
           description: Cannot query by both user and email
         '401':
@@ -493,15 +499,15 @@ paths:
             schema:
               type: object
               required:
-                - firstName, lastName, role, email
+                - firstName, lastName, roleType, email
               properties:
                 firstName:
                   type: string
                 lastName:
                   type: string
-                role:
+                roleType:
                   type: string
-                  enum: ["User", "Admin"]
+                  enum: ["Admin", "Subscriber", "Author"]
                 email:
                   type: string
       responses:
@@ -512,9 +518,11 @@ paths:
               schema:
                 type: object
                 required:
-                    - id, firstName, lastName, email, role
+                    - id, authId, firstName, lastName, email, roleType, active
                 properties:
                   id:
+                    type: string
+                  authId:
                     type: string
                   firstName:
                     type: string
@@ -522,8 +530,11 @@ paths:
                     type: string
                   email:
                     type: string
-                  role:
+                  roleType:
                     type: string
+                    enum: ["Admin", "Subscriber", "Author"]
+                  active:
+                    type: boolean
         '401':
           description: Unauthorized
         '500':
@@ -535,7 +546,7 @@ paths:
         - bearerAuth: []
       parameters:
         - in: query
-          name: userId
+          name: id
           schema:
             # type: integer (postgres)
             # minimum: 1
@@ -560,13 +571,13 @@ paths:
           description: Invalid request
 
                 
-  /users/{userId}:
+  /users/{id}:
     put:
       security:
         - bearerAuth: []
       parameters:
         - in: path
-          name: userId
+          name: id
           required: true
           schema:
             # type: integer (postgres)
@@ -583,15 +594,15 @@ paths:
             schema:
               type: object
               required:
-                - firstName, lastName, role, email
+                - firstName, lastName, roleType, email
               properties:
                 firstName:
                   type: string
                 lastName:
                   type: string
-                role:
+                roleType:
                   type: string
-                  enum: ["User", "Admin"]
+                  enum: ["Admin", "Subscriber", "Author"]
                 email:
                   type: string
       responses:
@@ -602,9 +613,11 @@ paths:
               schema:
                 type: object
                 required:
-                    - id, firstName, lastName, email, role
+                    - id, authId, firstName, lastName, email, roleType, active
                 properties:
                   id:
+                    type: string
+                  authId:
                     type: string
                   firstName:
                     type: string
@@ -612,8 +625,11 @@ paths:
                     type: string
                   email:
                     type: string
-                  role:
+                  roleType:
                     type: string
+                    enum: ["Admin", "Subscriber", "Author"]
+                  active:
+                    type: boolean
         '401':
           description: Unauthorized
         '500':

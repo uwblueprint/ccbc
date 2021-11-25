@@ -61,7 +61,8 @@ class AuthService implements IAuthService {
           firstName: googleUser.firstName,
           lastName: googleUser.lastName,
           email: googleUser.email,
-          role: "User",
+          roleType: "Admin", // TODO: pass in the role as a parameter to function for author and subscriber
+          active: true,
           password: "",
         },
         googleUser.localId,
