@@ -7,6 +7,7 @@ import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
 import logger from "../../utilities/logger";
+import { dbURL, SQLOptions } from "../../utilities/dbUtils";
 import {
   ReviewRequestDTO,
   IReviewService,
@@ -27,11 +28,8 @@ class ReviewService implements IReviewService {
 
   constructor() {
     this.db = new Sequelize(
-      `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.DB_HOST}:5432/${process.env.POSTGRES_DB}`,
-      {
-        models: [resolve(__dirname, "../../models/*.model.ts")],
-        logging: false,
-      },
+      dbURL,
+      SQLOptions([resolve(__dirname, "../../models/*.model.ts")], false),
     );
   }
 
