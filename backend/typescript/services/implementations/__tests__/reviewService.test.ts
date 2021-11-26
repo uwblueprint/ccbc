@@ -1,6 +1,10 @@
-import { ReviewRequestDTO, ReviewResponseDTO } from "../../interfaces/IReviewService";
+import {
+  ReviewRequestDTO,
+  ReviewResponseDTO,
+} from "../../interfaces/IReviewService";
 import ReviewService from "../ReviewService";
-import testReviews from "../../interfaces/samples/sampleReviews";
+import testReviews from "../../interfaces/samples/reviewRequest";
+import testResponse from "../../interfaces/samples/reviewResponse";
 
 describe("pg reviewService", () => {
   let reviewService: ReviewService;
@@ -18,12 +22,12 @@ describe("pg reviewService", () => {
     );
 
     results.forEach((result, i) => {
-      expect(result.body).toEqual(testReviews[i].body);
-      expect(result.books).toEqual(testReviews[i].books);
-      expect(result.byline).toEqual(testReviews[i].byline);
-      expect(result.cover_images).toEqual(testReviews[i].coverImages);
-      expect(result.featured).toEqual(testReviews[i].featured);
-      expect(result.tags).toEqual(testReviews[i].tags);
+      expect(result.body).toEqual(testResponse[i].body);
+      expect(result.books).toEqual(testResponse[i].books);
+      expect(result.byline).toEqual(testResponse[i].byline);
+      expect(result.coverImages).toEqual(testResponse[i].coverImages);
+      expect(result.featured).toEqual(testResponse[i].featured);
+      expect(result.tags).toEqual(testResponse[i].tags);
       /*
        * @TODO: uncomment when christine changes are merged
        * expect(result.created_by).toEqual(testReviews[i].createdBy);
