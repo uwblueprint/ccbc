@@ -1,6 +1,6 @@
-import { ReviewResponseDTO } from "../../interfaces/IReviewService";
+import { ReviewRequestDTO, ReviewResponseDTO } from "../../interfaces/IReviewService";
 import ReviewService from "../ReviewService";
-import testReviews from "./sampleReviews";
+import testReviews from "../../interfaces/samples/sampleReviews";
 
 describe("pg reviewService", () => {
   let reviewService: ReviewService;
@@ -11,7 +11,7 @@ describe("pg reviewService", () => {
 
   it("post reviews", async () => {
     const results: ReviewResponseDTO[] = await Promise.all(
-      testReviews.map(async (review) => {
+      testReviews.map(async (review: ReviewRequestDTO) => {
         const response = await reviewService.createReview(review);
         return response;
       }),
