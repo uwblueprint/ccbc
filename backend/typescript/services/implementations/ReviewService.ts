@@ -210,6 +210,7 @@ class ReviewService implements IReviewService {
 
             return {
               title: newBook.title,
+              titlePrefix: newBook.title_prefix,
               seriesOrder: newBook.series_order,
               illustrator: newBook.illustrator,
               translator: newBook.translator,
