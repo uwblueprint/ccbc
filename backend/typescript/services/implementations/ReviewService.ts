@@ -136,7 +136,7 @@ class ReviewService implements IReviewService {
           { transaction: t },
         );
 
-        const tagsRet: PgTag[] = await Promise.all(
+        const pgTagsRet: PgTag[] = await Promise.all(
           review.tags.map(async (reviewTag) => {
             const tag = await PgTag.findOrCreate({
               where: { name: reviewTag.name },
@@ -146,6 +146,11 @@ class ReviewService implements IReviewService {
             return tag;
           }),
         );
+
+        const tagsRet: Tag[] = [];
+        pgTagsRet.forEach((tag) => {
+          tagsRet.push({ name: tag.name });
+        });
 
         const booksRet: Book[] = await Promise.all(
           review.books.map(async (book: Book) => {
@@ -233,7 +238,7 @@ class ReviewService implements IReviewService {
           books: booksRet,
           tags: tagsRet,
           updatedAt: newReview.updatedAt.getTime(),
-          publishedAt: newReview.published_at.getTime(),
+          publishedAt: newReview.published_at.getTime() / 1000,
         };
       });
     } catch (error: unknown) {
