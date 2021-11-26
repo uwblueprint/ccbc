@@ -99,7 +99,7 @@ class ReviewService implements IReviewService {
         return {
           reviewId: review.id,
           body: review.body,
-          cover_images: review.cover_images,
+          coverImages: review.cover_images,
           byline: review.byline,
           featured: review.featured,
           books,
@@ -232,7 +232,7 @@ class ReviewService implements IReviewService {
         return {
           reviewId: newReview.id,
           body: newReview.body,
-          cover_images: newReview.cover_images,
+          coverImages: newReview.cover_images,
           byline: newReview.byline,
           featured: newReview.featured,
           books: booksRet,
