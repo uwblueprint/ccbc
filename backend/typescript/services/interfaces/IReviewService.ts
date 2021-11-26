@@ -38,7 +38,8 @@ export interface ReviewRequestDTO {
   coverImages: string[];
   byline: string;
   featured: boolean;
-  createdBy: number;
+  // @TODO: uncomment when christine changes are merged
+  // createdBy: number;
   publishedAt?: number;
   books: Book[];
   tags: Tag[];
@@ -47,11 +48,11 @@ export interface ReviewRequestDTO {
 export interface ReviewResponseDTO {
   reviewId: number;
   body: string;
-  cover_images: string[];
+  coverImages: string[];
   byline: string;
   featured: boolean;
   // @TODO: uncomment when christine changes are merged
-  // created_by: number;
+  // createdBy: number;
   books: Book[];
   tags: Tag[];
   updatedAt: number;
