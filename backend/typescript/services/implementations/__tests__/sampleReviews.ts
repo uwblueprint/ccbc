@@ -21,31 +21,13 @@ export default [
         ],
         minAge: 3,
         maxAge: 18,
-        authors: [{ fullName: "author11" }],
-        publishers: [
+        authors: [
           {
-            fullName: "publisher",
-            publishYear: 2002,
+            fullName: "author11",
+            displayName: "author11",
+            attribution: "author11Attr",
           },
         ],
-        seriesName: "seriesName",
-      },
-      {
-        title: "title2",
-        titlePrefix: "titlePrefix1",
-        seriesOrder: "1",
-        illustrator: ["illustrator1"],
-        translator: ["translator1"],
-        formats: [
-          {
-            format: "format1",
-            price: "$15.0",
-            isbn: "1234-5678-931",
-          },
-        ],
-        minAge: 3,
-        maxAge: 18,
-        authors: [{ fullName: "author11" }],
         publishers: [
           {
             fullName: "publisher",

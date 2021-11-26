@@ -12,7 +12,6 @@ describe("pg reviewService", () => {
   it("post reviews", async () => {
     const results: ReviewResponseDTO[] = await Promise.all(
       testReviews.map(async (review) => {
-        console.log(review);
         const response = await reviewService.createReview(review);
         return response;
       }),
