@@ -7,7 +7,8 @@ import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
 import logger from "../../utilities/logger";
-import { dbURL, SQLOptions } from "../../utilities/dbUtils";
+import { sequelize } from "../../umzug";
+import { testSql as testSequelize } from "../../testUtils/testDb";
 import {
   ReviewRequestDTO,
   IReviewService,
@@ -26,11 +27,12 @@ const Logger = logger(__filename);
 class ReviewService implements IReviewService {
   db: Sequelize;
 
-  constructor() {
-    this.db = new Sequelize(
-      dbURL,
-      SQLOptions([resolve(__dirname, "../../models/*.model.ts")], false),
-    );
+  constructor(isTest = false) {
+    if (isTest) {
+      this.db = testSequelize;
+    } else {
+      this.db = sequelize;
+    }
   }
 
   async getReview(id: string): Promise<ReviewResponseDTO> {
