@@ -1,4 +1,3 @@
-import { resolve } from "path";
 import { Sequelize } from "sequelize-typescript";
 import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
@@ -8,7 +7,7 @@ import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
 import logger from "../../utilities/logger";
 import { sequelize } from "../../umzug";
-import { testSql as testSequelize } from "../../testUtils/testDb";
+import testSequelize from "../../testUtils/testDb";
 import {
   ReviewRequestDTO,
   IReviewService,
