@@ -2,7 +2,7 @@ import { Router } from "express";
 import sendResponseByMimeType from "../utilities/responseUtil";
 import TagService from "../services/implementations/tagService";
 import ITagService from "../services/interfaces/tagService";
-import { getErrorMessage } from "../utilities/errorResponse";
+import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 
 const tagRouter: Router = Router();
 const tagService: ITagService = new TagService();
@@ -25,5 +25,16 @@ tagRouter.get("/", async(req, res) => {
         ]);
     }
 });
+
+tagRouter.delete("/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        await tagService.deleteTag(id);
+        res.status(204).send();
+    } catch (e: unknown) {
+        sendErrorResponse(e, res);
+    }
+});
+
 
 export default tagRouter;

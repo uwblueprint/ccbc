@@ -56,6 +56,24 @@ paths:
         '500':
           description: Invalid Request.
 
+  /tags/{id}:
+    delete:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The tag ID
+      description: Delete a tag based on its ID
+      responses:
+        '204':
+          description: Successfully deleted tag based on ID
+        '401':
+          description: Unauthorized Request
+        '500':
+          description: Invalid ID
+
   /entities:
     get:
       security:
