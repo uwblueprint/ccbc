@@ -16,7 +16,9 @@ import sendResponseByMimeType from "../utilities/responseUtil";
 const upload = multer({ dest: "uploads/" });
 
 const entityRouter: Router = Router();
-entityRouter.use(isAuthorizedByRole(new Set(["User", "Admin"])));
+entityRouter.use(
+  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
+);
 
 const defaultBucket = process.env.DEFAULT_BUCKET || "";
 const fileStorageService: IFileStorageService = new FileStorageService(

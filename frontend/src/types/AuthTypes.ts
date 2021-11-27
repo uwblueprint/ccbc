@@ -5,7 +5,8 @@ export type AuthenticatedUser = {
   firstName: string;
   lastName: string;
   email: string;
-  role: UserRole;
+  roleType: UserRole;
+  active: boolean;
   accessToken: string;
 } | null;
 
