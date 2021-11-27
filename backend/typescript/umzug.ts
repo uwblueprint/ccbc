@@ -8,7 +8,7 @@ const sequelizeOptions: SequelizeOptions = SQLOptions(
   false,
 );
 
-const sequelize = new Sequelize(dbURL, sequelizeOptions);
+export const sequelize = new Sequelize(dbURL, sequelizeOptions);
 
 export const migrator = new Umzug({
   migrations: {

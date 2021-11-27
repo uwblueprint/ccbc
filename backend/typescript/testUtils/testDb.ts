@@ -7,6 +7,6 @@ const sequelizeOptions: SequelizeOptions = SQLOptions(
   true,
 );
 
-const testSql = new Sequelize(testDbURL, sequelizeOptions);
+export const testSql = new Sequelize(testDbURL, sequelizeOptions);
 
 export default testSql;
