@@ -156,17 +156,20 @@ class ReviewService implements IReviewService {
 
         const booksRet: Book[] = await Promise.all(
           review.books.map(async (book: Book) => {
-            const series = await PgSeries.findOrCreate({
-              where: { name: book.seriesName },
-              transaction: t,
-            }).then((data) => data[0]);
+            let series = null;
+            if (book.seriesName) {
+              series = await PgSeries.findOrCreate({
+                where: { name: book.seriesName },
+                transaction: t,
+              }).then((data) => data[0]);
+            }
 
             const newBook = await PgBook.create(
               {
                 review_id: newReview.id,
                 title_prefix: book.titlePrefix,
                 title: book.title,
-                series_id: series.id,
+                series_id: series?.id || null,
                 series_order: book.seriesOrder || null,
                 illustrator: book.illustrator || null,
                 translator: book.translator || null,
@@ -226,7 +229,7 @@ class ReviewService implements IReviewService {
               maxAge: newBook.age_range[1].value,
               authors: authorsRet,
               publishers: publishersRet,
-              seriesName: series.name,
+              seriesName: series?.name || null,
             };
           }),
         );
