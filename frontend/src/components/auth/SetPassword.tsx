@@ -10,7 +10,7 @@ import authAPIClient from "../../APIClients/AuthAPIClient";
 import { HOME_PAGE } from "../../constants/Routes";
 import AuthContext from "../../contexts/AuthContext";
 import { AuthenticatedUser } from "../../types/AuthTypes";
-import firebaseApp from "../../utils/Firebase";
+import firebaseApp from "../../utils/firebase";
 
 export type SetPasswordProps = { uid: string };
 

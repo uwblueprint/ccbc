@@ -118,9 +118,7 @@ const refresh = async (): Promise<boolean> => {
  * @throws error if could not retrieve user by uid
  */
 const getFirebaseUserByUid = async (uid: string): Promise<User> => {
-  const { data } = await baseAPIClient.get(`/auth/${uid}`, {
-    withCredentials: true,
-  });
+  const { data } = await baseAPIClient.get(`/auth/${uid}`);
   return data;
 };
 
@@ -131,15 +129,9 @@ const getFirebaseUserByUid = async (uid: string): Promise<User> => {
  * @throws error if could not verify user by uid
  */
 const verifyEmail = async (uid: string): Promise<boolean> => {
-  const bearerToken = `Bearer ${getLocalStorageObjProperty(
-    AUTHENTICATED_USER_KEY,
-    "accessToken",
-  )}`;
   try {
     await baseAPIClient.post(
-      `/auth/verifyEmail/${uid}`,
-      {},
-      { headers: { Authorization: bearerToken } },
+      `/auth/verifyEmail/${uid}`
     );
     return true;
   } catch (error) {
