@@ -7,6 +7,7 @@ import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
 import logger from "../../utilities/logger";
+import { dbURL, SQLOptions } from "../../utilities/dbUtils";
 import {
   ReviewRequestDTO,
   IReviewService,
@@ -27,11 +28,8 @@ class ReviewService implements IReviewService {
 
   constructor() {
     this.db = new Sequelize(
-      `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.DB_HOST}:5432/${process.env.POSTGRES_DB}`,
-      {
-        models: [resolve(__dirname, "../../models/*.model.ts")],
-        logging: false,
-      },
+      dbURL,
+      SQLOptions([resolve(__dirname, "../../models/*.model.ts")], false),
     );
   }
   
@@ -81,7 +79,7 @@ class ReviewService implements IReviewService {
     return {
         reviewId: review.id,
         body: review.body,
-        cover_images: review.cover_images,
+        coverImages: review.cover_images,
         byline: review.byline,
         featured: review.featured,
         books,
@@ -157,7 +155,7 @@ class ReviewService implements IReviewService {
           { transaction: t },
         );
 
-        const tagsRet: PgTag[] = await Promise.all(
+        const pgTagsRet: PgTag[] = await Promise.all(
           review.tags.map(async (reviewTag) => {
             const tag = await PgTag.findOrCreate({
               where: { name: reviewTag.name },
@@ -167,6 +165,11 @@ class ReviewService implements IReviewService {
             return tag;
           }),
         );
+
+        const tagsRet: Tag[] = [];
+        pgTagsRet.forEach((tag) => {
+          tagsRet.push({ name: tag.name });
+        });
 
         const booksRet: Book[] = await Promise.all(
           review.books.map(async (book: Book) => {
@@ -231,6 +234,7 @@ class ReviewService implements IReviewService {
 
             return {
               title: newBook.title,
+              titlePrefix: newBook.title_prefix,
               seriesOrder: newBook.series_order,
               illustrator: newBook.illustrator,
               translator: newBook.translator,
@@ -247,13 +251,13 @@ class ReviewService implements IReviewService {
         return {
           reviewId: newReview.id,
           body: newReview.body,
-          cover_images: newReview.cover_images,
+          coverImages: newReview.cover_images,
           byline: newReview.byline,
           featured: newReview.featured,
           books: booksRet,
           tags: tagsRet,
           updatedAt: newReview.updatedAt.getTime(),
-          publishedAt: newReview.published_at.getTime(),
+          publishedAt: newReview.published_at.getTime() / 1000,
         };
       });
     } catch (error: unknown) {

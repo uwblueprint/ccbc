@@ -1,76 +1,38 @@
-import { snakeCase } from "lodash";
-
-import Review from "../../../models/review.model";
+import {
+  ReviewRequestDTO,
+  ReviewResponseDTO,
+} from "../../interfaces/IReviewService";
 import ReviewService from "../ReviewService";
-
-import { ReviewRequestDTO } from "../../interfaces/IReviewService";
-
-const testReviews = [
-  {
-    body: "review100",
-    coverImages: ["cover1", "cover2"],
-    byline: "byline1",
-    featured: true,
-    publishedAt: 12445,
-    books: [
-      {
-        title: "title1",
-        titlePrefix: "titlePrefix1",
-        seriesOrder: "1",
-        illustrator: ["illustrator1"],
-        translator: ["translator1"],
-        formats: [
-          {
-            format: "format1",
-            price: "$15.0",
-            isbn: "1234-5678-931",
-          },
-        ],
-        minAge: 3,
-        maxAge: 18,
-        authors: [{ fullName: "author11" }],
-        publishers: [
-          {
-            fullName: "publisher",
-            publishYear: 2002,
-          },
-        ],
-        seriesName: "seriesName",
-      },
-      {
-        title: "title2",
-        titlePrefix: "titlePrefix1",
-        seriesOrder: "1",
-        illustrator: ["illustrator1"],
-        translator: ["translator1"],
-        formats: [
-          {
-            format: "format1",
-            price: "$15.0",
-            isbn: "1234-5678-931",
-          },
-        ],
-        minAge: 3,
-        maxAge: 18,
-        authors: [{ fullName: "author11" }],
-        publishers: [
-          {
-            fullName: "publisher",
-            publishYear: 2002,
-          },
-        ],
-        seriesName: "seriesName",
-      },
-    ],
-    tags: [{ name: "tag1" }, { name: "tag2" }],
-    createdBy: 1,
-  },
-];
+import testReviews from "../../interfaces/samples/reviewRequest";
+import testResponse from "../../interfaces/samples/reviewResponse";
 
 describe("pg reviewService", () => {
   let reviewService: ReviewService;
 
-  beforeEach(() => {
+  beforeAll(() => {
     reviewService = new ReviewService();
-  })
+  });
+
+  it("post reviews", async () => {
+    const results: ReviewResponseDTO[] = await Promise.all(
+      testReviews.map(async (review: ReviewRequestDTO) => {
+        const response = await reviewService.createReview(review);
+        return response;
+      }),
+    );
+
+    results.forEach((result, i) => {
+      expect(result.body).toEqual(testResponse[i].body);
+      expect(result.books).toEqual(testResponse[i].books);
+      expect(result.byline).toEqual(testResponse[i].byline);
+      expect(result.coverImages).toEqual(testResponse[i].coverImages);
+      expect(result.featured).toEqual(testResponse[i].featured);
+      expect(result.tags).toEqual(testResponse[i].tags);
+      /*
+       * @TODO: uncomment when christine changes are merged
+       * expect(result.created_by).toEqual(testReviews[i].createdBy);
+       */
+      expect(result.publishedAt).toEqual(testReviews[i].publishedAt);
+    });
+  });
 });

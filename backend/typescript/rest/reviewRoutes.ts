@@ -20,7 +20,10 @@ reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
       coverImages: req.body.coverImages,
       byline: req.body.byline,
       featured: req.body.featured,
-      createdBy: req.body.createdBy,
+      /*
+       *@TODO: uncomment when christine changes are merged
+       *createdBy: req.body.createdBy,
+       */
       books: req.body.books as Book[],
       tags: req.body.tags as Tag[],
       publishedAt: req.body.publishedAt,
