@@ -278,7 +278,7 @@ class AuthService implements IAuthService {
       firebaseUser = await firebaseAdmin.auth().getUser(uid);
       if (!firebaseUser) throw new Error(`No user found with uid: ${uid}`);
       return firebaseUser;
-    } catch (error) {
+    } catch (error: unknown) {
       Logger.error(
         `Failed to get firebase user by uid: ${uid}. Reason = ${getErrorMessage(
           error,
