@@ -293,7 +293,7 @@ class AuthService implements IAuthService {
       await firebaseAdmin.auth().updateUser(uid, {
         emailVerified: true,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       Logger.error(
         `Failed to verify firebase user by uid: ${uid}. Reason = ${getErrorMessage(
           error,
