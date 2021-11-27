@@ -48,7 +48,7 @@ authRouter.get("/:uid", async (req, res) => {
   try {
     const firebaseUser = await authService.getFirebaseUserByUid(req.params.uid);
     res.status(200).json(firebaseUser);
-  } catch (error) {
+  } catch (error: unknown) {
     sendErrorResponse(error, res);
   }
 });
