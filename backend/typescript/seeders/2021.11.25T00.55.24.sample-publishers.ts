@@ -3,6 +3,13 @@ import { Seeder } from "../umzug";
 const seedPublishers = [
   {
     id: 1,
+    full_name: "Rebel Mountain Press",
+    publish_year: 2021,
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
+  {
+    id: 2,
     full_name: "HarperCollins Canada",
     publish_year: 2020,
     createdAt: new Date(Date.now()),
