@@ -2,6 +2,11 @@ import { BEARER_TOKEN } from "../constants/AuthConstants";
 import { TagResponse } from "../types/TagTypes";
 import baseAPIClient from "./BaseAPIClient";
 
+type TagDTO = {
+    id: string;
+    name: string;
+};
+
 const getTags = async (): Promise<TagResponse[]> => {
   try {
     const { data } = await baseAPIClient.get("/tags", {
@@ -9,7 +14,7 @@ const getTags = async (): Promise<TagResponse[]> => {
     });
     const tagOptions: TagResponse[] = [];
     if (data && data.length) {
-      data.forEach((tag) => {
+      data.forEach((tag: TagDTO) => {
         tagOptions.push({
           value: tag.id,
           label: tag.name,

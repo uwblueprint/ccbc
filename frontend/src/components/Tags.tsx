@@ -6,13 +6,13 @@ import tagAPIClient from "../APIClients/TagAPIClient";
 import { TagResponse } from "../types/TagTypes";
 
 const customStyles = {
-  option: (provided) => ({
+  option: (provided: any) => ({
     ...provided,
     ":hover": {
       color: "gray.100",
     },
   }),
-  multiValueRemove: (provided, data) => ({
+  multiValueRemove: (provided: any, data: any) => ({
     ...provided,
     ":hover": {
       backgroundColor: data.color,
@@ -65,7 +65,7 @@ const Tags = (): React.ReactElement => {
           loadOptions={getTags}
           defaultOptions
           options={tags}
-          onChange={(e) => handleChange(e)}
+          onChange={(e: any) => handleChange(e)}
           onCreateOption={handleCreate}
           styles={customStyles}
         />
