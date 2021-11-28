@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { getApiValidationError, validatePrimitive } from "./util";
 
-export const createTagValidator = async (
+const createTagValidator = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -11,3 +11,5 @@ export const createTagValidator = async (
   }
   return next();
 };
+
+export default createTagValidator;
