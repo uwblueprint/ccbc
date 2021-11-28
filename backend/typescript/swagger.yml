@@ -33,6 +33,8 @@ components:
 paths:
   /tags:
     get:
+      security:
+        - bearerAuth: []
       description: Returns a list of existing tags
       responses:
         '200':
@@ -58,6 +60,8 @@ paths:
 
   /tags/{id}:
     delete:
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id

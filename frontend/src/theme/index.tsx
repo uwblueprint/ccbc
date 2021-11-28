@@ -14,6 +14,14 @@ const customTheme = extendTheme({
       fontSize: "1vw",
     },
   },
+  colors: {
+    gray: {
+      100: "##E2E8F0",
+    },
+    blue: {
+      100: "#90CDF4",
+    },
+  },
   components: {
     Button: {
       variants: {
