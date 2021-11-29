@@ -18,9 +18,6 @@ export default class Review extends Model {
   @Column({ type: DataType.TEXT })
   body!: string;
 
-  @Column({ type: DataType.ARRAY(DataType.STRING) })
-  cover_images!: string[];
-
   @Column({ type: DataType.STRING })
   byline!: string;
 

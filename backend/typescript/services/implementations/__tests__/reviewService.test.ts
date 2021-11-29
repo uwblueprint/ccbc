@@ -25,7 +25,6 @@ describe("pg reviewService", () => {
       expect(result.body).toEqual(testResponse[i].body);
       expect(result.books).toEqual(testResponse[i].books);
       expect(result.byline).toEqual(testResponse[i].byline);
-      expect(result.coverImages).toEqual(testResponse[i].coverImages);
       expect(result.featured).toEqual(testResponse[i].featured);
       expect(result.tags).toEqual(testResponse[i].tags);
       /*

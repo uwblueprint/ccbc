@@ -3,13 +3,13 @@ import { ReviewRequestDTO } from "../IReviewService";
 export default [
   {
     body: "Insert review body here",
-    coverImages: ["cover Image 1", "Cover Image 2"],
     byline: "Insert Byline here",
     featured: true,
     publishedAt: 12445,
     books: [
       {
         title: "Book1 Title",
+        coverImage: "Book1 cover Image",
         titlePrefix: "Book1 Title Prefix",
         seriesOrder: "1",
         illustrator: ["illustrator1"],
@@ -40,6 +40,7 @@ export default [
       },
       {
         title: "Book2 Title",
+        coverImage: "Book2 cover Image",
         titlePrefix: "Book2 Title Prefix",
         seriesOrder: "2",
         illustrator: ["illustrator1"],
@@ -73,7 +74,6 @@ export default [
   },
   {
     body: "Insert review body here",
-    coverImages: ["cover Image 1", "Cover Image 2"],
     byline: "Insert Byline here",
     featured: true,
     publishedAt: 12445,

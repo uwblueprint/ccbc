@@ -17,6 +17,7 @@ export interface Format {
 
 export interface Book {
   title: string;
+  coverImage: string;
   titlePrefix?: string | null;
   seriesOrder?: string | null;
   illustrator?: string[] | null;
@@ -35,7 +36,6 @@ export interface Tag {
 
 export interface ReviewRequestDTO {
   body: string;
-  coverImages: string[];
   byline: string;
   featured: boolean;
   // @TODO: uncomment when christine changes are merged
@@ -48,7 +48,6 @@ export interface ReviewRequestDTO {
 export interface ReviewResponseDTO {
   reviewId: number;
   body: string;
-  coverImages: string[];
   byline: string;
   featured: boolean;
   // @TODO: uncomment when christine changes are merged

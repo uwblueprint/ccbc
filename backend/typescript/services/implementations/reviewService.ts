@@ -34,7 +34,6 @@ class ReviewService implements IReviewService {
 
   /* eslint-disable class-methods-use-this */
   async createReview(review: ReviewRequestDTO): Promise<ReviewResponseDTO> {
-    let publisher: PgPublisher;
     let result: ReviewResponseDTO;
 
     try {
@@ -42,7 +41,6 @@ class ReviewService implements IReviewService {
         const newReview = await PgReview.create(
           {
             body: review.body,
-            cover_images: review.coverImages,
             byline: review.byline,
             featured: review.featured,
             published_at: review.publishedAt
@@ -76,6 +74,7 @@ class ReviewService implements IReviewService {
             const newBook = await PgBook.create(
               {
                 review_id: newReview.id,
+                cover_image: book.coverImage,
                 title_prefix: book.titlePrefix,
                 title: book.title,
                 series_id: series?.id || null,
@@ -98,7 +97,7 @@ class ReviewService implements IReviewService {
                   },
                   transaction: t,
                 }).then((data) => data[0]);
-                newBook.$add("authors", author, { transaction: t });
+                await newBook.$add("authors", author, { transaction: t });
 
                 return {
                   fullName: author.full_name,
@@ -110,13 +109,14 @@ class ReviewService implements IReviewService {
 
             const publishersRet: Publisher[] = await Promise.all(
               book.publishers.map(async (p) => {
-                publisher = await PgPublisher.findOrCreate({
+                const publisher = await PgPublisher.findOrCreate({
                   where: {
                     full_name: p.fullName,
                     publish_year: p.publishYear,
                   },
                   transaction: t,
                 }).then((data) => data[0]);
+                await newBook.$add("publishers", publisher, { transaction: t });
                 return {
                   fullName: publisher.full_name,
                   publishYear: publisher.publish_year,
@@ -124,11 +124,11 @@ class ReviewService implements IReviewService {
               }),
             );
 
-            await newBook.$add("publishers", publisher, { transaction: t });
             await newReview.$add("books", newBook, { transaction: t });
 
             return {
               title: newBook.title,
+              coverImage: newBook.cover_image,
               titlePrefix: newBook.title_prefix,
               seriesOrder: newBook.series_order,
               illustrator: newBook.illustrator,
@@ -146,7 +146,6 @@ class ReviewService implements IReviewService {
         return {
           reviewId: newReview.id,
           body: newReview.body,
-          coverImages: newReview.cover_images,
           byline: newReview.byline,
           featured: newReview.featured,
           books: booksRet,

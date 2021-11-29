@@ -15,7 +15,6 @@ reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
   try {
     const newReview = await reviewService.createReview({
       body: req.body.body,
-      coverImages: req.body.coverImages,
       byline: req.body.byline,
       featured: req.body.featured,
       /*
