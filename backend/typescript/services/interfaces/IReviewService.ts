@@ -56,7 +56,7 @@ export interface ReviewResponseDTO {
   books: Book[];
   tags: Tag[];
   updatedAt: number;
-  publishedAt: number;
+  publishedAt: number | null;
 }
 
 export interface IReviewService {

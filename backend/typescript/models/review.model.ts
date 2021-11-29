@@ -33,7 +33,7 @@ export default class Review extends Model {
   //  created_by!: number;
 
   @Column({ type: DataType.DATE })
-  published_at!: Date;
+  published_at?: Date;
 
   @BelongsToMany(() => Tag, () => ReviewTag)
   tags!: Tag[];

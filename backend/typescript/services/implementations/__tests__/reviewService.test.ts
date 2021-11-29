@@ -2,7 +2,7 @@ import {
   ReviewRequestDTO,
   ReviewResponseDTO,
 } from "../../interfaces/IReviewService";
-import ReviewService from "../ReviewService";
+import ReviewService from "../reviewService";
 import testReviews from "../../interfaces/samples/reviewRequest";
 import testResponse from "../../interfaces/samples/reviewResponse";
 

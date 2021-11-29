@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
+import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
 import PgTag from "../../models/tag.model";
@@ -19,9 +20,6 @@ import {
 } from "../interfaces/IReviewService";
 
 const Logger = logger(__filename);
-
-// Delete: can delete the book, book_author, and book_publisher
-// Get: return review - but it contains all other info
 
 class ReviewService implements IReviewService {
   db: Sequelize;
@@ -54,21 +52,16 @@ class ReviewService implements IReviewService {
           { transaction: t },
         );
 
-        const pgTagsRet: PgTag[] = await Promise.all(
+        const tagsRet: Tag[] = await Promise.all(
           review.tags.map(async (reviewTag) => {
             const tag = await PgTag.findOrCreate({
               where: { name: reviewTag.name },
               transaction: t,
             }).then((data) => data[0]);
             await newReview.$add("tags", tag, { transaction: t });
-            return tag;
+            return { name: tag.name };
           }),
         );
-
-        const tagsRet: Tag[] = [];
-        pgTagsRet.forEach((tag) => {
-          tagsRet.push({ name: tag.name });
-        });
 
         const booksRet: Book[] = await Promise.all(
           review.books.map(async (book: Book) => {
@@ -159,11 +152,15 @@ class ReviewService implements IReviewService {
           books: booksRet,
           tags: tagsRet,
           updatedAt: newReview.updatedAt.getTime(),
-          publishedAt: newReview.published_at.getTime() / 1000,
+          publishedAt: newReview.published_at
+            ? newReview.published_at.getTime() / 1000
+            : null,
         };
       });
     } catch (error: unknown) {
-      Logger.error(`Failed to create entity. Reason = ${error}`);
+      Logger.error(
+        `Failed to create entity. Reason = ${getErrorMessage(error)}`,
+      );
       throw error;
     }
 

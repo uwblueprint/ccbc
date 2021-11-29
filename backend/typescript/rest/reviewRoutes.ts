@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ReviewService from "../services/implementations/ReviewService";
+import ReviewService from "../services/implementations/reviewService";
 import {
   IReviewService,
   Tag,
