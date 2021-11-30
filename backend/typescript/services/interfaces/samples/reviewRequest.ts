@@ -80,6 +80,7 @@ export default [
     books: [
       {
         title: "Book1 Title",
+        coverImage: "Book1 cover",
         formats: [
           {
             format: "format1",

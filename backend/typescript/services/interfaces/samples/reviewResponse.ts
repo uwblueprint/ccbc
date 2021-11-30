@@ -83,6 +83,7 @@ export default [
     books: [
       {
         title: "Book1 Title",
+        coverImage: "Book1 cover",
         titlePrefix: null,
         seriesOrder: null,
         illustrator: null,
