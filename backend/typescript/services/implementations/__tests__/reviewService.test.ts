@@ -5,12 +5,18 @@ import {
 import ReviewService from "../reviewService";
 import testReviews from "../../interfaces/samples/reviewRequest";
 import testResponse from "../../interfaces/samples/reviewResponse";
+import testSql from "../../../testUtils/testDb";
 
 describe("pg reviewService", () => {
   let reviewService: ReviewService;
 
-  beforeAll(() => {
-    reviewService = new ReviewService();
+  beforeAll(async () => {
+    await testSql.sync({ force: true });
+    reviewService = new ReviewService(testSql);
+  });
+  afterAll(async () => {
+    await testSql.sync({ force: true });
+    await testSql.close();
   });
 
   it("post reviews", async () => {

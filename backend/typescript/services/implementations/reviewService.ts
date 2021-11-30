@@ -8,7 +8,6 @@ import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
 import logger from "../../utilities/logger";
 import { sequelize } from "../../umzug";
-import testSequelize from "../../testUtils/testDb";
 import {
   ReviewRequestDTO,
   IReviewService,
@@ -24,12 +23,9 @@ const Logger = logger(__filename);
 class ReviewService implements IReviewService {
   db: Sequelize;
 
-  constructor(isTest = false) {
-    if (isTest) {
-      this.db = testSequelize;
-    } else {
-      this.db = sequelize;
-    }
+  constructor(db: Sequelize = sequelize) {
+    this.db = db;
+    if (db !== sequelize) sequelize.close(); // Using test db instead of main db
   }
 
   /* eslint-disable class-methods-use-this */
