@@ -1,4 +1,5 @@
 import {
+  Auth,
   getAuth,
   signInWithEmailAndPassword,
   updatePassword,
@@ -12,33 +13,19 @@ import AuthContext from "../../contexts/AuthContext";
 import { AuthenticatedUser } from "../../types/AuthTypes";
 import firebaseApp from "../../utils/firebase";
 
-export type SetPasswordProps = { uid: string };
+export type SetPasswordProps = {
+  email: string;
+  uid: string;
+};
 
-const SetPassword = ({ uid }: SetPasswordProps): React.ReactElement => {
+const SetPassword = ({ email, uid }: SetPasswordProps): React.ReactElement => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [userEmail, setUserEmail] = useState("");
+  const [userEmail, setUserEmail] = useState(email);
   const [accessCode, setAccessCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isVerified, setIsVerified] = useState(false);
-
-  useEffect(() => {
-    // This function gets the user info and
-    // stores the email and isVerified
-    async function getUserInfo() {
-      try {
-        const firebaseUser = await authAPIClient.getFirebaseUserByUid(uid);
-        setIsVerified(firebaseUser.emailVerified);
-        if (firebaseUser.email === null)
-          throw new Error("Retrieved firebase user does not have email set up");
-        setUserEmail(firebaseUser.email);
-      } catch (error) {
-        setErrorMessage("Link has expired");
-      }
-    }
-    getUserInfo();
-  }, [userEmail, isVerified, uid]);
 
   const onSetPasswordClick = async () => {
     if (newPassword !== confirmNewPassword) {
@@ -46,8 +33,6 @@ const SetPassword = ({ uid }: SetPasswordProps): React.ReactElement => {
     } else {
       try {
         const auth = getAuth(firebaseApp);
-        // try to login the user to get the currentUser from firebase-auth
-        await signInWithEmailAndPassword(auth, userEmail, accessCode);
 
         // update the password for the loggedin user
         const { currentUser } = auth;
@@ -70,10 +55,8 @@ const SetPassword = ({ uid }: SetPasswordProps): React.ReactElement => {
           throw Error("Could not log in user");
         }
         setAuthenticatedUser(user);
-
-        // await authAPIClient.verifyUserByUid(user.id);
       } catch (error) {
-        setErrorMessage(error.message);
+        if (error instanceof Error) setErrorMessage(error.message);
       }
     }
   };

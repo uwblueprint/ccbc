@@ -1,3 +1,4 @@
+import { Auth } from "firebase/auth";
 import React from "react";
 import { Redirect, useLocation } from "react-router-dom";
 
@@ -5,14 +6,16 @@ import {
   RECOVER_EMAIL_MODE,
   RESET_PASSWORD_MODE,
   SETUP_PASSWORD_MODE,
+  VERIFY_USER_MODE,
 } from "../../constants/AuthConstants";
 import { HOME_PAGE } from "../../constants/Routes";
-import { SetPassword } from "./SetPassword";
+import { SetPassword, SetPasswordProps } from "./SetPassword";
+import VerifyAccessCode from "./VerifyAccessCode";
 
-const AuthActions = (): React.ReactElement => {
-  const { search } = useLocation();
-
+const AuthActions = () => {
+  const { search, state } = useLocation<SetPasswordProps>();
   const searchParams = new URLSearchParams(search);
+
   const mode = searchParams.get("mode");
   const uid = searchParams.get("uid");
 
@@ -25,9 +28,11 @@ const AuthActions = (): React.ReactElement => {
     <div>
       {(() => {
         switch (mode) {
-          case SETUP_PASSWORD_MODE:
+          case VERIFY_USER_MODE:
             if (uid === null) return <Redirect to={HOME_PAGE} />;
-            return <SetPassword uid={uid} />;
+            return <VerifyAccessCode uid={uid} />;
+          case SETUP_PASSWORD_MODE:
+            return <SetPassword email={state.email} uid={state.uid} />;
           case RESET_PASSWORD_MODE:
             return <div> RESET PASSWORD </div>; // TODO: replace this with relevant component when completed
           case RECOVER_EMAIL_MODE:

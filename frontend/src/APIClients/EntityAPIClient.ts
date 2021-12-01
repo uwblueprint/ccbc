@@ -42,7 +42,7 @@ const create = async ({
     });
     return data;
   } catch (error) {
-    return error;
+    return error as EntityResponse;
   }
 };
 
@@ -57,7 +57,7 @@ const get = async (): Promise<EntityResponse[]> => {
     });
     return data;
   } catch (error) {
-    return error;
+    return error as EntityResponse[];
   }
 };
 
@@ -73,7 +73,7 @@ const getFile = async (uuid: string): Promise<string> => {
 
     return data.fileURL;
   } catch (error) {
-    return error;
+    return error as string;
   }
 };
 
@@ -92,7 +92,7 @@ const getCSV = async (): Promise<string> => {
 
     return data;
   } catch (error) {
-    return error;
+    return error as string;
   }
 };
 
@@ -114,7 +114,7 @@ const update = async (
     });
     return data;
   } catch (error) {
-    return error;
+    return error as EntityResponse;
   }
 };
 

@@ -130,9 +130,7 @@ const getFirebaseUserByUid = async (uid: string): Promise<User> => {
  */
 const verifyEmail = async (uid: string): Promise<boolean> => {
   try {
-    await baseAPIClient.post(
-      `/auth/verifyEmail/${uid}`
-    );
+    await baseAPIClient.post(`/auth/verifyEmail/${uid}`);
     return true;
   } catch (error) {
     return false;
