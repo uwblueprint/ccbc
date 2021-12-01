@@ -56,6 +56,7 @@ export interface ReviewResponseDTO {
   tags: Tag[];
   updatedAt: number;
   publishedAt: number | null;
+  createdAt: number;
 }
 
 export interface IReviewService {

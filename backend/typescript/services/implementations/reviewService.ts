@@ -40,7 +40,7 @@ class ReviewService implements IReviewService {
             byline: review.byline,
             featured: review.featured,
             published_at: review.publishedAt
-              ? new Date(review.publishedAt * 1000)
+              ? new Date(review.publishedAt)
               : null,
           },
           { transaction: t },
@@ -147,9 +147,10 @@ class ReviewService implements IReviewService {
           books: booksRet,
           tags: tagsRet,
           updatedAt: newReview.updatedAt.getTime(),
-          publishedAt: newReview.published_at
-            ? newReview.published_at.getTime() / 1000
+          publishedAt: newReview.published_at?.getTime()
+            ? newReview.published_at.getTime()
             : null,
+          createdAt: newReview.createdAt.getTime(),
         };
       });
     } catch (error: unknown) {
