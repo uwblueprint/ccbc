@@ -60,7 +60,7 @@ export interface ReviewResponseDTO {
 
 export interface IReviewService {
   /**
-   * create an Entity with the fields given in the DTO, return created Entity
+   * create a review with the fields given in the DTO, return created review
    * @param review fields
    * @returns the created Review
    * @throws Error if creation fails
