@@ -23,7 +23,7 @@ import AuthContext from "../../contexts/AuthContext";
 import CCBCLogo from "../../images/ccbc-logo.png";
 import LoginGraphic from "../../images/Login-graphic.png";
 import { AuthenticatedUser } from "../../types/AuthTypes";
-import firebaseApp from "../../utils/firebase";
+import firebaseApp from "../../utils/Firebase";
 
 export type SetPasswordProps = {
   email: string;

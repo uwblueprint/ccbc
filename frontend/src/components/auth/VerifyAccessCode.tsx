@@ -23,7 +23,7 @@ import AuthContext from "../../contexts/AuthContext";
 /* Images */
 import CCBCLogo from "../../images/ccbc-logo.png";
 import LoginGraphic from "../../images/Login-graphic.png";
-import firebaseApp from "../../utils/firebase";
+import firebaseApp from "../../utils/Firebase";
 import { SetPasswordProps } from "./SetPassword";
 
 const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
