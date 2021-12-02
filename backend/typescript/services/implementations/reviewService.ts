@@ -61,7 +61,7 @@ class ReviewService implements IReviewService {
             maxAge: book.age_range[1].value,
             authors: authorsRet,
             publishers: publishersRet,
-            seriesName: book.series.name,
+            seriesName: book.series?.name || null,
             };
         });
 

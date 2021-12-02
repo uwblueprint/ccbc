@@ -4,7 +4,6 @@ export default [
   {
     reviewId: 100,
     body: "Insert review body here",
-    coverImages: ["cover Image 1", "Cover Image 2"],
     byline: "Insert Byline here",
     featured: true,
     publishedAt: 12445,
