@@ -88,6 +88,8 @@ class ReviewService implements IReviewService {
                 const author = await PgAuthor.findOrCreate({
                   where: {
                     full_name: a.fullName,
+                  },
+                  defaults: {
                     display_name: a.displayName || null,
                     attribution: a.attribution || null,
                   },
