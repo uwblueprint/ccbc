@@ -12,7 +12,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { Auth, getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import React, { useContext, useEffect, useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 
@@ -23,16 +23,14 @@ import AuthContext from "../../contexts/AuthContext";
 /* Images */
 import CCBCLogo from "../../images/ccbc-logo.png";
 import LoginGraphic from "../../images/Login-graphic.png";
-import { AuthenticatedUser } from "../../types/AuthTypes";
 import firebaseApp from "../../utils/firebase";
 import { SetPasswordProps } from "./SetPassword";
 
 const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
-  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
+  const { authenticatedUser } = useContext(AuthContext);
   const [isInvalid, setIsInvalid] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [isVerified, setIsVerified] = useState(false);
-  const [allowSetup, setAllowSetup] = useState(true);
+  const [, setAllowSetup] = useState(true);
   const [accessCode, setAccessCode] = useState("");
   const [email, setEmail] = useState("");
   const history = useHistory<SetPasswordProps>();
@@ -46,14 +44,15 @@ const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
         setIsVerified(firebaseUser.emailVerified);
 
         if (firebaseUser.email === null) {
-          setAllowSetup(false); // user should not be able to setup if we can't get their firebase user
+          // setAllowSetup(false); // user should not be able to setup if we can't get their firebase user
           throw new Error("Unable to setup user. Please try again");
         }
         setEmail(firebaseUser.email);
       } catch (error) {
-        setAllowSetup(false);
+        setAllowSetup(false); // TODO: if something went wrong, we should show an error page
       }
     }
+
     getUserInfo();
   }, [email, isVerified, uid]);
 
@@ -68,9 +67,68 @@ const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
     }
   };
 
+  const onLoginClick = () => {
+    history.push(`/login`);
+  };
+
   if (authenticatedUser) {
     return <Redirect to={HOME_PAGE} />;
   }
+
+  const verifiedContent = (
+    <Stack justify="center" p="25vh 10vw">
+      <Center>
+        <Text textStyle="heading">Account Activated</Text>
+      </Center>
+      <Center>
+        <Text textStyle="body" color="gray.700" marginBottom={50}>
+          Your verification code has already been used to activate your account.
+          Click the button below to log in.
+        </Text>
+      </Center>
+      <FormControl mt="1rem">
+        <Button variant="submit" type="submit" onClick={onLoginClick}>
+          Log in
+        </Button>
+      </FormControl>
+    </Stack>
+  );
+
+  const unverifiedContent = (
+    <Stack justify="center" p="25vh 10vw">
+      <Center>
+        <Text textStyle="heading">Verification Code</Text>
+      </Center>
+      <Center>
+        <Text textStyle="body" color="gray.700">
+          Please enter the verification code sent to your email address
+        </Text>
+      </Center>
+      <FormControl mt="1rem">
+        <Box mt="4%" mb="10%">
+          <FormLabel>Access Code</FormLabel>
+          <Input
+            isInvalid={isInvalid}
+            value={accessCode}
+            type="password"
+            name="accessCode"
+            placeholder="Access Code"
+            onChange={(event) => {
+              setAccessCode(event.target.value);
+              setIsInvalid(false);
+            }}
+            errorBorderColor="crimson"
+          />
+          {isInvalid ? (
+            <FormHelperText color="crimson">Invalid access code</FormHelperText>
+          ) : null}
+        </Box>
+        <Button variant="submit" type="submit" onClick={onSubmitClick}>
+          Done
+        </Button>
+      </FormControl>
+    </Stack>
+  );
 
   return (
     <Grid
@@ -93,43 +151,7 @@ const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
           </Center>
         </Stack>
       </GridItem>
-      <GridItem>
-        <Stack justify="center" p="25vh 10vw">
-          <Center>
-            <Text textStyle="heading">Verification Code</Text>
-          </Center>
-          <Center>
-            <Text textStyle="body" color="gray.700">
-              Please enter the verification code sent to your email address
-            </Text>
-          </Center>
-          <FormControl mt="1rem">
-            <Box mt="4%" mb="10%">
-              <FormLabel>Access Code</FormLabel>
-              <Input
-                isInvalid={isInvalid}
-                value={accessCode}
-                type="password"
-                name="accessCode"
-                placeholder="Access Code"
-                onChange={(event) => {
-                  setAccessCode(event.target.value);
-                  setIsInvalid(false);
-                }}
-                errorBorderColor="crimson"
-              />
-              {isInvalid ? (
-                <FormHelperText color="crimson">
-                  Invalid access code
-                </FormHelperText>
-              ) : null}
-            </Box>
-            <Button variant="submit" type="submit" onClick={onSubmitClick}>
-              Done
-            </Button>
-          </FormControl>
-        </Stack>
-      </GridItem>
+      <GridItem>{isVerified ? verifiedContent : unverifiedContent}</GridItem>
     </Grid>
   );
 };

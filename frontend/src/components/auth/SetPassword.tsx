@@ -1,15 +1,27 @@
 import {
-  Auth,
-  getAuth,
-  signInWithEmailAndPassword,
-  updatePassword,
-} from "firebase/auth";
-import React, { useContext, useEffect, useState } from "react";
+  Box,
+  Button,
+  Center,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Grid,
+  GridItem,
+  Image,
+  Input,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import { getAuth, updatePassword } from "firebase/auth";
+import React, { useContext, useState } from "react";
 import { Redirect } from "react-router-dom";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import { HOME_PAGE } from "../../constants/Routes";
 import AuthContext from "../../contexts/AuthContext";
+/* Images */
+import CCBCLogo from "../../images/ccbc-logo.png";
+import LoginGraphic from "../../images/Login-graphic.png";
 import { AuthenticatedUser } from "../../types/AuthTypes";
 import firebaseApp from "../../utils/firebase";
 
@@ -22,14 +34,14 @@ const SetPassword = ({ email, uid }: SetPasswordProps): React.ReactElement => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [userEmail, setUserEmail] = useState(email);
-  const [accessCode, setAccessCode] = useState("");
+  const [userEmail] = useState(email);
   const [errorMessage, setErrorMessage] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
+  const [isInvalid, setInvalid] = useState(false);
 
   const onSetPasswordClick = async () => {
     if (newPassword !== confirmNewPassword) {
-      // TODO: handle user fields verification
+      setInvalid(true);
+      setErrorMessage("Entered passwords do not match");
     } else {
       try {
         const auth = getAuth(firebaseApp);
@@ -56,7 +68,8 @@ const SetPassword = ({ email, uid }: SetPasswordProps): React.ReactElement => {
         }
         setAuthenticatedUser(user);
       } catch (error) {
-        if (error instanceof Error) setErrorMessage(error.message);
+        setInvalid(true);
+        setErrorMessage("Unable to set password, please try again later");
       }
     }
   };
@@ -65,51 +78,75 @@ const SetPassword = ({ email, uid }: SetPasswordProps): React.ReactElement => {
     return <Redirect to={HOME_PAGE} />;
   }
 
-  const verifiedPage = <div>User already set up. Link has expired</div>;
-
-  const unverifiedPage = (
-    <div style={{ textAlign: "center" }}>
-      <h1>Set Password</h1>
-      <div>
-        <div>
-          <input
-            type="text"
-            value={accessCode}
-            onChange={(event) => setAccessCode(event.target.value)}
-            placeholder="Access Code"
+  return (
+    <Grid
+      overflow="hidden"
+      w="100vw"
+      h="100vh"
+      templateColumns="repeat(2, 1fr)"
+    >
+      <GridItem bg="papayawhip">
+        <Stack>
+          <Image
+            boxSize="50px"
+            m="5vh 5vw"
+            src={CCBCLogo}
+            alt="ccbc-logo"
+            objectFit="cover"
           />
-        </div>
-        <div>
-          <input
-            type="text"
-            value={newPassword}
-            onChange={(event) => setNewPassword(event.target.value)}
-            placeholder="New Password"
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            value={confirmNewPassword}
-            onChange={(event) => setConfirmNewPassword(event.target.value)}
-            placeholder="Confirm Password"
-          />
-        </div>
-        <div>
-          <button
-            className="btn btn-primary"
-            type="button"
-            onClick={onSetPasswordClick}
-          >
-            Set Password
-          </button>
-        </div>
-      </div>
-      <div color="red">{errorMessage}</div>
-    </div>
+          <Center p="5vh">
+            <Image src={LoginGraphic} />
+          </Center>
+        </Stack>
+      </GridItem>
+      <GridItem>
+        <Stack justify="center" p="25vh 10vw">
+          <Center>
+            <Text textStyle="heading">Password Set Up</Text>
+          </Center>
+          <Center>
+            <Text textStyle="body" color="gray.700">
+              A CCBC account was successfully created for you! Set your password
+              below to activate your account.
+            </Text>
+          </Center>
+          <FormControl mt="1rem">
+            <Box mt="4%">
+              <FormLabel>New Password</FormLabel>
+              <Input
+                value={newPassword}
+                name="new password"
+                type="password"
+                placeholder="New Password"
+                onChange={(event) => setNewPassword(event.target.value)}
+              />
+            </Box>
+            <Box mt="4%" mb="10%">
+              <FormLabel>Confirm Password</FormLabel>
+              <Input
+                isInvalid={isInvalid}
+                value={confirmNewPassword}
+                type="password"
+                name="confirm password"
+                placeholder="Confirm Password"
+                onChange={(event) => {
+                  setConfirmNewPassword(event.target.value);
+                  setInvalid(false);
+                }}
+                errorBorderColor="crimson"
+              />
+              {isInvalid ? (
+                <FormHelperText color="crimson">{errorMessage}</FormHelperText>
+              ) : null}
+            </Box>
+            <Button variant="submit" type="submit" onClick={onSetPasswordClick}>
+              Create Account
+            </Button>
+          </FormControl>
+        </Stack>
+      </GridItem>
+    </Grid>
   );
-
-  return isVerified ? verifiedPage : unverifiedPage;
 };
 
 export { SetPassword };

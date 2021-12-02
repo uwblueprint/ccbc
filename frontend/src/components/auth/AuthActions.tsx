@@ -1,4 +1,3 @@
-import { Auth } from "firebase/auth";
 import React from "react";
 import { Redirect, useLocation } from "react-router-dom";
 
@@ -12,7 +11,7 @@ import { HOME_PAGE } from "../../constants/Routes";
 import { SetPassword, SetPasswordProps } from "./SetPassword";
 import VerifyAccessCode from "./VerifyAccessCode";
 
-const AuthActions = () => {
+const AuthActions = (): React.ReactElement => {
   const { search, state } = useLocation<SetPasswordProps>();
   const searchParams = new URLSearchParams(search);
 
