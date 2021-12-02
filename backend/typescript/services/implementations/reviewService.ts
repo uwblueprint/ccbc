@@ -1,5 +1,5 @@
-import { resolve } from "path";
 import { Sequelize } from "sequelize-typescript";
+import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
 import PgTag from "../../models/tag.model";
@@ -8,7 +8,6 @@ import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
 import logger from "../../utilities/logger";
 import { sequelize } from "../../umzug";
-import { testSql as testSequelize } from "../../testUtils/testDb";
 import {
   ReviewRequestDTO,
   IReviewService,
@@ -21,18 +20,12 @@ import {
 
 const Logger = logger(__filename);
 
-// Delete: can delete the book, book_author, and book_publisher
-// Get: return review - but it contains all other info
-
 class ReviewService implements IReviewService {
   db: Sequelize;
 
-  constructor(isTest = false) {
-    if (isTest) {
-      this.db = testSequelize;
-    } else {
-      this.db = sequelize;
-    }
+  constructor(db: Sequelize = sequelize) {
+    this.db = db;
+    if (db !== sequelize) sequelize.close(); // Using test db instead of main db
   }
   
   pgReviewToRet(review: PgReview): ReviewResponseDTO {
@@ -58,6 +51,8 @@ class ReviewService implements IReviewService {
 
             return {
             title: book.title,
+            coverImage: book.cover_image,
+            titlePrefix: book.title_prefix,
             seriesOrder: book.series_order,
             illustrator: book.illustrator,
             translator: book.translator,
@@ -66,7 +61,7 @@ class ReviewService implements IReviewService {
             maxAge: book.age_range[1].value,
             authors: authorsRet,
             publishers: publishersRet,
-            seriesName: "placeholder",
+            seriesName: book.series.name,
             };
         });
 
@@ -81,13 +76,15 @@ class ReviewService implements IReviewService {
     return {
         reviewId: review.id,
         body: review.body,
-        coverImages: review.cover_images,
         byline: review.byline,
         featured: review.featured,
-        books,
-        tags,
+        books: books,
+        tags: tags,
         updatedAt: review.updatedAt.getTime(),
-        publishedAt: review.published_at.getTime(),
+        publishedAt: review.published_at?.getTime()
+          ? review.published_at.getTime()
+          : null,
+        createdAt: review.createdAt.getTime(),
     };
   }
 
@@ -139,7 +136,6 @@ class ReviewService implements IReviewService {
 
   /* eslint-disable class-methods-use-this */
   async createReview(review: ReviewRequestDTO): Promise<ReviewResponseDTO> {
-    let publisher: PgPublisher;
     let result: ReviewResponseDTO;
 
     try {
@@ -147,31 +143,25 @@ class ReviewService implements IReviewService {
         const newReview = await PgReview.create(
           {
             body: review.body,
-            cover_images: review.coverImages,
             byline: review.byline,
             featured: review.featured,
             published_at: review.publishedAt
-              ? new Date(review.publishedAt * 1000)
+              ? new Date(review.publishedAt)
               : null,
           },
           { transaction: t },
         );
 
-        const pgTagsRet: PgTag[] = await Promise.all(
+        const tagsRet: Tag[] = await Promise.all(
           review.tags.map(async (reviewTag) => {
             const tag = await PgTag.findOrCreate({
               where: { name: reviewTag.name },
               transaction: t,
             }).then((data) => data[0]);
             await newReview.$add("tags", tag, { transaction: t });
-            return tag;
+            return { name: tag.name };
           }),
         );
-
-        const tagsRet: Tag[] = [];
-        pgTagsRet.forEach((tag) => {
-          tagsRet.push({ name: tag.name });
-        });
 
         const booksRet: Book[] = await Promise.all(
           review.books.map(async (book: Book) => {
@@ -186,6 +176,7 @@ class ReviewService implements IReviewService {
             const newBook = await PgBook.create(
               {
                 review_id: newReview.id,
+                cover_image: book.coverImage,
                 title_prefix: book.titlePrefix,
                 title: book.title,
                 series_id: series?.id || null,
@@ -208,7 +199,7 @@ class ReviewService implements IReviewService {
                   },
                   transaction: t,
                 }).then((data) => data[0]);
-                newBook.$add("authors", author, { transaction: t });
+                await newBook.$add("authors", author, { transaction: t });
 
                 return {
                   fullName: author.full_name,
@@ -220,13 +211,14 @@ class ReviewService implements IReviewService {
 
             const publishersRet: Publisher[] = await Promise.all(
               book.publishers.map(async (p) => {
-                publisher = await PgPublisher.findOrCreate({
+                const publisher = await PgPublisher.findOrCreate({
                   where: {
                     full_name: p.fullName,
                     publish_year: p.publishYear,
                   },
                   transaction: t,
                 }).then((data) => data[0]);
+                await newBook.$add("publishers", publisher, { transaction: t });
                 return {
                   fullName: publisher.full_name,
                   publishYear: publisher.publish_year,
@@ -234,11 +226,11 @@ class ReviewService implements IReviewService {
               }),
             );
 
-            await newBook.$add("publishers", publisher, { transaction: t });
             await newReview.$add("books", newBook, { transaction: t });
 
             return {
               title: newBook.title,
+              coverImage: newBook.cover_image,
               titlePrefix: newBook.title_prefix,
               seriesOrder: newBook.series_order,
               illustrator: newBook.illustrator,
@@ -256,17 +248,21 @@ class ReviewService implements IReviewService {
         return {
           reviewId: newReview.id,
           body: newReview.body,
-          coverImages: newReview.cover_images,
           byline: newReview.byline,
           featured: newReview.featured,
           books: booksRet,
           tags: tagsRet,
           updatedAt: newReview.updatedAt.getTime(),
-          publishedAt: newReview.published_at.getTime() / 1000,
+          publishedAt: newReview.published_at?.getTime()
+            ? newReview.published_at.getTime()
+            : null,
+          createdAt: newReview.createdAt.getTime(),
         };
       });
     } catch (error: unknown) {
-      Logger.error(`Failed to create entity. Reason = ${error}`);
+      Logger.error(
+        `Failed to create entity. Reason = ${getErrorMessage(error)}`,
+      );
       throw error;
     }
 

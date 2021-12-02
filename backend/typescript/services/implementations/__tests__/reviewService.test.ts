@@ -2,15 +2,21 @@ import {
   ReviewRequestDTO,
   ReviewResponseDTO,
 } from "../../interfaces/IReviewService";
-import ReviewService from "../ReviewService";
+import ReviewService from "../reviewService";
 import testReviews from "../../interfaces/samples/reviewRequest";
 import testResponse from "../../interfaces/samples/reviewResponse";
+import testSql from "../../../testUtils/testDb";
 
 describe("pg reviewService", () => {
   let reviewService: ReviewService;
 
-  beforeAll(() => {
-    reviewService = new ReviewService();
+  beforeAll(async () => {
+    await testSql.sync({ force: true });
+    reviewService = new ReviewService(testSql);
+  });
+  afterAll(async () => {
+    await testSql.sync({ force: true });
+    await testSql.close();
   });
 
   it("post reviews", async () => {
@@ -25,7 +31,6 @@ describe("pg reviewService", () => {
       expect(result.body).toEqual(testResponse[i].body);
       expect(result.books).toEqual(testResponse[i].books);
       expect(result.byline).toEqual(testResponse[i].byline);
-      expect(result.coverImages).toEqual(testResponse[i].coverImages);
       expect(result.featured).toEqual(testResponse[i].featured);
       expect(result.tags).toEqual(testResponse[i].tags);
       /*

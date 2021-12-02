@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ReviewService from "../services/implementations/ReviewService";
+import ReviewService from "../services/implementations/reviewService";
 import {
   IReviewService,
   Tag,
@@ -17,7 +17,6 @@ reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
   try {
     const newReview = await reviewService.createReview({
       body: req.body.body,
-      coverImages: req.body.coverImages,
       byline: req.body.byline,
       featured: req.body.featured,
       /*

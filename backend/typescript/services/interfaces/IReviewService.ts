@@ -17,6 +17,7 @@ export interface Format {
 
 export interface Book {
   title: string;
+  coverImage: string;
   titlePrefix?: string | null;
   seriesOrder?: string | null;
   illustrator?: string[] | null;
@@ -35,7 +36,6 @@ export interface Tag {
 
 export interface ReviewRequestDTO {
   body: string;
-  coverImages: string[];
   byline: string;
   featured: boolean;
   // @TODO: uncomment when christine changes are merged
@@ -48,7 +48,6 @@ export interface ReviewRequestDTO {
 export interface ReviewResponseDTO {
   reviewId: number;
   body: string;
-  coverImages: string[];
   byline: string;
   featured: boolean;
   // @TODO: uncomment when christine changes are merged
@@ -56,12 +55,13 @@ export interface ReviewResponseDTO {
   books: Book[];
   tags: Tag[];
   updatedAt: number;
-  publishedAt: number;
+  publishedAt: number | null;
+  createdAt: number;
 }
 
 export interface IReviewService {
   /**
-   * create an Entity with the fields given in the DTO, return created Entity
+   * create a review with the fields given in the DTO, return created review
    * @param review fields
    * @returns the created Review
    * @throws Error if creation fails

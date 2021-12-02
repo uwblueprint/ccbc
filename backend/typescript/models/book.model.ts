@@ -24,6 +24,9 @@ export default class Book extends Model {
   review_id!: number;
 
   @Column({ type: DataType.STRING })
+  cover_image!: string;
+
+  @Column({ type: DataType.STRING })
   title_prefix?: string;
 
   @Column({ type: DataType.STRING })
