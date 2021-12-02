@@ -61,7 +61,8 @@ class AuthService implements IAuthService {
           firstName: googleUser.firstName,
           lastName: googleUser.lastName,
           email: googleUser.email,
-          role: "User",
+          roleType: "Admin", // TODO: pass in the role as a parameter to function for author and subscriber
+          active: true,
           password: "",
         },
         googleUser.localId,
@@ -186,7 +187,7 @@ class AuthService implements IAuthService {
       const emailBody = `
       Hello,
       <br><br>
-      You have been invited to join CCBC as a ${user.role.toLowerCase()}. Please use the link 
+      You have been invited to join CCBC as a ${user.roleType.toLowerCase()}. Please use the link 
       below to set your new password and verify your account. The link expires in 1 hour.
       <br><br>
       <a href=${setPasswordLink}>Set password and verify account</a>
