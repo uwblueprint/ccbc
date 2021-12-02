@@ -23,24 +23,6 @@ class TagService implements ITagService {
     }
   }
 
-  async createTag(tagName: string): Promise<TagDTO> {
-    let newTag: Tag | null;
-    try {
-      newTag = await Tag.create({
-        name: tagName,
-      });
-    } catch (error) {
-      Logger.error(
-        `Failed to create tag due to error: ${getErrorMessage(error)}`,
-      );
-      throw error;
-    }
-    return {
-      id: newTag.id,
-      name: newTag.name,
-    };
-  }
-
   async deleteTag(id: string): Promise<void> {
     try {
       const tagToDelete = await Tag.findByPk(id, { raw: true });
