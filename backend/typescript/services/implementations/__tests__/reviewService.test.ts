@@ -42,22 +42,27 @@ describe("pg reviewService", () => {
   });
 
   it("get reviews", async () => {
-    const createReviewResult: ReviewResponseDTO[] = await Promise.all(
-      testReviews.map(async (review: ReviewRequestDTO) => {
-        const response = await reviewService.createReview(review);
-        return response;
-      }),
-    );
-
     const getReviewsResult: ReviewResponseDTO[] = await reviewService.getReviews();
-    expect(getReviewsResult.length).toEqual(createReviewResult.length);
+    expect(getReviewsResult.length).toEqual(testReviews.length);
+
+    // Sort actual and expected responses to make sure they are in the same order
+    getReviewsResult.sort((a, b) => a.body.localeCompare(b.body));
+    let testResponseCopy = [...testResponse].sort((a, b) => a.body.localeCompare(b.body));
+    getReviewsResult.forEach((result, _) => {
+        result.books.sort((a, b) => a.title.localeCompare(b.title));
+        result.tags.sort((a, b) => a.name.localeCompare(b.name));
+    });
+    testResponseCopy.forEach((result, _) => {
+        result.books.sort((a, b) => a.title.localeCompare(b.title));
+        result.tags.sort((a, b) => a.name.localeCompare(b.name));
+    });
 
     getReviewsResult.forEach((result, i) => {
-      expect(result.body).toEqual(testResponse[i].body);
-      expect(result.books).toEqual(testResponse[i].books);
-      expect(result.byline).toEqual(testResponse[i].byline);
-      expect(result.featured).toEqual(testResponse[i].featured);
-      expect(result.tags).toEqual(testResponse[i].tags);
+      expect(result.body).toEqual(testResponseCopy[i].body);
+      expect(result.books).toEqual(testResponseCopy[i].books);
+      expect(result.byline).toEqual(testResponseCopy[i].byline);
+      expect(result.featured).toEqual(testResponseCopy[i].featured);
+      expect(result.tags).toEqual(testResponseCopy[i].tags);
       /*
        * @TODO: uncomment when christine changes are merged
        * expect(result.created_by).toEqual(testReviews[i].createdBy);
@@ -67,20 +72,13 @@ describe("pg reviewService", () => {
   });
 
   it("get individual review", async () => {
-    const createReviewResult: ReviewResponseDTO[] = await Promise.all(
-      testReviews.map(async (review: ReviewRequestDTO) => {
-        const response = await reviewService.createReview(review);
-        return response;
-      }),
-    );
-
     const getReviewsResult: ReviewResponseDTO[] = await reviewService.getReviews();
 
-    createReviewResult.forEach(async (result, i) => {
+    getReviewsResult.forEach(async (result, i) => {
       const getReviewResult: ReviewResponseDTO = await reviewService.getReview(
-        createReviewResult[i].reviewId.toString()
+        getReviewsResult[i].reviewId.toString()
       );
-      expect(getReviewResult.reviewId).toEqual(createReviewResult[i].reviewId);
+      expect(getReviewResult.reviewId).toEqual(getReviewsResult[i].reviewId);
       expect(getReviewResult.body).toEqual(testResponse[i].body);
       expect(getReviewResult.books).toEqual(testResponse[i].books);
       expect(getReviewResult.byline).toEqual(testResponse[i].byline);
