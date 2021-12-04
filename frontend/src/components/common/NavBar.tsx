@@ -9,7 +9,7 @@ import AuthContext from "../../contexts/AuthContext";
 
 const NavBar = (): React.ReactElement => {
   const { authenticatedUser } = useContext(AuthContext);
-  const isAdmin = authenticatedUser?.role === UserRole.Admin;
+  const isAdmin = authenticatedUser?.roleType === UserRole.Admin;
 
   return (
     <Flex
