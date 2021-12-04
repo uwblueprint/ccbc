@@ -14,11 +14,11 @@ const customTheme = extendTheme({
       fontSize: "1vw",
     },
     h4: {
-      color: "#fff", margin: "30px",
       fontFamily: "Coustard",
-      fontSize: "20px";
-      fontWeight: 400;
-    }
+      color: "#fff",
+      margin: "30px",
+      fontSize: "1vw",
+    },
   },
   components: {
     Button: {
@@ -31,21 +31,14 @@ const customTheme = extendTheme({
         },
       },
     },
-    NavContainer: {
+    Heading: {
       variants: {
-        "default": {
-          display: "flex",
-          flexDirection: "row",
-          height: "calc(96px - 32px)",
-          width: "calc(100vw - 160px)",
-          backgroundColor: "#2D5577",
-          alignItems: "center",
-          padding: "16px 80px",
-          position: "absolute",
-          justifyContent: "space-between",
-          top: 0
-        }
-    }
+        nav: {
+          color: "#fff",
+          margin: "30px",
+        },
+      },
+    },
   },
   config: {
     initialColorMode: "light",

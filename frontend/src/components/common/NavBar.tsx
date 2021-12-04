@@ -1,3 +1,4 @@
+import { Box, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { HiUser } from "react-icons/hi";
 import { Link } from "react-router-dom";
@@ -11,30 +12,41 @@ const NavBar = (): React.ReactElement => {
   const isAdmin = authenticatedUser?.role === UserRole.Admin;
 
   return (
-    <div variant="default"> 
-      <div style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+    <Flex
+      direction="row"
+      h="calc(96px - 32px)"
+      w="calc(100vw - 160px)"
+      bgColor="#2D5577"
+      align="center"
+      pt="16px"
+      pb="16px"
+      pl="80px"
+      pr="80px"
+      position="absolute"
+      justify="space-between"
+      top="0"
+    >
+      <Flex direction="row" align="center">
         <Link to="/">
-          <img
+          <Image
             src={logo}
             alt="CCBC Logo"
-            style={{
-              height: "60px",
-              borderRadius: "50px",
-              marginRight: "30px",
-            }}
+            boxSize="60px"
+            borderRadius="full"
           />
         </Link>
-        <h4 style={{ color: "#fff", margin: "30px" }}>Home</h4>
-        <Link to="/dashboard"></Link>
-        {isAdmin && (
-          <h4 style={{ color: "#fff", margin: "30px" }}>Admin Dashboard</h4>
-        )}
+        {/* <Heading style={{ color: "#fff", margin: "30px" }}>Home</Heading> */}
+        <Text textStyle="h4" ml="60px">
+          Home
+        </Text>
+        <Link to="/dashboard">
+          {isAdmin && <Text textStyle="h4">Admin Dashboard</Text>}
         </Link>
-      </div>
-      <div>
+      </Flex>
+      <Flex>
         <HiUser style={{ color: "#fff", height: "40px", width: "40px" }} />
-      </div>
-    </div>
+      </Flex>
+    </Flex>
   );
 };
 
