@@ -1,22 +1,39 @@
-import { Box, Flex, Heading, Image, Text, Menu, MenuButton, MenuGroup, MenuItem, MenuList, MenuDivider } from "@chakra-ui/react";
-import React, { useContext } from "react";
+import {
+  Box,
+  Flex,
+  Heading,
+  Image,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuGroup,
+  MenuItem,
+  MenuList,
+  Text,
+} from "@chakra-ui/react";
+import React, { useContext, useEffect } from "react";
 import { HiUser } from "react-icons/hi";
 import { Link } from "react-router-dom";
-import Logout from "../auth/Logout";
 
-import logo from "../../ccbc.png";
+import logo from "../../assets/ccbc.png";
 import { UserRole } from "../../constants/Enums";
 import AuthContext from "../../contexts/AuthContext";
+import Logout from "../auth/Logout";
 
 const NavBar = (): React.ReactElement => {
   const { authenticatedUser } = useContext(AuthContext);
   const isAdmin = authenticatedUser?.roleType === UserRole.Admin;
-  var userName = "";
-  var userEmail = "";
-  if(authenticatedUser && authenticatedUser.firstName && authenticatedUser.lastName){
+  let userName = "";
+  let userEmail = "";
+  if (
+    authenticatedUser &&
+    authenticatedUser.firstName &&
+    authenticatedUser.lastName
+  ) {
     userName = authenticatedUser?.firstName + authenticatedUser?.lastName;
     userEmail = authenticatedUser.email;
   }
+
   return (
     <Flex
       direction="row"
@@ -55,27 +72,35 @@ const NavBar = (): React.ReactElement => {
             <HiUser style={{ color: "#fff", height: "40px", width: "40px" }} />
           </MenuButton>
           <MenuList>
-            <Text textStyle="body" fontSize="xl" fontWeight="bold" >{userName}</Text>
-            <Text color="#4A5568" textStyle="body" fontSize="md">{userEmail}</Text>
+            <Text textStyle="body" fontSize="xl" fontWeight="bold">
+              {userName}
+            </Text>
+            <Text color="#4A5568" textStyle="body" fontSize="md">
+              {userEmail}
+            </Text>
             <MenuDivider />
             {isAdmin && (
-                <div className="Section 2">
-                  <Link to="">
-                    <Text textStyle="body" fontSize="md">Invite new admin</Text>
-                  </Link>
-                  <Link to="">
-                    <Text textStyle="body" fontSize="md">Change password</Text>
-                  </Link>
-                  <MenuDivider />
-                </div>
+              <div className="Section 2">
+                <Link to="\">
+                  <Text textStyle="body" fontSize="md">
+                    Invite new admin
+                  </Text>
+                </Link>
+                <Link to="\">
+                  <Text textStyle="body" fontSize="md">
+                    Change password
+                  </Text>
+                </Link>
+                <MenuDivider />
+              </div>
             )}
-            <Link to="">
-              <Text textStyle="body" fontSize="md">Sign out</Text>
+            <Link to="\">
+              <Text textStyle="body" fontSize="md">
+                Sign out
+              </Text>
             </Link>
           </MenuList>
         </Menu>
-
-        
       </Flex>
     </Flex>
   );
