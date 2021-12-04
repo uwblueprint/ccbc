@@ -37,8 +37,8 @@ const NavBar = (): React.ReactElement => {
   return (
     <Flex
       direction="row"
-      h="calc(96px - 32px)"
-      w="calc(100vw - 160px)"
+      h="96px"
+      w="100vw"
       bgColor="#2D5577"
       align="center"
       pt="16px"

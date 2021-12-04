@@ -17,7 +17,7 @@ const customTheme = extendTheme({
       fontFamily: "Coustard",
       color: "#fff",
       margin: "30px",
-      fontSize: "1vw",
+      fontSize: "20px",
     },
   },
   components: {
