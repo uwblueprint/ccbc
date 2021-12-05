@@ -79,7 +79,6 @@ const AdminDashboard = (): React.ReactElement => {
         name: "authors",
         label: "Author",
         options: {
-          setCellProps: () => ({ style: { maxWidth: "400px" } }),
           customBodyRender: bodyRenderFunction,
         },
       },
