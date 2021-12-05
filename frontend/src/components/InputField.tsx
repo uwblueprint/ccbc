@@ -5,7 +5,7 @@ import {
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
-import React, { ChangeEvent, useState } from "react";
+import React from "react";
 
 type InputFieldProps = {
   id: number;
@@ -13,6 +13,11 @@ type InputFieldProps = {
   placeholder: string;
   required: boolean;
   handleDelete: (id: number) => void;
+  value: string;
+  handleInputChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    id: number,
+  ) => void;
 };
 
 const InputField = ({
@@ -21,11 +26,9 @@ const InputField = ({
   placeholder,
   required,
   handleDelete,
+  value,
+  handleInputChange,
 }: InputFieldProps): React.ReactElement => {
-  const [value, setValue] = useState("");
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
-  };
   return (
     <InputGroup>
       <Input
@@ -33,17 +36,19 @@ const InputField = ({
         value={value}
         name={name}
         placeholder={placeholder}
-        onChange={handleChange}
+        onChange={(e) => handleInputChange(e, id)}
         isRequired={required}
       />
       <InputRightElement>
-        <IconButton
-          aria-label="Remove field"
-          icon={<CloseIcon />}
-          onClick={() => {
-            handleDelete(id);
-          }}
-        />
+        {id !== 0 && (
+          <IconButton
+            aria-label="Remove field"
+            icon={<CloseIcon />}
+            onClick={() => {
+              handleDelete(id);
+            }}
+          />
+        )}
       </InputRightElement>
     </InputGroup>
   );

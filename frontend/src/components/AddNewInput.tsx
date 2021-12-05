@@ -1,5 +1,5 @@
 import { Button, Text } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import InputField from "./InputField";
 
@@ -16,39 +16,44 @@ const AddNewInput = ({
   placeholder,
   required,
 }: AddNewInputProps): React.ReactElement => {
-  const [lastFieldID, setLastFieldID] = useState<number>(0);
-  const [inputFields, setInputFields] = useState<React.ReactElement[]>([]);
+  const [inputFields, setInputFields] = useState<string[]>([""]);
 
-  const handleRemoveField = (id: number) => {
-    const newFields = inputFields.filter((field) => field.props.id !== id);
-    setInputFields(newFields);
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    const list = [...inputFields];
+    list[index] = e.target.value;
+    setInputFields(list);
+  };
+
+  const handleRemoveField = (index: number) => {
+    const list = [...inputFields];
+    list.splice(index, 1);
+    setInputFields(list);
   };
 
   const handleAddField = () => {
-    setLastFieldID(lastFieldID + 1);
-    setInputFields([
-      ...inputFields,
-      <InputField
-        id={lastFieldID}
-        key={lastFieldID}
-        name={name}
-        placeholder={placeholder}
-        required={required}
-        handleDelete={handleRemoveField}
-      />,
-    ]);
+    setInputFields([...inputFields, ""]);
   };
-
-  useEffect(() => {
-    handleAddField();
-  }, []);
 
   return (
     <>
       <Text>{label}</Text>
-      {inputFields.map((field) => field)}
+      {inputFields.map((field, index) => (
+        <InputField
+          id={index}
+          key={index}
+          name={name}
+          placeholder={placeholder}
+          required={required}
+          handleDelete={handleRemoveField}
+          value={field}
+          handleInputChange={handleInputChange}
+        />
+      ))}
       <Button variant="link" onClick={handleAddField}>
-        + Add new {label}
+        + Add New {label}
       </Button>
     </>
   );
