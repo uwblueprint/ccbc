@@ -7,14 +7,9 @@ const Author = ({ val }: any): React.ReactElement => {
 
   const compareSize = () => {
     if (textElementRef.current) {
-      console.log(
-        textElementRef.current.scrollWidth,
-        textElementRef.current.clientWidth,
-      );
       const compare =
         textElementRef.current.scrollWidth > textElementRef.current.clientWidth;
       setIsOverflowing(compare);
-      console.log(compare, isOverflowing);
     }
   };
 
