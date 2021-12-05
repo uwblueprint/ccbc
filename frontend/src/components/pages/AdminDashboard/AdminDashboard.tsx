@@ -8,9 +8,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
-import MUIDataTable, { MUIDataTableColumn } from "mui-datatables";
+import MUIDataTable, {
+  CustomHeadLabelRenderOptions,
+  MUIDataTableColumn,
+} from "mui-datatables";
 import React from "react";
 
+import { ReviewResponse } from "../../../APIClients/ReviewAPIClient";
 import Author from "./Author";
 import data from "./mockData";
 
@@ -62,6 +66,9 @@ const AdminDashboard = (): React.ReactElement => {
     });
 
   const getTableColumns = (): MUIDataTableColumn[] => {
+    const bodyRenderFunction = (val: string) => {
+      return <Author val={val} />;
+    };
     const columns: MUIDataTableColumn[] = [
       {
         name: "title",
@@ -73,9 +80,7 @@ const AdminDashboard = (): React.ReactElement => {
         label: "Author",
         options: {
           setCellProps: () => ({ style: { maxWidth: "400px" } }),
-          customBodyRender: (val) => {
-            return <Author val={val} />;
-          },
+          customBodyRender: bodyRenderFunction,
         },
       },
       {
@@ -96,28 +101,35 @@ const AdminDashboard = (): React.ReactElement => {
     ];
 
     columns.forEach((column) => {
-      if (column.options) {
-        column.options.setCellHeaderProps = () => ({ style: { backgroundColor: "#EDF2F7" }})
-        column.options.customHeadLabelRender = (columnMeta) => {
-          return (
-            <Text style={{ fontFamily: "Coustard", fontSize: "18px" }}>
-              {columnMeta.label}
-            </Text>
-          );
-        }
-        if (column.name !== "authors") {
-          column.options.customBodyRender = (val) => {
-            return (
-              <Text
-                style={{
-                  fontFamily: "Open Sans",
-                  fontSize: "16px"
-                }}
-              >
-                {val}
-              </Text>
-            );
-          }
+      const currColumn = column;
+      const currBodyRenderFunction = (val: string) => {
+        return (
+          <Text
+            style={{
+              fontFamily: "Open Sans",
+              fontSize: "16px",
+            }}
+          >
+            {val}
+          </Text>
+        );
+      };
+      const headLabelRenderFunction = (
+        columnMeta: CustomHeadLabelRenderOptions,
+      ) => {
+        return (
+          <Text style={{ fontFamily: "Coustard", fontSize: "18px" }}>
+            {columnMeta.label}
+          </Text>
+        );
+      };
+      if (currColumn.options) {
+        currColumn.options.setCellHeaderProps = () => ({
+          style: { backgroundColor: "#EDF2F7" },
+        });
+        currColumn.options.customHeadLabelRender = headLabelRenderFunction;
+        if (currColumn.name !== "authors") {
+          currColumn.options.customBodyRender = currBodyRenderFunction;
         }
       }
     });
@@ -132,18 +144,19 @@ const AdminDashboard = (): React.ReactElement => {
     let featured;
     let published;
 
-    data.forEach((review) => {
+    data.forEach((review: ReviewResponse) => {
       const names: string[] = [];
       if (review.books[0].seriesName === null) {
         title = review.books[0].title;
       } else {
         title = review.books[0].seriesName;
       }
-      review.books[0].authors.forEach((author: any) => {
-        if (author.displayName === null) {
+      review.books[0].authors.forEach((author) => {
+        const authorDisplayName = author.displayName;
+        if (authorDisplayName === null) {
           names.push(author.fullName);
         } else {
-          names.push(author.displayName);
+          names.push(authorDisplayName);
         }
       });
       authors = names.join(", ");
