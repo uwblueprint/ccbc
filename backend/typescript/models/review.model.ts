@@ -18,9 +18,6 @@ export default class Review extends Model {
   @Column({ type: DataType.TEXT })
   body!: string;
 
-  @Column({ type: DataType.ARRAY(DataType.STRING) })
-  cover_images!: string[];
-
   @Column({ type: DataType.STRING })
   byline!: string;
 
@@ -33,7 +30,7 @@ export default class Review extends Model {
   //  created_by!: number;
 
   @Column({ type: DataType.DATE })
-  published_at!: Date;
+  published_at?: Date;
 
   @BelongsToMany(() => Tag, () => ReviewTag)
   tags!: Tag[];
