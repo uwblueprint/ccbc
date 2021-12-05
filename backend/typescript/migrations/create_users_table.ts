@@ -3,39 +3,47 @@ import { DataType } from "sequelize-typescript";
 import { Migration } from "../umzug";
 
 export const up: Migration = async ({ context: sequelize }) => {
-  await sequelize.getQueryInterface().createTable("reviews", {
+  await sequelize.getQueryInterface().createTable("users", {
     id: {
       type: DataType.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    body: {
-      type: DataType.TEXT,
-      allowNull: false,
-    },
-    byline: {
+    auth_id: {
       type: DataType.STRING,
       allowNull: false,
     },
-    featured: {
+    role_type: {
+      type: DataType.ENUM("Admin", "Subscriber", "Author"),
+      allowNull: false,
+    },
+    first_name: {
+      type: DataType.STRING,
+      allowNull: false,
+    },
+    last_name: {
+      type: DataType.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataType.STRING,
+      allowNull: false,
+    },
+    active: {
       type: DataType.BOOLEAN,
       allowNull: false,
     },
-    published_at: {
-      type: DataType.DATE,
-      allowNull: true,
-    },
     createdAt: {
-      allowNull: false,
       type: DataType.DATE,
+      allowNull: false,
     },
     updatedAt: {
-      allowNull: false,
       type: DataType.DATE,
+      allowNull: false,
     },
   });
 };
 
 export const down: Migration = async ({ context: sequelize }) => {
-  await sequelize.getQueryInterface().dropTable("reviews");
+  await sequelize.getQueryInterface().dropTable("users");
 };
