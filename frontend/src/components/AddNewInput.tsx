@@ -28,9 +28,7 @@ const AddNewInput = ({
   };
 
   const handleRemoveField = (index: number) => {
-    const list = [...inputFields];
-    list.splice(index, 1);
-    setInputFields(list);
+    setInputFields(inputFields.filter((_, i) => i !== index));
   };
 
   const handleAddField = () => {
