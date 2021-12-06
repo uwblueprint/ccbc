@@ -37,6 +37,13 @@ const AdminDashboard = (): React.ReactElement => {
             borderRadius: "10px",
           },
         },
+        MUIDataTableFilterList: {
+          root: {
+            backgroundColor: "#EDF2F7",
+            margin: "0px",
+            padding: "0px 16px 0px 16px",
+          },
+        },
         MuiToolbar: {
           root: {
             backgroundColor: "#EDF2F7",
@@ -90,12 +97,24 @@ const AdminDashboard = (): React.ReactElement => {
       {
         name: "featured",
         label: "Featured",
-        options: {},
+        options: {
+          customFilterListOptions: {
+            render: (v) => {
+              return [`Featured: ${v}`];
+            },
+          },
+        },
       },
       {
         name: "published",
         label: "Published",
-        options: {},
+        options: {
+          customFilterListOptions: {
+            render: (v) => {
+              return [`Published: ${v}`];
+            },
+          },
+        },
       },
     ];
 
