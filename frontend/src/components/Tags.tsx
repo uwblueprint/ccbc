@@ -9,12 +9,10 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { components } from "react-select";
-import AsyncCreatableSelect from "react-select/async-creatable";
+import Creatable from "react-select/creatable";
 
 import tagAPIClient from "../APIClients/TagAPIClient";
 import { TagResponse } from "../types/TagTypes";
-
-const { Option } = components;
 
 const customStyles = {
   option: (provided: any) => ({
@@ -34,6 +32,14 @@ const customStyles = {
 
 const Tags = (): React.ReactElement => {
   const [tagOptions, setTagOptions] = useState<TagResponse[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    tagAPIClient.getTags().then((newTags) => {
+      setTagOptions(newTags);
+      setIsLoading(false);
+    });
+  }, []);
 
   // Filtering on search
   // const filterTags = (inputValue: string) => {
@@ -41,14 +47,6 @@ const Tags = (): React.ReactElement => {
   //     i.label.toLowerCase().includes(inputValue.toLowerCase())
   //   );
   // };
-
-  // On initial load
-  const loadOptions = (inputValue: any, callback: any) => {
-    tagAPIClient.getTags().then((newTags) => {
-      setTagOptions(newTags);
-      callback(newTags);
-    });
-  };
 
   // const handleChange = async (selectedTags: TagResponse[]) => {
   //   // Checking if tag was removed
@@ -76,6 +74,7 @@ const Tags = (): React.ReactElement => {
   const handleDeleteClick = (e: any, option: TagResponse) => {
     e.stopPropagation();
     e.preventDefault();
+    setIsLoading(true);
 
     // To do: confirm deletion modal popup
 
@@ -85,17 +84,17 @@ const Tags = (): React.ReactElement => {
     // });
 
     // Remove tag from dropdown
-    console.log("tags b4", tagOptions);
-    const options = tagOptions.filter((x) => x !== option);
-    const index = tagOptions.indexOf(option);
-    setTagOptions(options);
-    // tagOptions.splice(index, 1);
+    const options = tagOptions.filter((x) => x.value !== option.value);
+    setTimeout(() => {
+      // Only using set time out to simulate backend delete request. Remove this when actually deleting
+      setTagOptions(options);
+      setIsLoading(false);
+    }, 2000);
   };
 
   const CustomOption = (props: any) => {
-    console.log("props", props);
     const { children, data } = props;
-    
+
     return (
       <components.Option {...props}>
         {children}
@@ -108,18 +107,16 @@ const Tags = (): React.ReactElement => {
       </components.Option>
     );
   };
-  console.log("tagoptions", tagOptions);
   return (
     <Container mb={12}>
       <FormControl p={4}>
         <FormLabel>Tags</FormLabel>
-        <AsyncCreatableSelect
+        <Creatable
           isMulti
+          isLoading={isLoading}
           placeholder="Select some tags..."
           closeMenuOnSelect={false}
-          loadOptions={loadOptions}
-          defaultOptions
-          // options={tagOptions}
+          options={tagOptions}
           // onChange={(e: any) => handleChange(e)}
           // onCreateOption={handleCreate}
           styles={customStyles}
