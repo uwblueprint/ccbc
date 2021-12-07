@@ -23,7 +23,7 @@ class TagService implements ITagService {
     }
   }
 
-  async deleteTag(id: string): Promise<void> {
+  async deleteTag(id: string): Promise<String> {
     try {
       const tagToDelete = await Tag.findByPk(id, { raw: true });
       const deleteResult: number | null = await Tag.destroy({ where: { id } });
@@ -31,6 +31,7 @@ class TagService implements ITagService {
       if (!tagToDelete || !deleteResult) {
         throw Error(`Tag id ${id} not found`);
       }
+      return id;
     } catch (error: unknown) {
       Logger.error(`Failed to delete tag: ${getErrorMessage(error)}`);
       throw error;

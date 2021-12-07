@@ -57,6 +57,33 @@ paths:
           description: Not Found.
         '500':
           description: Invalid Request.
+    post:
+      description: Create a new tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+        '201':
+          description: Successfully created a new entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+        '401':
+          description: Unauthorized
+        '500':
+          description: Invalid request
+
 
   /tags/{id}:
     delete:
