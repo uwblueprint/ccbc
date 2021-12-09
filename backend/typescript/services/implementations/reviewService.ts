@@ -12,10 +12,8 @@ import {
   ReviewRequestDTO,
   IReviewService,
   ReviewResponseDTO,
-  BookRequest,
   Publisher,
   Tag,
-  AuthorRequest,
   BookResponse,
   AuthorResponse,
 } from "../interfaces/IReviewService";

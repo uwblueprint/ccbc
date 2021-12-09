@@ -37,7 +37,7 @@ export const BookRequest = t.iface([], {
   "formats": t.union(t.array("Format"), "null"),
   "minAge": "number",
   "maxAge": "number",
-  "authors": t.array("Author"),
+  "authors": t.array("AuthorRequest"),
   "publishers": t.array("Publisher"),
   "seriesName": t.opt(t.union("string", "null")),
 });
