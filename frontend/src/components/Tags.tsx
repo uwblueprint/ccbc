@@ -17,6 +17,9 @@ import { TagResponse } from "../types/TagTypes";
 const customStyles = {
   option: (provided: any) => ({
     ...provided,
+    "display": "flex",
+    "padding-left": "5%",
+    "justify-content": "space-between",
     ":hover": {
       color: "gray.100",
     },
@@ -41,34 +44,15 @@ const Tags = (): React.ReactElement => {
     });
   }, []);
 
-  // Filtering on search
-  // const filterTags = (inputValue: string) => {
-  //   return tagOptions.filter((i) =>
-  //     i.label.toLowerCase().includes(inputValue.toLowerCase())
-  //   );
-  // };
+  const handleCreate = (inputValue: string) => {
+    setIsLoading(true);
 
-  // const handleChange = async (selectedTags: TagResponse[]) => {
-  //   // Checking if tag was removed
-  //   if (selectedTags.length < tags.length) {
-  //     const removedElement = tags.filter((x) => selectedTags.indexOf(x) < 0)[0];
+    // TODO: Create and set tag
+    // newTag = tagAPIClient.createTag(inputValue);
+    // setTagOptions([...tagOptions, newTag]);
 
-  //     // Delete the tag in DB and update tags state
-  //     // await tagAPIClient.deleteTagById(removedElement.value);
-  //     setTags(selectedTags);
-  //   } else {
-  //     // else tag was added
-  //     setTags(selectedTags);
-  //   }
-  // };
-
-  // const handleCreate = (inputValue: string) => {
-  //   setTimeout(() => {
-  //     // temp - to add in create req
-  //     const newTag = { value: "5", label: inputValue };
-  //     setTagOptions([...tagOptions, newTag]);
-  //   }, 100);
-  // };
+    setIsLoading(false);
+  };
 
   // Delete tag completely
   const handleDeleteClick = (e: any, option: TagResponse) => {
@@ -79,17 +63,15 @@ const Tags = (): React.ReactElement => {
     // To do: confirm deletion modal popup
 
     // Delete the tag in DB and update tags state
-    // tagAPIClient.deleteTagById(option).then((response) => {
-    //   console.log("response", response);
-    // });
+    tagAPIClient.deleteTagById(option.value).then((response) => {
+      console.log("response", response);
+    });
 
     // Remove tag from dropdown
     const options = tagOptions.filter((x) => x.value !== option.value);
-    setTimeout(() => {
-      // Only using set time out to simulate backend delete request. Remove this when actually deleting
-      setTagOptions(options);
-      setIsLoading(false);
-    }, 2000);
+    setTagOptions(options);
+    setIsLoading(false);
+
   };
 
   const CustomOption = (props: any) => {
@@ -117,10 +99,10 @@ const Tags = (): React.ReactElement => {
           placeholder="Select some tags..."
           closeMenuOnSelect={false}
           options={tagOptions}
-          // onChange={(e: any) => handleChange(e)}
-          // onCreateOption={handleCreate}
+          onCreateOption={handleCreate}
           styles={customStyles}
           components={{ Option: CustomOption }}
+          formatCreateLabel={ (tagName: string) => `Add ${tagName}`}
         />
       </FormControl>
     </Container>
