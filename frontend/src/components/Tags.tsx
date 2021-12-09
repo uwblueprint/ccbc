@@ -52,7 +52,7 @@ const Tags = (): React.ReactElement => {
     });
   }, []);
 
-  const handleCreate = (inputValue: string) => {
+  const handleCreate = () => {
     setIsLoading(true);
 
     // TODO: Create and set tag
