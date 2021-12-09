@@ -12,10 +12,12 @@ import {
   ReviewRequestDTO,
   IReviewService,
   ReviewResponseDTO,
-  Book,
+  BookRequest,
   Publisher,
   Tag,
-  Author,
+  AuthorRequest,
+  BookResponse,
+  AuthorResponse,
 } from "../interfaces/IReviewService";
 
 const Logger = logger(__filename);
@@ -56,7 +58,7 @@ class ReviewService implements IReviewService {
           tagsRet.push({ name: tag.name });
         }
 
-        const booksRet: Book[] = [];
+        const booksRet: BookResponse[] = [];
         for (let bIndex = 0; bIndex < review.books.length; bIndex += 1) {
           const book = review.books[bIndex];
 
@@ -84,7 +86,7 @@ class ReviewService implements IReviewService {
             { transaction: t },
           );
 
-          const authorsRet: Author[] = [];
+          const authorsRet: AuthorResponse[] = [];
           for (let index = 0; index < book.authors.length; index += 1) {
             const author = await PgAuthor.findOrCreate({
               where: {
@@ -97,8 +99,8 @@ class ReviewService implements IReviewService {
             await newBook.$add("authors", author, { transaction: t });
             authorsRet.push({
               fullName: author.full_name,
-              displayName: author.display_name,
-              attribution: author.attribution,
+              displayName: author.display_name || null,
+              attribution: author.attribution || null,
             });
           }
 
@@ -123,10 +125,10 @@ class ReviewService implements IReviewService {
           booksRet.push({
             title: newBook.title,
             coverImage: newBook.cover_image,
-            titlePrefix: newBook.title_prefix,
-            seriesOrder: newBook.series_order,
-            illustrator: newBook.illustrator,
-            translator: newBook.translator,
+            titlePrefix: newBook.title_prefix || null,
+            seriesOrder: newBook.series_order || null,
+            illustrator: newBook.illustrator || null,
+            translator: newBook.translator || null,
             formats: newBook.formats,
             minAge: newBook.age_range[0].value,
             maxAge: newBook.age_range[1].value,

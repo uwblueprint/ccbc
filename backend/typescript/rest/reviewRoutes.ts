@@ -3,7 +3,7 @@ import ReviewService from "../services/implementations/reviewService";
 import {
   IReviewService,
   Tag,
-  Book,
+  BookRequest,
 } from "../services/interfaces/IReviewService";
 import { sendErrorResponse } from "../utilities/errorResponse";
 import reviewRequestDtoValidator from "../middlewares/validators/reviewValidators";
@@ -21,7 +21,7 @@ reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
        *@TODO: uncomment when christine changes are merged
        *createdBy: req.body.createdBy,
        */
-      books: req.body.books as Book[],
+      books: req.body.books as BookRequest[],
       tags: req.body.tags as Tag[],
       publishedAt: req.body.publishedAt,
     });
