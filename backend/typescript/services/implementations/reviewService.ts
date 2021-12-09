@@ -2,6 +2,8 @@ import { Sequelize } from "sequelize-typescript";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
+import PgBookAuthor from "../../models/book_author.model";
+import PgBookPublisher from "../../models/book_publisher.model";
 import PgTag from "../../models/tag.model";
 import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
@@ -26,6 +28,98 @@ class ReviewService implements IReviewService {
   constructor(db: Sequelize = sequelize) {
     this.db = db;
     if (db !== sequelize) sequelize.close(); // Using test db instead of main db
+  }
+
+  async deleteReview(id: string): Promise<void> {
+    try {
+        const deleteResult = await this.db.transaction(async (t) => {
+            const reviewToDelete = await PgReview.findByPk(id, {
+                transaction: t,
+                include: [{ all: true, nested: true }],
+            });
+
+            if (!reviewToDelete) {
+                throw new Error(`Review id ${id} not found`);
+            }
+
+            reviewToDelete.books.forEach((book: PgBook)  => {
+                // Delete authors (if necessary)
+                book.authors.forEach((author: PgAuthor) => {
+                    const bookAuthors = PgBookAuthor.findAll({
+                        where: { author_id: author.id }, 
+                    });
+                    if ( bookAuthors.length <= 1 ) { // Delete author
+                        PgAuthor.destroy({
+                            where: { id: [ author.id ] },
+                        });
+                        PgBookAuthor.destroy({
+                            where: { author_id: author.id },
+                        });
+                    }
+                });
+
+                // Delete publishers (if necessary)
+                book.publishers.forEach((publisher: PgPublisher) => {
+                    const bookPublishers = PgBookPublisher.findAll({
+                        where: { publisher_id: publisher.id }, 
+                    });
+                    if ( bookPublishers.length <= 1 ) { // Delete author
+                        PgPublisher.destroy({
+                            where: { id: [ publisher.id ] },
+                        });
+                        PgBookPublisher.destroy({
+                            where: { publisher_id: publisher.id },
+                        });
+                    }
+                });
+
+                // Delete series (if necessary)
+                const booksInSeries = PgBook.findAll({
+                    where: { series_id: book.series.id }, 
+                });
+                if ( booksInSeries.length <= 1 ) { // Delete author
+                    PgSeries.destroy({
+                        where: { id: [ series_id ] },
+                    });
+                }
+            });
+
+            // Delete books
+            reviewToDelete.books.forEach((book: PgBook) => {
+                PgBook.destroy({
+                    where: { id: [ book.id ] }
+                });
+            });
+            
+            // Delete tags (if necessary)
+            reviewToDelete.tags.forEach((tag: PgTag) => {
+                const reviewTags = PgReviewTag.findAll({
+                    where: { tag_id: tag.id }, 
+                });
+                if ( reviewTags.length <= 1 ) { // Delete author
+                    PgTag.destroy({
+                        where: { id: [ tag.id ] },
+                    });
+                    PgReviewTag.destroy({
+                        where: { tag_id: tag.id },
+                    });
+                }
+            });
+
+            return await PgReview.destroy({
+                where: { id: [ id ] },
+            });
+        });
+
+        if (!deleteResult) {
+        throw new Error(`Review id ${id} not found`);
+        }
+    } catch (error) {
+      Logger.error(
+        `Failed to delete Review. Reason = ${getErrorMessage(error)}`,
+      );
+      throw error;
+    }
   }
   
   pgReviewToRet(review: PgReview): ReviewResponseDTO {
