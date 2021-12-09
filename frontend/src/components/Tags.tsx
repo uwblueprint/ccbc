@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { CloseIcon } from "@chakra-ui/icons";
 import {
@@ -13,13 +14,16 @@ import Creatable from "react-select/creatable";
 
 import tagAPIClient from "../APIClients/TagAPIClient";
 import { TagResponse } from "../types/TagTypes";
+import ConfirmationModal from "./common/ConfirmationModal";
+
+const EmptyTag = { value: "", label: "" };
 
 const customStyles = {
   option: (provided: any) => ({
     ...provided,
-    "display": "flex",
-    "paddingLeft": "5%",
-    "justifyContent": "space-between",
+    display: "flex",
+    paddingLeft: "5%",
+    justifyContent: "space-between",
     ":hover": {
       color: "gray.100",
     },
@@ -36,6 +40,10 @@ const customStyles = {
 const Tags = (): React.ReactElement => {
   const [tagOptions, setTagOptions] = useState<TagResponse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [tagToDelete, setTagToDelete] = useState<TagResponse>(EmptyTag);
+
+  const onClose = () => setShowModal(false);
 
   useEffect(() => {
     tagAPIClient.getTags().then((newTags) => {
@@ -55,23 +63,27 @@ const Tags = (): React.ReactElement => {
   };
 
   // Delete tag completely
-  const handleDeleteClick = (e: any, option: TagResponse) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setIsLoading(true);
-
-    // To do: confirm deletion modal popup
+  const handleDelete = async () => {
+    // Condition to ensure there is a tag to be deleted
+    if (tagToDelete.value === "") {
+      return;
+    }
 
     // Delete the tag in DB and update tags state
-    tagAPIClient.deleteTagById(option.value).then((response) => {
-      console.log("response", response);
-    });
+    await tagAPIClient.deleteTagById(tagToDelete.value);
 
-    // Remove tag from dropdown
-    const options = tagOptions.filter((x) => x.value !== option.value);
+    // Remove tag from dropdown and update state
+    const options = tagOptions.filter((x) => x.value !== tagToDelete.value);
     setTagOptions(options);
-    setIsLoading(false);
+    setShowModal(false);
+    setTagToDelete(EmptyTag);
+  };
 
+  const confirmDelete = (e: any, option: TagResponse) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setShowModal(true);
+    setTagToDelete(option);
   };
 
   const CustomOption = (props: any) => {
@@ -84,13 +96,20 @@ const Tags = (): React.ReactElement => {
           aria-label="Delete Button"
           size="xs"
           icon={<CloseIcon />}
-          onClick={(e) => handleDeleteClick(e, data)}
+          onClick={(e) => confirmDelete(e, data)}
         />
       </components.Option>
     );
   };
+
   return (
     <Container mb={12}>
+      <ConfirmationModal
+        showModal={showModal}
+        onClose={onClose}
+        handleDelete={() => handleDelete}
+        tagToDelete={tagToDelete}
+      />
       <FormControl p={4}>
         <FormLabel>Tags</FormLabel>
         <Creatable
@@ -102,7 +121,7 @@ const Tags = (): React.ReactElement => {
           onCreateOption={handleCreate}
           styles={customStyles}
           components={{ Option: CustomOption }}
-          formatCreateLabel={ (tagName: string) => `Add ${tagName}`}
+          formatCreateLabel={(tagName: string) => `Add ${tagName}`}
         />
       </FormControl>
     </Container>
