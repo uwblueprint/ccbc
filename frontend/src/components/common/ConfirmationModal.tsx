@@ -17,12 +17,13 @@ interface Props {
   showModal: boolean;
   onClose: any;
   handleDelete: any;
-  tagToDelete?: any;
+  itemToDelete?: any;
+  deleteType: string;
 }
 
 function ConfirmationModal(props: Props) {
   const cancelRef = useRef<HTMLButtonElement>(null);
-  const { showModal, onClose, handleDelete, tagToDelete } = props;
+  const { showModal, onClose, handleDelete, itemToDelete, deleteType } = props;
 
   return (
     <>
@@ -35,7 +36,7 @@ function ConfirmationModal(props: Props) {
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               <Text textStyle="heading" fontSize="lg">
-                Delete Tag
+                Delete {deleteType}
               </Text>
             </AlertDialogHeader>
 
@@ -53,7 +54,7 @@ function ConfirmationModal(props: Props) {
               </Button>
               <Button
                 colorScheme="red"
-                onClick={handleDelete(tagToDelete)}
+                onClick={handleDelete(itemToDelete)}
                 ml={3}
               >
                 <Text textStyle="body" fontSize="sm">
