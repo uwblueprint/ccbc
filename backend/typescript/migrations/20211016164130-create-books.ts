@@ -17,6 +17,10 @@ export const up: Migration = async ({ context: sequelize }) => {
         key: "id",
       },
     },
+    cover_images: {
+      type: DataType.STRING,
+      allowNull: false,
+    },
     title: {
       allowNull: false,
       type: DataType.STRING,

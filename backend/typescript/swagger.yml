@@ -29,6 +29,77 @@ components:
       properties:
         idToken:
           type: string
+    Author: 
+      type: object
+      required:
+        - fullName
+      properties:
+        fullName:
+          type: string
+        displayName:
+          type: string
+        attribution:
+          type: string
+    Publisher:
+      type: object
+      required:
+        - fullName, publishYear
+      properties:
+        fullName:
+          type: string
+        publishYear:
+          type: string
+    Format:
+      type: object
+      required:
+        - format, price, isbn
+      properties:
+        format:
+          type: string
+        price:
+          type: string
+        isbn: 
+          type: string
+    Tag:
+      type: object
+      required: 
+        - name
+      properties:
+        name:
+          type: string
+    Book:
+      type: object
+      required: 
+        - title, formats, minAge, maxAge, authors, publishers
+      properties:
+        title:
+          type: string
+        titlePrefix:
+          type: string
+        seriesOrder:
+          type: string
+        illustrator:
+          type: string
+        translator: 
+          type: string
+        formats:
+          type: array
+          items: 
+            $ref: '#/components/schemas/Format'
+        minAge: 
+          type: number
+        maxAge: 
+          type: number
+        authors: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Author'
+        publishers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Publisher'
+        seriesName:
+          type: string
 
 paths:
   /tags:
@@ -687,3 +758,80 @@ paths:
           description: Unauthorized
         '500':
           description: Invalid request
+
+
+  /reviews:
+    post:
+      summary: Create a review
+      tags: 
+        - Review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - body, coverImages, byline, featured, createdBy, books, tags
+              properties:
+                body:
+                  type: string
+                coverImages:
+                  type: array
+                  items:
+                    type: string
+                byline:
+                  type: string
+                featured:
+                  type: boolean
+                createdBy: 
+                  type: number
+                publishedAt: 
+                  type: number
+                books: 
+                  type: array
+                  items: 
+                    $ref: '#/components/schemas/Book'
+                tags:
+                  type: array
+                  items: 
+                    $ref: '#/components/schemas/Tag'
+      responses:
+        '201':
+          description: Successfully created a new review
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                    - reviewId, body, cover_images, byline, featured, books, tags, updatedAt, publishedAt
+                properties:
+                  reviewId:
+                    type: number
+                  body: 
+                    type: string
+                  cover_images:
+                    type: array
+                    items:
+                      type: string
+                  byline:
+                    type: string
+                  featured:
+                    type: boolean
+                  books:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+                  tags:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+                  updatedAt: 
+                    type: number
+                  publishedAt: 
+                    type: number
+        '401':
+          description: Unauthorized
+        '500':
+          description: Invalid request
+          
