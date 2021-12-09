@@ -102,7 +102,7 @@ class ReviewService implements IReviewService {
         return ReviewService.pgReviewToRet(review);
       });
     } catch (error: unknown) {
-      Logger.error(`Failed to get review. Reason = ${error}`);
+      Logger.error(`Failed to get review. Reason = ${getErrorMessage(error)}`);
       throw error;
     }
 
