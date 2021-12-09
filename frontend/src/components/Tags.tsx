@@ -1,5 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/jsx-props-no-spreading, @typescript-eslint/no-explicit-any */
 
 import { CloseIcon } from "@chakra-ui/icons";
 import {
