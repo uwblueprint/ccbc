@@ -7,6 +7,7 @@ import { TagDTO } from "../../types";
 const Logger = logger(__filename);
 
 class TagService implements ITagService {
+  /* eslint-disable class-methods-use-this */
   async getTags(): Promise<TagDTO[]> {
     try {
       const tags: Tag[] = await Tag.findAll();
@@ -23,7 +24,8 @@ class TagService implements ITagService {
     }
   }
 
-  async deleteTag(id: string): Promise<String> {
+  /* eslint-disable class-methods-use-this */
+  async deleteTag(id: string): Promise<string> {
     try {
       const tagToDelete = await Tag.findByPk(id, { raw: true });
       const deleteResult: number | null = await Tag.destroy({ where: { id } });

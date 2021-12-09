@@ -14,5 +14,5 @@ export interface ITagService {
    * @param tagId tag id
    * @throws Error if deletion fails
    */
-  deleteTag(id: string): Promise<String>;
+  deleteTag(id: string): Promise<string>;
 }
