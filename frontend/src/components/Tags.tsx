@@ -18,8 +18,8 @@ const customStyles = {
   option: (provided: any) => ({
     ...provided,
     "display": "flex",
-    "padding-left": "5%",
-    "justify-content": "space-between",
+    "paddingLeft": "5%",
+    "justifyContent": "space-between",
     ":hover": {
       color: "gray.100",
     },
