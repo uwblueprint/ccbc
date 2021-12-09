@@ -63,7 +63,6 @@ class ReviewService implements IReviewService {
       };
     });
 
-    // const pgTags = await review.$get("tags");
     const tags: Tag[] = review.tags.map((tag: PgTag) => {
       return {
         name: tag.name,
