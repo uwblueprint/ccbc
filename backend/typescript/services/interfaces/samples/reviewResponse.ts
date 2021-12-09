@@ -1,9 +1,10 @@
 import { ReviewResponseDTO } from "../IReviewService";
 
+// NOTE: for testing purposes, please name the "body" field of each object to be a unique integer in increasing order.
 export default [
   {
     reviewId: 100,
-    body: "Insert review body here",
+    body: "1",
     byline: "Insert Byline here",
     featured: true,
     publishedAt: 12445,
@@ -75,7 +76,7 @@ export default [
   },
   {
     reviewId: 100,
-    body: "Insert review body here",
+    body: "2",
     byline: "Insert Byline here",
     featured: true,
     publishedAt: 12445,
