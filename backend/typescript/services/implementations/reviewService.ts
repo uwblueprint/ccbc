@@ -31,6 +31,9 @@ class ReviewService implements IReviewService {
   }
 
   /* eslint-disable class-methods-use-this, no-await-in-loop */
+  /* 
+    as per https://eslint.org/docs/rules/no-await-in-loop, it is recommended to use loops to execute dependent async tasks
+  */
   async createReview(review: ReviewRequestDTO): Promise<ReviewResponseDTO> {
     let result: ReviewResponseDTO;
 
