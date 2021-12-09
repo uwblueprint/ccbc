@@ -4,14 +4,17 @@ import {
   IReviewService,
   Tag,
   BookRequest,
+  ReviewResponseDTO,
 } from "../services/interfaces/IReviewService";
 import { sendErrorResponse } from "../utilities/errorResponse";
 import reviewRequestDtoValidator from "../middlewares/validators/reviewValidators";
+import sendResponseByMimeType from "../utilities/responseUtil";
 
 const reviewRouter: Router = Router();
 const reviewService: IReviewService = new ReviewService();
 
 reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
+  const contentType = req.headers["content-type"];
   try {
     const newReview = await reviewService.createReview({
       body: req.body.body,
@@ -25,7 +28,12 @@ reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
       tags: req.body.tags as Tag[],
       publishedAt: req.body.publishedAt,
     });
-    res.status(201).json(newReview);
+    await sendResponseByMimeType<ReviewResponseDTO>(
+      res,
+      200,
+      contentType,
+      newReview,
+    );
   } catch (e: unknown) {
     sendErrorResponse(e, res);
   }
