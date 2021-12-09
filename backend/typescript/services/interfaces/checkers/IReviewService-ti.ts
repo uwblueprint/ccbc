@@ -6,8 +6,8 @@ import * as t from "ts-interface-checker";
 
 export const Author = t.iface([], {
   fullName: "string",
-  displayName: t.opt("string"),
-  attribution: t.opt("string"),
+  displayName: t.opt(t.union("string", "null")),
+  attribution: t.opt(t.union("string", "null")),
 });
 
 export const Publisher = t.iface([], {
@@ -23,16 +23,17 @@ export const Format = t.iface([], {
 
 export const Book = t.iface([], {
   title: "string",
-  titlePrefix: t.opt("string"),
-  seriesOrder: t.opt("string"),
-  illustrator: t.opt(t.array("string")),
-  translator: t.opt(t.array("string")),
-  formats: t.array("Format"),
+  coverImage: "string",
+  titlePrefix: t.opt(t.union("string", "null")),
+  seriesOrder: t.opt(t.union("string", "null")),
+  illustrator: t.opt(t.union(t.array("string"), "null")),
+  translator: t.opt(t.union(t.array("string"), "null")),
+  formats: t.union(t.array("Format"), "null"),
   minAge: "number",
   maxAge: "number",
   authors: t.array("Author"),
   publishers: t.array("Publisher"),
-  seriesName: t.opt("string"),
+  seriesName: t.opt(t.union("string", "null")),
 });
 
 export const Tag = t.iface([], {
@@ -41,11 +42,9 @@ export const Tag = t.iface([], {
 
 export const ReviewRequestDTO = t.iface([], {
   body: "string",
-  coverImages: t.array("string"),
   byline: "string",
   featured: "boolean",
-  createdBy: "number",
-  publishedAt: t.opt("number"),
+  publishedAt: t.opt(t.union("number", "null")),
   books: t.array("Book"),
   tags: t.array("Tag"),
 });
@@ -53,13 +52,13 @@ export const ReviewRequestDTO = t.iface([], {
 export const ReviewResponseDTO = t.iface([], {
   reviewId: "number",
   body: "string",
-  cover_images: t.array("string"),
   byline: "string",
   featured: "boolean",
   books: t.array("Book"),
   tags: t.array("Tag"),
   updatedAt: "number",
-  publishedAt: "number",
+  publishedAt: t.union("number", "null"),
+  createdAt: "number",
 });
 
 export const IReviewService = t.iface([], {
@@ -67,7 +66,6 @@ export const IReviewService = t.iface([], {
     "ReviewResponseDTO",
     t.param("entity", "ReviewRequestDTO"),
   ),
-  getReview: t.func("ReviewResponseDTO", t.param("id", "string")),
 });
 
 const exportedTypeSuite: t.ITypeSuite = {

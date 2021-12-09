@@ -13,9 +13,9 @@ import {
   IReviewService,
   ReviewResponseDTO,
   Book,
-  Author,
   Publisher,
   Tag,
+  Author,
 } from "../interfaces/IReviewService";
 
 const Logger = logger(__filename);
@@ -133,8 +133,8 @@ class ReviewService implements IReviewService {
 
     return result;
   }
-
-  /* eslint-disable class-methods-use-this */
+  
+  /* eslint-disable class-methods-use-this, no-await-in-loop */
   async createReview(review: ReviewRequestDTO): Promise<ReviewResponseDTO> {
     let result: ReviewResponseDTO;
 
@@ -152,100 +152,95 @@ class ReviewService implements IReviewService {
           { transaction: t },
         );
 
-        const tagsRet: Tag[] = await Promise.all(
-          review.tags.map(async (reviewTag) => {
-            const tag = await PgTag.findOrCreate({
-              where: { name: reviewTag.name },
+        const tagsRet: Tag[] = [];
+        for (let i = 0; i < review.tags.length; i += 1) {
+          const tag = await PgTag.findOrCreate({
+            where: { name: review.tags[i].name },
+            transaction: t,
+          }).then((data) => data[0]);
+          await newReview.$add("tags", tag, { transaction: t });
+          tagsRet.push({ name: tag.name });
+        }
+
+        const booksRet: Book[] = [];
+        for (let bIndex = 0; bIndex < review.books.length; bIndex += 1) {
+          const book = review.books[bIndex];
+
+          let series = null;
+          if (book.seriesName) {
+            series = await PgSeries.findOrCreate({
+              where: { name: book.seriesName },
               transaction: t,
             }).then((data) => data[0]);
-            await newReview.$add("tags", tag, { transaction: t });
-            return { name: tag.name };
-          }),
-        );
+          }
 
-        const booksRet: Book[] = await Promise.all(
-          review.books.map(async (book: Book) => {
-            let series = null;
-            if (book.seriesName) {
-              series = await PgSeries.findOrCreate({
-                where: { name: book.seriesName },
-                transaction: t,
-              }).then((data) => data[0]);
-            }
+          const newBook = await PgBook.create(
+            {
+              review_id: newReview.id,
+              cover_image: book.coverImage,
+              title_prefix: book.titlePrefix,
+              title: book.title,
+              series_id: series?.id || null,
+              series_order: book.seriesOrder || null,
+              illustrator: book.illustrator || null,
+              translator: book.translator || null,
+              formats: book.formats,
+              age_range: [book.minAge, book.maxAge],
+            },
+            { transaction: t },
+          );
 
-            const newBook = await PgBook.create(
-              {
-                review_id: newReview.id,
-                cover_image: book.coverImage,
-                title_prefix: book.titlePrefix,
-                title: book.title,
-                series_id: series?.id || null,
-                series_order: book.seriesOrder || null,
-                illustrator: book.illustrator || null,
-                translator: book.translator || null,
-                formats: book.formats,
-                age_range: [book.minAge, book.maxAge],
+          const authorsRet: Author[] = [];
+          for (let index = 0; index < book.authors.length; index += 1) {
+            const author = await PgAuthor.findOrCreate({
+              where: {
+                full_name: book.authors[index].fullName,
+                display_name: book.authors[index].displayName || null,
+                attribution: book.authors[index].attribution || null,
               },
-              { transaction: t },
-            );
+              transaction: t,
+            }).then((data) => data[0]);
+            await newBook.$add("authors", author, { transaction: t });
+            authorsRet.push({
+              fullName: author.full_name,
+              displayName: author.display_name,
+              attribution: author.attribution,
+            });
+          }
 
-            const authorsRet: Author[] = await Promise.all(
-              book.authors.map(async (a) => {
-                const author = await PgAuthor.findOrCreate({
-                  where: {
-                    full_name: a.fullName,
-                  },
-                  defaults: {
-                    display_name: a.displayName || null,
-                    attribution: a.attribution || null,
-                  },
-                  transaction: t,
-                }).then((data) => data[0]);
-                await newBook.$add("authors", author, { transaction: t });
+          const publishersRet: Publisher[] = [];
+          for (let i = 0; i < book.publishers.length; i += 1) {
+            const publisher = await PgPublisher.findOrCreate({
+              where: {
+                full_name: book.publishers[i].fullName,
+                publish_year: book.publishers[i].publishYear,
+              },
+              transaction: t,
+            }).then((data) => data[0]);
+            await newBook.$add("publishers", publisher, { transaction: t });
+            publishersRet.push({
+              fullName: publisher.full_name,
+              publishYear: publisher.publish_year,
+            });
+          }
 
-                return {
-                  fullName: author.full_name,
-                  displayName: author.display_name,
-                  attribution: author.attribution,
-                };
-              }),
-            );
+          await newReview.$add("books", newBook, { transaction: t });
 
-            const publishersRet: Publisher[] = await Promise.all(
-              book.publishers.map(async (p) => {
-                const publisher = await PgPublisher.findOrCreate({
-                  where: {
-                    full_name: p.fullName,
-                    publish_year: p.publishYear,
-                  },
-                  transaction: t,
-                }).then((data) => data[0]);
-                await newBook.$add("publishers", publisher, { transaction: t });
-                return {
-                  fullName: publisher.full_name,
-                  publishYear: publisher.publish_year,
-                };
-              }),
-            );
-
-            await newReview.$add("books", newBook, { transaction: t });
-
-            return {
-              title: newBook.title,
-              coverImage: newBook.cover_image,
-              titlePrefix: newBook.title_prefix,
-              seriesOrder: newBook.series_order,
-              illustrator: newBook.illustrator,
-              translator: newBook.translator,
-              formats: newBook.formats,
-              minAge: newBook.age_range[0].value,
-              maxAge: newBook.age_range[1].value,
-              authors: authorsRet,
-              publishers: publishersRet,
-              seriesName: series?.name || null,
-            };
-          }),
-        );
+          booksRet.push({
+            title: newBook.title,
+            coverImage: newBook.cover_image,
+            titlePrefix: newBook.title_prefix,
+            seriesOrder: newBook.series_order,
+            illustrator: newBook.illustrator,
+            translator: newBook.translator,
+            formats: newBook.formats,
+            minAge: newBook.age_range[0].value,
+            maxAge: newBook.age_range[1].value,
+            authors: authorsRet,
+            publishers: publishersRet,
+            seriesName: series?.name || null,
+          });
+        }
 
         return {
           reviewId: newReview.id,
