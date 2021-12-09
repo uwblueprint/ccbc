@@ -108,7 +108,8 @@ const Tags = (): React.ReactElement => {
         showModal={showModal}
         onClose={onClose}
         handleDelete={() => handleDelete}
-        tagToDelete={tagToDelete}
+        itemToDelete={tagToDelete}
+        deleteType="Tag"
       />
       <FormControl p={4}>
         <FormLabel>Tags</FormLabel>
