@@ -52,9 +52,6 @@ class ReviewService implements IReviewService {
                         PgAuthor.destroy({
                             where: { id: [ author.id ] },
                         });
-                        PgBookAuthor.destroy({
-                            where: { author_id: author.id },
-                        });
                     }
                 });
 
@@ -63,12 +60,9 @@ class ReviewService implements IReviewService {
                     const bookPublishers = PgBookPublisher.findAll({
                         where: { publisher_id: publisher.id }, 
                     });
-                    if ( bookPublishers.length <= 1 ) { // Delete author
+                    if ( bookPublishers.length <= 1 ) { // Delete publisher
                         PgPublisher.destroy({
                             where: { id: [ publisher.id ] },
-                        });
-                        PgBookPublisher.destroy({
-                            where: { publisher_id: publisher.id },
                         });
                     }
                 });
@@ -77,7 +71,7 @@ class ReviewService implements IReviewService {
                 const booksInSeries = PgBook.findAll({
                     where: { series_id: book.series.id }, 
                 });
-                if ( booksInSeries.length <= 1 ) { // Delete author
+                if ( booksInSeries.length <= 1 ) { // Delete series
                     PgSeries.destroy({
                         where: { id: [ series_id ] },
                     });
@@ -99,9 +93,6 @@ class ReviewService implements IReviewService {
                 if ( reviewTags.length <= 1 ) { // Delete author
                     PgTag.destroy({
                         where: { id: [ tag.id ] },
-                    });
-                    PgReviewTag.destroy({
-                        where: { tag_id: tag.id },
                     });
                 }
             });
