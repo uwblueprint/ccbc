@@ -42,19 +42,22 @@ describe("pg reviewService", () => {
   });
 
   it("get reviews", async () => {
-    const getReviewsResult: ReviewResponseDTO[] = await reviewService.getReviews();
+    const getReviewsResult: ReviewResponseDTO[] =
+      await reviewService.getReviews();
     expect(getReviewsResult.length).toEqual(testReviews.length);
 
     // Sort actual and expected responses to make sure they are in the same order
     getReviewsResult.sort((a, b) => a.body.localeCompare(b.body));
-    let testResponseCopy = [...testResponse].sort((a, b) => a.body.localeCompare(b.body));
-    getReviewsResult.forEach((result, _) => {
-        result.books.sort((a, b) => a.title.localeCompare(b.title));
-        result.tags.sort((a, b) => a.name.localeCompare(b.name));
+    const testResponseCopy = [...testResponse].sort((a, b) =>
+      a.body.localeCompare(b.body),
+    );
+    getReviewsResult.forEach((result) => {
+      result.books.sort((a, b) => a.title.localeCompare(b.title));
+      result.tags.sort((a, b) => a.name.localeCompare(b.name));
     });
-    testResponseCopy.forEach((result, _) => {
-        result.books.sort((a, b) => a.title.localeCompare(b.title));
-        result.tags.sort((a, b) => a.name.localeCompare(b.name));
+    testResponseCopy.forEach((result) => {
+      result.books.sort((a, b) => a.title.localeCompare(b.title));
+      result.tags.sort((a, b) => a.name.localeCompare(b.name));
     });
 
     getReviewsResult.forEach((result, i) => {
@@ -72,11 +75,12 @@ describe("pg reviewService", () => {
   });
 
   it("get individual review", async () => {
-    const getReviewsResult: ReviewResponseDTO[] = await reviewService.getReviews();
+    const getReviewsResult: ReviewResponseDTO[] =
+      await reviewService.getReviews();
 
     getReviewsResult.forEach(async (result, i) => {
       const getReviewResult: ReviewResponseDTO = await reviewService.getReview(
-        getReviewsResult[i].reviewId.toString()
+        getReviewsResult[i].reviewId.toString(),
       );
       expect(getReviewResult.reviewId).toEqual(getReviewsResult[i].reviewId);
       expect(getReviewResult.body).toEqual(testResponse[i].body);
