@@ -4,6 +4,7 @@ import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
 import PgBookAuthor from "../../models/book_author.model";
 import PgBookPublisher from "../../models/book_publisher.model";
+import PgReviewTag from "../../models/review_tag.model";
 import PgTag from "../../models/tag.model";
 import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
@@ -30,6 +31,8 @@ class ReviewService implements IReviewService {
     if (db !== sequelize) sequelize.close(); // Using test db instead of main db
   }
 
+// TODO: deal with bug: lets say we have 2 reviews all the same tag (and only that tag). if one of the reviews get deleted, the tag gets deleted (but it shouldn't)
+// not recreatable when it's 3 reviews instead of 2
   async deleteReview(id: string): Promise<void> {
     try {
         const deleteResult = await this.db.transaction(async (t) => {
@@ -45,37 +48,62 @@ class ReviewService implements IReviewService {
             reviewToDelete.books.forEach((book: PgBook)  => {
                 // Delete authors (if necessary)
                 book.authors.forEach((author: PgAuthor) => {
-                    const bookAuthors = PgBookAuthor.findAll({
+                    PgBookAuthor.findAll({
                         where: { author_id: author.id }, 
-                    });
-                    if ( bookAuthors.length <= 1 ) { // Delete author
-                        PgAuthor.destroy({
-                            where: { id: [ author.id ] },
+                    }).then( (ret: PgBookAuthor[]) => {
+                        if ( ret.length <= 1 ) { // Delete author
+                            PgAuthor.destroy({
+                                where: { id: [ author.id ] },
+                            });
+                        }
+                        PgBookAuthor.destroy({
+                            where: { book_id: book.id },
                         });
-                    }
+                    });
                 });
 
                 // Delete publishers (if necessary)
                 book.publishers.forEach((publisher: PgPublisher) => {
-                    const bookPublishers = PgBookPublisher.findAll({
+                    PgBookPublisher.findAll({
                         where: { publisher_id: publisher.id }, 
-                    });
-                    if ( bookPublishers.length <= 1 ) { // Delete publisher
-                        PgPublisher.destroy({
-                            where: { id: [ publisher.id ] },
+                    }).then( (ret: PgBookPublisher[]) => {
+                        if ( ret.length <= 1 ) { // Delete publisher
+                            PgPublisher.destroy({
+                                where: { id: [ publisher.id ] },
+                            });
+                        }
+                        PgBookPublisher.destroy({
+                            where: { book_id: book.id },
                         });
-                    }
+                    });
                 });
 
                 // Delete series (if necessary)
-                const booksInSeries = PgBook.findAll({
+                PgBook.findAll({
                     where: { series_id: book.series.id }, 
+                }).then( (ret: PgBook[]) => {
+                    if ( ret.length <= 1 ) { // Delete series
+                        PgSeries.destroy({
+                            where: { id: [ book.series.id ] },
+                        });
+                    }      
                 });
-                if ( booksInSeries.length <= 1 ) { // Delete series
-                    PgSeries.destroy({
-                        where: { id: [ series_id ] },
+            });
+
+            // Delete tags (if necessary)
+            reviewToDelete.tags.forEach((tag: PgTag) => {
+                const reviewTags = PgReviewTag.findAll({
+                    where: { tag_id: tag.id }, 
+                }).then( (ret: PgReviewTag[]) => {
+                    if ( ret.length <= 1 ) { // Delete tags
+                        PgTag.destroy({
+                            where: { id: [ tag.id ] },
+                        });
+                    }
+                    PgReviewTag.destroy({
+                        where: { review_id: id },
                     });
-                }
+                });
             });
 
             // Delete books
@@ -83,18 +111,6 @@ class ReviewService implements IReviewService {
                 PgBook.destroy({
                     where: { id: [ book.id ] }
                 });
-            });
-            
-            // Delete tags (if necessary)
-            reviewToDelete.tags.forEach((tag: PgTag) => {
-                const reviewTags = PgReviewTag.findAll({
-                    where: { tag_id: tag.id }, 
-                });
-                if ( reviewTags.length <= 1 ) { // Delete author
-                    PgTag.destroy({
-                        where: { id: [ tag.id ] },
-                    });
-                }
             });
 
             return await PgReview.destroy({
