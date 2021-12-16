@@ -9,9 +9,10 @@ const CreateReview = (): React.ReactElement => {
       <h1>Create Review Page!</h1>
       <Tags />
       <AddNewInput
+        id="authors"
         label="Author"
-        name="name"
-        placeholder="placeholder"
+        name="author-name"
+        placeholder="Text Here"
         required
       />
     </div>
