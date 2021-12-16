@@ -32,7 +32,7 @@ const InputField = ({
   return (
     <InputGroup>
       <Input
-        mb="9px"
+        mb={2}
         value={value}
         name={name}
         placeholder={placeholder}

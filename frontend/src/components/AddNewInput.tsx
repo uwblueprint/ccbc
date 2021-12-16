@@ -1,4 +1,4 @@
-import { Button, Text } from "@chakra-ui/react";
+import { Button, FormLabel } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 import InputField from "./InputField";
@@ -37,7 +37,7 @@ const AddNewInput = ({
 
   return (
     <>
-      <Text>{label}</Text>
+      <FormLabel mb={2}>{label}(s)</FormLabel>
       {inputFields.map((field, index) => (
         <InputField
           id={index}
@@ -50,8 +50,8 @@ const AddNewInput = ({
           handleInputChange={handleInputChange}
         />
       ))}
-      <Button variant="link" onClick={handleAddField}>
-        + Add New {label}
+      <Button colorScheme="blue" variant="link" onClick={handleAddField}>
+        + Add new {label.toLowerCase()}
       </Button>
     </>
   );
