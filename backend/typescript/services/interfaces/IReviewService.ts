@@ -3,6 +3,7 @@ export interface AuthorRequest {
   displayName?: string | null;
   attribution?: string | null;
 }
+
 export interface AuthorResponse {
   fullName: string;
   displayName: string | null;
@@ -30,10 +31,11 @@ export interface BookRequest {
   formats: Format[] | null;
   minAge: number;
   maxAge: number;
-  authors: Author[];
+  authors: AuthorRequest[];
   publishers: Publisher[];
   seriesName?: string | null;
 }
+
 export interface BookResponse {
   title: string;
   coverImage: string;
