@@ -761,4 +761,97 @@ paths:
           description: Unauthorized
         '500':
           description: Invalid request
+
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Review
+      description: Returns the list of all reviews
+      responses:
+        '200':
+          description: Successfully returned a list of reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                      - reviewId, body, cover_images, byline, featured, books, tags, updatedAt, publishedAt
+                  properties:
+                    reviewId:
+                      type: number
+                    body: 
+                      type: string
+                    cover_images:
+                      type: array
+                      items:
+                        type: string
+                    byline:
+                      type: string
+                    featured:
+                      type: boolean
+                    books:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Book'
+                    tags:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Tag'
+                    updatedAt: 
+                      type: number
+                    publishedAt: 
+                      type: number
+        '401':
+          description: Unauthorized
+        '500':
+          description: Invalid request
+  
+  /reviews/{reviewId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Review
+      description: Returns the review with the specified id
+      responses:
+        '200':
+          description: Successfully returned the review
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                    - reviewId, body, cover_images, byline, featured, books, tags, updatedAt, publishedAt
+                properties:
+                  reviewId:
+                    type: number
+                  body: 
+                    type: string
+                  cover_images:
+                    type: array
+                    items:
+                      type: string
+                  byline:
+                    type: string
+                  featured:
+                    type: boolean
+                  books:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+                  tags:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+                  updatedAt: 
+                    type: number
+                  publishedAt: 
+                    type: number
+        '401':
+          description: Unauthorized
+        '500':
+          description: Invalid request
           

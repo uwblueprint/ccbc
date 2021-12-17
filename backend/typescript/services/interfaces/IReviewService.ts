@@ -89,4 +89,6 @@ export interface IReviewService {
    */
 
   createReview(entity: ReviewRequestDTO): Promise<ReviewResponseDTO>;
+  getReview(id: string): Promise<ReviewResponseDTO>;
+  getReviews(): Promise<ReviewResponseDTO[]>;
 }
