@@ -73,7 +73,7 @@ This will take down the database and all it's data too.
 If you don't need to rebuild packages between switching branches, you probably don't _need_ `--volumes`.
 
 ## Updating Models
-Interface validation is done using the [ts-interface-checker libaray](https://github.com/gristlabs/ts-interface-checker). For that, you need to generate an interface checker file every time a change is made to interface in [IReviewService.ts](https://github.com/uwblueprint/ccbc/blob/development/backend/typescript/services/interfaces/IReviewService.ts) by executing the command:
+Interface validation for reviews is done using the [ts-interface-checker library](https://github.com/gristlabs/ts-interface-checker). For that, you need to generate an interface checker file every time a change is made to the interface in [IReviewService.ts](https://github.com/uwblueprint/ccbc/blob/development/backend/typescript/services/interfaces/IReviewService.ts) by executing the command:
 ```
 docker-compose exec ts-backend bash
 ```
