@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
@@ -21,7 +20,7 @@ interface Props {
   deleteType: string;
 }
 
-function ConfirmationModal(props: Props) {
+const ConfirmationModal = (props: Props): React.ReactElement => {
   const cancelRef = useRef<HTMLButtonElement>(null);
   const { showModal, onClose, handleDelete, itemToDelete, deleteType } = props;
 
