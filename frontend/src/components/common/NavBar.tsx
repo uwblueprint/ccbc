@@ -43,7 +43,7 @@ const NavBar = (): React.ReactElement => {
   return (
     <Flex
       direction="row"
-      h="96px"
+      h="80px"
       w="100vw"
       bgColor="#171923"
       align="center"
@@ -60,7 +60,7 @@ const NavBar = (): React.ReactElement => {
           <Image
             src={logo}
             alt="CCBC Logo"
-            boxSize="60px"
+            boxSize="45px"
             borderRadius="full"
           />
         </Link>
@@ -76,23 +76,23 @@ const NavBar = (): React.ReactElement => {
       <Flex>
         <Menu>
           <MenuButton>
-            <HiUser style={{ color: "#fff", height: "40px", width: "40px" }} />
+            <HiUser style={{ color: "#fff", height: "28px", width: "40px" }} />
           </MenuButton>
 
           <MenuList padding="20px">
             <Text
               textStyle="body"
-              fontSize="xl"
+              fontSize="md"
               fontWeight="bold"
-              padding="3px 0px"
               cursor="default"
+              paddingTop="3px"
             >
               {userFirstName} {userLastName}
             </Text>
             <Text
               color="#4A5568"
               textStyle="body"
-              fontSize="md"
+              fontSize="sm"
               padding="3px 0px"
               cursor="default"
             >
@@ -104,7 +104,7 @@ const NavBar = (): React.ReactElement => {
               <div className="Section 2">
                 <Text
                   textStyle="body"
-                  fontSize="md"
+                  fontSize="sm"
                   padding="3px 0px"
                   cursor="pointer"
                 >
@@ -112,7 +112,7 @@ const NavBar = (): React.ReactElement => {
                 </Text>
                 <Text
                   textStyle="body"
-                  fontSize="md"
+                  fontSize="sm"
                   padding="3px 0px"
                   cursor="pointer"
                 >
@@ -125,7 +125,7 @@ const NavBar = (): React.ReactElement => {
 
             <Text
               textStyle="body"
-              fontSize="md"
+              fontSize="sm"
               onClick={onLogOutClick}
               cursor="pointer"
               padding="5px 0px"

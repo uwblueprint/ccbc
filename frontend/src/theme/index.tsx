@@ -1,23 +1,25 @@
 import "@fontsource/open-sans";
 import "@fontsource/coustard";
+import "@fontsource/dm-sans";
 
 import { extendTheme } from "@chakra-ui/react";
 
 const customTheme = extendTheme({
   textStyles: {
     heading: {
-      fontFamily: "Coustard",
-      fontSize: "2vw",
+      fontFamily: "DM Sans",
+      fontSize: "18px",
     },
     body: {
-      fontFamily: "Open Sans",
-      fontSize: "1vw",
+      fontFamily: "DM Sans",
+      fontSize: "16px",
     },
     h4: {
-      fontFamily: "Coustard",
+      fontFamily: "DM Sans",
       color: "#fff",
       margin: "30px",
-      fontSize: "20px",
+      fontSize: "md",
+      fontWeight: "bold"
     },
   },
   components: {

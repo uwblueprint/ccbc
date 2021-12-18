@@ -2256,6 +2256,11 @@
   resolved "https://registry.npmjs.org/@fontsource/coustard/-/coustard-4.5.0.tgz"
   integrity sha512-2ijTGmtCqt5qyVcrfTfb+8Tk9PG+lWPS2mIk2l9JiyhGK6cylUz9Gmn9UvYsCUD+SZcwwCYlj9tm5lrofVU8RQ==
 
+"@fontsource/dm-sans@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@fontsource/dm-sans/-/dm-sans-4.5.0.tgz#0dae7ab3563b3ffd47181a3fa4c9c6a33fb04c5e"
+  integrity sha512-GKsjzK7NU6G1NHAxXRCquZQmZSvj3ah5AMR4N6PU2YpshIpr+NLIwYc+SJty+ZJ4Btysr9KN40+X4ng34heGjw==
+
 "@fontsource/open-sans@^4.5.2":
   version "4.5.2"
   resolved "https://registry.npmjs.org/@fontsource/open-sans/-/open-sans-4.5.2.tgz"
