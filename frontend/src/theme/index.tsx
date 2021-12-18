@@ -10,8 +10,20 @@ const customTheme = extendTheme({
       fontSize: "2vw",
     },
     body: {
+<<<<<<< Updated upstream
       fontFamily: "Open Sans",
       fontSize: "1vw",
+=======
+      fontFamily: "DM Sans",
+      fontSize: "16px",
+    },
+    h4: {
+      fontFamily: "DM Sans",
+      color: "#fff",
+      margin: "30px",
+      fontSize: "md",
+      fontWeight: "bold",
+>>>>>>> Stashed changes
     },
   },
   components: {
