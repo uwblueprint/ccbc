@@ -3,12 +3,10 @@ import {
   Button,
   Center,
   FormControl,
-  FormHelperText,
   FormLabel,
   Grid,
   GridItem,
   Image,
-  Input,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -24,16 +22,24 @@ import AuthContext from "../../contexts/AuthContext";
 import CCBCLogo from "../../images/ccbc-logo.png";
 import LoginGraphic from "../../images/Login-graphic.png";
 import firebaseApp from "../../utils/Firebase";
+import PasswordInputField from "../common/PasswordInputField";
 import { SetPasswordProps } from "./SetPassword";
 
 const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
   const { authenticatedUser } = useContext(AuthContext);
   const [isInvalid, setIsInvalid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [, setAllowSetup] = useState(true);
-  const [accessCode, setAccessCode] = useState("");
   const [email, setEmail] = useState("");
+  const [accessCode, setAccessCode] = useState("");
+
   const history = useHistory<SetPasswordProps>();
+
+  const onInputChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAccessCode(event.target.value);
+    setIsInvalid(false);
+  };
 
   useEffect(() => {
     // This function gets the user info and
@@ -64,6 +70,7 @@ const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
       history.push(`/auth/action?mode=${SETUP_PASSWORD_MODE}`, { email, uid });
     } catch (error) {
       setIsInvalid(true);
+      setErrorMessage("Invalid access code");
     }
   };
 
@@ -107,21 +114,13 @@ const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
       <FormControl mt="1rem">
         <Box mt="4%" mb="10%">
           <FormLabel>Access Code</FormLabel>
-          <Input
+          <PasswordInputField
             isInvalid={isInvalid}
             value={accessCode}
-            type="password"
-            name="accessCode"
+            onChangeHandler={onInputChanged}
             placeholder="Access Code"
-            onChange={(event) => {
-              setAccessCode(event.target.value);
-              setIsInvalid(false);
-            }}
-            errorBorderColor="crimson"
+            errorMessage={errorMessage}
           />
-          {isInvalid ? (
-            <FormHelperText color="crimson">Invalid access code</FormHelperText>
-          ) : null}
         </Box>
         <Button variant="submit" type="submit" onClick={onSubmitClick}>
           Done

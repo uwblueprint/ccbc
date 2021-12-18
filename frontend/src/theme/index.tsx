@@ -3,6 +3,8 @@ import "@fontsource/coustard";
 
 import { extendTheme } from "@chakra-ui/react";
 
+import PasswordInputFieldStyle from "./PasswordInputFieldStyle";
+
 const customTheme = extendTheme({
   textStyles: {
     heading: {
@@ -25,6 +27,7 @@ const customTheme = extendTheme({
         },
       },
     },
+    PasswordInputFieldStyle,
   },
   config: {
     initialColorMode: "light",
