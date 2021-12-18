@@ -12,14 +12,10 @@ import { components } from "react-select";
 import Creatable from "react-select/creatable";
 
 import tagAPIClient from "../APIClients/TagAPIClient";
-import { TagResponse } from "../types/TagTypes";
+import { Option, TagResponse } from "../types/TagTypes";
 import ConfirmationModal from "./common/ConfirmationModal";
 
 const EmptyTag = { value: "", label: "" };
-interface Option {
-  readonly label: string;
-  readonly value: string;
-}
 
 const customStyles = {
   option: (provided: any) => ({
@@ -40,7 +36,14 @@ const customStyles = {
   }),
 };
 
-const Tags = (): React.ReactElement => {
+interface Props {
+  tagsSelected: Option[];
+  handleSelected: any;
+}
+
+const Tags = (props: Props): React.ReactElement => {
+  const { tagsSelected, handleSelected } = props;
+
   const [tagOptions, setTagOptions] = useState<Option[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -99,11 +102,11 @@ const Tags = (): React.ReactElement => {
     setTagToDelete(option);
   };
 
-  const CustomOption = (props: any) => {
-    const { children, data } = props;
+  const CustomOption = (optionProps: any) => {
+    const { children, data } = optionProps;
 
     return (
-      <components.Option {...props}>
+      <components.Option {...optionProps}>
         {children}
         <IconButton
           aria-label="Delete Button"
@@ -134,6 +137,8 @@ const Tags = (): React.ReactElement => {
           options={tagOptions}
           onCreateOption={handleCreate}
           styles={customStyles}
+          value={tagsSelected}
+          onChange={handleSelected}
           components={{ Option: CustomOption }}
           formatCreateLabel={(tagName: string) => `Add ${tagName}`}
         />

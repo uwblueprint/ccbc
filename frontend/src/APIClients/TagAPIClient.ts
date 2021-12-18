@@ -4,19 +4,19 @@ import baseAPIClient from "./BaseAPIClient";
 
 const getTags = async (): Promise<TagResponse[]> => {
   try {
-    // const { tagOptions } = await baseAPIClient.get("/tags", {
-    //   headers: { Authorization: BEARER_TOKEN },
-    // });
+    const { data } = await baseAPIClient.get("/tags", {
+      headers: { Authorization: BEARER_TOKEN },
+    });
 
     // For testing comment out above and use below:
-    const tagOptions = [
-      { id: "1", name: "pink" },
-      { id: "2", name: "reed" },
-      { id: "3", name: "red" },
-      { id: "4", name: "green" },
-    ];
+    // const data = [
+    //   { id: "1", name: "pink" },
+    //   { id: "2", name: "reed" },
+    //   { id: "3", name: "red" },
+    //   { id: "4", name: "green" },
+    // ];
 
-    return tagOptions;
+    return data;
   } catch (error) {
     return error as TagResponse[];
   }
