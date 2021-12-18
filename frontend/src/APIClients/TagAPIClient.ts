@@ -2,33 +2,19 @@ import { BEARER_TOKEN } from "../constants/AuthConstants";
 import { TagResponse } from "../types/TagTypes";
 import baseAPIClient from "./BaseAPIClient";
 
-type TagDTO = {
-  id: string;
-  name: string;
-};
-
 const getTags = async (): Promise<TagResponse[]> => {
   try {
-    const { data } = await baseAPIClient.get("/tags", {
-      headers: { Authorization: BEARER_TOKEN },
-    });
-    const tagOptions: TagResponse[] = [];
-    if (data && data.length) {
-      data.forEach((tag: TagDTO) => {
-        tagOptions.push({
-          value: tag.id,
-          label: tag.name,
-        });
-      });
-    }
+    // const { tagOptions } = await baseAPIClient.get("/tags", {
+    //   headers: { Authorization: BEARER_TOKEN },
+    // });
 
     // For testing comment out above and use below:
-    // const tagOptions = [
-    //   { value: "1", label: "pink" },
-    //   { value: "2", label: "reed" },
-    //   { value: "3", label: "red" },
-    //   { value: "4", label: "green" },
-    // ];
+    const tagOptions = [
+      { id: "1", name: "pink" },
+      { id: "2", name: "reed" },
+      { id: "3", name: "red" },
+      { id: "4", name: "green" },
+    ];
 
     return tagOptions;
   } catch (error) {

@@ -16,6 +16,10 @@ import { TagResponse } from "../types/TagTypes";
 import ConfirmationModal from "./common/ConfirmationModal";
 
 const EmptyTag = { value: "", label: "" };
+interface Option {
+  readonly label: string;
+  readonly value: string;
+}
 
 const customStyles = {
   option: (provided: any) => ({
@@ -37,27 +41,38 @@ const customStyles = {
 };
 
 const Tags = (): React.ReactElement => {
-  const [tagOptions, setTagOptions] = useState<TagResponse[]>([]);
+  const [tagOptions, setTagOptions] = useState<Option[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [tagToDelete, setTagToDelete] = useState<TagResponse>(EmptyTag);
+  const [tagToDelete, setTagToDelete] = useState<Option>(EmptyTag);
 
   const onClose = () => setShowModal(false);
 
   useEffect(() => {
     tagAPIClient.getTags().then((newTags) => {
-      setTagOptions(newTags);
+
+      const options: Option[] = [];
+      newTags.forEach((tag: TagResponse) => {
+        options.push({
+          value: tag.id,
+          label: tag.name,
+        })
+      })
+      setTagOptions(options);
       setIsLoading(false);
     });
   }, []);
 
-  const handleCreate = () => {
+  // Temporary (to be removed after adding createTag endpoint)
+  const createTagOption = (label: string) => ({
+    label,
+    value: label.toLowerCase().replace(/\W/g, ''),
+  });
+
+  const handleCreate = (inputValue: string) => {
     setIsLoading(true);
-
-    // TODO: Create and set tag
-    // newTag = tagAPIClient.createTag(inputValue);
-    // setTagOptions([...tagOptions, newTag]);
-
+    const newTag = createTagOption(inputValue);
+    setTagOptions([...tagOptions, newTag])
     setIsLoading(false);
   };
 
@@ -78,7 +93,7 @@ const Tags = (): React.ReactElement => {
     setTagToDelete(EmptyTag);
   };
 
-  const confirmDelete = (e: any, option: TagResponse) => {
+  const confirmDelete = (e: any, option: Option) => {
     e.stopPropagation();
     e.preventDefault();
     setShowModal(true);

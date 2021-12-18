@@ -86,7 +86,7 @@ const App = (): React.ReactElement => {
                   exact
                   path={Routes.CREATE_REVIEW_PAGE}
                   component={CreateReview}
-                  requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
+                  requiredRoles={[UserRole.Admin]}
                 />
                 <Route
                   exact={false}
