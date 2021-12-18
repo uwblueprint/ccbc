@@ -1,45 +1,51 @@
 import {
-  Box,
   Flex,
-  Heading,
   Image,
   Menu,
   MenuButton,
   MenuDivider,
-  MenuGroup,
-  MenuItem,
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { HiUser } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
+import authAPIClient from "../../APIClients/AuthAPIClient";
 import logo from "../../assets/ccbc.png";
 import { UserRole } from "../../constants/Enums";
 import AuthContext from "../../contexts/AuthContext";
-import Logout from "../auth/Logout";
 
 const NavBar = (): React.ReactElement => {
-  const { authenticatedUser } = useContext(AuthContext);
+  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
   const isAdmin = authenticatedUser?.roleType === UserRole.Admin;
-  let userName = "";
+  // let userName = "";
+  let userFirstName = "";
+  let userLastName = "";
   let userEmail = "";
   if (
     authenticatedUser &&
     authenticatedUser.firstName &&
     authenticatedUser.lastName
   ) {
-    userName = authenticatedUser?.firstName + authenticatedUser?.lastName;
+    userFirstName = authenticatedUser?.firstName;
+    userLastName = authenticatedUser?.lastName;
     userEmail = authenticatedUser.email;
   }
+
+  const onLogOutClick = async () => {
+    const success = await authAPIClient.logout(authenticatedUser?.id);
+    if (success) {
+      setAuthenticatedUser(null);
+    }
+  };
 
   return (
     <Flex
       direction="row"
       h="96px"
       w="100vw"
-      bgColor="#2D5577"
+      bgColor="#171923"
       align="center"
       pt="16px"
       pb="16px"
@@ -58,10 +64,11 @@ const NavBar = (): React.ReactElement => {
             borderRadius="full"
           />
         </Link>
-        {/* <Heading style={{ color: "#fff", margin: "30px" }}>Home</Heading> */}
+
         <Text textStyle="h4" ml="60px">
           Home
         </Text>
+
         <Link to="/dashboard">
           {isAdmin && <Text textStyle="h4">Admin Dashboard</Text>}
         </Link>
@@ -71,34 +78,60 @@ const NavBar = (): React.ReactElement => {
           <MenuButton>
             <HiUser style={{ color: "#fff", height: "40px", width: "40px" }} />
           </MenuButton>
-          <MenuList>
-            <Text textStyle="body" fontSize="xl" fontWeight="bold">
-              {userName}
+
+          <MenuList padding="20px">
+            <Text
+              textStyle="body"
+              fontSize="xl"
+              fontWeight="bold"
+              padding="3px 0px"
+              cursor="default"
+            >
+              {userFirstName} {userLastName}
             </Text>
-            <Text color="#4A5568" textStyle="body" fontSize="md">
+            <Text
+              color="#4A5568"
+              textStyle="body"
+              fontSize="md"
+              padding="3px 0px"
+              cursor="default"
+            >
               {userEmail}
             </Text>
+
             <MenuDivider />
             {isAdmin && (
               <div className="Section 2">
-                <Link to="\">
-                  <Text textStyle="body" fontSize="md">
-                    Invite new admin
-                  </Text>
-                </Link>
-                <Link to="\">
-                  <Text textStyle="body" fontSize="md">
-                    Change password
-                  </Text>
-                </Link>
+                <Text
+                  textStyle="body"
+                  fontSize="md"
+                  padding="3px 0px"
+                  cursor="pointer"
+                >
+                  Invite new admin
+                </Text>
+                <Text
+                  textStyle="body"
+                  fontSize="md"
+                  padding="3px 0px"
+                  cursor="pointer"
+                >
+                  Change password
+                </Text>
+
                 <MenuDivider />
               </div>
             )}
-            <Link to="\">
-              <Text textStyle="body" fontSize="md">
-                Sign out
-              </Text>
-            </Link>
+
+            <Text
+              textStyle="body"
+              fontSize="md"
+              onClick={onLogOutClick}
+              cursor="pointer"
+              padding="5px 0px"
+            >
+              Sign out
+            </Text>
           </MenuList>
         </Menu>
       </Flex>
