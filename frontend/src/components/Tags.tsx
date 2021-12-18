@@ -50,14 +50,13 @@ const Tags = (): React.ReactElement => {
 
   useEffect(() => {
     tagAPIClient.getTags().then((newTags) => {
-
       const options: Option[] = [];
       newTags.forEach((tag: TagResponse) => {
         options.push({
           value: tag.id,
           label: tag.name,
-        })
-      })
+        });
+      });
       setTagOptions(options);
       setIsLoading(false);
     });
@@ -66,13 +65,13 @@ const Tags = (): React.ReactElement => {
   // Temporary (to be removed after adding createTag endpoint)
   const createTagOption = (label: string) => ({
     label,
-    value: label.toLowerCase().replace(/\W/g, ''),
+    value: label.toLowerCase().replace(/\W/g, ""),
   });
 
   const handleCreate = (inputValue: string) => {
     setIsLoading(true);
     const newTag = createTagOption(inputValue);
-    setTagOptions([...tagOptions, newTag])
+    setTagOptions([...tagOptions, newTag]);
     setIsLoading(false);
   };
 

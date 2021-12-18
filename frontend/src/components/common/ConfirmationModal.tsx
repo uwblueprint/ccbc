@@ -66,6 +66,6 @@ const ConfirmationModal = (props: Props): React.ReactElement => {
       </AlertDialog>
     </>
   );
-}
+};
 
 export default ConfirmationModal;
