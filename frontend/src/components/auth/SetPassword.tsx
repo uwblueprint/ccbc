@@ -3,12 +3,10 @@ import {
   Button,
   Center,
   FormControl,
-  FormHelperText,
   FormLabel,
   Grid,
   GridItem,
   Image,
-  Input,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -24,6 +22,7 @@ import CCBCLogo from "../../images/ccbc-logo.png";
 import LoginGraphic from "../../images/Login-graphic.png";
 import { AuthenticatedUser } from "../../types/AuthTypes";
 import firebaseApp from "../../utils/Firebase";
+import PasswordInputField from "../common/PasswordInputField";
 
 export type SetPasswordProps = {
   email: string;
@@ -113,31 +112,29 @@ const SetPassword = ({ email, uid }: SetPasswordProps): React.ReactElement => {
           <FormControl mt="1rem">
             <Box mt="4%">
               <FormLabel>New Password</FormLabel>
-              <Input
+              <PasswordInputField
+                isInvalid={isInvalid}
                 value={newPassword}
-                name="new password"
-                type="password"
+                onChangeHandler={(event) => {
+                  setNewPassword(event.target.value);
+                  setInvalid(false);
+                }}
                 placeholder="New Password"
-                onChange={(event) => setNewPassword(event.target.value)}
+                errorMessage=""
               />
             </Box>
             <Box mt="4%" mb="10%">
               <FormLabel>Confirm Password</FormLabel>
-              <Input
+              <PasswordInputField
                 isInvalid={isInvalid}
                 value={confirmNewPassword}
-                type="password"
-                name="confirm password"
-                placeholder="Confirm Password"
-                onChange={(event) => {
+                onChangeHandler={(event) => {
                   setConfirmNewPassword(event.target.value);
                   setInvalid(false);
                 }}
-                errorBorderColor="crimson"
+                placeholder="Confirm Password"
+                errorMessage={errorMessage}
               />
-              {isInvalid ? (
-                <FormHelperText color="crimson">{errorMessage}</FormHelperText>
-              ) : null}
             </Box>
             <Button variant="submit" type="submit" onClick={onSetPasswordClick}>
               Create Account

@@ -3,7 +3,8 @@ const PasswordInputFieldStyle = {
 
   baseStyle: {
     eyeButton: {
-      ml: 4,
+      ml: 5,
+      mr: 5,
     },
   },
 

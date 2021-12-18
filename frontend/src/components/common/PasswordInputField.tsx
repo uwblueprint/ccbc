@@ -4,6 +4,8 @@ import {
   FormHelperText,
   IconButton,
   Input,
+  InputGroup,
+  InputRightElement,
   useMultiStyleConfig,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
@@ -28,7 +30,7 @@ const PasswordInputField = (props: PasswordInputProps): React.ReactElement => {
 
   const onHidePasswordClick = () => setShowPassword(true);
 
-  const showPasswordButton = (
+  const visiblePasswordEye = (
     <IconButton
       __css={styles.eyeButton}
       aria-label="Show Password"
@@ -37,7 +39,7 @@ const PasswordInputField = (props: PasswordInputProps): React.ReactElement => {
     />
   );
 
-  const hidePasswordButton = (
+  const hiddenPasswordEye = (
     <IconButton
       __css={styles.eyeButton}
       aria-label="Hide Password"
@@ -46,36 +48,24 @@ const PasswordInputField = (props: PasswordInputProps): React.ReactElement => {
     />
   );
 
-  const hiddenInputField = (
-    <Input
-      isInvalid={isInvalid}
-      value={value}
-      type="password"
-      name="accessCodeHidden"
-      placeholder={placeholder}
-      onChange={onChangeHandler}
-      errorBorderColor="crimson"
-    />
-  );
-
-  const showInputField = (
-    <Input
-      isInvalid={isInvalid}
-      value={value}
-      type="text"
-      name="passwordInputField"
-      placeholder={placeholder}
-      onChange={onChangeHandler}
-      errorBorderColor="crimson"
-    />
-  );
-
   return (
     <Flex direction="column">
-      <Flex>
-        {showPassword ? showInputField : hiddenInputField}
-        {showPassword ? showPasswordButton : hidePasswordButton}
-      </Flex>
+      <InputGroup>
+        <Input
+          id={placeholder}
+          isInvalid={isInvalid}
+          value={value}
+          type={showPassword ? "text" : "password"}
+          name="passwordInputField"
+          placeholder={placeholder}
+          onChange={onChangeHandler}
+          errorBorderColor="crimson"
+        />
+        <InputRightElement>
+          {showPassword ? visiblePasswordEye : hiddenPasswordEye}
+        </InputRightElement>
+      </InputGroup>
+
       {isInvalid ? (
         <FormHelperText color="crimson">{errorMessage}</FormHelperText>
       ) : null}
