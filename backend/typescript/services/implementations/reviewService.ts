@@ -12,10 +12,10 @@ import {
   ReviewRequestDTO,
   IReviewService,
   ReviewResponseDTO,
-  Book,
   Publisher,
   Tag,
-  Author,
+  BookResponse,
+  AuthorResponse,
 } from "../interfaces/IReviewService";
 
 const Logger = logger(__filename);
@@ -29,12 +29,12 @@ class ReviewService implements IReviewService {
   }
 
   static pgReviewToRet(review: PgReview): ReviewResponseDTO {
-    const books: Book[] = review.books.map((book: PgBook) => {
-      const authorsRet: Author[] = book.authors.map((a: PgAuthor) => {
+    const books: BookResponse[] = review.books.map((book: PgBook) => {
+      const authorsRet: AuthorResponse[] = book.authors.map((a: PgAuthor) => {
         return {
           fullName: a.full_name,
-          displayName: a.display_name,
-          attribution: a.attribution,
+          displayName: a.display_name || null,
+          attribution: a.attribution || null,
         };
       });
 
@@ -50,11 +50,11 @@ class ReviewService implements IReviewService {
       return {
         title: book.title,
         coverImage: book.cover_image,
-        titlePrefix: book.title_prefix,
-        seriesOrder: book.series_order,
-        illustrator: book.illustrator,
-        translator: book.translator,
-        formats: book.formats,
+        titlePrefix: book.title_prefix || null,
+        seriesOrder: book.series_order || null,
+        illustrator: book.illustrator || null,
+        translator: book.translator || null,
+        formats: book.formats || null,
         minAge: book.age_range[0].value,
         maxAge: book.age_range[1].value,
         authors: authorsRet,
@@ -131,6 +131,9 @@ class ReviewService implements IReviewService {
   }
 
   /* eslint-disable class-methods-use-this, no-await-in-loop */
+  /*
+    as per https://eslint.org/docs/rules/no-await-in-loop, it is recommended to use loops to execute dependent async tasks
+  */
   async createReview(review: ReviewRequestDTO): Promise<ReviewResponseDTO> {
     let result: ReviewResponseDTO;
 
@@ -158,7 +161,7 @@ class ReviewService implements IReviewService {
           tagsRet.push({ name: tag.name });
         }
 
-        const booksRet: Book[] = [];
+        const booksRet: BookResponse[] = [];
         for (let bIndex = 0; bIndex < review.books.length; bIndex += 1) {
           const book = review.books[bIndex];
 
@@ -186,7 +189,7 @@ class ReviewService implements IReviewService {
             { transaction: t },
           );
 
-          const authorsRet: Author[] = [];
+          const authorsRet: AuthorResponse[] = [];
           for (let index = 0; index < book.authors.length; index += 1) {
             const author = await PgAuthor.findOrCreate({
               where: {
@@ -199,8 +202,8 @@ class ReviewService implements IReviewService {
             await newBook.$add("authors", author, { transaction: t });
             authorsRet.push({
               fullName: author.full_name,
-              displayName: author.display_name,
-              attribution: author.attribution,
+              displayName: author.display_name || null,
+              attribution: author.attribution || null,
             });
           }
 
@@ -225,10 +228,10 @@ class ReviewService implements IReviewService {
           booksRet.push({
             title: newBook.title,
             coverImage: newBook.cover_image,
-            titlePrefix: newBook.title_prefix,
-            seriesOrder: newBook.series_order,
-            illustrator: newBook.illustrator,
-            translator: newBook.translator,
+            titlePrefix: newBook.title_prefix || null,
+            seriesOrder: newBook.series_order || null,
+            illustrator: newBook.illustrator || null,
+            translator: newBook.translator || null,
             formats: newBook.formats,
             minAge: newBook.age_range[0].value,
             maxAge: newBook.age_range[1].value,

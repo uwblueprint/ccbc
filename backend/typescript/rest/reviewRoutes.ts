@@ -3,7 +3,7 @@ import ReviewService from "../services/implementations/reviewService";
 import {
   IReviewService,
   Tag,
-  Book,
+  BookRequest,
   ReviewResponseDTO,
 } from "../services/interfaces/IReviewService";
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
@@ -14,6 +14,7 @@ const reviewRouter: Router = Router();
 const reviewService: IReviewService = new ReviewService();
 
 reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
+  const contentType = req.headers["content-type"];
   try {
     const newReview = await reviewService.createReview({
       body: req.body.body,
@@ -23,11 +24,16 @@ reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
        *@TODO: uncomment when christine changes are merged
        *createdBy: req.body.createdBy,
        */
-      books: req.body.books as Book[],
+      books: req.body.books as BookRequest[],
       tags: req.body.tags as Tag[],
       publishedAt: req.body.publishedAt,
     });
-    res.status(201).json(newReview);
+    await sendResponseByMimeType<ReviewResponseDTO>(
+      res,
+      200,
+      contentType,
+      newReview,
+    );
   } catch (e: unknown) {
     sendErrorResponse(e, res);
   }

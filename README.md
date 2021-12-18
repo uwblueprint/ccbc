@@ -17,6 +17,7 @@ Made from [Starter Code](https://uwblueprint.github.io/starter-code-v2), brought
 * 👨‍💻 [Getting Started:](#getting-started)
   * ✔️ [Prerequisites](#prerequisites)
   * ⚙️ [Set up](#set-up)
+  * ⬆️ [Updating Models](#updating-models)
 * 🧰 [Useful Commands](#useful-commands)
   * ℹ️ [Get Names & Statuses of Running Containers](#get-names--statuses-of-running-containers)
   * 💽 [Accessing PostgreSQL Database](#accessing-postgresql-database)
@@ -70,6 +71,17 @@ docker-compose down --volumes
 
 This will take down the database and all it's data too.
 If you don't need to rebuild packages between switching branches, you probably don't _need_ `--volumes`.
+
+## Updating Models
+Interface validation for reviews is done using the [ts-interface-checker library](https://github.com/gristlabs/ts-interface-checker). For that, you need to generate an interface checker file every time a change is made to the interface in [IReviewService.ts](https://github.com/uwblueprint/ccbc/blob/development/backend/typescript/services/interfaces/IReviewService.ts) by executing the command:
+```
+docker-compose exec ts-backend bash
+```
+
+and then executing the following command inside the container:
+```
+`npm bin`/ts-interface-builder services/interfaces/IReviewService.ts -o services/interfaces/checkers
+```
 
 ## Useful Commands
 

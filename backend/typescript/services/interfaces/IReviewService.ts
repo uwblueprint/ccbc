@@ -1,7 +1,13 @@
-export interface Author {
+export interface AuthorRequest {
   fullName: string;
   displayName?: string | null;
   attribution?: string | null;
+}
+
+export interface AuthorResponse {
+  fullName: string;
+  displayName: string | null;
+  attribution: string | null;
 }
 
 export interface Publisher {
@@ -15,7 +21,7 @@ export interface Format {
   isbn: string;
 }
 
-export interface Book {
+export interface BookRequest {
   title: string;
   coverImage: string;
   titlePrefix?: string | null;
@@ -25,9 +31,24 @@ export interface Book {
   formats: Format[] | null;
   minAge: number;
   maxAge: number;
-  authors: Author[];
+  authors: AuthorRequest[];
   publishers: Publisher[];
   seriesName?: string | null;
+}
+
+export interface BookResponse {
+  title: string;
+  coverImage: string;
+  titlePrefix: string | null;
+  seriesOrder: string | null;
+  illustrator: string[] | null;
+  translator: string[] | null;
+  formats: Format[] | null;
+  minAge: number;
+  maxAge: number;
+  authors: AuthorResponse[];
+  publishers: Publisher[];
+  seriesName: string | null;
 }
 
 export interface Tag {
@@ -41,7 +62,7 @@ export interface ReviewRequestDTO {
   // @TODO: uncomment when christine changes are merged
   // createdBy: number;
   publishedAt?: number | null;
-  books: Book[];
+  books: BookRequest[];
   tags: Tag[];
 }
 
@@ -52,7 +73,7 @@ export interface ReviewResponseDTO {
   featured: boolean;
   // @TODO: uncomment when christine changes are merged
   // createdBy: number;
-  books: Book[];
+  books: BookResponse[];
   tags: Tag[];
   updatedAt: number;
   publishedAt: number | null;
