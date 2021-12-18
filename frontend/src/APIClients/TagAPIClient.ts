@@ -5,7 +5,7 @@ import baseAPIClient from "./BaseAPIClient";
 const getTags = async (): Promise<TagResponse[]> => {
   try {
     const { data } = await baseAPIClient.get("/tags", {
-      headers: { Authorization: BEARER_TOKEN },
+      // headers: { Authorization: BEARER_TOKEN },
     });
 
     // For testing comment out above and use below:
