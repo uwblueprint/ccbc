@@ -1,4 +1,10 @@
-export type Author = {
+export type AuthorRequest = {
+  fullName: string;
+  displayName?: string | null;
+  attribution?: string | null;
+};
+
+export type AuthorResponse = {
   fullName: string;
   displayName: string | null;
   attribution: string | null;
@@ -15,7 +21,22 @@ export type Format = {
   isbn: string;
 };
 
-export type Book = {
+export type BookRequest = {
+  title: string;
+  coverImage: string;
+  titlePrefix?: string | null;
+  seriesOrder?: string | null;
+  illustrator?: string[] | null;
+  translator?: string[] | null;
+  formats: Format[] | null;
+  minAge: number;
+  maxAge: number;
+  authors: AuthorRequest[];
+  publishers: Publisher[];
+  seriesName?: string | null;
+};
+
+export type BookResponse = {
   title: string;
   coverImage: string;
   titlePrefix: string | null;
@@ -25,7 +46,7 @@ export type Book = {
   formats: Format[] | null;
   minAge: number;
   maxAge: number;
-  authors: Author[];
+  authors: AuthorResponse[];
   publishers: Publisher[];
   seriesName: string | null;
 };
@@ -40,8 +61,8 @@ export type ReviewRequest = {
   featured: boolean;
   // @TODO: uncomment when christine changes are merged
   // createdBy: number;
-  publishedAt: number | null;
-  books: Book[];
+  publishedAt?: number | null;
+  books: BookRequest[];
   tags: Tag[];
 };
 
@@ -52,7 +73,7 @@ export type ReviewResponse = {
   featured: boolean;
   // @TODO: uncomment when christine changes are merged
   // createdBy: number;
-  books: Book[];
+  books: BookResponse[];
   tags: Tag[];
   updatedAt: number;
   publishedAt: number | null;
