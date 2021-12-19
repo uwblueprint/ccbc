@@ -7,8 +7,8 @@ import { extendTheme } from "@chakra-ui/react";
 const customTheme = extendTheme({
   textStyles: {
     heading: {
-      fontFamily: "DM Sans",
-      fontSize: "18px",
+      fontFamily: "Coustard",
+      fontSize: "2vw",
     },
     body: {
       fontFamily: "DM Sans",
@@ -19,7 +19,7 @@ const customTheme = extendTheme({
       color: "#fff",
       margin: "30px",
       fontSize: "md",
-      fontWeight: "bold"
+      fontWeight: "bold",
     },
   },
   components: {
