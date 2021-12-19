@@ -20,7 +20,6 @@ import AuthContext from "../../contexts/AuthContext";
 const NavBar = (): React.ReactElement => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
   const isAdmin = authenticatedUser?.roleType === UserRole.Admin;
-  // let userName = "";
   let userFirstName = "";
   let userLastName = "";
   let userEmail = "";
