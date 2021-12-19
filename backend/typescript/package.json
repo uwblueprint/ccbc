@@ -37,6 +37,8 @@
     "sequelize": "^6.8.0",
     "sequelize-typescript": "^2.1.1",
     "swagger-ui-express": "^4.1.6",
+    "ts-interface-builder": "^0.3.2",
+    "ts-interface-checker": "^1.0.2",
     "ts-node": "^10.0.0",
     "umzug": "^3.0.0-beta.16",
     "uuid": "^8.3.2",
