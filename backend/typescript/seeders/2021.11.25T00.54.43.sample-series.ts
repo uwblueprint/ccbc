@@ -10,6 +10,7 @@ const seedSeries = [
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {
+  await sequelize.query("TRUNCATE TABLE series CASCADE");
   await sequelize.getQueryInterface().bulkInsert("series", seedSeries);
 };
 

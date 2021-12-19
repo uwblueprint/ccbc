@@ -18,6 +18,7 @@ const seedPublishers = [
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {
+  await sequelize.query("TRUNCATE TABLE publishers CASCADE");
   await sequelize.getQueryInterface().bulkInsert("publishers", seedPublishers);
 };
 

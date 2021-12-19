@@ -28,6 +28,7 @@ const seedTags = [
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {
+  await sequelize.query("TRUNCATE TABLE tags CASCADE");
   await sequelize.getQueryInterface().bulkInsert("tags", seedTags);
 };
 

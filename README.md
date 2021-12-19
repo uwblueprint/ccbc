@@ -166,6 +166,7 @@ node migrate up
 ```
 
 6. Seeding commands
+Note: seeding the database will remove any existing records of reviews, tags, series, authors, publishers, and books
 ``` bash
 node seed up # to seed with sample data
 node seed down --to 0  # to remove all seed data

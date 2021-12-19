@@ -70,6 +70,7 @@ const seedReviews = [
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {
+  await sequelize.query("TRUNCATE TABLE reviews CASCADE");
   await sequelize.getQueryInterface().bulkInsert("reviews", seedReviews);
 };
 export const down: Seeder = async ({ context: sequelize }) => {
