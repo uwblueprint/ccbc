@@ -35,9 +35,7 @@ const customTheme = extendTheme({
         },
       },
     },
-<<<<<<< HEAD
     PasswordInputFieldStyle,
-=======
     Heading: {
       variants: {
         nav: {
@@ -46,7 +44,6 @@ const customTheme = extendTheme({
         },
       },
     },
->>>>>>> development
   },
   config: {
     initialColorMode: "light",
