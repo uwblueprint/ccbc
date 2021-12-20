@@ -8,7 +8,7 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { HiUser } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
@@ -16,6 +16,7 @@ import authAPIClient from "../../APIClients/AuthAPIClient";
 import logo from "../../assets/ccbc.png";
 import { UserRole } from "../../constants/Enums";
 import AuthContext from "../../contexts/AuthContext";
+import InviteAdminModal from "./InviteAdminModal";
 
 const NavBar = (): React.ReactElement => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
@@ -32,6 +33,10 @@ const NavBar = (): React.ReactElement => {
     userLastName = authenticatedUser?.lastName;
     userEmail = authenticatedUser.email;
   }
+
+  const [isOpen, setIsOpen] = useState(false);
+  const onCloseModal = () => setIsOpen(false);
+  const inviteNewAdminClick = () => setIsOpen(true);
 
   const onLogOutClick = async () => {
     const success = await authAPIClient.logout(authenticatedUser?.id);
@@ -111,6 +116,7 @@ const NavBar = (): React.ReactElement => {
                     fontSize="sm"
                     padding="3px 0px"
                     cursor="pointer"
+                    onClick={inviteNewAdminClick}
                   >
                     Invite new admin
                   </MenuItem>
@@ -140,6 +146,8 @@ const NavBar = (): React.ReactElement => {
           </Menu>
         </Flex>
       </Flex>
+
+      <InviteAdminModal isOpen={isOpen} onClose={onCloseModal} />
     </div>
   );
 };
