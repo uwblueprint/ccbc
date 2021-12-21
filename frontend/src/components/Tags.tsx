@@ -48,6 +48,7 @@ const Tags = (props: Props): React.ReactElement => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [tagToDelete, setTagToDelete] = useState<Option>(EmptyTag);
+  const [tagsFromDB, setTagsFromDB] = useState<Option[]>([]);
 
   const onClose = () => setShowModal(false);
 
@@ -61,21 +62,19 @@ const Tags = (props: Props): React.ReactElement => {
         });
       });
       setTagOptions(options);
+      setTagsFromDB(options);
       setIsLoading(false);
     });
   }, []);
 
-  // Temporary (to be removed after adding createTag endpoint)
   const createTagOption = (label: string) => ({
     label,
     value: label.toLowerCase().replace(/\W/g, ""),
   });
 
   const handleCreate = (inputValue: string) => {
-    setIsLoading(true);
     const newTag = createTagOption(inputValue);
     setTagOptions([...tagOptions, newTag]);
-    setIsLoading(false);
   };
 
   // Delete tag completely
@@ -85,8 +84,11 @@ const Tags = (props: Props): React.ReactElement => {
       return;
     }
 
-    // Delete the tag in DB and update tags state
-    await tagAPIClient.deleteTagById(tagToDelete.value);
+    // Check if the tag needs to be deleted from DB
+    if (tagsFromDB.find((x) => x.value === tagToDelete.value)) {
+      // Delete the tag in DB
+      await tagAPIClient.deleteTagById(tagToDelete.value);
+    }
 
     // Remove tag from dropdown and update state
     const options = tagOptions.filter((x) => x.value !== tagToDelete.value);
