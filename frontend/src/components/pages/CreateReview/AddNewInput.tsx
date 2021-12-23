@@ -39,9 +39,11 @@ const AddNewInput = ({
     setInputFields([...inputFields, ""]);
   };
 
+  const formLabel = canAddNewInput ? label.concat("(s)") : label;
+
   return (
     <FormControl id={id} isRequired={required}>
-      <FormLabel mb={2}>{label}(s)</FormLabel>
+      <FormLabel mb={2}>{formLabel}</FormLabel>
       {inputFields.map((field, index) => (
         <InputField
           id={index}
