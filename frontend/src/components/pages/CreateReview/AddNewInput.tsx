@@ -7,8 +7,9 @@ type AddNewInputProps = {
   id: string;
   label: string;
   name: string;
-  placeholder: string;
+  placeholder?: string;
   required: boolean;
+  canAddNewInput?: boolean;
 };
 
 const AddNewInput = ({
@@ -17,6 +18,7 @@ const AddNewInput = ({
   name,
   placeholder,
   required,
+  canAddNewInput
 }: AddNewInputProps): React.ReactElement => {
   const [inputFields, setInputFields] = useState<string[]>([""]);
 
@@ -45,16 +47,18 @@ const AddNewInput = ({
           id={index}
           key={index}
           name={name}
-          placeholder={placeholder}
+          placeholder={placeholder || "Text Here"}
           required={required}
           handleDelete={handleRemoveField}
           value={field}
           handleInputChange={handleInputChange}
         />
       ))}
-      <Button colorScheme="blue" variant="link" onClick={handleAddField}>
-        + Add new {label.toLowerCase()}
-      </Button>
+      {canAddNewInput ? (
+        <Button colorScheme="blue" variant="link" onClick={handleAddField}>
+          + Add new {label.toLowerCase()}
+        </Button>
+      ) : null}
     </FormControl>
   );
 };
