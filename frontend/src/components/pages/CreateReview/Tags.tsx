@@ -11,9 +11,9 @@ import React, { useEffect, useState } from "react";
 import { components } from "react-select";
 import Creatable from "react-select/creatable";
 
-import tagAPIClient from "../APIClients/TagAPIClient";
-import { Option, TagResponse } from "../types/TagTypes";
-import ConfirmationModal from "./common/ConfirmationModal";
+import tagAPIClient from "../../../APIClients/TagAPIClient";
+import { Option, TagResponse } from "../../../types/TagTypes";
+import ConfirmationModal from "../../common/ConfirmationModal";
 
 const EmptyTag = { value: "", label: "" };
 

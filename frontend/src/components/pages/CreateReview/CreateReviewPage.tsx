@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-import { Option } from "../../types/TagTypes";
-import AddNewInput from "../AddNewInput";
-import Tags from "../Tags";
+import { Option } from "../../../types/TagTypes";
+import AddNewInput from "./AddNewInput";
+import Tags from "./Tags";
 
 const CreateReview = (): React.ReactElement => {
   const [tagsSelected, setTagsSelected] = useState<Option[]>([]);
