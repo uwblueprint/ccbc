@@ -264,6 +264,37 @@ class ReviewService implements IReviewService {
 
     return result;
   }
+
+  async updateReviews(
+    reviewId: number,
+    entity: ReviewRequestDTO,
+  ): Promise<ReviewResponseDTO> {
+    const updatedReview = await PgReview.update(
+      {
+        body: entity.body,
+        byline: entity.byline,
+        featured: entity.featured,
+        books: entity.books,
+        tags: entity.tags,
+        updatedAt: Date.now(),
+      },
+      { where: { id: reviewId } },
+    );
+
+    console.log(updatedReview);
+
+    return {
+      reviewId: 100,
+      body: "placeholder",
+      byline: "placeholder",
+      featured: true,
+      books: [],
+      tags: [],
+      updatedAt: Date.now(),
+      publishedAt: Date.now(),
+      createdAt: Date.now(),
+    };
+  }
 }
 
 export default ReviewService;

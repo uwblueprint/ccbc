@@ -68,4 +68,17 @@ reviewRouter.get("/", async (req, res) => {
   }
 });
 
+reviewRouter.put("/:id", reviewRequestDtoValidator, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const review = await reviewService.updateReviews(
+      parseInt(id, 10),
+      req.body,
+    );
+    res.status(200).json(review);
+  } catch(e: unknown) {
+    sendErrorResponse(e, res);
+  }
+});
+
 export default reviewRouter;
