@@ -97,9 +97,8 @@ describe("pg reviewService", () => {
   });
 
   it("delete review by id", async () => {
-    // Get original reviews in DB 
-    const oldResult: ReviewResponseDTO[] =
-      await reviewService.getReviews();
+    // Get original reviews in DB
+    const oldResult: ReviewResponseDTO[] = await reviewService.getReviews();
 
     const deletedId = oldResult[0].reviewId;
     // Use the 'body' field to identify reviews for these tests, since we do
@@ -109,47 +108,46 @@ describe("pg reviewService", () => {
     // Delete a review
     await reviewService.deleteReview(deletedId.toString());
     await expect(reviewService.getReview(deletedId.toString())).rejects.toThrow(
-        `Review id ${deletedId} not found`,
+      `Review id ${deletedId} not found`,
     );
 
     // Get updated list of reviews in DB
-    const newResult: ReviewResponseDTO[] =
-      await reviewService.getReviews();
+    const newResult: ReviewResponseDTO[] = await reviewService.getReviews();
     expect(newResult.length).toEqual(oldResult.length - 1);
 
     // Sort actual and expected responses to make sure they are in the same order
     newResult.sort((a, b) => a.body.localeCompare(b.body));
     const testResponseCopy = [...testResponse].sort((a, b) =>
-        a.body.localeCompare(b.body),
+      a.body.localeCompare(b.body),
     );
     newResult.forEach((result) => {
-        result.books.sort((a, b) => a.title.localeCompare(b.title));
-        result.tags.sort((a, b) => a.name.localeCompare(b.name));
+      result.books.sort((a, b) => a.title.localeCompare(b.title));
+      result.tags.sort((a, b) => a.name.localeCompare(b.name));
     });
 
     // Ensure all other undeleted reviews are unchanged
     testResponseCopy.forEach((response, i) => {
-        // Delete response corresponding to the review we just deleted
-        if ( response.body == deletedBodyVal ) {
-            testResponseCopy.splice(i, 1);
-        } else {
-            response.books.sort((a, b) => a.title.localeCompare(b.title));
-            response.tags.sort((a, b) => a.name.localeCompare(b.name));
+      // Delete response corresponding to the review we just deleted
+      if (response.body === deletedBodyVal) {
+        testResponseCopy.splice(i, 1);
+      } else {
+        response.books.sort((a, b) => a.title.localeCompare(b.title));
+        response.tags.sort((a, b) => a.name.localeCompare(b.name));
 
-            newResult[i].books.sort((a, b) => a.title.localeCompare(b.title));
-            newResult[i].tags.sort((a, b) => a.name.localeCompare(b.name));
-    
-            expect(newResult[i].body).toEqual(response.body);
-            expect(newResult[i].books).toEqual(response.books);
-            expect(newResult[i].byline).toEqual(response.byline);
-            expect(newResult[i].featured).toEqual(response.featured);
-            expect(newResult[i].tags).toEqual(response.tags);
-            /*
-                * @TODO: uncomment when christine changes are merged
-                * expect(newResult[i].created_by).toEqual(response.createdBy);
-                */
-            expect(newResult[i].publishedAt).toEqual(response.publishedAt);
-        }
+        newResult[i].books.sort((a, b) => a.title.localeCompare(b.title));
+        newResult[i].tags.sort((a, b) => a.name.localeCompare(b.name));
+
+        expect(newResult[i].body).toEqual(response.body);
+        expect(newResult[i].books).toEqual(response.books);
+        expect(newResult[i].byline).toEqual(response.byline);
+        expect(newResult[i].featured).toEqual(response.featured);
+        expect(newResult[i].tags).toEqual(response.tags);
+        /*
+         * @TODO: uncomment when christine changes are merged
+         * expect(newResult[i].created_by).toEqual(response.createdBy);
+         */
+        expect(newResult[i].publishedAt).toEqual(response.publishedAt);
+      }
     });
   });
 });
