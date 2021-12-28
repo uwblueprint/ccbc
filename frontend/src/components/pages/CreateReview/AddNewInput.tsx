@@ -10,6 +10,7 @@ type AddNewInputProps = {
   placeholder?: string;
   required: boolean;
   canAddNewInput?: boolean;
+  maxWidth?: string;
 };
 
 const AddNewInput = ({
@@ -18,7 +19,8 @@ const AddNewInput = ({
   name,
   placeholder,
   required,
-  canAddNewInput
+  canAddNewInput,
+  maxWidth,
 }: AddNewInputProps): React.ReactElement => {
   const [inputFields, setInputFields] = useState<string[]>([""]);
 
@@ -40,9 +42,8 @@ const AddNewInput = ({
   };
 
   const formLabel = canAddNewInput ? label.concat("(s)") : label;
-
   return (
-    <FormControl id={id} isRequired={required}>
+    <FormControl id={id} isRequired={required} width={maxWidth || "100%"}>
       <FormLabel mb={2}>{formLabel}</FormLabel>
       {inputFields.map((field, index) => (
         <InputField

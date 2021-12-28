@@ -1,4 +1,4 @@
-import { CloseIcon } from "@chakra-ui/icons";
+import { SmallCloseIcon } from "@chakra-ui/icons";
 import {
   IconButton,
   Input,
@@ -43,7 +43,8 @@ const InputField = ({
         {id !== 0 && (
           <IconButton
             aria-label="Remove field"
-            icon={<CloseIcon />}
+            variant="remove"
+            icon={<SmallCloseIcon />}
             onClick={() => {
               handleDelete(id);
             }}

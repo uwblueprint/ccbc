@@ -1,12 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading, @typescript-eslint/no-explicit-any */
 
 import { CloseIcon } from "@chakra-ui/icons";
-import {
-  Container,
-  FormControl,
-  FormLabel,
-  IconButton,
-} from "@chakra-ui/react";
+import { FormControl, FormLabel, IconButton } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { components } from "react-select";
 import Creatable from "react-select/creatable";
@@ -121,7 +116,7 @@ const Tags = (props: Props): React.ReactElement => {
   };
 
   return (
-    <Container mb={12}>
+    <>
       <ConfirmationModal
         showModal={showModal}
         onClose={onClose}
@@ -129,7 +124,7 @@ const Tags = (props: Props): React.ReactElement => {
         itemToDelete={tagToDelete}
         deleteType="Tag"
       />
-      <FormControl p={4}>
+      <FormControl>
         <FormLabel>Tags</FormLabel>
         <Creatable
           isMulti
@@ -145,7 +140,7 @@ const Tags = (props: Props): React.ReactElement => {
           formatCreateLabel={(tagName: string) => `Add ${tagName}`}
         />
       </FormControl>
-    </Container>
+    </>
   );
 };
 
