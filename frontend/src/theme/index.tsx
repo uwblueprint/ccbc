@@ -4,6 +4,7 @@ import "@fontsource/dm-sans";
 
 import { extendTheme } from "@chakra-ui/react";
 
+import InviteAdminModalStyle from "./InviteAdminModalStyle";
 import PasswordInputFieldStyle from "./PasswordInputFieldStyle";
 
 const customTheme = extendTheme({
@@ -36,6 +37,8 @@ const customTheme = extendTheme({
       },
     },
     PasswordInputFieldStyle,
+    InviteAdminModalStyle,
+
     Heading: {
       variants: {
         nav: {

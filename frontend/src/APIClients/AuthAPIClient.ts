@@ -68,7 +68,7 @@ const register = async (
       { firstName, lastName, email },
       { withCredentials: true },
     );
-    localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
+    // localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
     return data;
   } catch (error) {
     return null;

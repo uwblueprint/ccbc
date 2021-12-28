@@ -7,8 +7,9 @@ import {
   MenuItem,
   MenuList,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { HiUser } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
@@ -34,9 +35,11 @@ const NavBar = (): React.ReactElement => {
     userEmail = authenticatedUser.email;
   }
 
-  const [isOpen, setIsOpen] = useState(false);
-  const onCloseModal = () => setIsOpen(false);
-  const inviteNewAdminClick = () => setIsOpen(true);
+  const {
+    isOpen: isInviteAdminOpen,
+    onOpen: onInviteAdminOpen,
+    onClose: onInviteAdminClose,
+  } = useDisclosure();
 
   const onLogOutClick = async () => {
     const success = await authAPIClient.logout(authenticatedUser?.id);
@@ -116,7 +119,7 @@ const NavBar = (): React.ReactElement => {
                     fontSize="sm"
                     padding="3px 0px"
                     cursor="pointer"
-                    onClick={inviteNewAdminClick}
+                    onClick={onInviteAdminOpen}
                   >
                     Invite new admin
                   </MenuItem>
@@ -147,7 +150,10 @@ const NavBar = (): React.ReactElement => {
         </Flex>
       </Flex>
 
-      <InviteAdminModal isOpen={isOpen} onClose={onCloseModal} />
+      <InviteAdminModal
+        isOpen={isInviteAdminOpen}
+        onClose={onInviteAdminClose}
+      />
     </div>
   );
 };
