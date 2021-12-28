@@ -48,6 +48,20 @@ const seedBooks = [
 export const up: Seeder = async ({ context: sequelize }) => {
   await sequelize.query("TRUNCATE TABLE books CASCADE");
   await sequelize.getQueryInterface().bulkInsert("books", seedBooks, {}, []);
+  await sequelize.getQueryInterface().bulkUpdate(
+    "books",
+    {
+      formats: [
+        {
+          format: "format1",
+          price: "$15.0",
+          isbn: "1234-5678-931",
+        },
+      ],
+      age_range: "[3,18)",
+    },
+    {},
+  );
 };
 
 export const down: Seeder = async ({ context: sequelize }) => {
