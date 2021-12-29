@@ -59,7 +59,7 @@ const AddNewInput = ({
           handleInputChange={handleInputChange}
         />
       ))}
-      {bookCover ? (
+      {bookCover && inputFields[0].length > 0 ? (
         <Image
           src={inputFields[0]}
           maxW="150px"

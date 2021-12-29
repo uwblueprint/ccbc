@@ -13,8 +13,9 @@ import {
   ModalOverlay,
   Stack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 
+import { Author, Book, BookFormat, Publisher } from "../../../types/BookTypes";
 import { Option } from "../../../types/TagTypes";
 import AddNewInput from "./AddNewInput";
 import AddNumberInput from "./AddNumberInput";
@@ -26,10 +27,52 @@ interface BookModalProps {
   onClose: any;
   tagsSelected: Option[];
   handleSelected: any;
+  booksAdded: Book[];
+  handleBooksAdded: any;
 }
 
 const BookModal = (props: BookModalProps): React.ReactElement => {
-  const { isOpen, onClose, tagsSelected, handleSelected } = props;
+  const {
+    isOpen,
+    onClose,
+    tagsSelected,
+    handleSelected,
+    booksAdded,
+    handleBooksAdded,
+  } = props;
+
+  // Book Fields
+  const [title, setTitle] = useState<string>("");
+  const [coverImage, setCoverImage] = useState<string>("");
+  const [titlePrefix, setTitlePrefix] = useState<string>("");
+  const [seriesOrder, setSeriesOrder] = useState<string>("");
+  const [illustrator, setIllustrator] = useState<string[]>([]);
+  const [translator, setTranslator] = useState<string[]>([]);
+  const [formats, setFormats] = useState<BookFormat[]>([]);
+  const [minAge, setMinAge] = useState<number>(0);
+  const [maxAge, setMaxAge] = useState<number>(0);
+  const [authors, setAuthors] = useState<Author[]>([]);
+  const [publishers, setPublishers] = useState<Publisher[]>([]);
+  const [seriesName, setSeriesName] = useState<string>("");
+
+  const updateBookObj = () => {
+    const newBook: Book = {
+      title,
+      coverImage,
+      titlePrefix,
+      seriesOrder,
+      illustrator,
+      translator,
+      formats,
+      minAge,
+      maxAge,
+      authors,
+      publishers,
+      seriesName,
+    };
+    handleBooksAdded([...booksAdded, newBook]);
+    onClose();
+  };
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -142,7 +185,12 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
           </Grid>
         </ModalBody>
         <ModalFooter>
-          <Button leftIcon={<CheckIcon />} variant="add" mr={4}>
+          <Button
+            leftIcon={<CheckIcon />}
+            variant="add"
+            mr={4}
+            onClick={updateBookObj}
+          >
             Add Book
           </Button>
           <Button

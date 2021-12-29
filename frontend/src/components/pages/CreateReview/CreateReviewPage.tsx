@@ -1,6 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import React, { useState } from "react";
 
+import { Book } from "../../../types/BookTypes";
 import { Option } from "../../../types/TagTypes";
 import AddNewInput from "./AddNewInput";
 import BookModal from "./BookModal";
@@ -8,6 +9,7 @@ import BookModal from "./BookModal";
 const CreateReview = (): React.ReactElement => {
   const [tagsSelected, setTagsSelected] = useState<Option[]>([]);
   const [showBookModal, setShowBookModal] = useState<boolean>(false);
+  const [books, setBooks] = useState<Book[]>([]);
 
   const onClose = () => setShowBookModal(false);
 
@@ -25,6 +27,8 @@ const CreateReview = (): React.ReactElement => {
         onClose={onClose}
         tagsSelected={tagsSelected}
         handleSelected={handleTagSelected}
+        booksAdded={books}
+        handleBooksAdded={setBooks}
       />
 
       <AddNewInput
