@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel } from "@chakra-ui/react";
+import { Button, FormControl, FormLabel, Image } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 import InputField from "./InputField";
@@ -11,6 +11,7 @@ type AddNewInputProps = {
   required: boolean;
   canAddNewInput?: boolean;
   maxWidth?: string;
+  bookCover?: boolean;
 };
 
 const AddNewInput = ({
@@ -21,6 +22,7 @@ const AddNewInput = ({
   required,
   canAddNewInput,
   maxWidth,
+  bookCover,
 }: AddNewInputProps): React.ReactElement => {
   const [inputFields, setInputFields] = useState<string[]>([""]);
 
@@ -57,6 +59,15 @@ const AddNewInput = ({
           handleInputChange={handleInputChange}
         />
       ))}
+      {bookCover ? (
+        <Image
+          src={inputFields[0]}
+          maxW="150px"
+          maxH="200px"
+          // TO DO: Get local fallback image
+          fallbackSrc="https://via.placeholder.com/150x200"
+        />
+      ) : null}
       {canAddNewInput ? (
         <Button colorScheme="blue" variant="link" onClick={handleAddField}>
           + Add new {label.toLowerCase()}

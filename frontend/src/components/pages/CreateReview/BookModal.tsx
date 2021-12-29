@@ -123,6 +123,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   name="bookCover"
                   placeholder="Image link here"
                   required
+                  bookCover
                 />
                 <AddSelect id="genre" label="Genre" required />
                 <FormControl isRequired width="100%">

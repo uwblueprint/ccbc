@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Option } from "../../../types/TagTypes";
 import AddNewInput from "./AddNewInput";
 import BookModal from "./BookModal";
-import Tags from "./Tags";
 
 const CreateReview = (): React.ReactElement => {
   const [tagsSelected, setTagsSelected] = useState<Option[]>([]);
@@ -28,7 +27,6 @@ const CreateReview = (): React.ReactElement => {
         handleSelected={handleTagSelected}
       />
 
-      {/* <Tags tagsSelected={tagsSelected} handleSelected={handleTagSelected} /> */}
       <AddNewInput
         id="authors"
         label="Author"
