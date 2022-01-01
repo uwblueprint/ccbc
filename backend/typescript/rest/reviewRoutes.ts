@@ -68,4 +68,14 @@ reviewRouter.get("/", async (req, res) => {
   }
 });
 
+reviewRouter.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    await reviewService.deleteReview(id);
+    res.status(204).send();
+  } catch (e: unknown) {
+    sendErrorResponse(e, res);
+  }
+});
+
 export default reviewRouter;
