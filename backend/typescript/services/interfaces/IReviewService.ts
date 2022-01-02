@@ -92,4 +92,5 @@ export interface IReviewService {
   getReview(id: string): Promise<ReviewResponseDTO>;
   getReviews(): Promise<ReviewResponseDTO[]>;
   updateReviews(reviewId: number, entity: ReviewRequestDTO): Promise<void>;
+  deleteReview(id: string): Promise<void>;
 }

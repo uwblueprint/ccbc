@@ -73,7 +73,7 @@ This will take down the database and all it's data too.
 If you don't need to rebuild packages between switching branches, you probably don't _need_ `--volumes`.
 
 ## Updating Models
-Interface validation is done using the [ts-interface-checker libaray](https://github.com/gristlabs/ts-interface-checker). For that, you need to generate an interface checker file every time a change is made to interface in [IReviewService.ts](https://github.com/uwblueprint/ccbc/blob/development/backend/typescript/services/interfaces/IReviewService.ts) by executing the command:
+Interface validation for reviews is done using the [ts-interface-checker library](https://github.com/gristlabs/ts-interface-checker). For that, you need to generate an interface checker file every time a change is made to the interface in [IReviewService.ts](https://github.com/uwblueprint/ccbc/blob/development/backend/typescript/services/interfaces/IReviewService.ts) by executing the command:
 ```
 docker-compose exec ts-backend bash
 ```
@@ -139,7 +139,7 @@ docker-compose exec <service-name> yarn test
 # service-name: ts-backend or frontend
 ```
 
-### Running Migrations
+### Running Migrations & Seeding Database
 
 1. Run both the TypeScript backend and database containers, you can use 
 ```bash
@@ -163,6 +163,13 @@ $ docker-compose exec ts-backend bash
 5. Run the following command
 ```bash
 node migrate up
+```
+
+6. Seeding commands
+Note: seeding the database will remove any existing records of reviews, tags, series, authors, publishers, and books
+``` bash
+node seed up # to seed with sample data
+node seed down --to 0  # to remove all seed data
 ```
 
 
