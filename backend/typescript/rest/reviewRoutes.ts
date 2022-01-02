@@ -76,7 +76,7 @@ reviewRouter.put("/:id", reviewRequestDtoValidator, async (req, res) => {
       req.body,
     );
     res.status(200).json(review);
-  } catch(e: unknown) {
+  } catch (e: unknown) {
     sendErrorResponse(e, res);
   }
 });

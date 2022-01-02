@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import {
   ReviewRequestDTO,
   ReviewResponseDTO,
@@ -94,5 +95,54 @@ describe("pg reviewService", () => {
        */
       expect(getReviewResult.publishedAt).toEqual(testReviews[i].publishedAt);
     });
+  });
+
+  it("updates individual review", async () => {
+    // get all review in DB
+    const reviews: ReviewResponseDTO[] = await reviewService.getReviews();
+    expect(reviews.length).toBeGreaterThan(0);
+
+    // get a random review to update
+    const min = Math.ceil(0);
+    const max = Math.floor(reviews.length - 1);
+    const reviewIndex = Math.floor(Math.random() * (max - min) + min);
+    const { reviewId } = reviews[reviewIndex];
+
+    // get review before update
+    const oldReview = reviews[reviewIndex];
+
+    // update fields in review
+    const updatedReview: ReviewRequestDTO = cloneDeep(
+      oldReview,
+    ) as ReviewRequestDTO;
+
+    updatedReview.body = "updated body";
+    updatedReview.featured = !oldReview.featured;
+
+    // update review in DB
+    await reviewService.updateReviews(reviewId, updatedReview);
+
+    // get review from DB
+    const updatedReviewDB = await reviewService.getReview(reviewId.toString());
+
+    // sort review field wherever possible to be able to compare them
+    oldReview.books.sort((a, b) => a.title.localeCompare(b.title));
+    oldReview.tags.sort((a, b) => a.name.localeCompare(b.name));
+    updatedReview.books.sort((a, b) => a.title.localeCompare(b.title));
+    updatedReview.tags.sort((a, b) => a.name.localeCompare(b.name));
+    updatedReviewDB.books.sort((a, b) => a.title.localeCompare(b.title));
+    updatedReviewDB.tags.sort((a, b) => a.name.localeCompare(b.name));
+
+    // check if fields match
+    expect(updatedReviewDB.body).toEqual(updatedReview.body);
+    expect(updatedReviewDB.featured).toEqual(updatedReview.featured);
+    expect(updatedReviewDB.tags).toEqual(oldReview.tags);
+    expect(updatedReviewDB.books).toEqual(oldReview.books);
+    expect(updatedReviewDB.byline).toEqual(oldReview.byline);
+    expect(updatedReviewDB.createdAt).toEqual(oldReview.createdAt);
+    /*
+     * @TODO: uncomment when christine changes are merged
+     * expect(updatedReviewDB.created_by).toEqual(oldReview.createdBy);
+     */
   });
 });
