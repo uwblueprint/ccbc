@@ -191,7 +191,7 @@ class AuthService implements IAuthService {
       below to set your new password and verify your account. 
       <br> Your unique access code is ${accessCode}.
       <br><br>
-      <a href=${setPasswordLink}>Set password and verify account</a>
+      <a href=${setPasswordLink}>Setup Account</a>
       `;
 
       this.emailService.sendEmail(
