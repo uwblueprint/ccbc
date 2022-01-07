@@ -182,7 +182,7 @@ class AuthService implements IAuthService {
     try {
       const authId = await this.userService.getAuthIdById(user.id);
 
-      const setPasswordLink = `http://localhost:3000/auth/action?mode=verify-user&uid=${authId}`;
+      const setPasswordLink = `${process.env.CLIENT_URL}/auth/action?mode=verify-user&uid=${authId}`;
 
       const emailBody = `
       Hello,

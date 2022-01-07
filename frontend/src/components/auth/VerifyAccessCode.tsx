@@ -17,6 +17,7 @@ import { Redirect, useHistory } from "react-router-dom";
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import { SETUP_PASSWORD_MODE } from "../../constants/AuthConstants";
 import { HOME_PAGE } from "../../constants/Routes";
+import * as Routes from "../../constants/Routes";
 import AuthContext from "../../contexts/AuthContext";
 /* Images */
 import CCBCLogo from "../../images/ccbc-logo.png";
@@ -30,7 +31,7 @@ const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
   const [isInvalid, setIsInvalid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isVerified, setIsVerified] = useState(false);
-  const [, setAllowSetup] = useState(true);
+  const [allowSetup, setAllowSetup] = useState(true);
   const [email, setEmail] = useState("");
   const [accessCode, setAccessCode] = useState("");
 
@@ -48,11 +49,8 @@ const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
       try {
         const firebaseUser = await authAPIClient.getFirebaseUserByUid(uid);
         setIsVerified(firebaseUser.emailVerified);
-
-        if (firebaseUser.email === null) {
-          // setAllowSetup(false); // user should not be able to setup if we can't get their firebase user
-          throw new Error("Unable to setup user. Please try again");
-        }
+        if (firebaseUser.email === null)
+          throw new Error("Unable to set up account");
         setEmail(firebaseUser.email);
       } catch (error) {
         setAllowSetup(false); // TODO: if something went wrong, we should show an error page
@@ -129,7 +127,7 @@ const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
     </Stack>
   );
 
-  return (
+  const allowSetupPage = (
     <Grid
       overflow="hidden"
       w="100vw"
@@ -152,6 +150,12 @@ const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
       </GridItem>
       <GridItem>{isVerified ? verifiedContent : unverifiedContent}</GridItem>
     </Grid>
+  );
+
+  return allowSetup ? (
+    allowSetupPage
+  ) : (
+    <Redirect to={Routes.UNAUTHORIZED_PAGE} />
   );
 };
 
