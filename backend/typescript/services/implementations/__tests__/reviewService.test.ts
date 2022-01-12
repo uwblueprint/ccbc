@@ -103,9 +103,9 @@ describe("pg reviewService", () => {
     expect(reviews.length).toBeGreaterThan(0);
 
     // get a random review to update
-    const min = Math.ceil(0);
-    const max = Math.floor(reviews.length - 1);
-    const reviewIndex = Math.floor(Math.random() * (max - min) + min);
+    const min = 0;
+    const max = reviews.length - 1;
+    const reviewIndex = Math.random() * (max - min) + min;
     const { reviewId } = reviews[reviewIndex];
 
     // get review before update
