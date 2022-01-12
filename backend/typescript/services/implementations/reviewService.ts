@@ -256,22 +256,27 @@ class ReviewService implements IReviewService {
   /*
     as per https://eslint.org/docs/rules/no-await-in-loop, it is recommended to use loops to execute dependent async tasks
   */
-  async createReview(review: ReviewRequestDTO): Promise<ReviewResponseDTO> {
+  async createReview(
+    review: ReviewRequestDTO,
+    id?: string,
+  ): Promise<ReviewResponseDTO> {
     let result: ReviewResponseDTO;
 
     try {
       result = await this.db.transaction(async (t) => {
-        const newReview = await PgReview.create(
-          {
-            body: review.body,
-            byline: review.byline,
-            featured: review.featured,
-            published_at: review.publishedAt
-              ? new Date(review.publishedAt)
-              : null,
-          },
-          { transaction: t },
-        );
+        const reviewFields = {
+          id, // when id is undefined sequelize assigns a unique id
+          body: review.body,
+          byline: review.byline,
+          featured: review.featured,
+          published_at: review.publishedAt
+            ? new Date(review.publishedAt)
+            : null,
+        };
+
+        const newReview = await PgReview.create(reviewFields, {
+          transaction: t,
+        });
 
         const tagsRet: Tag[] = [];
         for (let i = 0; i < review.tags.length; i += 1) {
@@ -387,23 +392,10 @@ class ReviewService implements IReviewService {
     return result;
   }
 
-  async updateReviews(id: number, entity: ReviewRequestDTO): Promise<void> {
+  async updateReviews(id: string, entity: ReviewRequestDTO): Promise<void> {
     try {
-      const updatedReview = await PgReview.update(
-        {
-          body: entity.body,
-          byline: entity.byline,
-          featured: entity.featured,
-          books: entity.books,
-          tags: entity.tags,
-          updatedAt: Date.now(),
-        },
-        { where: { id }, returning: true },
-      );
-
-      if (updatedReview[0] < 1) {
-        throw new Error(`id ${id} not found`);
-      }
+      await this.deleteReview(id);
+      await this.createReview(entity, id);
     } catch (error: unknown) {
       Logger.error(
         `Failed to update review. Reason = ${getErrorMessage(error)}`,

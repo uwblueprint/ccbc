@@ -88,9 +88,12 @@ export interface IReviewService {
    * @throws Error if creation fails
    */
 
-  createReview(entity: ReviewRequestDTO): Promise<ReviewResponseDTO>;
+  createReview(
+    entity: ReviewRequestDTO,
+    id?: string,
+  ): Promise<ReviewResponseDTO>;
   getReview(id: string): Promise<ReviewResponseDTO>;
   getReviews(): Promise<ReviewResponseDTO[]>;
-  updateReviews(reviewId: number, entity: ReviewRequestDTO): Promise<void>;
+  updateReviews(reviewId: string, entity: ReviewRequestDTO): Promise<void>;
   deleteReview(id: string): Promise<void>;
 }
