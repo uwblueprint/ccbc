@@ -1,3 +1,5 @@
+import { UserDTO } from "../../types";
+
 export interface AuthorRequest {
   fullName: string;
   displayName?: string | null;
@@ -59,8 +61,7 @@ export interface ReviewRequestDTO {
   body: string;
   byline: string;
   featured: boolean;
-  // @TODO: uncomment when christine changes are merged
-  // createdBy: number;
+  createdBy: string;
   publishedAt?: number | null;
   books: BookRequest[];
   tags: Tag[];
@@ -71,8 +72,7 @@ export interface ReviewResponseDTO {
   body: string;
   byline: string;
   featured: boolean;
-  // @TODO: uncomment when christine changes are merged
-  // createdBy: number;
+  createdBy?: UserDTO;
   books: BookResponse[];
   tags: Tag[];
   updatedAt: number;
