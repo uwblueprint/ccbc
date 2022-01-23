@@ -13,7 +13,6 @@ import Tag from "./tag.model";
 import ReviewTag from "./review_tag.model";
 import Book from "./book.model";
 import User from "./user.model";
-// import User from "./user.model";
 
 @Table({ tableName: "reviews" })
 export default class Review extends Model {
