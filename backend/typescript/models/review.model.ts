@@ -8,6 +8,7 @@ import {
   BelongsToMany,
   BelongsTo,
   HasMany,
+  ForeignKey,
 } from "sequelize-typescript";
 import Tag from "./tag.model";
 import ReviewTag from "./review_tag.model";
@@ -25,10 +26,9 @@ export default class Review extends Model {
   @Column({ type: DataType.BOOLEAN })
   featured!: boolean;
 
-  // @TODO: uncomment when chrisine finishes user models
-  //  @Column({ type: DataType.INTEGER })
-  //  @ForeignKey(() => User)
-  //  created_by!: number;
+  @Column({ type: DataType.INTEGER })
+  @ForeignKey(() => User)
+  created_by!: number;
 
   @Column({ type: DataType.DATE })
   published_at?: Date;
@@ -38,7 +38,4 @@ export default class Review extends Model {
 
   @HasMany(() => Book)
   books!: Book[];
-
-  @BelongsTo(() => User)
-  createdBy!: User;
 }
