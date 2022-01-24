@@ -1,5 +1,3 @@
-import { UserDTO } from "../../types";
-
 export interface AuthorRequest {
   fullName: string;
   displayName?: string | null;
