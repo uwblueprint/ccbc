@@ -61,7 +61,7 @@ export interface ReviewRequestDTO {
   body: string;
   byline: string;
   featured: boolean;
-  createdBy: string;
+  createdBy: number;
   publishedAt?: number | null;
   books: BookRequest[];
   tags: Tag[];
@@ -72,7 +72,7 @@ export interface ReviewResponseDTO {
   body: string;
   byline: string;
   featured: boolean;
-  createdBy?: UserDTO;
+  createdBy: number;
   books: BookResponse[];
   tags: Tag[];
   updatedAt: number;
