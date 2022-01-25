@@ -8,6 +8,7 @@ import {
   BelongsToMany,
   HasMany,
   ForeignKey,
+  BelongsTo,
 } from "sequelize-typescript";
 import Tag from "./tag.model";
 import ReviewTag from "./review_tag.model";
@@ -27,7 +28,7 @@ export default class Review extends Model {
 
   @Column({ type: DataType.INTEGER })
   @ForeignKey(() => User)
-  created_by!: number;
+  created_by_id!: number;
 
   @Column({ type: DataType.DATE })
   published_at?: Date;
@@ -37,4 +38,7 @@ export default class Review extends Model {
 
   @HasMany(() => Book)
   books!: Book[];
+
+  @BelongsTo(() => User)
+  created_by!: User;
 }

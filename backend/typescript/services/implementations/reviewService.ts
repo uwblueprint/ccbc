@@ -196,7 +196,7 @@ class ReviewService implements IReviewService {
       body: review.body,
       byline: review.byline,
       featured: review.featured,
-      createdBy: review.created_by,
+      createdBy: review.created_by_id,
       books,
       tags,
       updatedAt: review.updatedAt.getTime(),
@@ -267,7 +267,7 @@ class ReviewService implements IReviewService {
             body: review.body,
             byline: review.byline,
             featured: review.featured,
-            created_by: review.createdBy,
+            created_by_id: review.createdBy,
             published_at: review.publishedAt
               ? new Date(review.publishedAt)
               : null,
@@ -370,7 +370,7 @@ class ReviewService implements IReviewService {
           body: newReview.body,
           byline: newReview.byline,
           featured: newReview.featured,
-          createdBy: newReview.created_by,
+          createdBy: newReview.created_by_id,
           books: booksRet,
           tags: tagsRet,
           updatedAt: newReview.updatedAt.getTime(),
