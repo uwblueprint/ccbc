@@ -36,3 +36,8 @@ export type NodemailerConfig = {
 };
 
 export type SignUpMethod = "PASSWORD" | "GOOGLE";
+
+export type TagDTO = {
+  id: string;
+  name: string;
+};

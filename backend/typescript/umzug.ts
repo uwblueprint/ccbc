@@ -8,7 +8,7 @@ const sequelizeOptions: SequelizeOptions = SQLOptions(
   false,
 );
 
-const sequelize = new Sequelize(dbURL, sequelizeOptions);
+export const sequelize = new Sequelize(dbURL, sequelizeOptions);
 
 export const migrator = new Umzug({
   migrations: {
@@ -22,3 +22,17 @@ export const migrator = new Umzug({
 });
 
 export type Migration = typeof migrator._types.migration;
+
+export const seeder = new Umzug({
+  migrations: {
+    glob: ["seeders/*.ts", { cwd: __dirname }],
+  },
+  context: sequelize,
+  storage: new SequelizeStorage({
+    sequelize,
+    modelName: "seeder_meta",
+  }),
+  logger: console,
+});
+
+export type Seeder = typeof seeder._types.migration;

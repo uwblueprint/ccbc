@@ -4,11 +4,13 @@ import { ChakraProvider } from "@chakra-ui/react";
 import React, { useReducer, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
+/* Pages */
 import AuthActions from "./components/auth/AuthActions";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/auth/routes/PrivateRoute";
 import Signup from "./components/auth/Signup";
-import AdminDashboard from "./components/pages/AdminDashboard";
+import AdminDashboard from "./components/pages/AdminDashboard/AdminDashboard";
+import CreateReview from "./components/pages/CreateReviewPage";
 import Default from "./components/pages/Default";
 import MagazineReview from "./components/pages/MagazineReview";
 import NotFound from "./components/pages/NotFound";
@@ -77,6 +79,12 @@ const App = (): React.ReactElement => {
                   exact
                   path={Routes.ADMIN_DASHBOARD_PAGE}
                   component={AdminDashboard}
+                  requiredRoles={[UserRole.Admin]}
+                />
+                <PrivateRoute
+                  exact
+                  path={Routes.CREATE_REVIEW_PAGE}
+                  component={CreateReview}
                   requiredRoles={[UserRole.Admin]}
                 />
                 <Route

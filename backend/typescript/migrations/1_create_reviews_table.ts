@@ -13,10 +13,6 @@ export const up: Migration = async ({ context: sequelize }) => {
       type: DataType.TEXT,
       allowNull: false,
     },
-    cover_images: {
-      type: DataType.ARRAY(DataType.STRING),
-      allowNull: false,
-    },
     byline: {
       type: DataType.STRING,
       allowNull: false,
