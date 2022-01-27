@@ -187,8 +187,8 @@ class AuthService implements IAuthService {
       const emailBody = `
       Hello,
       <br><br>
-      You have been invited to join CCBC as a ${user.roleType.toLowerCase()}. Please use the link 
-      below to set your new password and verify your account. 
+      You have been invited to join CCBC as a ${user.roleType.toLowerCase()}. Please click on the link 
+      below to verify your account and set your new password. 
       <br> Your unique access code is ${accessCode}.
       <br><br>
       <a href=${setPasswordLink}>Setup Account</a>
@@ -196,7 +196,7 @@ class AuthService implements IAuthService {
 
       this.emailService.sendEmail(
         user.email,
-        "CCBC Account Created",
+        "Verify your CCBC Account",
         emailBody,
       );
     } catch (error) {
@@ -271,6 +271,11 @@ class AuthService implements IAuthService {
     }
   }
 
+  /**
+   * getFirebaseUserByUid returns the firebaseUser that has the passed in uid
+   * @param uid A string represeting the user id in Firebase
+   * @returns UserRecord representing the firebase user with the given uid
+   */
   async getFirebaseUserByUid(
     uid: string,
   ): Promise<firebaseAdmin.auth.UserRecord> {
@@ -289,7 +294,11 @@ class AuthService implements IAuthService {
     }
   }
 
-  async verifyEmail(uid: string): Promise<void> {
+  /**
+   * Sets the firebase user with the given uid to be verified
+   * @param uid the user id of the user inside Firebase
+   */
+  async markVerified(uid: string): Promise<void> {
     try {
       await firebaseAdmin.auth().updateUser(uid, {
         emailVerified: true,

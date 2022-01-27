@@ -106,7 +106,7 @@ interface IAuthService {
    * @returns void
    * @throws Error if user can't be verified
    */
-  verifyEmail(uid: string): Promise<void>;
+  markVerified(uid: string): Promise<void>;
 }
 
 export default IAuthService;

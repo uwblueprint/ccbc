@@ -152,7 +152,7 @@ authRouter.post(
 /* verifies a user by the given uid in the url */
 authRouter.post("/verifyEmail/:uid", async (req, res) => {
   try {
-    await authService.verifyEmail(req.params.uid);
+    await authService.markVerified(req.params.uid);
     res.status(204).send();
   } catch (error: unknown) {
     sendErrorResponse(error, res);
