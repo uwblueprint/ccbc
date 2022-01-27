@@ -1,5 +1,6 @@
 import "@fontsource/open-sans";
 import "@fontsource/coustard";
+import "@fontsource/dm-sans";
 
 import { extendTheme } from "@chakra-ui/react";
 
@@ -10,10 +11,6 @@ const customTheme = extendTheme({
       fontSize: "2vw",
     },
     body: {
-<<<<<<< Updated upstream
-      fontFamily: "Open Sans",
-      fontSize: "1vw",
-=======
       fontFamily: "DM Sans",
       fontSize: "16px",
     },
@@ -23,7 +20,6 @@ const customTheme = extendTheme({
       margin: "30px",
       fontSize: "md",
       fontWeight: "bold",
->>>>>>> Stashed changes
     },
   },
   components: {

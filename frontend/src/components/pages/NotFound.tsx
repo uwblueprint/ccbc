@@ -1,14 +1,11 @@
-import {
-  Flex,
-  Image,
-  Text,
-} from "@chakra-ui/react";
+import { Flex, Image, Text } from "@chakra-ui/react";
 import React from "react";
 import { Link } from "react-router-dom";
 
 import logo from "../../assets/ccbc.png";
 import ellipse from "../../assets/ellipse.svg";
 import ellipse2 from "../../assets/ellipse2.svg";
+import background from "../../assets/NotFoundBack.png";
 import polygon from "../../assets/polygon.svg";
 import character from "../../assets/sitting.svg";
 import star from "../../assets/star.svg";
@@ -21,19 +18,20 @@ const NotFound = (): React.ReactElement => {
       w="100vw"
       justify="center"
       align="center"
-      bgColor="#F6F4F2"
+      // bgColor="#F6F4F2"
+      bg={background}
     >
       <Link to="/">
-      <Image
-        src={logo}
-        alt="CCBC Logo"
-        boxSize="48px"
-        borderRadius="full"
-        position="absolute"
-        top="40px"
-        left="50px"
-        boxShadow="base"
-      />
+        <Image
+          src={logo}
+          alt="CCBC Logo"
+          boxSize="48px"
+          borderRadius="full"
+          position="absolute"
+          top="40px"
+          left="50px"
+          boxShadow="base"
+        />
       </Link>
       <Text
         textStyle="heading"
@@ -47,15 +45,14 @@ const NotFound = (): React.ReactElement => {
       <Text textStyle="body" marginTop="10px" marginBottom="70px" zIndex="1">
         Please refresh the page and try again.
       </Text>
-      
-      {/* Background SVGs */}
+
       <Image
         src={character}
         alt="character sitting"
         boxSize="350px"
         zIndex="1"
       />
-      <Image
+      {/* <Image
         src={star}
         alt="orange star"
         boxSize="270px"
@@ -63,7 +60,8 @@ const NotFound = (): React.ReactElement => {
         left="60px"
         position="fixed"
         zIndex="0"
-      />
+      /> */}
+      {/* 
       <Image
         src={ellipse}
         alt="red half circle"
@@ -90,7 +88,7 @@ const NotFound = (): React.ReactElement => {
         zIndex="0"
         left="260px"
         top="120px"
-      />
+      /> */}
     </Flex>
   );
 };
