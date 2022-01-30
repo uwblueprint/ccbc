@@ -24,11 +24,11 @@ import Tags from "./Tags";
 
 interface BookModalProps {
   isOpen: boolean;
-  onClose: any;
+  onClose: () => void;
   tagsSelected: Option[];
-  handleSelected: any;
+  handleSelected: (e: Option[]) => void;
   booksAdded: Book[];
-  handleBooksAdded: any;
+  handleBooksAdded: (b: Book[]) => void;
 }
 
 const BookModal = (props: BookModalProps): React.ReactElement => {
