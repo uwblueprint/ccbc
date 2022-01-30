@@ -35,6 +35,19 @@ class ReviewService implements IReviewService {
   }
 
   /* eslint-disable class-methods-use-this, no-await-in-loop */
+  async findOrCreateTag(
+    review: PgReview,
+    tag: Tag,
+    t: Transaction,
+  ): Promise<PgTag> {
+    const newTag = await PgTag.findOrCreate({
+      where: { name: tag.name },
+      transaction: t,
+    }).then((data) => data[0]);
+    await review.$add("tags", newTag, { transaction: t });
+    return newTag;
+  }
+
   async findOrCreateTags(
     review: PgReview,
     tags: Tag[],
@@ -42,11 +55,7 @@ class ReviewService implements IReviewService {
   ): Promise<Tag[]> {
     const tagsRet: Tag[] = [];
     for (let i = 0; i < tags.length; i += 1) {
-      const tag = await PgTag.findOrCreate({
-        where: { name: tags[i].name },
-        transaction: t,
-      }).then((data) => data[0]);
-      await review.$add("tags", tag, { transaction: t });
+      const tag = await this.findOrCreateTag(review, tags[i], t);
       tagsRet.push({ name: tag.name });
     }
     return tagsRet;
@@ -458,6 +467,22 @@ class ReviewService implements IReviewService {
         }
 
         Promise.all(
+          entity.tags.map(async (tag: Tag) => {
+            if (tag.id) {
+              const tagToUpdate = await PgTag.findByPk(tag.id, {
+                transaction: t,
+              });
+              if (!tagToUpdate) {
+                throw new Error(`Tag id ${tag.id} not found`);
+              }
+              tagToUpdate.update({ name: tag.name });
+            } else {
+              await this.findOrCreateTag(reviewToUpdate, tag, t);
+            }
+          }),
+        );
+
+        Promise.all(
           entity.books.map(async (book: BookRequest) => {
             const { seriesId } = book;
             let series: PgSeries | null;
@@ -506,9 +531,17 @@ class ReviewService implements IReviewService {
                   });
                   if (!authorToUpdate) {
                     throw new Error(`Author id ${author.id} not found`);
-                  } else {
-                    await this.findOrCreateAuthor(bookToUpdate, author, t);
                   }
+                  authorToUpdate.update(
+                    {
+                      full_name: author.fullName,
+                      display_name: author.displayName,
+                      attribution: author.attribution,
+                    },
+                    { transaction: t },
+                  );
+                } else {
+                  await this.findOrCreateAuthor(bookToUpdate, author, t);
                 }
               }
 
@@ -521,13 +554,16 @@ class ReviewService implements IReviewService {
                   );
                   if (!publisherToUpdate) {
                     throw new Error(`Publisher id ${publisher.id} not found`);
-                  } else {
-                    await this.findOrCreatePublisher(
-                      bookToUpdate,
-                      publisher,
-                      t,
-                    );
                   }
+                  publisherToUpdate.update(
+                    {
+                      full_name: publisher.fullName,
+                      publish_year: publisher.publishYear,
+                    },
+                    { transaction: t },
+                  );
+                } else {
+                  await this.findOrCreatePublisher(bookToUpdate, publisher, t);
                 }
               }
             } else {
