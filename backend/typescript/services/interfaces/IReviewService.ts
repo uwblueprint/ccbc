@@ -1,4 +1,5 @@
 export interface AuthorRequest {
+  id?: number;
   fullName: string;
   displayName?: string | null;
   attribution?: string | null;
@@ -11,6 +12,7 @@ export interface AuthorResponse {
 }
 
 export interface Publisher {
+  id?: number;
   fullName: string;
   publishYear: number;
 }
@@ -22,6 +24,7 @@ export interface Format {
 }
 
 export interface BookRequest {
+  id?: number;
   title: string;
   coverImage: string;
   titlePrefix?: string | null;
@@ -33,6 +36,7 @@ export interface BookRequest {
   maxAge: number;
   authors: AuthorRequest[];
   publishers: Publisher[];
+  seriesId?: number;
   seriesName?: string | null;
 }
 
@@ -94,6 +98,6 @@ export interface IReviewService {
   ): Promise<ReviewResponseDTO>;
   getReview(id: string): Promise<ReviewResponseDTO>;
   getReviews(): Promise<ReviewResponseDTO[]>;
-  updateReviews(reviewId: string, entity: ReviewRequestDTO): Promise<void>;
+  updateReviews(id: string, entity: ReviewRequestDTO): Promise<void>;
   deleteReview(id: string): Promise<void>;
 }
