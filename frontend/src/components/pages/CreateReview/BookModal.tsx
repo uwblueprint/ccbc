@@ -1,6 +1,5 @@
 import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
-  Box,
   Button,
   FormControl,
   FormLabel,
