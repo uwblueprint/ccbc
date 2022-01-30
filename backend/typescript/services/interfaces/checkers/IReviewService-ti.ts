@@ -5,6 +5,7 @@ import * as t from "ts-interface-checker";
 // tslint:disable:object-literal-key-quotes
 
 export const AuthorRequest = t.iface([], {
+  id: t.opt("number"),
   fullName: "string",
   displayName: t.opt(t.union("string", "null")),
   attribution: t.opt(t.union("string", "null")),
@@ -17,6 +18,7 @@ export const AuthorResponse = t.iface([], {
 });
 
 export const Publisher = t.iface([], {
+  id: t.opt("number"),
   fullName: "string",
   publishYear: "number",
 });
@@ -28,6 +30,7 @@ export const Format = t.iface([], {
 });
 
 export const BookRequest = t.iface([], {
+  id: t.opt("number"),
   title: "string",
   coverImage: "string",
   titlePrefix: t.opt(t.union("string", "null")),
@@ -39,6 +42,7 @@ export const BookRequest = t.iface([], {
   maxAge: "number",
   authors: t.array("AuthorRequest"),
   publishers: t.array("Publisher"),
+  seriesId: t.opt("number"),
   seriesName: t.opt(t.union("string", "null")),
 });
 
@@ -86,7 +90,16 @@ export const IReviewService = t.iface([], {
   createReview: t.func(
     "ReviewResponseDTO",
     t.param("entity", "ReviewRequestDTO"),
+    t.param("id", "string", true),
   ),
+  getReview: t.func("ReviewResponseDTO", t.param("id", "string")),
+  getReviews: t.func(t.array("ReviewResponseDTO")),
+  updateReviews: t.func(
+    "void",
+    t.param("id", "string"),
+    t.param("entity", "ReviewRequestDTO"),
+  ),
+  deleteReview: t.func("void", t.param("id", "string")),
 });
 
 const exportedTypeSuite: t.ITypeSuite = {
