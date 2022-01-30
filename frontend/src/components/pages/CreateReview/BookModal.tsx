@@ -1,5 +1,6 @@
 import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
+  Box,
   Button,
   FormControl,
   FormLabel,
@@ -153,7 +154,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   <AddNewInput id="isbn" label="ISBN" name="isbn" required />
                   <FormControl id="price" isRequired width="45%">
                     <FormLabel mb={2}>Price</FormLabel>
-                    <AddNumberInput />
+                    <AddNumberInput mb={2} />
                   </FormControl>
                 </Stack>
               </Stack>
@@ -171,9 +172,9 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                 <AddSelect id="genre" label="Genre" required />
                 <FormControl isRequired width="100%">
                   <FormLabel mb={2}>Audience</FormLabel>
-                  <Stack shouldWrapChildren direction="row">
-                    <AddNumberInput placeholder="Min Age" maxWidth="60%" />
-                    <AddNumberInput placeholder="Max Age" maxWidth="60%" />
+                  <Stack direction="row" width="100%" spacing={4}>
+                    <AddNumberInput placeholder="Min Age" mb={0} />
+                    <AddNumberInput placeholder="Max Age" mb={0} />
                   </Stack>
                 </FormControl>
                 <Tags
