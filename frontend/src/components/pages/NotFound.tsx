@@ -18,8 +18,8 @@ const NotFound = (): React.ReactElement => {
       w="100vw"
       justify="center"
       align="center"
-      // bgColor="#F6F4F2"
-      bg={background}
+      // bgColor="#000000"
+      backgroundImage={background}
     >
       <Link to="/">
         <Image
@@ -36,7 +36,7 @@ const NotFound = (): React.ReactElement => {
       <Text
         textStyle="heading"
         fontSize="42px"
-        fontWeight="bold"
+        fontWeight="extrabold"
         marginTop="40px"
         zIndex="1"
       >

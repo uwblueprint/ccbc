@@ -7,7 +7,7 @@ import { extendTheme } from "@chakra-ui/react";
 const customTheme = extendTheme({
   textStyles: {
     heading: {
-      fontFamily: "Coustard",
+      fontFamily: "DM Sans",
       fontSize: "2vw",
     },
     body: {
