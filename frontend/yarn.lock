@@ -1164,6 +1164,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.8.3":
+  version "7.16.7"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.16.7.tgz#03ff99f64106588c9c403c6ecb8c3bafbbdff1fa"
+  integrity sha512-9E9FJowqAsytyOY6LG+1KuueckRL+aQW+mKvXRXnuFGyRAyepJPmEo9vgMfXUA6O9u3IeEdv9MAkppFcaQwogQ==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.10.4", "@babel/template@^7.12.13", "@babel/template@^7.3.3":
   version "7.12.13"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.12.13.tgz#530265be8a2589dbb37523844c5bcb55947fb327"
@@ -2263,6 +2270,11 @@
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/@fontsource/coustard/-/coustard-4.5.0.tgz#75c82bd62cbef8ee1f0a33e8de03065580865348"
   integrity sha512-2ijTGmtCqt5qyVcrfTfb+8Tk9PG+lWPS2mIk2l9JiyhGK6cylUz9Gmn9UvYsCUD+SZcwwCYlj9tm5lrofVU8RQ==
+
+"@fontsource/dm-sans@^4.5.0":
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/@fontsource/dm-sans/-/dm-sans-4.5.1.tgz#6abe7004d6aeb47be39905b1cdd0612a34c845fb"
+  integrity sha512-+YNxB6wrsaMRkcNTSeOg3sdh5YSTr++cEH0cDSGjrlP2hRh+VZcxSPCWCYJl7FBjhEOrKNAsKVqkgv6msXGrUQ==
 
 "@fontsource/open-sans@^4.5.2":
   version "4.5.2"
