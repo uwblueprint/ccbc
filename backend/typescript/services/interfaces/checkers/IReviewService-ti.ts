@@ -65,6 +65,7 @@ export const ReviewRequestDTO = t.iface([], {
   body: "string",
   byline: "string",
   featured: "boolean",
+  createdBy: "number",
   publishedAt: t.opt(t.union("number", "null")),
   books: t.array("BookRequest"),
   tags: t.array("Tag"),
@@ -75,6 +76,7 @@ export const ReviewResponseDTO = t.iface([], {
   body: "string",
   byline: "string",
   featured: "boolean",
+  createdBy: "number",
   books: t.array("BookResponse"),
   tags: t.array("Tag"),
   updatedAt: "number",
@@ -87,6 +89,9 @@ export const IReviewService = t.iface([], {
     "ReviewResponseDTO",
     t.param("entity", "ReviewRequestDTO"),
   ),
+  getReview: t.func("ReviewResponseDTO", t.param("id", "string")),
+  getReviews: t.func(t.array("ReviewResponseDTO")),
+  deleteReview: t.func("void", t.param("id", "string")),
 });
 
 const exportedTypeSuite: t.ITypeSuite = {

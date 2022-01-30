@@ -25,10 +25,7 @@ reviewRouter.post(
         body: req.body.body,
         byline: req.body.byline,
         featured: req.body.featured,
-        /*
-         *@TODO: uncomment when christine changes are merged
-         *createdBy: req.body.createdBy,
-         */
+        createdBy: req.body.createdBy,
         books: req.body.books as BookRequest[],
         tags: req.body.tags as Tag[],
         publishedAt: req.body.publishedAt,
