@@ -466,7 +466,28 @@ class ReviewService implements IReviewService {
           throw new Error(`Review id ${id} not found`);
         }
 
-        Promise.all(
+        const newTagIds = entity.tags.map((tag: Tag) => tag.id);
+        const DeleteTags = PgReviewTag.findAll({
+          where: { review_id: id },
+          transaction: t,
+        })
+          .then((ret: PgReviewTag[]) => {
+            return ret
+              .map((reviewTag: PgReviewTag) => reviewTag.tag_id)
+              .filter((oldId: number) => !newTagIds.includes(oldId));
+          })
+          .then(async (droppedTags: number[]) => {
+            droppedTags.forEach(async (tagId: number) => {
+              const tagReviews = await PgReviewTag.findAll({
+                where: { tag_id: tagId },
+                transaction: t,
+              });
+              if (tagReviews.length === 1)
+                await PgTag.destroy({ where: { id: tagId }, transaction: t });
+            });
+          });
+
+        const updateTags = Promise.all(
           entity.tags.map(async (tag: Tag) => {
             if (tag.id) {
               const tagToUpdate = await PgTag.findByPk(tag.id, {
@@ -482,7 +503,7 @@ class ReviewService implements IReviewService {
           }),
         );
 
-        Promise.all(
+        const updateBooks =  Promise.all(
           entity.books.map(async (book: BookRequest) => {
             const { seriesId } = book;
             let series: PgSeries | null;
@@ -522,52 +543,72 @@ class ReviewService implements IReviewService {
                 },
                 { transaction: t },
               );
-
-              for (let i = 0; i < book.authors.length; i += 1) {
-                const author = book.authors[i];
-                if (author.id) {
-                  const authorToUpdate = await PgAuthor.findByPk(author.id, {
-                    transaction: t,
-                  });
-                  if (!authorToUpdate) {
-                    throw new Error(`Author id ${author.id} not found`);
-                  }
-                  authorToUpdate.update(
-                    {
-                      full_name: author.fullName,
-                      display_name: author.displayName,
-                      attribution: author.attribution,
-                    },
-                    { transaction: t },
-                  );
-                } else {
-                  await this.findOrCreateAuthor(bookToUpdate, author, t);
-                }
-              }
-
-              for (let i = 0; i < book.publishers.length; i += 1) {
-                const publisher = book.publishers[i];
-                if (publisher.id) {
-                  const publisherToUpdate = await PgPublisher.findByPk(
-                    publisher.id,
-                    { transaction: t },
-                  );
-                  if (!publisherToUpdate) {
-                    throw new Error(`Publisher id ${publisher.id} not found`);
-                  }
-                  publisherToUpdate.update(
-                    {
-                      full_name: publisher.fullName,
-                      publish_year: publisher.publishYear,
-                    },
-                    { transaction: t },
-                  );
-                } else {
-                  await this.findOrCreatePublisher(bookToUpdate, publisher, t);
-                }
-              }
             } else {
               this.createBook(reviewToUpdate, book, t);
+            }
+          }),
+        );
+
+        const updateAuthors = Promise.all(
+          entity.books.map(async (book: BookRequest) => {
+            for (let i = 0; i < book.authors.length && book.id; i += 1) {
+              const bookToUpdate = await PgBook.findByPk(book.id, {
+                transaction: t,
+              });
+              if (!bookToUpdate) {
+                throw new Error(`Book id ${book.id} not found`);
+              }
+              const author = book.authors[i];
+              if (author.id) {
+                const authorToUpdate = await PgAuthor.findByPk(author.id, {
+                  transaction: t,
+                });
+                if (!authorToUpdate) {
+                  throw new Error(`Author id ${author.id} not found`);
+                }
+                authorToUpdate.update(
+                  {
+                    full_name: author.fullName,
+                    display_name: author.displayName,
+                    attribution: author.attribution,
+                  },
+                  { transaction: t },
+                );
+              } else {
+                await this.findOrCreateAuthor(bookToUpdate, author, t);
+              }
+            }
+          }),
+        );
+
+        const updatePublishers = Promise.all(
+          entity.books.map(async (book: BookRequest) => {
+            for (let i = 0; i < book.publishers.length && book.id; i += 1) {
+              const bookToUpdate = await PgBook.findByPk(book.id, {
+                transaction: t,
+              });
+              if (!bookToUpdate) {
+                throw new Error(`Book id ${book.id} not found`);
+              }
+              const publisher = book.publishers[i];
+              if (publisher.id) {
+                const publisherToUpdate = await PgPublisher.findByPk(
+                  publisher.id,
+                  { transaction: t },
+                );
+                if (!publisherToUpdate) {
+                  throw new Error(`Publisher id ${publisher.id} not found`);
+                }
+                publisherToUpdate.update(
+                  {
+                    full_name: publisher.fullName,
+                    publish_year: publisher.publishYear,
+                  },
+                  { transaction: t },
+                );
+              } else {
+                await this.findOrCreatePublisher(bookToUpdate, publisher, t);
+              }
             }
           }),
         );
