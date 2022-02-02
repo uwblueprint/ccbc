@@ -9,32 +9,38 @@ import {
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
 import reviewRequestDtoValidator from "../middlewares/validators/reviewValidators";
+import { isAuthorizedByUserIdFromBody } from "../middlewares/auth";
 
 const reviewRouter: Router = Router();
 const reviewService: IReviewService = new ReviewService();
 
-reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
-  const contentType = req.headers["content-type"];
-  try {
-    const newReview = await reviewService.createReview({
-      body: req.body.body,
-      byline: req.body.byline,
-      featured: req.body.featured,
-      createdBy: req.body.createdBy,
-      books: req.body.books as BookRequest[],
-      tags: req.body.tags as Tag[],
-      publishedAt: req.body.publishedAt,
-    });
-    await sendResponseByMimeType<ReviewResponseDTO>(
-      res,
-      200,
-      contentType,
-      newReview,
-    );
-  } catch (e: unknown) {
-    sendErrorResponse(e, res);
-  }
-});
+reviewRouter.post(
+  "/",
+  reviewRequestDtoValidator,
+  isAuthorizedByUserIdFromBody("createdBy"),
+  async (req, res) => {
+    const contentType = req.headers["content-type"];
+    try {
+      const newReview = await reviewService.createReview({
+        body: req.body.body,
+        byline: req.body.byline,
+        featured: req.body.featured,
+        createdBy: req.body.createdBy,
+        books: req.body.books as BookRequest[],
+        tags: req.body.tags as Tag[],
+        publishedAt: req.body.publishedAt,
+      });
+      await sendResponseByMimeType<ReviewResponseDTO>(
+        res,
+        200,
+        contentType,
+        newReview,
+      );
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
 
 reviewRouter.get("/:id", async (req, res) => {
   const { id } = req.params;
