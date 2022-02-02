@@ -87,3 +87,43 @@ export const isAuthorizedByEmail = (emailField: string) => {
     return next();
   };
 };
+
+export const isAuthorized = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  userId: string,
+): Promise<Response<unknown, Record<string, unknown>> | void> => {
+  const accessToken = getAccessToken(req);
+  const authorized =
+    accessToken &&
+    (await authService.isAuthorizedByUserId(accessToken, userId));
+  if (!authorized) {
+    return res
+      .status(401)
+      .json({ error: "You are not authorized to make this request." });
+  }
+  return next();
+};
+
+export const isAuthorizedByUserIdFromBody = (userIdField: string) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> => {
+    const userId = req.body[userIdField];
+    return isAuthorized(req, res, next, userId);
+  };
+};
+
+export const isAuthorizedByUserIdFromQuery = (userIdField: string) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> => {
+    const userId = req.params[userIdField];
+    return isAuthorized(req, res, next, userId);
+  };
+};
