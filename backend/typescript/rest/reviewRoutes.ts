@@ -9,7 +9,7 @@ import {
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
 import reviewRequestDtoValidator from "../middlewares/validators/reviewValidators";
-import { isAuthorizedByUserIdFromBody } from "../middlewares/auth";
+import { isAuthorizedByUserIdFromBody, isAuthorizedByRole } from "../middlewares/auth";
 
 const reviewRouter: Router = Router();
 const reviewService: IReviewService = new ReviewService();
@@ -17,7 +17,8 @@ const reviewService: IReviewService = new ReviewService();
 reviewRouter.post(
   "/",
   reviewRequestDtoValidator,
-  isAuthorizedByUserIdFromBody("createdBy"),
+  isAuthorizedByRole(new Set(["Admin"]))
+  isAuthorizedByUserIdFromBody("createdBy")
   async (req, res) => {
     const contentType = req.headers["content-type"];
     try {
@@ -42,43 +43,55 @@ reviewRouter.post(
   },
 );
 
-reviewRouter.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const review = await reviewService.getReview(id);
-    res.status(200).json(review);
-  } catch (e: unknown) {
-    sendErrorResponse(e, res);
-  }
-});
+reviewRouter.get(
+  "/:id",
+  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      const review = await reviewService.getReview(id);
+      res.status(200).json(review);
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
 
-reviewRouter.get("/", async (req, res) => {
-  const contentType = req.headers["content-type"];
-  try {
-    const reviews = await reviewService.getReviews();
-    await sendResponseByMimeType<ReviewResponseDTO[]>(
-      res,
-      200,
-      contentType,
-      reviews,
-    );
-  } catch (e: unknown) {
-    await sendResponseByMimeType(res, 500, contentType, [
-      {
-        error: getErrorMessage(e),
-      },
-    ]);
-  }
-});
+reviewRouter.get(
+  "/",
+  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
+  async (req, res) => {
+    const contentType = req.headers["content-type"];
+    try {
+      const reviews = await reviewService.getReviews();
+      await sendResponseByMimeType<ReviewResponseDTO[]>(
+        res,
+        200,
+        contentType,
+        reviews,
+      );
+    } catch (e: unknown) {
+      await sendResponseByMimeType(res, 500, contentType, [
+        {
+          error: getErrorMessage(e),
+        },
+      ]);
+    }
+  },
+);
 
-reviewRouter.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    await reviewService.deleteReview(id);
-    res.status(204).send();
-  } catch (e: unknown) {
-    sendErrorResponse(e, res);
-  }
-});
+reviewRouter.delete(
+  "/:id",
+  isAuthorizedByRole(new Set(["Admin"])),
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      await reviewService.deleteReview(id);
+      res.status(204).send();
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
 
 export default reviewRouter;
