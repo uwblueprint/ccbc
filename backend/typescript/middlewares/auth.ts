@@ -1,4 +1,3 @@
-import { Console } from "console";
 import { NextFunction, Request, Response } from "express";
 
 import AuthService from "../services/implementations/authService";
