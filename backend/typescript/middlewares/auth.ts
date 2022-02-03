@@ -1,3 +1,4 @@
+import { Console } from "console";
 import { NextFunction, Request, Response } from "express";
 
 import AuthService from "../services/implementations/authService";
@@ -41,26 +42,22 @@ export const isAuthorizedByRole = (roles: Set<Role>) => {
 /* Determine if request for a user-specific resource is authorized based on accessToken
  * validity and if the userId that the token was issued to matches the requested userId
  * Note: userIdField is the name of the request parameter containing the requested userId */
-export const isAuthorizedByUserId = (userIdField: string) => {
-  return async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<Response | void> => {
-    const accessToken = getAccessToken(req);
-    const authorized =
-      accessToken &&
-      (await authService.isAuthorizedByUserId(
-        accessToken,
-        req.params[userIdField],
-      ));
-    if (!authorized) {
-      return res
-        .status(401)
-        .json({ error: "You are not authorized to make this request." });
-    }
-    return next();
-  };
+export const isAuthorizedByUserId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  userId: string,
+): Promise<Response<unknown, Record<string, unknown>> | void> => {
+  const accessToken = getAccessToken(req);
+  const authorized =
+    accessToken &&
+    (await authService.isAuthorizedByUserId(accessToken, userId));
+  if (!authorized) {
+    return res
+      .status(401)
+      .json({ error: "You are not authorized to make this request." });
+  }
+  return next();
 };
 
 /* Determine if request for a user-specific resource is authorized based on accessToken
@@ -88,32 +85,14 @@ export const isAuthorizedByEmail = (emailField: string) => {
   };
 };
 
-export const isAuthorized = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-  userId: string,
-): Promise<Response<unknown, Record<string, unknown>> | void> => {
-  const accessToken = getAccessToken(req);
-  const authorized =
-    accessToken &&
-    (await authService.isAuthorizedByUserId(accessToken, userId));
-  if (!authorized) {
-    return res
-      .status(401)
-      .json({ error: "You are not authorized to make this request." });
-  }
-  return next();
-};
-
 export const isAuthorizedByUserIdFromBody = (userIdField: string) => {
   return async (
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<Response | void> => {
-    const userId = req.body[userIdField];
-    return isAuthorized(req, res, next, userId);
+    const userId = String(req.body[userIdField]);
+    return isAuthorizedByUserId(req, res, next, userId);
   };
 };
 
@@ -124,6 +103,6 @@ export const isAuthorizedByUserIdFromQuery = (userIdField: string) => {
     next: NextFunction,
   ): Promise<Response | void> => {
     const userId = req.params[userIdField];
-    return isAuthorized(req, res, next, userId);
+    return isAuthorizedByUserId(req, res, next, userId);
   };
 };

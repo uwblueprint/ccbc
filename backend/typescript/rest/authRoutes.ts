@@ -1,7 +1,10 @@
 import { Router } from "express";
 
 import password from "secure-random-password";
-import { isAuthorizedByEmail, isAuthorizedByUserId } from "../middlewares/auth";
+import {
+  isAuthorizedByEmail,
+  isAuthorizedByUserIdFromQuery,
+} from "../middlewares/auth";
 import {
   loginRequestValidator,
   registerRequestValidator,
@@ -117,7 +120,7 @@ authRouter.post("/refresh", async (req, res) => {
 /* Revokes all of the specified user's refresh tokens */
 authRouter.post(
   "/logout/:userId",
-  isAuthorizedByUserId("userId"),
+  isAuthorizedByUserIdFromQuery("userId"),
   async (req, res) => {
     try {
       await authService.revokeTokens(req.params.userId);
