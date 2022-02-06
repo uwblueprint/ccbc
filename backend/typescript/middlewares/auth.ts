@@ -85,35 +85,18 @@ export const isAuthorizedByEmail = (emailField: string) => {
 };
 
 /**
- * isAuthorizedByUserIdFromBody verifies that the userId passed in the request
- * body matches with the logged in user
+ * isAuthorizedByUserIdFromParameter verifies that the userId passed in the request
+ * body or query parameter matches with the logged in user
  *
  * @param userIdField - the name of the userId field in the request body
  */
-export const isAuthorizedByUserIdFromBody = (userIdField: string) => {
+export const isAuthorizedByUserIdFromParameter = (userIdField: string) => {
   return async (
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<Response | void> => {
-    const userId = String(req.body[userIdField]);
-    return isAuthorizedByUserId(req, res, next, userId);
-  };
-};
-
-/**
- * isAuthorizedByUserIdFromBody verifies that the userId passed in the query
- * parameter matches with the logged in user
- *
- * @param userIdField - the name of the userId field in the query parameter
- */
-export const isAuthorizedByUserIdFromQuery = (userIdField: string) => {
-  return async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<Response | void> => {
-    const userId = req.params[userIdField];
+    const userId = req.params[userIdField] || String(req.body[userIdField]);
     return isAuthorizedByUserId(req, res, next, userId);
   };
 };

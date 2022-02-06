@@ -10,7 +10,7 @@ import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
 import reviewRequestDtoValidator from "../middlewares/validators/reviewValidators";
 import {
-  isAuthorizedByUserIdFromBody,
+  isAuthorizedByUserIdFromParameter,
   isAuthorizedByRole,
 } from "../middlewares/auth";
 
@@ -21,7 +21,7 @@ reviewRouter.post(
   "/",
   reviewRequestDtoValidator,
   isAuthorizedByRole(new Set(["Admin"])),
-  isAuthorizedByUserIdFromBody("createdBy"),
+  isAuthorizedByUserIdFromParameter("createdBy"),
   async (req, res) => {
     const contentType = req.headers["content-type"];
     try {
