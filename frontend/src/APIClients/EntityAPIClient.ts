@@ -41,8 +41,8 @@ const create = async ({
       headers: { Authorization: bearerToken },
     });
     return data;
-  } catch (error) {
-    return error;
+  } catch (error: unknown) {
+    return error as EntityResponse;
   }
 };
 
@@ -56,8 +56,8 @@ const get = async (): Promise<EntityResponse[]> => {
       headers: { Authorization: bearerToken },
     });
     return data;
-  } catch (error) {
-    return error;
+  } catch (error: unknown) {
+    return error as EntityResponse[];
   }
 };
 
@@ -72,8 +72,8 @@ const getFile = async (uuid: string): Promise<string> => {
     });
 
     return data.fileURL;
-  } catch (error) {
-    return error;
+  } catch (error: unknown) {
+    return error as string;
   }
 };
 
@@ -91,8 +91,8 @@ const getCSV = async (): Promise<string> => {
     });
 
     return data;
-  } catch (error) {
-    return error;
+  } catch (error: unknown) {
+    return error as string;
   }
 };
 
@@ -113,8 +113,8 @@ const update = async (
       headers: { Authorization: bearerToken },
     });
     return data;
-  } catch (error) {
-    return error;
+  } catch (error: unknown) {
+    return error as EntityResponse;
   }
 };
 

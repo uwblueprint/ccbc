@@ -22,6 +22,14 @@ const customTheme = extendTheme({
       fontWeight: "bold",
     },
   },
+  colors: {
+    gray: {
+      100: "##E2E8F0",
+    },
+    blue: {
+      100: "#90CDF4",
+    },
+  },
   components: {
     Button: {
       variants: {
@@ -30,6 +38,14 @@ const customTheme = extendTheme({
           bg: "teal.500",
           color: "white",
           size: "md",
+        },
+      },
+    },
+    Heading: {
+      variants: {
+        nav: {
+          color: "#fff",
+          margin: "30px",
         },
       },
     },

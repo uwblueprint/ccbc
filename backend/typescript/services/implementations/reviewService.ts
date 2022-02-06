@@ -2,6 +2,9 @@ import { Sequelize } from "sequelize-typescript";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
+import PgBookAuthor from "../../models/book_author.model";
+import PgBookPublisher from "../../models/book_publisher.model";
+import PgReviewTag from "../../models/review_tag.model";
 import PgTag from "../../models/tag.model";
 import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
@@ -26,6 +29,125 @@ class ReviewService implements IReviewService {
   constructor(db: Sequelize = sequelize) {
     this.db = db;
     if (db !== sequelize) sequelize.close(); // Using test db instead of main db
+  }
+
+  async deleteReview(id: string): Promise<void> {
+    try {
+      const deleteResult = await this.db.transaction(async (t) => {
+        const reviewToDelete = await PgReview.findByPk(id, {
+          transaction: t,
+          include: [{ all: true, nested: true }],
+        });
+
+        if (!reviewToDelete) {
+          throw new Error(`Review id ${id} not found`);
+        }
+
+        const allBookIds = reviewToDelete.books.map((book: PgBook) => book.id);
+        const deletePublishersAndAuthors = Promise.all(
+          reviewToDelete.books.map(async (book: PgBook) => {
+            // Delete authors (if necessary)
+            book.authors.forEach((author: PgAuthor) => {
+              PgBookAuthor.findAll({
+                where: { author_id: author.id },
+              }).then(async (ret: PgBookAuthor[]) => {
+                const bookAuthorIds = ret.map(
+                  (bookAuthor: PgBookAuthor) => bookAuthor.book_id,
+                );
+                if (
+                  bookAuthorIds.every((bookId) => allBookIds.includes(bookId))
+                ) {
+                  // Delete author
+                  await PgAuthor.destroy({
+                    where: { id: [author.id] },
+                  });
+                }
+              });
+            });
+
+            // Delete publishers (if necessary)
+            book.publishers.forEach((publisher: PgPublisher) => {
+              PgBookPublisher.findAll({
+                where: { publisher_id: publisher.id },
+              }).then(async (ret: PgBookPublisher[]) => {
+                const bookPublisherIds = ret.map(
+                  (bookPublisher: PgBookPublisher) => bookPublisher.book_id,
+                );
+                if (
+                  bookPublisherIds.every((bookId) =>
+                    allBookIds.includes(bookId),
+                  )
+                ) {
+                  // Delete publisher
+                  await PgPublisher.destroy({
+                    where: { id: [publisher.id] },
+                  });
+                }
+              });
+            });
+          }),
+        );
+
+        const deleteBooks = Promise.all(
+          reviewToDelete.books.map(async (book: PgBook) => {
+            // Delete book
+            PgBook.destroy({
+              where: { id: [book.id] },
+            }).then(() => {
+              // Delete series (if necessary)
+              if (book.series) {
+                PgBook.findAll({
+                  where: { series_id: book.series.id },
+                }).then((ret: PgBook[]) => {
+                  // We check for 0 because we deleted the book (can't be 1)
+                  if (ret.length === 0) {
+                    // Delete series
+                    PgSeries.destroy({
+                      where: { id: [book.series.id] },
+                    });
+                  }
+                });
+              }
+            });
+          }),
+        );
+
+        // Delete tags (if necessary)
+        const deleteTags = Promise.all(
+          reviewToDelete.tags.map((tag: PgTag) => {
+            return PgReviewTag.findAll({
+              where: { tag_id: tag.id },
+            }).then(async (ret: PgReviewTag[]) => {
+              if (ret.length === 1) {
+                // Delete tags
+                await PgTag.destroy({
+                  where: { id: [tag.id] },
+                });
+              }
+            });
+          }),
+        );
+
+        return Promise.all([
+          deletePublishersAndAuthors,
+          deleteBooks,
+          deleteTags,
+        ]).then(() => {
+          return PgReview.destroy({
+            where: { id: [id] },
+          });
+        });
+      });
+
+      if (!deleteResult) {
+        throw new Error(`Review id ${id} not found`);
+      }
+    } catch (error) {
+      Logger.error(
+        `Failed to delete Review. Reason = ${getErrorMessage(error)}`,
+      );
+      throw error;
+    }
   }
 
   static pgReviewToRet(review: PgReview): ReviewResponseDTO {
@@ -74,6 +196,7 @@ class ReviewService implements IReviewService {
       body: review.body,
       byline: review.byline,
       featured: review.featured,
+      createdBy: review.created_by_id,
       books,
       tags,
       updatedAt: review.updatedAt.getTime(),
@@ -144,6 +267,7 @@ class ReviewService implements IReviewService {
             body: review.body,
             byline: review.byline,
             featured: review.featured,
+            created_by_id: review.createdBy,
             published_at: review.publishedAt
               ? new Date(review.publishedAt)
               : null,
@@ -246,6 +370,7 @@ class ReviewService implements IReviewService {
           body: newReview.body,
           byline: newReview.byline,
           featured: newReview.featured,
+          createdBy: newReview.created_by_id,
           books: booksRet,
           tags: tagsRet,
           updatedAt: newReview.updatedAt.getTime(),
