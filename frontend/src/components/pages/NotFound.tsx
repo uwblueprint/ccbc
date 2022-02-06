@@ -1,4 +1,4 @@
-import { Flex, Image, Text} from "@chakra-ui/react";
+import { Flex, Image, Text } from "@chakra-ui/react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -7,7 +7,6 @@ import background from "../../assets/NotFoundBack.png";
 import character from "../../assets/sitting.svg";
 
 const NotFound = (): React.ReactElement => {
-
   return (
     <Flex
       direction="column"
@@ -35,11 +34,7 @@ const NotFound = (): React.ReactElement => {
         />
       </Link>
 
-      <Text
-        textStyle="heading"
-        fontSize="42px"
-        fontWeight="extrabold"
-      >
+      <Text textStyle="heading" fontSize="42px" fontWeight="extrabold">
         Oops! Something went wrong!
       </Text>
 
@@ -53,7 +48,6 @@ const NotFound = (): React.ReactElement => {
         boxSize="350px"
         zIndex="1"
       />
-      
     </Flex>
   );
 };
