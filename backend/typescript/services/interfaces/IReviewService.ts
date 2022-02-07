@@ -55,6 +55,9 @@ export interface Tag {
   name: string;
 }
 
+/**
+ * Contains the basic details of a User
+ */
 export interface User {
   id: number;
   firstName: string;
