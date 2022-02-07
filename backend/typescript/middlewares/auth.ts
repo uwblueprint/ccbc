@@ -38,25 +38,27 @@ export const isAuthorizedByRole = (roles: Set<Role>) => {
   };
 };
 
-/* Determine if request for a user-specific resource is authorized based on accessToken
+/* Determine if request for a user-specific resource is authorized based on accessToken and user id
  * validity and if the userId that the token was issued to matches the requested userId
  */
-export const isAuthorizedByUserId = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-  userId: string,
-): Promise<Response<unknown, Record<string, unknown>> | void> => {
-  const accessToken = getAccessToken(req);
-  const authorized =
-    accessToken &&
-    (await authService.isAuthorizedByUserId(accessToken, userId));
-  if (!authorized) {
-    return res
-      .status(401)
-      .json({ error: "You are not authorized to make this request." });
-  }
-  return next();
+export const isAuthorizedByUserId = (userIdField: string) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> => {
+    const accessToken = getAccessToken(req);
+    const userId = req.params[userIdField] || String(req.body[userIdField]);
+    const authorized =
+      accessToken &&
+      (await authService.isAuthorizedByUserId(accessToken, userId));
+    if (!authorized) {
+      return res
+        .status(401)
+        .json({ error: "You are not authorized to make this request." });
+    }
+    return next();
+  };
 };
 
 /* Determine if request for a user-specific resource is authorized based on accessToken
@@ -81,22 +83,5 @@ export const isAuthorizedByEmail = (emailField: string) => {
         .json({ error: "You are not authorized to make this request." });
     }
     return next();
-  };
-};
-
-/**
- * isAuthorizedByUserIdFromParameter verifies that the userId passed in the request
- * body or query parameter matches with the logged in user
- *
- * @param userIdField - the name of the userId field in the request body
- */
-export const isAuthorizedByUserIdFromParameter = (userIdField: string) => {
-  return async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<Response | void> => {
-    const userId = req.params[userIdField] || String(req.body[userIdField]);
-    return isAuthorizedByUserId(req, res, next, userId);
   };
 };
