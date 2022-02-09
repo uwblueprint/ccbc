@@ -16,12 +16,14 @@ import {
   ReviewRequestDTO,
   IReviewService,
   ReviewResponseDTO,
-  Publisher,
-  Tag,
   BookResponse,
   BookRequest,
   AuthorResponse,
   AuthorRequest,
+  TagRequest,
+  PublisherRequest,
+  PublisherResponse,
+  TagResponse,
 } from "../interfaces/IReviewService";
 
 const Logger = logger(__filename);
@@ -37,7 +39,7 @@ class ReviewService implements IReviewService {
   /* eslint-disable class-methods-use-this, no-await-in-loop */
   async findOrCreateTag(
     review: PgReview,
-    tag: Tag,
+    tag: TagRequest,
     t: Transaction,
   ): Promise<PgTag> {
     const newTag = await PgTag.findOrCreate({
@@ -50,13 +52,13 @@ class ReviewService implements IReviewService {
 
   async findOrCreateTags(
     review: PgReview,
-    tags: Tag[],
+    tags: TagRequest[],
     t: Transaction,
-  ): Promise<Tag[]> {
-    const tagsRet: Tag[] = [];
+  ): Promise<TagResponse[]> {
+    const tagsRet: TagResponse[] = [];
     for (let i = 0; i < tags.length; i += 1) {
       const tag = await this.findOrCreateTag(review, tags[i], t);
-      tagsRet.push({ name: tag.name });
+      tagsRet.push({ id: tag.id, name: tag.name });
     }
     return tagsRet;
   }
@@ -95,7 +97,7 @@ class ReviewService implements IReviewService {
 
   async findOrCreatePublisher(
     book: PgBook,
-    publisher: Publisher,
+    publisher: PublisherRequest,
     t: Transaction,
   ): Promise<PgPublisher> {
     const pub = await PgPublisher.findOrCreate({
@@ -140,13 +142,14 @@ class ReviewService implements IReviewService {
         t,
       );
       authorsRet.push({
+        id: author.id,
         fullName: author.full_name,
         displayName: author.display_name || null,
         attribution: author.attribution || null,
       });
     }
 
-    const publishersRet: Publisher[] = [];
+    const publishersRet: PublisherResponse[] = [];
     for (let i = 0; i < book.publishers.length; i += 1) {
       const publisher = await this.findOrCreatePublisher(
         newBook,
@@ -154,6 +157,7 @@ class ReviewService implements IReviewService {
         t,
       );
       publishersRet.push({
+        id: publisher.id,
         fullName: publisher.full_name,
         publishYear: publisher.publish_year,
       });
@@ -161,6 +165,7 @@ class ReviewService implements IReviewService {
 
     await review.$add("books", newBook, { transaction: t });
     return {
+      id: newBook.id,
       title: newBook.title,
       coverImage: newBook.cover_image,
       titlePrefix: newBook.title_prefix || null,
@@ -299,15 +304,17 @@ class ReviewService implements IReviewService {
     const books: BookResponse[] = review.books.map((book: PgBook) => {
       const authorsRet: AuthorResponse[] = book.authors.map((a: PgAuthor) => {
         return {
+          id: a.id,
           fullName: a.full_name,
           displayName: a.display_name || null,
           attribution: a.attribution || null,
         };
       });
 
-      const publishersRet: Publisher[] = book.publishers.map(
+      const publishersRet: PublisherResponse[] = book.publishers.map(
         (p: PgPublisher) => {
           return {
+            id: p.id,
             fullName: p.full_name,
             publishYear: p.publish_year,
           };
@@ -315,6 +322,7 @@ class ReviewService implements IReviewService {
       );
 
       return {
+        id: book.id,
         title: book.title,
         coverImage: book.cover_image,
         titlePrefix: book.title_prefix || null,
@@ -330,8 +338,9 @@ class ReviewService implements IReviewService {
       };
     });
 
-    const tags: Tag[] = review.tags.map((tag: PgTag) => {
+    const tags: TagResponse[] = review.tags.map((tag: PgTag) => {
       return {
+        id: tag.id,
         name: tag.name,
       };
     });
@@ -466,8 +475,8 @@ class ReviewService implements IReviewService {
 
         // delete tags
         const newTagIds = entity.tags
-          .filter((tag: Tag) => typeof tag.id === "number")
-          .map((tag: Tag) => tag.id);
+          .filter((tag: TagRequest) => typeof tag.id === "number")
+          .map((tag: TagRequest) => tag.id);
         const allReviewTags = await PgReviewTag.findAll({
           where: { review_id: id },
           transaction: t,
@@ -487,7 +496,7 @@ class ReviewService implements IReviewService {
 
         // update tags
         await Promise.all(
-          entity.tags.map(async (tag: Tag) => {
+          entity.tags.map(async (tag: TagRequest) => {
             if (tag.id) {
               const tagToUpdate = await PgTag.findByPk(tag.id, {
                 transaction: t,
@@ -646,7 +655,7 @@ class ReviewService implements IReviewService {
           entity.books.map(async (book: BookRequest) => {
             if (book.id) {
               const newPublisherIds = book.publishers
-                .map((publisher: Publisher) => publisher.id)
+                .map((publisher: PublisherRequest) => publisher.id)
                 .filter((pubId: number | undefined) => pubId !== undefined);
               const oldBooksPublishers = await PgBookPublisher.findAll({
                 where: { book_id: book.id },

@@ -2,9 +2,9 @@ import { Router } from "express";
 import ReviewService from "../services/implementations/reviewService";
 import {
   IReviewService,
-  Tag,
   BookRequest,
   ReviewResponseDTO,
+  TagRequest,
 } from "../services/interfaces/IReviewService";
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
@@ -25,7 +25,7 @@ reviewRouter.post("/", reviewRequestDtoValidator, async (req, res) => {
        *createdBy: req.body.createdBy,
        */
       books: req.body.books as BookRequest[],
-      tags: req.body.tags as Tag[],
+      tags: req.body.tags as TagRequest[],
       publishedAt: req.body.publishedAt,
     });
     await sendResponseByMimeType<ReviewResponseDTO>(
