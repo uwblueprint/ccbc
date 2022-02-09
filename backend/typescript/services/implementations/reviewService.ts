@@ -116,7 +116,7 @@ class ReviewService implements IReviewService {
     book: BookRequest,
     t: Transaction,
   ): Promise<BookResponse> {
-    const series = await this.findOrCreateSeries(book.seriesName, t);
+    const series = await this.findOrCreateSeries(book.series.name, t);
 
     const newBook = await PgBook.create(
       {
@@ -177,7 +177,10 @@ class ReviewService implements IReviewService {
       maxAge: newBook.age_range[1].value,
       authors: authorsRet,
       publishers: publishersRet,
-      seriesName: series?.name || null,
+      series: {
+        id: series?.id || null,
+        name: series?.name || null,
+      },
     };
   }
 
@@ -334,7 +337,10 @@ class ReviewService implements IReviewService {
         maxAge: book.age_range[1].value,
         authors: authorsRet,
         publishers: publishersRet,
-        seriesName: book.series?.name || null,
+        series: {
+          id: book.series?.id || null,
+          name: book.series?.name || null,
+        },
       };
     });
 
@@ -543,7 +549,7 @@ class ReviewService implements IReviewService {
         // update books
         await Promise.all(
           entity.books.map(async (book: BookRequest) => {
-            const { seriesId } = book;
+            const seriesId = book.series.id;
             let series: PgSeries | null;
             if (seriesId) {
               const seriesToUpdate = await PgSeries.findByPk(seriesId, {
@@ -552,10 +558,10 @@ class ReviewService implements IReviewService {
               if (!seriesToUpdate) {
                 throw new Error(`Series id ${seriesId} not found`);
               }
-              await seriesToUpdate.update({ name: book.seriesName });
+              await seriesToUpdate.update({ name: book.series.name });
               series = seriesToUpdate;
             } else {
-              series = await this.findOrCreateSeries(book.seriesName, t);
+              series = await this.findOrCreateSeries(book.series.name, t);
             }
 
             const bookId = book.id;

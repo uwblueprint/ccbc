@@ -30,6 +30,11 @@ export interface Format {
   isbn: string;
 }
 
+export interface Series {
+  id?: number;
+  name?: string | null;
+}
+
 export interface BookRequest {
   id?: number;
   title: string;
@@ -43,8 +48,7 @@ export interface BookRequest {
   maxAge: number;
   authors: AuthorRequest[];
   publishers: PublisherRequest[];
-  seriesId?: number;
-  seriesName?: string | null;
+  series: Series;
 }
 
 export interface BookResponse {
@@ -60,7 +64,7 @@ export interface BookResponse {
   maxAge: number;
   authors: AuthorResponse[];
   publishers: PublisherResponse[];
-  seriesName: string | null;
+  series: Series;
 }
 
 export interface TagRequest {
