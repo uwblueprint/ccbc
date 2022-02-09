@@ -89,7 +89,6 @@ class ReviewService implements IReviewService {
       },
       transaction: t,
     }).then((data) => data[0]);
-    // @TODO: check this
     await book.$add("authors", newAuthor, { transaction: t });
     return newAuthor;
   }
@@ -106,7 +105,6 @@ class ReviewService implements IReviewService {
       },
       transaction: t,
     }).then((data) => data[0]);
-    // @TOOD: look at this ~Omar
     await book.$add("publishers", pub, { transaction: t });
     return pub;
   }
