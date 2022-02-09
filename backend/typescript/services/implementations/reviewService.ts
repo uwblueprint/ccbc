@@ -504,6 +504,35 @@ class ReviewService implements IReviewService {
           }),
         );
 
+        // remove books
+        const oldBooks = await PgBook.findAll({ transaction: t });
+        const oldBookIds = oldBooks.map((oldBook: PgBook) => oldBook.id);
+        const newBookIds = entity.books
+          .map((book: BookRequest) => book.id)
+          .filter((bookId: number | undefined) => bookId !== undefined);
+        const droppedBookIds = oldBookIds.filter(
+          (oldId: number) => !newBookIds.includes(oldId),
+        );
+        await Promise.all(
+          droppedBookIds.map(async (bookId: number) => {
+            await PgBookAuthor.destroy({
+              where: {
+                book_id: bookId,
+              },
+              transaction: t,
+            });
+
+            await PgBookPublisher.destroy({
+              where: {
+                book_id: bookId,
+              },
+              transaction: t,
+            });
+
+            await PgBook.destroy({ where: { id: bookId }, transaction: t });
+          }),
+        );
+
         // update books
         await Promise.all(
           entity.books.map(async (book: BookRequest) => {
