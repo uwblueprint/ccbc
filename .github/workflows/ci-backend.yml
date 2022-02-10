@@ -36,3 +36,8 @@ jobs:
       - name: Run lint for backend
         working-directory: ./backend/typescript
         run: yarn lint
+
+      #Run tests
+      - name: Run tests for backend
+        working-directory: ./backend/typescript
+        run: yarn test
