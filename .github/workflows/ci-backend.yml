@@ -62,6 +62,7 @@ jobs:
       run:  yarn --cwd ./backend/typescript/
 
     - name: Run test for backend
+      working-directory: ./backend/typescript
       run: yarn test
       env:
         # use localhost for the host here because we are running the job on the VM.
