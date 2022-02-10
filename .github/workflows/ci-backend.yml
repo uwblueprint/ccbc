@@ -16,9 +16,6 @@ on:
       tags:
         description: 'Workflow ID'
 
-env:
-  DB_TEST_HOST: ccbc-db-test-1
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "backend_lint"
@@ -40,7 +37,23 @@ jobs:
         working-directory: ./backend/typescript
         run: yarn lint
 
-      #Run tests
-      - name: Run tests for backend
-        working-directory: ./backend/typescript
-        run: yarn test
+  backend_test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:12-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+          DB_TEST_HOST: ccbc-db-test-1
+        ports:
+        - 5430:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    - name: Run test for backend
+      working-directory: ./backend/typescript
+      run: yarn test
