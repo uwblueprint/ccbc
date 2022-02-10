@@ -38,7 +38,9 @@ export default [
             publishYear: 2002,
           },
         ],
-        seriesName: "Book1 Series Name",
+        series: {
+          name: "Book1 Series Name",
+        },
       },
       {
         title: "Book2 Title",
@@ -69,7 +71,7 @@ export default [
             publishYear: 2002,
           },
         ],
-        seriesName: "Book2 Series Name",
+        series: { name: "Book2 Series Name" },
       },
     ],
     tags: [{ name: "tag1 Name" }, { name: "tag2 Name" }],
@@ -110,7 +112,9 @@ export default [
             publishYear: 2002,
           },
         ],
-        seriesName: null,
+        series: {
+          name: null,
+        },
       },
     ],
     tags: [{ name: "tag1 Name" }, { name: "tag2 Name" }],
