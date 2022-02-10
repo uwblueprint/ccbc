@@ -55,6 +55,15 @@ export interface Tag {
   name: string;
 }
 
+/**
+ * Contains the basic details of a User
+ */
+export interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+}
+
 export interface ReviewRequestDTO {
   body: string;
   byline: string;
@@ -70,7 +79,8 @@ export interface ReviewResponseDTO {
   body: string;
   byline: string;
   featured: boolean;
-  createdBy: number;
+  createdBy?: number | null;
+  createdByUser?: User | null;
   books: BookResponse[];
   tags: Tag[];
   updatedAt: number;
