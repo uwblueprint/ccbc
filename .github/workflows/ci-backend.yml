@@ -57,6 +57,10 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
+    # Install dependencies
+    - name: Install dependencies
+      run:  yarn --cwd ./backend/typescript/
+
     - name: Run test for backend
       working-directory: ./backend/typescript
       run: yarn test
