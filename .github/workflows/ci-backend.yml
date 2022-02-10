@@ -16,9 +16,6 @@ on:
       tags:
         description: 'Workflow ID'
 
-env: 
-  DB_TEST_HOST: localhost
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "backend_lint"
@@ -51,7 +48,8 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
         ports:
-        - 5430:5432
+        # will assign a random free host port
+        - 5432/tcp
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
@@ -66,3 +64,9 @@ jobs:
     - name: Run test for backend
       working-directory: ./backend/typescript
       run: yarn test
+      env:
+        # use localhost for the host here because we are running the job on the VM.
+        # If we were running the job on in a container this would be postgres
+        DB_TEST_HOST: localhost
+        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }} # get randomly assigned published port
+    
