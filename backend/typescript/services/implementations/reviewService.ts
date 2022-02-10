@@ -116,7 +116,9 @@ class ReviewService implements IReviewService {
     book: BookRequest,
     t: Transaction,
   ): Promise<BookResponse> {
-    const series = await this.findOrCreateSeries(book.series.name, t);
+    const series = book.series
+      ? await this.findOrCreateSeries(book.series.name, t)
+      : undefined;
 
     const newBook = await PgBook.create(
       {
