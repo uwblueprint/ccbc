@@ -14,6 +14,7 @@ import ReviewService from "../reviewService";
 import testReviews from "../../interfaces/samples/reviewRequest";
 import testResponse from "../../interfaces/samples/reviewResponse";
 import testSql from "../../../testUtils/testDb";
+import User from "../../../models/user.model";
 
 function reviewsAreEqual(
   reviewA: ReviewRequestDTO | ReviewResponseDTO,
@@ -23,10 +24,7 @@ function reviewsAreEqual(
   expect(reviewA.byline).toEqual(reviewB.byline);
   expect(reviewA.featured).toEqual(reviewB.featured);
   expect(reviewA.publishedAt).toEqual(reviewB.publishedAt);
-  /*
-   * @TODO: uncomment when christine changes are merged
-   * expect(result.created_by).toEqual(testReviews[i].createdBy);
-   */
+  // expect(reviewA.createdBy).toEqual(reviewB.createdBy);
 
   reviewA.tags.sort((a, b) => a.name.localeCompare(b.name));
   reviewB.tags.sort((a, b) => a.name.localeCompare(b.name));
@@ -87,6 +85,13 @@ describe("pg reviewService", () => {
 
   beforeAll(async () => {
     await testSql.sync({ force: true });
+    await User.create({
+      firstName: "Peter",
+      lastName: "Pan",
+      id: "123",
+      authId: "123",
+      roleType: "Admin",
+    });
     reviewService = new ReviewService(testSql);
   });
   afterAll(async () => {

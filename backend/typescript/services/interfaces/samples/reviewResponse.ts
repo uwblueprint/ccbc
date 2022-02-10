@@ -8,6 +8,7 @@ export default [
     byline: "Insert Byline here",
     featured: true,
     publishedAt: 12445,
+    createdBy: 123,
     books: [
       {
         title: "Book1 Title",
@@ -80,6 +81,7 @@ export default [
     reviewId: 100,
     body: "2",
     byline: "Insert Byline here",
+    createdBy: 123,
     featured: true,
     publishedAt: 12445,
     books: [

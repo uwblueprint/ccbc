@@ -4,6 +4,7 @@ import { ReviewRequestDTO } from "../IReviewService";
 export default [
   {
     body: "1",
+    createdBy: 123,
     byline: "Insert Byline here",
     featured: true,
     publishedAt: 12445,
@@ -79,6 +80,7 @@ export default [
   },
   {
     body: "2",
+    createdBy: 123,
     byline: "Insert Byline here",
     featured: true,
     publishedAt: 12445,
