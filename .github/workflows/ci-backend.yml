@@ -16,6 +16,9 @@ on:
       tags:
         description: 'Workflow ID'
 
+env:
+  DB_TEST_HOST: ccbc-db-test-1
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "backend_lint"
