@@ -16,6 +16,9 @@ on:
       tags:
         description: 'Workflow ID'
 
+env: 
+  DB_TEST_HOST: localhost
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "backend_lint"
@@ -47,7 +50,6 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
-          DB_TEST_HOST: ccbc-db-test-1
         ports:
         - 5430:5432
         # needed because the postgres container does not provide a healthcheck
