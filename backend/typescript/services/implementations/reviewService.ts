@@ -358,6 +358,7 @@ class ReviewService implements IReviewService {
       body: review.body,
       byline: review.byline,
       featured: review.featured,
+      createdBy: review.created_by_id,
       books,
       tags,
       updatedAt: review.updatedAt.getTime(),
@@ -423,18 +424,18 @@ class ReviewService implements IReviewService {
 
     try {
       result = await this.db.transaction(async (t) => {
-        const reviewFields = {
-          body: review.body,
-          byline: review.byline,
-          featured: review.featured,
-          published_at: review.publishedAt
-            ? new Date(review.publishedAt)
-            : null,
-        };
-
-        const newReview = await PgReview.create(reviewFields, {
-          transaction: t,
-        });
+        const newReview = await PgReview.create(
+          {
+            body: review.body,
+            byline: review.byline,
+            featured: review.featured,
+            created_by_id: review.createdBy,
+            published_at: review.publishedAt
+              ? new Date(review.publishedAt)
+              : null,
+          },
+          { transaction: t },
+        );
 
         const tagsRet = await this.findOrCreateTags(newReview, review.tags, t);
 
@@ -450,6 +451,7 @@ class ReviewService implements IReviewService {
           body: newReview.body,
           byline: newReview.byline,
           featured: newReview.featured,
+          createdBy: newReview.created_by_id,
           books: booksRet,
           tags: tagsRet,
           updatedAt: newReview.updatedAt.getTime(),

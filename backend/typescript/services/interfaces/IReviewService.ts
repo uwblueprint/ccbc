@@ -81,8 +81,7 @@ export interface ReviewRequestDTO {
   body: string;
   byline: string;
   featured: boolean;
-  // @TODO: uncomment when christine changes are merged
-  // createdBy: number;
+  createdBy: number;
   publishedAt?: number | null;
   books: BookRequest[];
   tags: TagRequest[];
@@ -93,8 +92,7 @@ export interface ReviewResponseDTO {
   body: string;
   byline: string;
   featured: boolean;
-  // @TODO: uncomment when christine changes are merged
-  // createdBy: number;
+  createdBy: number;
   books: BookResponse[];
   tags: TagResponse[];
   updatedAt: number;

@@ -1,5 +1,8 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+/* eslint import/no-cycle: 0 */
+
+import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
 import { Role } from "../types";
+import Review from "./review.model";
 
 @Table({ tableName: "users" })
 export default class User extends Model {
@@ -20,4 +23,7 @@ export default class User extends Model {
 
   @Column({ type: DataType.BOOLEAN })
   active!: boolean;
+
+  @HasMany(() => Review)
+  reviews!: Review[];
 }
