@@ -1,3 +1,4 @@
+import * as firebaseAdmin from "firebase-admin";
 import { AuthDTO, Role, Token, UserDTO } from "../../types";
 
 interface IAuthService {
@@ -54,11 +55,10 @@ interface IAuthService {
   /**
    * Sends an email to the created user with their login details and a
    * link to change their password
-   * @param email email of user that needs to set up password
-   * @param password the temporary random password assigned to that user
    * @param user the UserDTO that has user information
+   * @param accessCode the access code the user has to use to set up their password
    */
-  sendPasswordSetupLink(email: string, user: UserDTO): Promise<void>;
+  sendPasswordSetupLink(user: UserDTO, accessCode: string): Promise<void>;
 
   /**
    * Determine if the provided access token is valid and authorized for at least
@@ -91,6 +91,22 @@ interface IAuthService {
     accessToken: string,
     requestedEmail: string,
   ): Promise<boolean>;
+
+  /**
+   * returns the firebase user record given the userId
+   * @param uid user's id on firebase
+   * @returns a firebase UserRecord representing the user on firebase auth
+   * @throws Error if user retrieval fails
+   */
+  getFirebaseUserByUid(uid: string): Promise<firebaseAdmin.auth.UserRecord>;
+
+  /**
+   * verifies the user with the uid account
+   * @param uid user's id on firebase
+   * @returns void
+   * @throws Error if user can't be verified
+   */
+  markVerified(uid: string): Promise<void>;
 }
 
 export default IAuthService;

@@ -438,6 +438,24 @@ paths:
         '500':
           description: Invalid request
   
+  /auth/{uid}:
+      get:
+        parameters:
+          - in: path
+            name: uid
+            required: true
+            schema:
+              type: string
+            description: The firebase user id 
+        tags:
+          - Auth
+        description: Returns a firebase User record given the user id (uid)
+        responses:
+          '200':
+            description: Successfully returns the firebase user
+          '500':
+            description: Invalid uid
+
   /auth/register:
     post:
       tags:
@@ -554,6 +572,26 @@ paths:
           description: Invalid request
 
 
+  /auth/verifyEmail/{uid}:
+      post:
+        security:
+          - bearerAuth: []
+        parameters:
+          - in: path
+            name: uid
+            required: true
+            schema:
+              type: string
+        tags:
+          - Auth
+        description: Verifies a user with the given uid
+        responses:
+          '200':
+            description: Successfully verified the user
+          '500':
+            description: Invalid request
+
+            
   /users:
     get:
       security:

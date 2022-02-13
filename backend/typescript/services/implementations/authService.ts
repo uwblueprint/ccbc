@@ -168,7 +168,10 @@ class AuthService implements IAuthService {
     }
   }
 
-  async sendPasswordSetupLink(email: string, user: UserDTO): Promise<void> {
+  async sendPasswordSetupLink(
+    user: UserDTO,
+    accessCode: string,
+  ): Promise<void> {
     if (!this.emailService) {
       const errorMessage =
         "Attempted to call sendPasswordSetupLink but this instance of AuthService does not have an EmailService instance";
@@ -177,26 +180,28 @@ class AuthService implements IAuthService {
     }
 
     try {
-      const passwordResetLink = await firebaseAdmin
-        .auth()
-        .generatePasswordResetLink(email);
-      // first-time determines if we are setting a new account password
-      // (account will be verified) or reseting an old account's password
-      const setPasswordLink = passwordResetLink.concat("&first-time=true");
+      const authId = await this.userService.getAuthIdById(user.id);
+
+      const setPasswordLink = `${process.env.CLIENT_URL}/auth/action?mode=verify-user&uid=${authId}`;
 
       const emailBody = `
       Hello,
       <br><br>
-      You have been invited to join CCBC as a ${user.roleType.toLowerCase()}. Please use the link 
-      below to set your new password and verify your account. The link expires in 1 hour.
+      You have been invited to join CCBC as a ${user.roleType.toLowerCase()}. Please click on the link 
+      below to verify your account and set your new password. 
+      <br> Your unique access code is ${accessCode}.
       <br><br>
-      <a href=${setPasswordLink}>Set password and verify account</a>
+      <a href=${setPasswordLink}>Setup Account</a>
       `;
 
-      this.emailService.sendEmail(email, "CCBC Account Created", emailBody);
+      this.emailService.sendEmail(
+        user.email,
+        "Verify your CCBC Account",
+        emailBody,
+      );
     } catch (error) {
       Logger.error(
-        `Failed to send password set up link for user with email ${email}`,
+        `Failed to send password set up link for user with email ${user.email}`,
       );
       throw error;
     }
@@ -263,6 +268,48 @@ class AuthService implements IAuthService {
       );
     } catch (error) {
       return false;
+    }
+  }
+
+  /**
+   * getFirebaseUserByUid returns the firebaseUser that has the passed in uid
+   * @param uid A string represeting the user id in Firebase
+   * @returns UserRecord representing the firebase user with the given uid
+   */
+  async getFirebaseUserByUid(
+    uid: string,
+  ): Promise<firebaseAdmin.auth.UserRecord> {
+    let firebaseUser: firebaseAdmin.auth.UserRecord;
+    try {
+      firebaseUser = await firebaseAdmin.auth().getUser(uid);
+      if (!firebaseUser) throw new Error(`No user found with uid: ${uid}`);
+      return firebaseUser;
+    } catch (error: unknown) {
+      Logger.error(
+        `Failed to get firebase user by uid: ${uid}. Reason = ${getErrorMessage(
+          error,
+        )}`,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Sets the firebase user with the given uid to be verified
+   * @param uid the user id of the user inside Firebase
+   */
+  async markVerified(uid: string): Promise<void> {
+    try {
+      await firebaseAdmin.auth().updateUser(uid, {
+        emailVerified: true,
+      });
+    } catch (error: unknown) {
+      Logger.error(
+        `Failed to verify firebase user by uid: ${uid}. Reason = ${getErrorMessage(
+          error,
+        )}`,
+      );
+      throw error;
     }
   }
 }
