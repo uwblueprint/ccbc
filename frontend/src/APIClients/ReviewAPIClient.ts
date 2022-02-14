@@ -1,3 +1,6 @@
+import { BEARER_TOKEN } from "../constants/AuthConstants";
+import baseAPIClient from "./BaseAPIClient";
+
 export type AuthorRequest = {
   fullName: string;
   displayName?: string | null;
@@ -79,3 +82,16 @@ export type ReviewResponse = {
   publishedAt: number | null;
   createdAt: number;
 };
+
+const getReviews = async (): Promise<ReviewResponse[]> => {
+  try {
+    const { data } = await baseAPIClient.get("/reviews", {
+      headers: { Authorization: BEARER_TOKEN },
+    });
+    return data;
+  } catch (error) {
+    return error as ReviewResponse[];
+  }
+};
+
+export default getReviews;

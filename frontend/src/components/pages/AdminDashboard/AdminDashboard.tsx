@@ -12,11 +12,10 @@ import MUIDataTable, {
   CustomHeadLabelRenderOptions,
   MUIDataTableColumn,
 } from "mui-datatables";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-import { ReviewResponse } from "../../../APIClients/ReviewAPIClient";
+import getReviews, { ReviewResponse } from "../../../APIClients/ReviewAPIClient";
 import Author from "./Author";
-import data from "./mockData";
 
 type ReviewRow = {
   title: string;
@@ -27,6 +26,18 @@ type ReviewRow = {
 };
 
 const AdminDashboard = (): React.ReactElement => {
+  const [data, setData] = useState<ReviewResponse[]>([]);
+
+  useEffect(() => {
+    getReviews().then((allReviews: ReviewResponse[]) => {
+      const reviews: ReviewResponse[] = [];
+      allReviews.forEach((review: ReviewResponse) => {
+        reviews.push(review);
+      });
+      setData(reviews);
+    });
+  }, []);
+
   const getMuiTheme = () =>
     createTheme({
       overrides: {
@@ -86,6 +97,7 @@ const AdminDashboard = (): React.ReactElement => {
         name: "authors",
         label: "Author",
         options: {
+          setCellProps: () => ({ style: { maxWidth: "400px" } }),
           customBodyRender: bodyRenderFunction,
         },
       },
