@@ -4,6 +4,8 @@ import "@fontsource/dm-sans";
 
 import { extendTheme } from "@chakra-ui/react";
 
+import PasswordInputFieldStyle from "./PasswordInputFieldStyle";
+
 const customTheme = extendTheme({
   textStyles: {
     heading: {
@@ -41,6 +43,7 @@ const customTheme = extendTheme({
         },
       },
     },
+    PasswordInputFieldStyle,
     Heading: {
       variants: {
         nav: {

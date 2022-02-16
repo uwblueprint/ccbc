@@ -24,6 +24,7 @@ import {
   PublisherRequest,
   PublisherResponse,
   TagResponse,
+  User,
 } from "../interfaces/IReviewService";
 
 const Logger = logger(__filename);
@@ -358,7 +359,7 @@ class ReviewService implements IReviewService {
       body: review.body,
       byline: review.byline,
       featured: review.featured,
-      createdBy: review.created_by_id,
+      createdByUser: this.getUserDetails(review),
       books,
       tags,
       updatedAt: review.updatedAt.getTime(),
@@ -367,6 +368,16 @@ class ReviewService implements IReviewService {
         : null,
       createdAt: review.createdAt.getTime(),
     };
+  }
+
+  static getUserDetails(review: PgReview): User {
+    const user: User = {
+      id: review.created_by.id,
+      firstName: review.created_by.first_name,
+      lastName: review.created_by.last_name,
+    };
+
+    return user;
   }
 
   async getReview(id: string): Promise<ReviewResponseDTO> {
@@ -383,7 +394,6 @@ class ReviewService implements IReviewService {
         if (!review) {
           throw new Error(`Review id ${id} not found`);
         }
-
         return ReviewService.pgReviewToRet(review);
       });
     } catch (error: unknown) {

@@ -16,7 +16,7 @@ import MagazineReview from "./components/pages/MagazineReview";
 import NotFound from "./components/pages/NotFound";
 import Profile from "./components/pages/Profile";
 import Unauthorized from "./components/pages/UnauthorizedPage";
-import AUTHENTICATED_USER_KEY from "./constants/AuthConstants";
+import { AUTHENTICATED_USER_KEY } from "./constants/AuthConstants";
 import { UserRole } from "./constants/Enums";
 import * as Routes from "./constants/Routes";
 import AuthContext from "./contexts/AuthContext";

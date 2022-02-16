@@ -83,6 +83,12 @@ export const TagResponse = t.iface([], {
   name: "string",
 });
 
+export const User = t.iface([], {
+  id: "number",
+  firstName: "string",
+  lastName: "string",
+});
+
 export const ReviewRequestDTO = t.iface([], {
   body: "string",
   byline: "string",
@@ -98,7 +104,8 @@ export const ReviewResponseDTO = t.iface([], {
   body: "string",
   byline: "string",
   featured: "boolean",
-  createdBy: "number",
+  createdBy: t.opt(t.union("number", "null")),
+  createdByUser: t.opt(t.union("User", "null")),
   books: t.array("BookResponse"),
   tags: t.array("TagResponse"),
   updatedAt: "number",
@@ -133,6 +140,7 @@ const exportedTypeSuite: t.ITypeSuite = {
   BookResponse,
   TagRequest,
   TagResponse,
+  User,
   ReviewRequestDTO,
   ReviewResponseDTO,
   IReviewService,
