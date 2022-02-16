@@ -16,17 +16,26 @@ import React, { useEffect, useState } from "react";
 import { Book } from "../../../types/BookTypes";
 import { Option } from "../../../types/TagTypes";
 import BookModal from "./BookModal";
+import DeleteModal from "./DeleteBookModal";
+import PublishModal from "./PublishModal";
 import ReviewEditor from "./ReviewEditor";
 import SingleBook from "./SingleBook";
 
 const CreateReview = (): React.ReactElement => {
   const [tagsSelected, setTagsSelected] = useState<Option[]>([]);
   const [showBookModal, setShowBookModal] = useState<boolean>(false);
+  const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
+    false,
+  );
+  const [showPublishModal, setShowPublishModal] = useState<boolean>(false);
+  const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
   const [books, setBooks] = useState<Book[]>([]);
   const [review, setReview] = useState("");
   const [featured, setFeatured] = useState("0");
 
-  const onClose = () => setShowBookModal(false);
+  const onBookModalClose = () => setShowBookModal(false);
+  const onDeleteModalClose = () => setShowDeleteBookModal(false);
+  const onPublishModalClose = () => setShowPublishModal(false);
 
   const handleTagSelected = (e: Option[]) => {
     setTagsSelected(e);
@@ -90,14 +99,24 @@ const CreateReview = (): React.ReactElement => {
 
   return (
     <Box>
-      {/* Add new book modal */}
       <BookModal
         isOpen={showBookModal}
-        onClose={onClose}
+        onClose={onBookModalClose}
         tagsSelected={tagsSelected}
         handleSelected={handleTagSelected}
         booksAdded={books}
         handleBooksAdded={setBooks}
+      />
+      <DeleteModal
+        isOpen={showDeleteBookModal}
+        onClose={onDeleteModalClose}
+        bookIndex={deleteBookIndex}
+        deleteBook={deleteBook}
+      />
+      <PublishModal
+        isOpen={showPublishModal}
+        onClose={onPublishModalClose}
+        publishBook={() => {}}
       />
       {/* Tool bar */}
       <Box
@@ -132,7 +151,12 @@ const CreateReview = (): React.ReactElement => {
           <ButtonGroup spacing={6}>
             <Button variant="ghost">Preview</Button>
             <Button variant="ghost">Save</Button>
-            <Button colorScheme="teal" bg="#0EBCBD" variant="solid">
+            <Button
+              colorScheme="teal"
+              bg="#0EBCBD"
+              variant="solid"
+              onClick={() => setShowPublishModal(true)}
+            >
               Publish
             </Button>
             <IconButton
@@ -158,7 +182,13 @@ const CreateReview = (): React.ReactElement => {
         >
           {/* Current books display */}
           {books.map((book, i) => (
-            <SingleBook key={i} index={i} book={book} deleteBook={deleteBook} />
+            <SingleBook
+              key={i}
+              index={i}
+              book={book}
+              showModal={setShowDeleteBookModal}
+              setIndex={setDeleteBookIndex}
+            />
           ))}
 
           {/* Add new book button */}
