@@ -501,6 +501,29 @@ paths:
         '500':
           description: Invalid request
 
+  
+  /auth/forgotPassword:
+      post:
+        tags:
+          - Auth
+        description: Reset password if user forgets their password
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - email
+                properties:
+                  email:
+                    type: string
+        responses:
+          '200':
+            description: Successfully sent user a reset password email to change their password
+          '500':
+            description: Invalid request
+
 
   /auth/refresh:
     post:

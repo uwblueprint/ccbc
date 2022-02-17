@@ -74,6 +74,15 @@ const register = async (
   }
 };
 
+const sendForgotPasswordEmail = async (email: string): Promise<boolean> => {
+  try {
+    await baseAPIClient.post("/auth/forgotPassword", { email });
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 const resetPassword = async (email: string | undefined): Promise<boolean> => {
   const bearerToken = `Bearer ${getLocalStorageObjProperty(
     AUTHENTICATED_USER_KEY,
@@ -145,4 +154,5 @@ export default {
   refresh,
   getFirebaseUserByUid,
   verifyEmail,
+  sendForgotPasswordEmail,
 };
