@@ -17,6 +17,7 @@ import { Book } from "../../../types/BookTypes";
 import { Option } from "../../../types/TagTypes";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
+import DeleteReviewModal from "./DeleteReviewModal";
 import PublishModal from "./PublishModal";
 import ReviewEditor from "./ReviewEditor";
 import SingleBook from "./SingleBook";
@@ -28,14 +29,18 @@ const CreateReview = (): React.ReactElement => {
     false,
   );
   const [showPublishModal, setShowPublishModal] = useState<boolean>(false);
+  const [showDeleteReviewModal, setShowDeleteReviewModal] = useState<boolean>(
+    false,
+  );
   const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
   const [books, setBooks] = useState<Book[]>([]);
   const [review, setReview] = useState("");
   const [featured, setFeatured] = useState("0");
 
   const onBookModalClose = () => setShowBookModal(false);
-  const onDeleteModalClose = () => setShowDeleteBookModal(false);
+  const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
   const onPublishModalClose = () => setShowPublishModal(false);
+  const onDeleteReviewModalClose = () => setShowDeleteReviewModal(false);
 
   const handleTagSelected = (e: Option[]) => {
     setTagsSelected(e);
@@ -109,7 +114,7 @@ const CreateReview = (): React.ReactElement => {
       />
       <DeleteModal
         isOpen={showDeleteBookModal}
-        onClose={onDeleteModalClose}
+        onClose={onDeleteBookModalClose}
         bookIndex={deleteBookIndex}
         deleteBook={deleteBook}
       />
@@ -117,6 +122,11 @@ const CreateReview = (): React.ReactElement => {
         isOpen={showPublishModal}
         onClose={onPublishModalClose}
         publishBook={() => {}}
+      />
+      <DeleteReviewModal
+        isOpen={showDeleteReviewModal}
+        onClose={onDeleteReviewModalClose}
+        deleteReview={() => {}}
       />
       {/* Tool bar */}
       <Box
@@ -143,7 +153,7 @@ const CreateReview = (): React.ReactElement => {
             onClick={() => window.history.back()}
           />
           <Text fontSize="18px" fontWeight="semibold">
-            Create new review
+            Back to Dashboard
           </Text>
         </Box>
         {/* Contains buttons */}
@@ -163,6 +173,7 @@ const CreateReview = (): React.ReactElement => {
               aria-label="Discard"
               variant="ghost"
               icon={<DeleteIcon w={6} h={6} color="#718096" />}
+              onClick={() => setShowDeleteReviewModal(true)}
             />
           </ButtonGroup>
         </Box>

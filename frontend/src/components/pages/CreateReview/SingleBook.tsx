@@ -1,7 +1,6 @@
-import { CloseIcon } from "@chakra-ui/icons";
+import { CloseIcon, EditIcon } from "@chakra-ui/icons";
 import { Box, Image, Text } from "@chakra-ui/react";
-import { setegid } from "process";
-import React from "react";
+import React, { useState } from "react";
 
 import { Book } from "../../../types/BookTypes";
 
@@ -14,6 +13,7 @@ interface SingleBookProps {
 
 const SingleBook = (props: SingleBookProps): React.ReactElement => {
   const { book, index, showModal, setIndex } = props;
+  const [hovering, setHovering] = useState<boolean>(false);
 
   return (
     <Box
@@ -37,7 +37,7 @@ const SingleBook = (props: SingleBookProps): React.ReactElement => {
         borderRadius="100%"
         bgColor="black"
         boxShadow="dark-lg"
-        zIndex={1}
+        zIndex={2}
         onClick={() => {
           showModal(true);
           setIndex(index);
@@ -54,15 +54,25 @@ const SingleBook = (props: SingleBookProps): React.ReactElement => {
         w="130px"
         mb="10px"
         borderRadius={5}
+        role="img"
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
       >
-        <Image
-          _hover={{
-            filter: "brightness(0.8)",
-          }}
-          h="180px"
-          w="130px"
-          src={book.coverImage}
-        />
+        {hovering && (
+          <Box
+            w="130px"
+            h="180px"
+            borderRadius={5}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            bgColor="rgba(66,153,225,0.9)"
+            position="absolute"
+          >
+            <EditIcon h={10} w={10} color="white" />
+          </Box>
+        )}
+        <Image minH="180px" minW="130px" src={book.coverImage} />
       </Box>
       <Text fontWeight="semibold">{book.title}</Text>
     </Box>
