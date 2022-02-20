@@ -14,7 +14,8 @@ import MUIDataTable, {
 } from "mui-datatables";
 import React, { useEffect, useState } from "react";
 
-import getReviews, { ReviewResponse } from "../../../APIClients/ReviewAPIClient";
+import getReviews from "../../../APIClients/ReviewAPIClient";
+import { ReviewResponse } from "../../../types/ReviewTypes";
 import Author from "./Author";
 
 type ReviewRow = {
@@ -30,11 +31,7 @@ const AdminDashboard = (): React.ReactElement => {
 
   useEffect(() => {
     getReviews().then((allReviews: ReviewResponse[]) => {
-      const reviews: ReviewResponse[] = [];
-      allReviews.forEach((review: ReviewResponse) => {
-        reviews.push(review);
-      });
-      setData(reviews);
+      setData(allReviews);
     });
   }, []);
 
