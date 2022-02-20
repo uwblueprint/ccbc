@@ -80,24 +80,33 @@ reviewRouter.get(
   },
 );
 
-reviewRouter.put("/:id", reviewRequestDtoValidator, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const review = await reviewService.updateReviews(id, req.body);
-    res.status(200).json(review);
-  } catch (e: unknown) {
-    sendErrorResponse(e, res);
-  }
-});
+reviewRouter.put(
+  "/:id",
+  isAuthorizedByRole(new Set(["Admin"])),
+  reviewRequestDtoValidator,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const review = await reviewService.updateReviews(id, req.body);
+      res.status(200).json(review);
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
 
-reviewRouter.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    await reviewService.deleteReview(id);
-    res.status(204).send();
-  } catch (e: unknown) {
-    sendErrorResponse(e, res);
-  }
-});
+reviewRouter.delete(
+  "/:id",
+  isAuthorizedByRole(new Set(["Admin"])),
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      await reviewService.deleteReview(id);
+      res.status(204).send();
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
 
 export default reviewRouter;
