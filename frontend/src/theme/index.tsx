@@ -9,7 +9,7 @@ import PasswordInputFieldStyle from "./PasswordInputFieldStyle";
 const customTheme = extendTheme({
   textStyles: {
     heading: {
-      fontFamily: "Coustard",
+      fontFamily: "DM Sans",
       fontSize: "2vw",
     },
     body: {
