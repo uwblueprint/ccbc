@@ -15,7 +15,7 @@ import React, { useEffect, useState } from "react";
 
 import { Book } from "../../../types/BookTypes";
 // import { Option } from "../../../types/TagTypes";
-// import BookModal from "./BookModal";
+import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
 import data from "./mockData";
@@ -29,7 +29,7 @@ import SingleBook from "./SingleBook";
 const CreateReview = (): React.ReactElement => {
   // State hooks to be used by the BookModal component
   // const [tagsSelected, setTagsSelected] = useState<Option[]>([]);
-  // const [showBookModal, setShowBookModal] = useState<boolean>(false);
+  const [showBookModal, setShowBookModal] = useState<boolean>(false);
   const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
     false,
   );
@@ -42,7 +42,7 @@ const CreateReview = (): React.ReactElement => {
   const [review, setReview] = useState("");
   const [featured, setFeatured] = useState("0");
 
-  // const onBookModalClose = () => setShowBookModal(false);
+  const onBookModalClose = () => setShowBookModal(false);
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
   const onPublishModalClose = () => setShowPublishModal(false);
   const onDeleteReviewModalClose = () => setShowDeleteReviewModal(false);
@@ -85,14 +85,12 @@ const CreateReview = (): React.ReactElement => {
 
   return (
     <Box>
-      {/* <BookModal
+      <BookModal
         isOpen={showBookModal}
         onClose={onBookModalClose}
-        tagsSelected={tagsSelected}
-        handleSelected={handleTagSelected}
         booksAdded={books}
         handleBooksAdded={setBooks}
-      /> */}
+      />
       <DeleteModal
         isOpen={showDeleteBookModal}
         onClose={onDeleteBookModalClose}
@@ -205,7 +203,7 @@ const CreateReview = (): React.ReactElement => {
             cursor="pointer"
             m={6}
             ml={0}
-            // onClick={() => setShowBookModal(true)}
+            onClick={() => setShowBookModal(true)}
           >
             <IconButton
               aria-label="Add new book"
