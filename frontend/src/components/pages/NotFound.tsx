@@ -17,6 +17,7 @@ const NotFound = (): React.ReactElement => {
       bgImage={background}
       bgPosition="center"
       bgRepeat="no-repeat"
+      backgroundSize="cover"
       backgroundAttachment="scroll"
       overflowY="scroll"
       padding="50px 30px"
