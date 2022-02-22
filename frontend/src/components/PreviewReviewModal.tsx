@@ -61,18 +61,18 @@ const PreviewReviewModal = ({
   return (
     <>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent fontFamily="DM Sans">
         <ModalHeader backgroundColor="#FFF8F3">
           <HStack spacing="225px">
             <HStack>
-              <Text fontSize={12} fontWeight={600} fontFamily="DM Sans">
+              <Text fontSize={12} fontWeight={600}>
                 Previewing:
               </Text>
-              <Text fontFamily="DM Sans" fontSize={12} fontWeight={400}>
+              <Text fontSize={12} fontWeight={400}>
                 Draft
               </Text>
             </HStack>
-            <Text fontFamily="DM Sans" fontSize={12} fontWeight={600}>
+            <Text fontSize={12} fontWeight={600}>
               {title}
             </Text>
           </HStack>
@@ -84,7 +84,7 @@ const PreviewReviewModal = ({
               <Box marginRight={16}>
                 <Image boxSize="250px" objectFit="contain" src={coverUrl} />
               </Box>
-              <Box fontFamily="DM Sans">
+              <Box>
                 <Stack>
                   <Box paddingBottom={3}>
                     <Stack spacing={1}>
@@ -128,7 +128,7 @@ const PreviewReviewModal = ({
                 </Stack>
               </Box>
             </HStack>
-            <Box fontFamily="DM Sans" fontSize={12}>
+            <Box fontSize={12}>
               <Text>{body}</Text>
             </Box>
           </Stack>
