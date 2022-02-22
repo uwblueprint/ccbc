@@ -3,6 +3,10 @@ import React from "react";
 
 import PreviewReviewModal from "../PreviewReviewModal";
 
+/**
+ * A test page for testing the PreviewReviewModal
+// TODO: Remove once PreviewReviewModal is integrated
+ */
 const PreviewReviewTest = (): React.ReactElement => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
