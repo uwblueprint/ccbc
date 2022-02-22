@@ -2,6 +2,7 @@ import {
   Box,
   HStack,
   Image,
+  Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
@@ -39,6 +40,8 @@ interface PreviewReviewModalProps {
   tags: string[];
   /** The URL of the cover image of the book */
   coverUrl: string;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 /**
@@ -57,83 +60,87 @@ const PreviewReviewModal = ({
   body,
   tags,
   coverUrl,
+  isOpen,
+  onClose,
 }: PreviewReviewModalProps): React.ReactElement => {
   return (
     <>
-      <ModalOverlay />
-      <ModalContent fontFamily="DM Sans">
-        <ModalHeader backgroundColor="#FFF8F3">
-          <HStack spacing={60}>
-            <HStack>
+      <Modal isOpen={isOpen} onClose={onClose} size="3xl">
+        <ModalOverlay />
+        <ModalContent fontFamily="DM Sans">
+          <ModalHeader backgroundColor="#FFF8F3">
+            <HStack spacing={60}>
+              <HStack>
+                <Text fontSize={12} fontWeight={600}>
+                  Previewing:
+                </Text>
+                <Text fontSize={12} fontWeight={400}>
+                  Draft
+                </Text>
+              </HStack>
               <Text fontSize={12} fontWeight={600}>
-                Previewing:
-              </Text>
-              <Text fontSize={12} fontWeight={400}>
-                Draft
+                {title}
               </Text>
             </HStack>
-            <Text fontSize={12} fontWeight={600}>
-              {title}
-            </Text>
-          </HStack>
-        </ModalHeader>
-        <ModalCloseButton />
-        <ModalBody margin={10}>
-          <Stack spacing={10}>
-            <HStack>
-              <Box marginRight={16}>
-                <Image boxSize={60} objectFit="contain" src={coverUrl} />
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody margin={10}>
+            <Stack spacing={10}>
+              <HStack>
+                <Box marginRight={16}>
+                  <Image boxSize={60} objectFit="contain" src={coverUrl} />
+                </Box>
+                <Box>
+                  <Stack>
+                    <Box paddingBottom={3}>
+                      <Stack spacing={1}>
+                        <Text fontSize={24} fontWeight={800}>
+                          {title}
+                        </Text>
+                        <Text fontSize={10} as="i">
+                          {subtitle}
+                        </Text>
+                      </Stack>
+                    </Box>
+                    <Box fontSize={12} paddingBottom={3}>
+                      <Stack spacing={1}>
+                        <HStack>
+                          <Text fontWeight={600}>Written By:</Text>
+                          <Text fontWeight={400}>{writtenBy}</Text>
+                        </HStack>
+                        <HStack>
+                          <Text fontWeight={600}>Reviewed By:</Text>
+                          <Text fontWeight={400}>{reviewedBy}</Text>
+                        </HStack>
+                      </Stack>
+                    </Box>
+                    <Box fontSize={12} paddingBottom={1}>
+                      <Stack spacing={1}>
+                        <Text>{publisher}</Text>
+                        <Text>{isbn}</Text>
+                        <Text>{bookType}</Text>
+                        <Text>{ageDesciption}</Text>
+                      </Stack>
+                    </Box>
+                    <HStack spacing={2}>
+                      {tags.map((tag: string) => (
+                        <Box key={tag}>
+                          <Tag bgColor="#F6E1A8" size="sm" fontWeight={600}>
+                            {tag}
+                          </Tag>
+                        </Box>
+                      ))}
+                    </HStack>
+                  </Stack>
+                </Box>
+              </HStack>
+              <Box fontSize={12}>
+                <Text>{body}</Text>
               </Box>
-              <Box>
-                <Stack>
-                  <Box paddingBottom={3}>
-                    <Stack spacing={1}>
-                      <Text fontSize={24} fontWeight={800}>
-                        {title}
-                      </Text>
-                      <Text fontSize={10} as="i">
-                        {subtitle}
-                      </Text>
-                    </Stack>
-                  </Box>
-                  <Box fontSize={12} paddingBottom={3}>
-                    <Stack spacing={1}>
-                      <HStack>
-                        <Text fontWeight={600}>Written By:</Text>
-                        <Text fontWeight={400}>{writtenBy}</Text>
-                      </HStack>
-                      <HStack>
-                        <Text fontWeight={600}>Reviewed By:</Text>
-                        <Text fontWeight={400}>{reviewedBy}</Text>
-                      </HStack>
-                    </Stack>
-                  </Box>
-                  <Box fontSize={12} paddingBottom={1}>
-                    <Stack spacing={1}>
-                      <Text>{publisher}</Text>
-                      <Text>{isbn}</Text>
-                      <Text>{bookType}</Text>
-                      <Text>{ageDesciption}</Text>
-                    </Stack>
-                  </Box>
-                  <HStack spacing={2}>
-                    {tags.map((tag: string) => (
-                      <Box key={tag}>
-                        <Tag bgColor="#F6E1A8" size="sm" fontWeight={600}>
-                          {tag}
-                        </Tag>
-                      </Box>
-                    ))}
-                  </HStack>
-                </Stack>
-              </Box>
-            </HStack>
-            <Box fontSize={12}>
-              <Text>{body}</Text>
-            </Box>
-          </Stack>
-        </ModalBody>
-      </ModalContent>
+            </Stack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
