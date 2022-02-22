@@ -63,7 +63,7 @@ const PreviewReviewModal = ({
       <ModalOverlay />
       <ModalContent fontFamily="DM Sans">
         <ModalHeader backgroundColor="#FFF8F3">
-          <HStack spacing="225px">
+          <HStack spacing={60}>
             <HStack>
               <Text fontSize={12} fontWeight={600}>
                 Previewing:
@@ -82,7 +82,7 @@ const PreviewReviewModal = ({
           <Stack spacing={10}>
             <HStack>
               <Box marginRight={16}>
-                <Image boxSize="250px" objectFit="contain" src={coverUrl} />
+                <Image boxSize={60} objectFit="contain" src={coverUrl} />
               </Box>
               <Box>
                 <Stack>
