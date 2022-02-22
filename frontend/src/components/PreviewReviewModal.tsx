@@ -13,20 +13,38 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
+/**
+ * The model defining the props for the Preview Review Modal component
+ */
 interface PreviewReviewModalProps {
+  /** The title of the book that is being reviewed */
   title: string;
+  /** The subtitle of the book that is being reviewed */
   subtitle: string;
+  /** The name of the author of the book */
   writtenBy: string;
+  /** The name of the reviewer */
   reviewedBy: string;
+  /** The publishes of the book */
   publisher: string;
+  /** The ISBN number of the book */
   isbn: string;
+  /** The type of the book */
   bookType: string;
+  /** A description of the audience the book is recommended for */
   ageDesciption: string;
+  /** The body of the review */
   body: string;
+  /** The tags associated with the book */
   tags: string[];
+  /** The URL of the cover image of the book */
   coverUrl: string;
 }
 
+/**
+ * This component allows an admin to preview their review and get an understanding of
+ * what the subscribers of the review will see
+ */
 const PreviewReviewModal = ({
   title,
   subtitle,
