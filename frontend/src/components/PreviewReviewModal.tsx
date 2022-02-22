@@ -91,7 +91,7 @@ const PreviewReviewModal = ({
               <HStack>
                 <Box paddingRight={16}>
                   <Image
-                    // boxSize={60}
+                    borderRadius={5}
                     maxHeight={60}
                     maxWidth={60}
                     objectFit="contain"
