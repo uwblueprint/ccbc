@@ -34,13 +34,15 @@ interface PreviewReviewModalProps {
   bookType: string;
   /** A description of the audience the book is recommended for */
   ageDesciption: string;
-  /** The body of the review */
+  /** The HTML body of the review */
   body: string;
   /** The tags associated with the book */
   tags: string[];
   /** The URL of the cover image of the book */
   coverUrl: string;
+  /** A boolean indicating whether the Modal is open or not */
   isOpen: boolean;
+  /** A react hook function to toggle isOpen */
   onClose: () => void;
 }
 
@@ -134,9 +136,11 @@ const PreviewReviewModal = ({
                   </Stack>
                 </Box>
               </HStack>
-              <Box fontSize={12}>
-                <Text>{body}</Text>
-              </Box>
+              <div
+                style={{ fontSize: "12px" }}
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: body }}
+              />
             </Stack>
           </ModalBody>
         </ModalContent>

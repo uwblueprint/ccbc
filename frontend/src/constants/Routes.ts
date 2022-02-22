@@ -27,4 +27,4 @@ export const AUTH_ACTIONS = "/auth/action";
 export const DEFAULT_PAGE = "/default"; // FOR TESTING ONLY
 
 // TODO: Remove once PreviewReviewModal is integrated
-export const PREVIEW_REVIEW_TEST = "/preview-review-test";
+export const PREVIEW_REVIEW_TEST = "/test/preview-review";
