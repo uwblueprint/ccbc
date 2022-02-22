@@ -67,7 +67,7 @@ const PreviewReviewModal = ({
 }: PreviewReviewModalProps): React.ReactElement => {
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl" isCentered>
         <ModalOverlay />
         <ModalContent fontFamily="DM Sans">
           <ModalHeader backgroundColor="#FFF8F3">
@@ -106,7 +106,7 @@ const PreviewReviewModal = ({
                         <Text fontSize={24} fontWeight={800}>
                           {title}
                         </Text>
-                        <Text fontSize={10} as="i">
+                        <Text fontSize={12} as="i">
                           {subtitle}
                         </Text>
                       </Stack>
@@ -144,7 +144,7 @@ const PreviewReviewModal = ({
                 </Box>
               </HStack>
               <div
-                style={{ fontSize: "12px" }}
+                style={{ fontSize: "14px" }}
                 // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{ __html: body }}
               />
