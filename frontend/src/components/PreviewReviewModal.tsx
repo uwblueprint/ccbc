@@ -67,11 +67,11 @@ const PreviewReviewModal = ({
 }: PreviewReviewModalProps): React.ReactElement => {
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} size="3xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent fontFamily="DM Sans">
           <ModalHeader backgroundColor="#FFF8F3">
-            <HStack spacing={60}>
+            <HStack spacing={175}>
               <HStack>
                 <Text fontSize={12} fontWeight={600}>
                   Previewing:
@@ -89,8 +89,15 @@ const PreviewReviewModal = ({
           <ModalBody margin={10}>
             <Stack spacing={10}>
               <HStack>
-                <Box marginRight={16}>
-                  <Image boxSize={60} objectFit="contain" src={coverUrl} />
+                <Box paddingRight={16}>
+                  <Image
+                    // boxSize={60}
+                    maxHeight={60}
+                    maxWidth={60}
+                    objectFit="contain"
+                    src={coverUrl}
+                    boxShadow="lg"
+                  />
                 </Box>
                 <Box>
                   <Stack>
