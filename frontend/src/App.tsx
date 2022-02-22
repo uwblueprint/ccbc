@@ -14,6 +14,7 @@ import CreateReview from "./components/pages/CreateReviewPage";
 import Default from "./components/pages/Default";
 import MagazineReview from "./components/pages/MagazineReview";
 import NotFound from "./components/pages/NotFound";
+import PreviewReviewTest from "./components/pages/PreviewReviewTest";
 import Profile from "./components/pages/Profile";
 import Unauthorized from "./components/pages/UnauthorizedPage";
 import { AUTHENTICATED_USER_KEY } from "./constants/AuthConstants";
@@ -98,6 +99,11 @@ const App = (): React.ReactElement => {
                   path={Routes.DEFAULT_PAGE}
                   component={Default}
                   requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
+                />
+                <Route
+                  exact
+                  path={Routes.PREVIEW_REVIEW_TEST}
+                  component={PreviewReviewTest}
                 />
                 <Route exact path="*" component={NotFound} />
               </Switch>

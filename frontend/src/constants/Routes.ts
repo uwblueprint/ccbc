@@ -25,3 +25,5 @@ export const CREATE_REVIEW_PAGE = "/create-review";
 export const AUTH_ACTIONS = "/auth/action";
 
 export const DEFAULT_PAGE = "/default"; // FOR TESTING ONLY
+
+export const PREVIEW_REVIEW_TEST = "/preview-review-test";
