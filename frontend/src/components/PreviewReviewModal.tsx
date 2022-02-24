@@ -1,18 +1,16 @@
 import {
-  Box,
   HStack,
-  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Stack,
-  Tag,
   Text,
 } from "@chakra-ui/react";
 import React from "react";
+
+import PreviewReview from "./PreviewReview";
 
 /**
  * The model defining the props for the Preview Review Modal component
@@ -48,7 +46,7 @@ interface PreviewReviewModalProps {
 
 /**
  * This component allows an admin to preview their review and get an understanding of
- * what the subscribers of the review will see
+ * what the subscribers of the review will see in a Modal
  */
 const PreviewReviewModal = ({
   title,
@@ -81,68 +79,19 @@ const PreviewReviewModal = ({
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody margin={10}>
-            <Stack spacing={10}>
-              <HStack>
-                <Box paddingRight={16}>
-                  <Image
-                    borderRadius={5}
-                    maxHeight={60}
-                    maxWidth={60}
-                    objectFit="contain"
-                    src={coverUrl}
-                    boxShadow="lg"
-                  />
-                </Box>
-                <Box>
-                  <Stack>
-                    <Box paddingBottom={3}>
-                      <Stack spacing={1}>
-                        <Text fontSize={24} fontWeight={800}>
-                          {title}
-                        </Text>
-                        <Text fontSize={12} as="i">
-                          {subtitle}
-                        </Text>
-                      </Stack>
-                    </Box>
-                    <Box fontSize={12} paddingBottom={3}>
-                      <Stack spacing={1}>
-                        <HStack>
-                          <Text fontWeight={600}>Written By:</Text>
-                          <Text fontWeight={400}>{writtenBy}</Text>
-                        </HStack>
-                        <HStack>
-                          <Text fontWeight={600}>Reviewed By:</Text>
-                          <Text fontWeight={400}>{reviewedBy}</Text>
-                        </HStack>
-                      </Stack>
-                    </Box>
-                    <Box fontSize={12} paddingBottom={1}>
-                      <Stack spacing={1}>
-                        <Text>{publisher}</Text>
-                        <Text>{isbn}</Text>
-                        <Text>{bookType}</Text>
-                        <Text>{ageDesciption}</Text>
-                      </Stack>
-                    </Box>
-                    <HStack spacing={2}>
-                      {tags.map((tag: string) => (
-                        <Box key={tag}>
-                          <Tag bgColor="#F6E1A8" size="sm" fontWeight={600}>
-                            {tag}
-                          </Tag>
-                        </Box>
-                      ))}
-                    </HStack>
-                  </Stack>
-                </Box>
-              </HStack>
-              <div
-                style={{ fontSize: "14px" }}
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: body }}
-              />
-            </Stack>
+            <PreviewReview
+              title={title}
+              subtitle={subtitle}
+              writtenBy={writtenBy}
+              reviewedBy={reviewedBy}
+              publisher={publisher}
+              isbn={isbn}
+              bookType={bookType}
+              ageDesciption={ageDesciption}
+              body={body}
+              tags={tags}
+              coverUrl={coverUrl}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>
