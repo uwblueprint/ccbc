@@ -69,7 +69,7 @@ const PreviewReviewModal = ({
         <ModalOverlay />
         <ModalContent fontFamily="DM Sans">
           <ModalHeader backgroundColor="#FFF8F3">
-            <HStack spacing={175} fontSize={14}>
+            <HStack spacing={150} fontSize={14}>
               <HStack>
                 <Text fontWeight={600}>Previewing:</Text>
                 <Text fontWeight={400}>Draft</Text>
