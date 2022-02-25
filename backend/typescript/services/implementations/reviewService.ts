@@ -518,11 +518,13 @@ class ReviewService implements IReviewService {
           .filter((oldId: number) => !newTagIds.includes(oldId));
         await Promise.all(
           droppedTags.map(async (tagId: number) => {
-            const dbTag = await PgTag.findByPk(tagId, { transaction: t });
-            if (!dbTag) {
-              throw new Error(`Tag id ${dbTag} not found`);
-            }
-            reviewToUpdate.$remove("tags", dbTag, { transaction: t });
+            await PgReviewTag.destroy({
+              where: {
+                review_id: id,
+                tag_id: tagId,
+              },
+              transaction: t,
+            });
           }),
         );
 
