@@ -43,12 +43,13 @@ class ReviewService implements IReviewService {
     tag: TagRequest,
     t: Transaction,
   ): Promise<PgTag> {
-    const newTag = await PgTag.findOrCreate({
+    const [tagRef, created] = await PgTag.findOrCreate({
       where: { name: tag.name },
       transaction: t,
-    }).then((data) => data[0]);
-    await review.$add("tags", newTag, { transaction: t });
-    return newTag;
+    });
+    if (!created) return tagRef;
+    await review.$add("tags", tagRef, { transaction: t });
+    return tagRef;
   }
 
   async findOrCreateTags(
@@ -69,13 +70,14 @@ class ReviewService implements IReviewService {
     t: Transaction,
   ): Promise<PgSeries | null> {
     let series = null;
+    let created = false;
     if (seriesName) {
-      series = await PgSeries.findOrCreate({
+      [series, created] = await PgSeries.findOrCreate({
         where: { name: seriesName },
         transaction: t,
-      }).then((data) => data[0]);
+      });
+      if (!created) return series;
     }
-
     return series;
   }
 
@@ -84,16 +86,17 @@ class ReviewService implements IReviewService {
     author: AuthorRequest,
     t: Transaction,
   ): Promise<PgAuthor> {
-    const newAuthor = await PgAuthor.findOrCreate({
+    const [authorRef, created] = await PgAuthor.findOrCreate({
       where: {
         full_name: author.fullName,
         display_name: author.displayName || null,
         attribution: author.attribution || null,
       },
       transaction: t,
-    }).then((data) => data[0]);
-    await book.$add("authors", newAuthor, { transaction: t });
-    return newAuthor;
+    });
+    if (!created) return authorRef;
+    await book.$add("authors", authorRef, { transaction: t });
+    return authorRef;
   }
 
   async findOrCreatePublisher(
@@ -101,13 +104,14 @@ class ReviewService implements IReviewService {
     publisher: PublisherRequest,
     t: Transaction,
   ): Promise<PgPublisher> {
-    const pub = await PgPublisher.findOrCreate({
+    const [pub, created] = await PgPublisher.findOrCreate({
       where: {
         full_name: publisher.fullName,
         publish_year: publisher.publishYear,
       },
       transaction: t,
-    }).then((data) => data[0]);
+    })
+    if (!created) return pub;
     await book.$add("publishers", pub, { transaction: t });
     return pub;
   }
