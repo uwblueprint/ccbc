@@ -493,6 +493,18 @@ class ReviewService implements IReviewService {
           throw new Error(`Review id ${id} not found`);
         }
 
+        // update review fields
+        await reviewToUpdate.update(
+          {
+            body: entity.body,
+            byline: entity.byline,
+            featured: entity.featured,
+            created_by_id: entity.createdBy,
+            published_at: entity.publishedAt,
+          },
+          { transaction: t },
+        );
+
         // delete tags
         const newTagIds = entity.tags
           .filter((tag: TagRequest) => typeof tag.id === "number")
@@ -594,8 +606,9 @@ class ReviewService implements IReviewService {
                   title: book.title,
                   series_id: series?.id,
                   series_order: book.seriesOrder,
-                  coverImage: book.coverImage,
+                  cover_image: book.coverImage,
                   illustrator: book.illustrator,
+                  translator: book.translator,
                   formats: book.formats,
                   age_range: [book.minAge, book.maxAge],
                 },
