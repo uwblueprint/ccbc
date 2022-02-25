@@ -1,4 +1,4 @@
-import { DeleteIcon, EditIcon, ViewIcon } from '@chakra-ui/icons'
+import { DeleteIcon, EditIcon, ViewIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -126,7 +126,7 @@ const AdminDashboard = (): React.ReactElement => {
             },
           },
           customBodyRender: (value) => {
-            const colorScheme = (value === "Published") ? "green" : "orange";
+            const colorScheme = value === "Published" ? "green" : "orange";
             return <Tag colorScheme={colorScheme}>{value}</Tag>;
           },
         },
@@ -142,7 +142,7 @@ const AdminDashboard = (): React.ReactElement => {
                   <EditIcon mr="12px" color="#718096" />
                 </Tooltip>
                 <Tooltip label="Preview">
-                  <ViewIcon  mr="12px" color="#718096" />
+                  <ViewIcon mr="12px" color="#718096" />
                 </Tooltip>
                 <Tooltip label="Delete">
                   <DeleteIcon color="#718096" />
@@ -150,8 +150,8 @@ const AdminDashboard = (): React.ReactElement => {
               </div>
             );
           },
-        }
-      }
+        },
+      },
     ];
 
     columns.forEach((column) => {
@@ -182,9 +182,11 @@ const AdminDashboard = (): React.ReactElement => {
           style: { backgroundColor: "#EDF2F7" },
         });
         currColumn.options.customHeadLabelRender = headLabelRenderFunction;
-        if (currColumn.name !== "authors" && 
-            currColumn.name !== "status" &&
-            currColumn.name !== "actions") {
+        if (
+          currColumn.name !== "authors" &&
+          currColumn.name !== "status" &&
+          currColumn.name !== "actions"
+        ) {
           currColumn.options.customBodyRender = currBodyRenderFunction;
         }
       }
