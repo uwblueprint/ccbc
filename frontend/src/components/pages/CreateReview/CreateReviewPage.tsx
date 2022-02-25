@@ -15,7 +15,7 @@ import React, { useEffect, useState } from "react";
 
 import { Book } from "../../../types/BookTypes";
 import { Option } from "../../../types/TagTypes";
-import BookModal from "./BookModal";
+// import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
 import PublishModal from "./PublishModal";
@@ -104,14 +104,14 @@ const CreateReview = (): React.ReactElement => {
 
   return (
     <Box>
-      <BookModal
+      {/* <BookModal
         isOpen={showBookModal}
         onClose={onBookModalClose}
         tagsSelected={tagsSelected}
         handleSelected={handleTagSelected}
         booksAdded={books}
         handleBooksAdded={setBooks}
-      />
+      /> */}
       <DeleteModal
         isOpen={showDeleteBookModal}
         onClose={onDeleteBookModalClose}
