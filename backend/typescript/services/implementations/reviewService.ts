@@ -110,7 +110,7 @@ class ReviewService implements IReviewService {
         publish_year: publisher.publishYear,
       },
       transaction: t,
-    })
+    });
     if (!created) return pub;
     await book.$add("publishers", pub, { transaction: t });
     return pub;
