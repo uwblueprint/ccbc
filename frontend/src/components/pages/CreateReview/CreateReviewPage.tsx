@@ -23,8 +23,8 @@ import ReviewEditor from "./ReviewEditor";
 import SingleBook from "./SingleBook";
 
 const CreateReview = (): React.ReactElement => {
-  const [tagsSelected, setTagsSelected] = useState<Option[]>([]);
-  const [showBookModal, setShowBookModal] = useState<boolean>(false);
+  // const [tagsSelected, setTagsSelected] = useState<Option[]>([]);
+  // const [showBookModal, setShowBookModal] = useState<boolean>(false);
   const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
     false,
   );
@@ -37,14 +37,14 @@ const CreateReview = (): React.ReactElement => {
   const [review, setReview] = useState("");
   const [featured, setFeatured] = useState("0");
 
-  const onBookModalClose = () => setShowBookModal(false);
+  // const onBookModalClose = () => setShowBookModal(false);
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
   const onPublishModalClose = () => setShowPublishModal(false);
   const onDeleteReviewModalClose = () => setShowDeleteReviewModal(false);
 
-  const handleTagSelected = (e: Option[]) => {
-    setTagsSelected(e);
-  };
+  // const handleTagSelected = (e: Option[]) => {
+  //   setTagsSelected(e);
+  // };
 
   // adds a book to the list of books
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -210,7 +210,7 @@ const CreateReview = (): React.ReactElement => {
             cursor="pointer"
             m={6}
             ml={0}
-            onClick={() => setShowBookModal(true)}
+            // onClick={() => setShowBookModal(true)}
           >
             <IconButton
               aria-label="Add new book"
