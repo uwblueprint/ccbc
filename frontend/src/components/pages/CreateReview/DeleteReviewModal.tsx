@@ -39,7 +39,8 @@ const DeleteReviewModal = (
             w="100%"
           >
             <Button
-              variant="add"
+              colorScheme="teal"
+              bgColor="#0EBCBD"
               w="48%"
               onClick={() => {
                 deleteReview();
@@ -48,7 +49,13 @@ const DeleteReviewModal = (
             >
               Yes, delete review
             </Button>
-            <Button variant="outline" w="48%" onClick={onClose}>
+            <Button
+              variant="outline"
+              w="48%"
+              color="#0EBCBD"
+              borderColor="#0EBCBD"
+              onClick={onClose}
+            >
               No, take me back
             </Button>
           </Box>

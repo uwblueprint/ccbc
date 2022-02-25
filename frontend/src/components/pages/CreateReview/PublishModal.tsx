@@ -37,7 +37,17 @@ const PublishModal = (props: PublishModalProps): React.ReactElement => {
             w="100%"
           >
             <Button
-              variant="add"
+              variant="outline"
+              w="48%"
+              color="#0EBCBD"
+              borderColor="#0EBCBD"
+              onClick={onClose}
+            >
+              No, take me back
+            </Button>
+            <Button
+              colorScheme="teal"
+              bgColor="#0EBCBD"
               w="48%"
               onClick={() => {
                 publishBook();
@@ -45,9 +55,6 @@ const PublishModal = (props: PublishModalProps): React.ReactElement => {
               }}
             >
               Yes, publish book
-            </Button>
-            <Button variant="outline" w="48%" onClick={onClose}>
-              No, take me back
             </Button>
           </Box>
         </ModalFooter>

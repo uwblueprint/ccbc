@@ -14,7 +14,7 @@ import {
 import React, { useEffect, useState } from "react";
 
 import { Book } from "../../../types/BookTypes";
-import { Option } from "../../../types/TagTypes";
+// import { Option } from "../../../types/TagTypes";
 // import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
