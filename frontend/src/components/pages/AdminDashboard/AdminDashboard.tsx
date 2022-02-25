@@ -14,7 +14,7 @@ import MUIDataTable, {
 } from "mui-datatables";
 import React, { useEffect, useState } from "react";
 
-import getReviews from "../../../APIClients/ReviewAPIClient";
+import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import Author from "./Author";
 
@@ -30,7 +30,7 @@ const AdminDashboard = (): React.ReactElement => {
   const [data, setData] = useState<ReviewResponse[]>([]);
 
   useEffect(() => {
-    getReviews().then((allReviews: ReviewResponse[]) => {
+    reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
       setData(allReviews);
     });
   }, []);
@@ -171,29 +171,31 @@ const AdminDashboard = (): React.ReactElement => {
     let featured;
     let published;
 
-    data.forEach((review: ReviewResponse) => {
-      const names: string[] = [];
-      if (review.books[0].seriesName === null) {
-        title = review.books[0].title;
-      } else {
-        title = review.books[0].seriesName;
-      }
-      review.books[0].authors.forEach((author) => {
-        const authorDisplayName = author.displayName;
-        if (authorDisplayName === null) {
-          names.push(author.fullName);
+    if (data.length > 0) {
+      data.forEach((review: ReviewResponse) => {
+        const names: string[] = [];
+        if (review.books[0].seriesName === null) {
+          title = review.books[0].title;
         } else {
-          names.push(authorDisplayName);
+          title = review.books[0].seriesName;
         }
-      });
-      authors = names.join(", ");
-      updated = new Date(review.updatedAt).toDateString().substring(4);
-      featured = review.featured ? "Yes" : "No";
-      published = review.publishedAt ? "Yes" : "No";
+        review.books[0].authors.forEach((author) => {
+          const authorDisplayName = author.displayName;
+          if (authorDisplayName === null) {
+            names.push(author.fullName);
+          } else {
+            names.push(authorDisplayName);
+          }
+        });
+        authors = names.join(", ");
+        updated = new Date(review.updatedAt).toDateString().substring(4);
+        featured = review.featured ? "Yes" : "No";
+        published = review.publishedAt ? "Yes" : "No";
 
-      const row: ReviewRow = { title, authors, updated, featured, published };
-      rows.push(row);
-    });
+        const row: ReviewRow = { title, authors, updated, featured, published };
+        rows.push(row);
+      });
+    }
     return rows;
   };
 
