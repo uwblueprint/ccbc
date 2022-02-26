@@ -136,7 +136,7 @@ export interface IReviewService {
   getReviews(): Promise<ReviewResponseDTO[]>;
 
   /**
-   * update the Review with the given id with fields in the DTO, return updated Review 
+   * update the Review with the given id with fields in the DTO, return updated Review
    * @param id review id
    * @param review Updated Review
    * @returns the updated Review
