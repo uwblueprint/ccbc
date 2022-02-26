@@ -112,18 +112,42 @@ export interface ReviewResponseDTO {
 
 export interface IReviewService {
   /**
-   * create a review with the fields given in the DTO, return created review
-   * @param review fields
-   * @returns the created Review
+   * create a Review with the fields given in the DTO, return created Review
+   * @param review DTO
+   * @returns the created review
    * @throws Error if creation fails
    */
+  createReview(review: ReviewRequestDTO): Promise<ReviewResponseDTO>;
 
-  createReview(
-    entity: ReviewRequestDTO,
-    id?: string,
-  ): Promise<ReviewResponseDTO>;
+  /**
+   * retrieve the Review with the given id
+   * @param id review id
+   * @returns requested Review
+   * @throws Error if retrieval fails
+   */
   getReview(id: string): Promise<ReviewResponseDTO>;
+
+  /**
+   * retrieve all Reviews
+   * @param
+   * @returns returns array of Reviews
+   * @throws Error if retrieval fails
+   */
   getReviews(): Promise<ReviewResponseDTO[]>;
-  updateReviews(id: string, entity: ReviewRequestDTO): Promise<void>;
+
+  /**
+   * update the Review with the given id with fields in the DTO, return updated Review 
+   * @param id review id
+   * @param review Updated Review
+   * @returns the updated Review
+   * @throws Error if update fails
+   */
+  updateReviews(id: string, review: ReviewRequestDTO): Promise<void>;
+
+  /**
+   * delete the review with the given id
+   * @param id review id
+   * @throws Error if deletion fails
+   */
   deleteReview(id: string): Promise<void>;
 }
