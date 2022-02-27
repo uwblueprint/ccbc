@@ -142,19 +142,19 @@ const AdminDashboard = (): React.ReactElement => {
                 <Tooltip label="Edit review">
                   <IconButton
                     aria-label="edit review"
-                    icon={<EditIcon color="#718096"/>}
+                    icon={<EditIcon color="#718096" />}
                   />
                 </Tooltip>
                 <Tooltip label="Preview">
                   <IconButton
                     aria-label="preview"
-                    icon={<ViewIcon color="#718096"/>}
+                    icon={<ViewIcon color="#718096" />}
                   />
                 </Tooltip>
                 <Tooltip label="Delete">
                   <IconButton
                     aria-label="delete"
-                    icon={<DeleteIcon color="#718096"/>}
+                    icon={<DeleteIcon color="#718096" />}
                   />
                 </Tooltip>
               </div>
