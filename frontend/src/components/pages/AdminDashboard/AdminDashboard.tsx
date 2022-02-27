@@ -4,6 +4,7 @@ import {
   Button,
   Center,
   Flex,
+  IconButton,
   Spacer,
   Stack,
   Tag,
@@ -139,13 +140,22 @@ const AdminDashboard = (): React.ReactElement => {
             return (
               <div>
                 <Tooltip label="Edit review">
-                  <EditIcon mr="12px" color="#718096" />
+                  <IconButton
+                    aria-label="edit review"
+                    icon={<EditIcon color="#718096"/>}
+                  />
                 </Tooltip>
                 <Tooltip label="Preview">
-                  <ViewIcon mr="12px" color="#718096" />
+                  <IconButton
+                    aria-label="preview"
+                    icon={<ViewIcon color="#718096"/>}
+                  />
                 </Tooltip>
                 <Tooltip label="Delete">
-                  <DeleteIcon color="#718096" />
+                  <IconButton
+                    aria-label="delete"
+                    icon={<DeleteIcon color="#718096"/>}
+                  />
                 </Tooltip>
               </div>
             );
