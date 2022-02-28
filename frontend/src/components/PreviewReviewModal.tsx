@@ -68,7 +68,7 @@ const PreviewReviewModal = ({
       <Modal isOpen={isOpen} onClose={onClose} size="2xl" isCentered>
         <ModalOverlay />
         <ModalContent fontFamily="DM Sans">
-          <ModalHeader backgroundColor="#FFF8F3">
+          <ModalHeader backgroundColor="#FFF8F3" borderRadius={10}>
             <HStack spacing={150} fontSize={14}>
               <HStack>
                 <Text fontWeight={600}>Previewing:</Text>
