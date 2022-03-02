@@ -678,6 +678,10 @@ class ReviewService implements IReviewService {
                 if (!authorToUpdate) {
                   throw new Error(`Author id ${author.id} not found`);
                 }
+                await PgBookAuthor.findOrCreate({
+                  where: { author_id: author.id, book_id: book.id },
+                  transaction: t,
+                });
                 await authorToUpdate.update(
                   {
                     full_name: author.fullName,
@@ -742,6 +746,10 @@ class ReviewService implements IReviewService {
                 if (!publisherToUpdate) {
                   throw new Error(`Publisher id ${publisher.id} not found`);
                 }
+                await PgBookPublisher.findOrCreate({
+                  where: { publisher_id: publisher.id, book_id: book.id },
+                  transaction: t,
+                });
                 await publisherToUpdate.update(
                   {
                     full_name: publisher.fullName,
