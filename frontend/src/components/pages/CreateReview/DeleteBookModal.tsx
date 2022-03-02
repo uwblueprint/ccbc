@@ -11,13 +11,23 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
+/**
+ * The model defining the props for the Delete Book Modal component
+ */
 interface DeleteBookModalProps {
+  /** A boolean representing whether the modal is open or not */
   isOpen: boolean;
+  /** A function that sets isOpen to false */
   onClose: () => void;
+  /** The index of the current book */
   bookIndex: number;
+  /** A function that deletes the current book */
   deleteBook: (index: number) => void;
 }
 
+/**
+ * This component is the modal that appears when the user wants to delete a book and asks for confirmation
+ */
 const DeleteBookModal = (props: DeleteBookModalProps): React.ReactElement => {
   const { isOpen, onClose, deleteBook, bookIndex } = props;
 

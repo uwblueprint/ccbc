@@ -18,11 +18,16 @@ import { Book } from "../../../types/BookTypes";
 // import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
+import data from "./mockData";
 import PublishModal from "./PublishModal";
 import ReviewEditor from "./ReviewEditor";
 import SingleBook from "./SingleBook";
 
+/**
+ * The component for the page where the user creates, edits, and publishes their review.
+ */
 const CreateReview = (): React.ReactElement => {
+  // State hooks to be used by the BookModal component
   // const [tagsSelected, setTagsSelected] = useState<Option[]>([]);
   // const [showBookModal, setShowBookModal] = useState<boolean>(false);
   const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
@@ -46,18 +51,27 @@ const CreateReview = (): React.ReactElement => {
   //   setTagsSelected(e);
   // };
 
-  // adds a book to the list of books
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  /**
+   * Adds a book to the list of books.
+   * @param book - The book to be added.
+   */
   const addBook = (book: Book) => {
     setBooks([...books, book]);
   };
 
-  // deletes a book with the given index from the list of books
+  /**
+   * Deletes a book with the given index from the list of books.
+   * @param index - The index of the book to be deleted.
+   */
   const deleteBook = (index: number) => {
     setBooks(books.filter((_, i) => i !== index));
   };
 
-  // updates a book with the given index from the list of books
+  /**
+   * Updates a book with the given index from the list of books
+   * @param book - The new book containing the edits.
+   * @param index - The index of the book to be updated.
+   */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const editBook = (book: Book, index: number) => {
     deleteBook(index);
@@ -66,40 +80,7 @@ const CreateReview = (): React.ReactElement => {
 
   // useEffect hook adds dummy data to the books array
   useEffect(() => {
-    setBooks([
-      {
-        title: "Shadow Chasers",
-        coverImage:
-          "https://images-na.ssl-images-amazon.com/images/I/51WCelNAo1L.jpg",
-        titlePrefix: "The",
-        seriesOrder: "1",
-        illustrator: ["Spencer Fencer"],
-        translator: ["Translator Alligator"],
-        formats: [
-          {
-            format: "Soft cover",
-            isbn: "42069",
-            price: "13",
-          },
-        ],
-        minAge: 4,
-        maxAge: 8,
-        authors: [
-          {
-            fullName: "Sophia Spencer",
-            displayName: "Sophia Spencer",
-            attribution: "Author",
-          },
-        ],
-        publishers: [
-          {
-            fullName: "Publisher Fisher",
-            publishYear: 2012,
-          },
-        ],
-        seriesName: "The Amazing Series",
-      },
-    ]);
+    setBooks(data);
   }, []);
 
   return (
@@ -134,8 +115,7 @@ const CreateReview = (): React.ReactElement => {
         flexDirection="row"
         alignItems="center"
         justifyContent="space-between"
-        m="0"
-        mb="60px"
+        m="0 0 60px 0"
         h="60px"
         w="100%"
         bgColor="#F6F6F6"
@@ -152,7 +132,12 @@ const CreateReview = (): React.ReactElement => {
             mr={6}
             onClick={() => window.history.back()}
           />
-          <Text fontSize="18px" fontWeight="semibold">
+          <Text
+            fontSize="18px"
+            fontWeight="semibold"
+            onClick={() => window.history.back()}
+            cursor="pointer"
+          >
             Back to Dashboard
           </Text>
         </Box>
@@ -191,16 +176,26 @@ const CreateReview = (): React.ReactElement => {
           mt="10px"
           mb="50px"
         >
-          {/* Current books display */}
-          {books.map((book, i) => (
-            <SingleBook
-              key={i}
-              index={i}
-              book={book}
-              showModal={setShowDeleteBookModal}
-              setIndex={setDeleteBookIndex}
-            />
-          ))}
+          {/* Current books display (sorted by seriesOrder) */}
+          {books
+            .sort((a: Book, b: Book) => {
+              if (a.seriesOrder < b.seriesOrder) {
+                return -1;
+              }
+              if (a.seriesOrder > b.seriesOrder) {
+                return 1;
+              }
+              return 0;
+            })
+            .map((book, i) => (
+              <SingleBook
+                key={i}
+                index={i}
+                book={book}
+                showModal={setShowDeleteBookModal}
+                setIndex={setDeleteBookIndex}
+              />
+            ))}
 
           {/* Add new book button */}
           <Box

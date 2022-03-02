@@ -11,12 +11,21 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
+/**
+ * The model defining the props for the Publish Modal component
+ */
 interface PublishModalProps {
+  /** A boolean representing whether the modal is open or not */
   isOpen: boolean;
+  /** A function that sets isOpen to false */
   onClose: () => void;
+  /** A function that publishes the current review */
   publishBook: () => void;
 }
 
+/**
+ * This component is the modal that appears when the user wants to publish a review and asks for confirmation
+ */
 const PublishModal = (props: PublishModalProps): React.ReactElement => {
   const { isOpen, onClose, publishBook } = props;
 
@@ -54,7 +63,7 @@ const PublishModal = (props: PublishModalProps): React.ReactElement => {
                 onClose();
               }}
             >
-              Yes, publish book
+              Yes, publish review
             </Button>
           </Box>
         </ModalFooter>

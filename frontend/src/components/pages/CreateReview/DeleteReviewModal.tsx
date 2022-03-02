@@ -11,12 +11,21 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
+/**
+ * The model defining the props for the Delete Review Modal component
+ */
 interface DeleteReviewModalProps {
+  /** A boolean representing whether the modal is open or not */
   isOpen: boolean;
+  /** A function that sets isOpen to false */
   onClose: () => void;
+  /** A function that deletes the current review */
   deleteReview: () => void;
 }
 
+/**
+ * This component is the modal that appears when the user wants to delete a review and asks for confirmation
+ */
 const DeleteReviewModal = (
   props: DeleteReviewModalProps,
 ): React.ReactElement => {

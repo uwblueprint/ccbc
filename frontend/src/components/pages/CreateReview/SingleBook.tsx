@@ -4,13 +4,23 @@ import React, { useState } from "react";
 
 import { Book } from "../../../types/BookTypes";
 
+/**
+ * The model defining the props for the Single Book component
+ */
 interface SingleBookProps {
+  /** The book being displayed by the component */
   book: Book;
+  /** The index of the current book */
   index: number;
+  /** A function that sets showDeleteBookModal */
   showModal: (showDeleteBookModal: boolean) => void;
+  /** A function that sets deleteBookIndex */
   setIndex: (deleteBookIndex: number) => void;
 }
 
+/**
+ * This component displays a single book and allows the user to delete or edit a book via the corresponding modals
+ */
 const SingleBook = (props: SingleBookProps): React.ReactElement => {
   const { book, index, showModal, setIndex } = props;
   const [hovering, setHovering] = useState<boolean>(false);
