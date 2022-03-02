@@ -542,6 +542,7 @@ class ReviewService implements IReviewService {
               if (!tagToUpdate) {
                 throw new Error(`Tag id ${tag.id} not found`);
               }
+              await tagToUpdate.update({ name: tag.name });
               await PgReviewTag.findOrCreate({
                 where: { review_id: id, tag_id: tag.id },
                 transaction: t,
