@@ -130,12 +130,12 @@ const CreateReview = (): React.ReactElement => {
             isRound
             icon={<ArrowBackIcon w={7} h={7} />}
             mr={6}
-            onClick={() => window.history.back()}
+            onClick={() => window.location.assign("/dashboard")}
           />
           <Text
             fontSize="18px"
             fontWeight="semibold"
-            onClick={() => window.history.back()}
+            onClick={() => window.location.assign("/dashboard")}
             cursor="pointer"
           >
             Back to Dashboard
