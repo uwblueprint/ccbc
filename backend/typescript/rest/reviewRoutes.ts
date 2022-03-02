@@ -9,15 +9,16 @@ import {
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
 import reviewRequestDtoValidator from "../middlewares/validators/reviewValidators";
-import { isAuthorizedByRole } from "../middlewares/auth";
+import { isAuthorizedByUserId, isAuthorizedByRole } from "../middlewares/auth";
 
 const reviewRouter: Router = Router();
 const reviewService: IReviewService = new ReviewService();
 
 reviewRouter.post(
   "/",
-  isAuthorizedByRole(new Set(["Admin"])),
   reviewRequestDtoValidator,
+  isAuthorizedByRole(new Set(["Admin"])),
+  isAuthorizedByUserId("createdBy"),
   async (req, res) => {
     const contentType = req.headers["content-type"];
     try {

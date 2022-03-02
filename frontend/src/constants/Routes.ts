@@ -25,3 +25,6 @@ export const CREATE_REVIEW_PAGE = "/create-review";
 export const AUTH_ACTIONS = "/auth/action";
 
 export const DEFAULT_PAGE = "/default"; // FOR TESTING ONLY
+
+// TODO: Remove once PreviewReviewModal is integrated
+export const PREVIEW_REVIEW_TEST = "/test/preview-review";

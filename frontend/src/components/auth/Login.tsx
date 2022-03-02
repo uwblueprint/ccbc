@@ -3,7 +3,6 @@ import {
   Button,
   Center,
   FormControl,
-  FormHelperText,
   FormLabel,
   Grid,
   GridItem,
@@ -22,6 +21,7 @@ import AuthContext from "../../contexts/AuthContext";
 import CCBCLogo from "../../images/ccbc-logo.png";
 import LoginGraphic from "../../images/Login-graphic.png";
 import { AuthenticatedUser } from "../../types/AuthTypes";
+import PasswordInputField from "../common/PasswordInputField";
 
 const Login = (): React.ReactElement => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
@@ -68,7 +68,10 @@ const Login = (): React.ReactElement => {
           <Text textStyle="body" color="gray.700">
             Enter your credentials to access your account.
           </Text>
-          <FormControl mt="1rem">
+          <FormControl
+            mt="1rem"
+            onKeyPress={(e) => e.key === "Enter" && onLogInClick()}
+          >
             <Box mt="4%">
               <FormLabel>Email address</FormLabel>
               <Input
@@ -80,23 +83,16 @@ const Login = (): React.ReactElement => {
             </Box>
             <Box mt="4%" mb="10%">
               <FormLabel>Password</FormLabel>
-              <Input
+              <PasswordInputField
                 isInvalid={isInvalid}
                 value={password}
-                type="password"
-                name="password"
-                placeholder="Password"
-                onChange={(event) => {
+                onChangeHandler={(event) => {
                   setPassword(event.target.value);
                   setInvalid(false);
                 }}
-                errorBorderColor="crimson"
+                placeholder="Password"
+                errorMessage="The username or password you entered is incorrect."
               />
-              {isInvalid ? (
-                <FormHelperText color="crimson">
-                  The username or password you entered is incorrect.
-                </FormHelperText>
-              ) : null}
             </Box>
             <Button variant="submit" type="submit" onClick={onLogInClick}>
               Log in
