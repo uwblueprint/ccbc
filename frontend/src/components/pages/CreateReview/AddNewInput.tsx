@@ -1,7 +1,7 @@
 import { Button, FormControl, FormLabel } from "@chakra-ui/react";
 import React, { useState } from "react";
 
-import InputField from "./InputField";
+import InputField from "../../InputField";
 
 type AddNewInputProps = {
   id: string;

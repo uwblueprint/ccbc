@@ -10,7 +10,7 @@ import Login from "./components/auth/Login";
 import PrivateRoute from "./components/auth/routes/PrivateRoute";
 import Signup from "./components/auth/Signup";
 import AdminDashboard from "./components/pages/AdminDashboard/AdminDashboard";
-import CreateReview from "./components/pages/CreateReviewPage";
+import CreateReview from "./components/pages/CreateReview/CreateReviewPage";
 import Default from "./components/pages/Default";
 import MagazineReview from "./components/pages/MagazineReview";
 import NotFound from "./components/pages/NotFound";
