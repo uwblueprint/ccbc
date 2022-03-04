@@ -68,7 +68,10 @@ const Login = (): React.ReactElement => {
           <Text textStyle="body" color="gray.700">
             Enter your credentials to access your account.
           </Text>
-          <FormControl mt="1rem">
+          <FormControl
+            mt="1rem"
+            onKeyPress={(e) => e.key === "Enter" && onLogInClick()}
+          >
             <Box mt="4%">
               <FormLabel>Email address</FormLabel>
               <Input

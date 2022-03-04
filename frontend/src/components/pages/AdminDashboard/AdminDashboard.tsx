@@ -1,32 +1,44 @@
+import { DeleteIcon, EditIcon, ViewIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
   Center,
   Flex,
+  IconButton,
   Spacer,
   Stack,
+  Tag,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import MUIDataTable, {
   CustomHeadLabelRenderOptions,
   MUIDataTableColumn,
 } from "mui-datatables";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-import { ReviewResponse } from "../../../APIClients/ReviewAPIClient";
+import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
+import { ReviewResponse } from "../../../types/ReviewTypes";
 import Author from "./Author";
-import data from "./mockData";
 
 type ReviewRow = {
   title: string;
   authors: string;
   updated: string;
   featured: string;
-  published: string;
+  status: string;
 };
 
 const AdminDashboard = (): React.ReactElement => {
+  const [data, setData] = useState<ReviewResponse[]>([]);
+
+  useEffect(() => {
+    reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
+      setData(allReviews);
+    });
+  }, []);
+
   const getMuiTheme = () =>
     createTheme({
       overrides: {
@@ -73,9 +85,6 @@ const AdminDashboard = (): React.ReactElement => {
     });
 
   const getTableColumns = (): MUIDataTableColumn[] => {
-    const bodyRenderFunction = (val: string) => {
-      return <Author val={val} />;
-    };
     const columns: MUIDataTableColumn[] = [
       {
         name: "title",
@@ -86,7 +95,10 @@ const AdminDashboard = (): React.ReactElement => {
         name: "authors",
         label: "Author",
         options: {
-          customBodyRender: bodyRenderFunction,
+          setCellProps: () => ({ style: { maxWidth: "420px" } }),
+          customBodyRender: (value) => {
+            return <Author val={value} />;
+          },
         },
       },
       {
@@ -106,13 +118,47 @@ const AdminDashboard = (): React.ReactElement => {
         },
       },
       {
-        name: "published",
-        label: "Published",
+        name: "status",
+        label: "Status",
         options: {
           customFilterListOptions: {
             render: (v) => {
-              return [`Published: ${v}`];
+              return [`Status: ${v}`];
             },
+          },
+          customBodyRender: (value) => {
+            const colorScheme = value === "Published" ? "green" : "orange";
+            return <Tag colorScheme={colorScheme}>{value}</Tag>;
+          },
+        },
+      },
+      {
+        name: "actions",
+        label: " ",
+        options: {
+          customBodyRender: () => {
+            return (
+              <div>
+                <Tooltip label="Edit review">
+                  <IconButton
+                    aria-label="edit review"
+                    icon={<EditIcon color="#718096" />}
+                  />
+                </Tooltip>
+                <Tooltip label="Preview">
+                  <IconButton
+                    aria-label="preview"
+                    icon={<ViewIcon color="#718096" />}
+                  />
+                </Tooltip>
+                <Tooltip label="Delete">
+                  <IconButton
+                    aria-label="delete"
+                    icon={<DeleteIcon color="#718096" />}
+                  />
+                </Tooltip>
+              </div>
+            );
           },
         },
       },
@@ -146,7 +192,11 @@ const AdminDashboard = (): React.ReactElement => {
           style: { backgroundColor: "#EDF2F7" },
         });
         currColumn.options.customHeadLabelRender = headLabelRenderFunction;
-        if (currColumn.name !== "authors") {
+        if (
+          currColumn.name !== "authors" &&
+          currColumn.name !== "status" &&
+          currColumn.name !== "actions"
+        ) {
           currColumn.options.customBodyRender = currBodyRenderFunction;
         }
       }
@@ -160,31 +210,33 @@ const AdminDashboard = (): React.ReactElement => {
     let authors;
     let updated;
     let featured;
-    let published;
+    let status;
 
-    data.forEach((review: ReviewResponse) => {
-      const names: string[] = [];
-      if (review.books[0].seriesName === null) {
-        title = review.books[0].title;
-      } else {
-        title = review.books[0].seriesName;
-      }
-      review.books[0].authors.forEach((author) => {
-        const authorDisplayName = author.displayName;
-        if (authorDisplayName === null) {
-          names.push(author.fullName);
+    if (data.length > 0) {
+      data.forEach((review: ReviewResponse) => {
+        const names: string[] = [];
+        if (review.books[0].seriesName === null) {
+          title = review.books[0].title;
         } else {
-          names.push(authorDisplayName);
+          title = review.books[0].seriesName;
         }
-      });
-      authors = names.join(", ");
-      updated = new Date(review.updatedAt).toDateString().substring(4);
-      featured = review.featured ? "Yes" : "No";
-      published = review.publishedAt ? "Yes" : "No";
+        review.books[0].authors.forEach((author) => {
+          const authorDisplayName = author.displayName;
+          if (authorDisplayName === null) {
+            names.push(author.fullName);
+          } else {
+            names.push(authorDisplayName);
+          }
+        });
+        authors = names.join(", ");
+        updated = new Date(review.updatedAt).toDateString().substring(4);
+        featured = review.featured ? "Yes" : "No";
+        status = review.publishedAt ? "Published" : "Draft";
 
-      const row: ReviewRow = { title, authors, updated, featured, published };
-      rows.push(row);
-    });
+        const row: ReviewRow = { title, authors, updated, featured, status };
+        rows.push(row);
+      });
+    }
     return rows;
   };
 
