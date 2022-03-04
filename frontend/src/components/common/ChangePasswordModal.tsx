@@ -12,17 +12,18 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
-// import {
-//   EmailAuthProvider,
-//   getAuth,
-//   reauthenticateWithCredential,
-//   updatePassword,
-//   User,
-// } from "firebase/auth";
-import React from "react";
+import {
+  EmailAuthProvider,
+  getAuth,
+  reauthenticateWithCredential,
+  updatePassword,
+  User,
+} from "firebase/auth";
+import React, { useContext } from "react";
 
 import PasswordChanged from "../../assets/PasswordChanged.png";
 import PasswordError from "../../assets/PasswordError.png";
+import AuthContext from "../../contexts/AuthContext";
 import firebaseApp from "../../utils/Firebase";
 
 interface ChangePasswordModalProps {
@@ -33,6 +34,8 @@ interface ChangePasswordModalProps {
 const ChangePasswordModal = (
   props: ChangePasswordModalProps,
 ): React.ReactElement => {
+  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
+
   const { isOpen, onClose } = props;
   const [oldPassword, setOldPassword] = React.useState<string>("");
   const [newPassword, setNewPassword] = React.useState<string>("");
@@ -46,6 +49,7 @@ const ChangePasswordModal = (
     setNewPassword("");
     setConfirmPassword("");
     setSubmitted(false);
+    setFeedback("");
     setError(false);
   };
 
@@ -59,16 +63,21 @@ const ChangePasswordModal = (
     } else if (oldPassword === newPassword) {
       setFeedback("New password must be different from old password.");
     } else {
-      setSubmitted(true);
-      // try {
-      //   const auth = getAuth(firebaseApp);
-      //   const { currentUser } = auth;
-      //   if (currentUser === null)
-      //     throw new Error("Unable to retrieve current user");
-      //   else console.log(currentUser);
-      // } catch (e) {
-      //   setFeedback(e.message);
-      // }
+      // setSubmitted(true);
+      try {
+        const auth = getAuth(firebaseApp);
+        const { currentUser } = auth;
+
+        if (currentUser === null) {
+          throw new Error("Unable to retrieve current user");
+        } else {
+          // console.log(currentUser);
+        }
+      } catch (e) {
+        // console.log(authenticatedUser)
+        setFeedback((e as Error).message);
+      }
+
       // const uid = authenticatedUser?.id || "";
       // AuthAPIClient.getFirebaseUserByUid(uid)
       //   .then((user) => {
@@ -186,6 +195,7 @@ const ChangePasswordModal = (
             Old password
           </Text>
           <Input
+            type="password"
             placeholder="Old password"
             mb="20px"
             value={oldPassword}
@@ -195,6 +205,7 @@ const ChangePasswordModal = (
             New password
           </Text>
           <Input
+            type="password"
             placeholder="New password"
             mb="20px"
             value={newPassword}
@@ -204,6 +215,7 @@ const ChangePasswordModal = (
             Confirm new password
           </Text>
           <Input
+            type="password"
             placeholder="Confirm new password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
