@@ -25,11 +25,19 @@ import PasswordError from "../../assets/PasswordError.png";
 import AuthContext from "../../contexts/AuthContext";
 import firebaseApp from "../../utils/Firebase";
 
+/**
+ * The model defining the props for the Delete Book Modal component
+ */
 interface ChangePasswordModalProps {
+  /** A boolean representing whether the modal is open or not */
   isOpen: boolean;
+  /** A function that sets isOpen to false */
   onClose: () => void;
 }
 
+/**
+ * This component is the modal that appears when the user wants to change their password
+ */
 const ChangePasswordModal = (
   props: ChangePasswordModalProps,
 ): React.ReactElement => {
