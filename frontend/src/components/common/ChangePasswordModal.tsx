@@ -12,12 +12,11 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
+import { FirebaseError } from "firebase/app";
 import {
-  EmailAuthProvider,
   getAuth,
-  reauthenticateWithCredential,
+  signInWithEmailAndPassword,
   updatePassword,
-  User,
 } from "firebase/auth";
 import React, { useContext } from "react";
 
@@ -34,7 +33,7 @@ interface ChangePasswordModalProps {
 const ChangePasswordModal = (
   props: ChangePasswordModalProps,
 ): React.ReactElement => {
-  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
+  const { authenticatedUser } = useContext(AuthContext);
 
   const { isOpen, onClose } = props;
   const [oldPassword, setOldPassword] = React.useState<string>("");
@@ -63,42 +62,42 @@ const ChangePasswordModal = (
     } else if (oldPassword === newPassword) {
       setFeedback("New password must be different from old password.");
     } else {
-      // setSubmitted(true);
-      try {
-        const auth = getAuth(firebaseApp);
-        const { currentUser } = auth;
+      const auth = getAuth(firebaseApp);
 
-        if (currentUser === null) {
-          throw new Error("Unable to retrieve current user");
-        } else {
-          // console.log(currentUser);
-        }
-      } catch (e) {
-        // console.log(authenticatedUser)
-        setFeedback((e as Error).message);
+      if (authenticatedUser != null) {
+        signInWithEmailAndPassword(auth, authenticatedUser.email, oldPassword)
+          .then((userCredential) => {
+            // Signed in
+            const { user } = userCredential;
+            updatePassword(user, newPassword)
+              .then(() => {
+                // Update successful
+                setSubmitted(true);
+              })
+              .catch((e) => {
+                // Error occurred
+                if ((e as FirebaseError).code === "auth/weak-password") {
+                  setFeedback("Please enter a stronger password.");
+                } else {
+                  setSubmitted(true);
+                  setError(true);
+                }
+              });
+          })
+          .catch((e) => {
+            if ((e as FirebaseError).code === "auth/wrong-password") {
+              setFeedback("The password you entered is incorrect.");
+            } else {
+              setFeedback(
+                "An error occurred, please refresh the page and try again.",
+              );
+            }
+          });
+      } else {
+        setFeedback(
+          "An error occurred, please refresh the page and try again.",
+        );
       }
-
-      // const uid = authenticatedUser?.id || "";
-      // AuthAPIClient.getFirebaseUserByUid(uid)
-      //   .then((user) => {
-      //     const email = user?.email || "";
-      //     reauthenticateWithCredential(
-      //       user,
-      //       EmailAuthProvider.credential(email, oldPassword),
-      //     )
-      //       .then(() => {
-      //         updatePassword(user, newPassword).then(() => {
-      //           setSubmitted(true);
-      //         });
-      //       })
-      //       .catch(() => {
-      //         setFeedback("The password you entered is incorrect.");
-      //       });
-      //   })
-      //   .catch(() => {
-      //     setError(true);
-      //     setSubmitted(true);
-      //   });
     }
   };
 
