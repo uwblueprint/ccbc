@@ -1,11 +1,15 @@
+import { DeleteIcon, EditIcon, ViewIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
   Center,
   Flex,
+  IconButton,
   Spacer,
   Stack,
+  Tag,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import MUIDataTable, {
@@ -23,7 +27,7 @@ type ReviewRow = {
   authors: string;
   updated: string;
   featured: string;
-  published: string;
+  status: string;
 };
 
 const AdminDashboard = (): React.ReactElement => {
@@ -81,9 +85,6 @@ const AdminDashboard = (): React.ReactElement => {
     });
 
   const getTableColumns = (): MUIDataTableColumn[] => {
-    const bodyRenderFunction = (val: string) => {
-      return <Author val={val} />;
-    };
     const columns: MUIDataTableColumn[] = [
       {
         name: "title",
@@ -94,8 +95,10 @@ const AdminDashboard = (): React.ReactElement => {
         name: "authors",
         label: "Author",
         options: {
-          setCellProps: () => ({ style: { maxWidth: "400px" } }),
-          customBodyRender: bodyRenderFunction,
+          setCellProps: () => ({ style: { maxWidth: "420px" } }),
+          customBodyRender: (value) => {
+            return <Author val={value} />;
+          },
         },
       },
       {
@@ -115,13 +118,47 @@ const AdminDashboard = (): React.ReactElement => {
         },
       },
       {
-        name: "published",
-        label: "Published",
+        name: "status",
+        label: "Status",
         options: {
           customFilterListOptions: {
             render: (v) => {
-              return [`Published: ${v}`];
+              return [`Status: ${v}`];
             },
+          },
+          customBodyRender: (value) => {
+            const colorScheme = value === "Published" ? "green" : "orange";
+            return <Tag colorScheme={colorScheme}>{value}</Tag>;
+          },
+        },
+      },
+      {
+        name: "actions",
+        label: " ",
+        options: {
+          customBodyRender: () => {
+            return (
+              <div>
+                <Tooltip label="Edit review">
+                  <IconButton
+                    aria-label="edit review"
+                    icon={<EditIcon color="#718096" />}
+                  />
+                </Tooltip>
+                <Tooltip label="Preview">
+                  <IconButton
+                    aria-label="preview"
+                    icon={<ViewIcon color="#718096" />}
+                  />
+                </Tooltip>
+                <Tooltip label="Delete">
+                  <IconButton
+                    aria-label="delete"
+                    icon={<DeleteIcon color="#718096" />}
+                  />
+                </Tooltip>
+              </div>
+            );
           },
         },
       },
@@ -155,7 +192,11 @@ const AdminDashboard = (): React.ReactElement => {
           style: { backgroundColor: "#EDF2F7" },
         });
         currColumn.options.customHeadLabelRender = headLabelRenderFunction;
-        if (currColumn.name !== "authors") {
+        if (
+          currColumn.name !== "authors" &&
+          currColumn.name !== "status" &&
+          currColumn.name !== "actions"
+        ) {
           currColumn.options.customBodyRender = currBodyRenderFunction;
         }
       }
@@ -169,7 +210,7 @@ const AdminDashboard = (): React.ReactElement => {
     let authors;
     let updated;
     let featured;
-    let published;
+    let status;
 
     if (data.length > 0) {
       data.forEach((review: ReviewResponse) => {
@@ -190,9 +231,9 @@ const AdminDashboard = (): React.ReactElement => {
         authors = names.join(", ");
         updated = new Date(review.updatedAt).toDateString().substring(4);
         featured = review.featured ? "Yes" : "No";
-        published = review.publishedAt ? "Yes" : "No";
+        status = review.publishedAt ? "Published" : "Draft";
 
-        const row: ReviewRow = { title, authors, updated, featured, published };
+        const row: ReviewRow = { title, authors, updated, featured, status };
         rows.push(row);
       });
     }
