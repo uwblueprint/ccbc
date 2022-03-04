@@ -36,7 +36,9 @@ const kMaxAge = 150;
 const kMinPrice = 0;
 const kMaxPrice = 1000;
 
-/** Modal where user inputs a new book for a review */
+/**
+ * Modal for user to input new book for review
+ * */
 const BookModal = (props: BookModalProps): React.ReactElement => {
   const { isOpen, onClose, booksAdded, handleBooksAdded } = props;
 

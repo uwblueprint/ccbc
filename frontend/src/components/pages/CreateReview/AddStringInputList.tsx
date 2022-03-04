@@ -14,7 +14,11 @@ type AddStringInputListProps = {
   setInputFields: (s: string[]) => void;
 };
 
-/** String list input field that takes state hook prop */
+/**
+ * Form control that can dynamically add or remove
+ * string fields
+ * @param setInputFields state hook passed by parent
+ * */
 const AddStringInputList = ({
   id,
   label,

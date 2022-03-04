@@ -11,7 +11,10 @@ type AddSelectProps = {
   setSelectField: (s: string) => void;
 };
 
-/** Dropdown select input field that takes state hook prop */
+/**
+ * Dropdown select input field that takes state hook prop
+ * @param setSelectField state hook passed from parent
+ */
 const AddSelect = ({
   id,
   label,

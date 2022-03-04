@@ -16,7 +16,12 @@ type AddStringInputProps = {
   errorMessage?: string;
 };
 
-/** String input field that takes state hook prop */
+/**
+ * String input field that takes state hook prop
+ * @param setInputField state hook passed by parent
+ * @param isInvalid check passed parent if state is valid
+ * @param errorMessage displayed error message if input is invalid
+ */
 const AddStringInput = ({
   id,
   label,
