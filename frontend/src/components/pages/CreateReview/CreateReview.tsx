@@ -181,7 +181,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     } else {
       setBooks(data);
     }
-  }, [id, setBooksFromBookResponse]);
+  }, [history, id, setBooksFromBookResponse]);
 
   return (
     <Box>
