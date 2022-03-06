@@ -1,5 +1,7 @@
 import {
   Button,
+  FormControl,
+  FormLabel,
   Input,
   Modal,
   ModalBody,
@@ -20,6 +22,7 @@ import React, { useContext } from "react";
 
 import AuthContext from "../../../contexts/AuthContext";
 import firebaseApp from "../../../utils/Firebase";
+import PasswordInputField from "../PasswordInputField";
 import ChangePasswordErrorModal from "./ChangePasswordErrorModal";
 import ChangePasswordSuccessModal from "./ChangePasswordSuccessModal";
 
@@ -34,6 +37,14 @@ interface ChangePasswordModalProps {
 }
 
 /**
+ * Type for error-related props to the PasswordInputField component
+ */
+type PasswordFeedback = {
+  isInvalid: boolean;
+  errorMessage: string;
+};
+
+/**
  * This component is the modal that appears when the user wants to change their password
  */
 const ChangePasswordModal = (
@@ -45,32 +56,65 @@ const ChangePasswordModal = (
   const [oldPassword, setOldPassword] = React.useState<string>("");
   const [newPassword, setNewPassword] = React.useState<string>("");
   const [confirmPassword, setConfirmPassword] = React.useState<string>("");
+
+  const [
+    oldPasswordFeedback,
+    setOldPasswordFeedback,
+  ] = React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
+  const [
+    newPasswordFeedback,
+    setNewPasswordFeedback,
+  ] = React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
+  const [
+    confirmPasswordFeedback,
+    setConfirmPasswordFeedback,
+  ] = React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
+
   const [feedback, setFeedback] = React.useState<string>("");
   const [submitted, setSubmitted] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
+
+  const resetFeedback = () => {
+    setFeedback("");
+    setOldPasswordFeedback({ isInvalid: false, errorMessage: "" });
+    setNewPasswordFeedback({ isInvalid: false, errorMessage: "" });
+    setConfirmPasswordFeedback({ isInvalid: false, errorMessage: "" });
+  };
 
   const reset = () => {
     setOldPassword("");
     setNewPassword("");
     setConfirmPassword("");
     setSubmitted(false);
-    setFeedback("");
     setError(false);
+    resetFeedback();
   };
 
   const submit = () => {
-    setFeedback("");
+    resetFeedback();
 
     if (oldPassword === "" || newPassword === "" || confirmPassword === "") {
+      setOldPasswordFeedback({ isInvalid: true, errorMessage: "Required" });
+      setNewPasswordFeedback({ isInvalid: true, errorMessage: "Required" });
+      setConfirmPasswordFeedback({ isInvalid: true, errorMessage: "Required" });
       setFeedback("Please enter all fields.");
     } else if (newPassword !== confirmPassword) {
-      setFeedback("Passwords do not match.");
+      setNewPasswordFeedback({ isInvalid: true, errorMessage: "" });
+      setConfirmPasswordFeedback({
+        isInvalid: true,
+        errorMessage: "Passwords do not match.",
+      });
     } else if (oldPassword === newPassword) {
-      setFeedback("New password must be different from old password.");
+      setOldPasswordFeedback({ isInvalid: true, errorMessage: "" });
+      setNewPasswordFeedback({
+        isInvalid: true,
+        errorMessage: "New password and old password must be different.",
+      });
     } else {
       const auth = getAuth(firebaseApp);
 
-      if (authenticatedUser != null) {
+      if (authenticatedUser?.email) {
+        // Sign in on the frontend side to validate password
         signInWithEmailAndPassword(auth, authenticatedUser.email, oldPassword)
           .then((userCredential) => {
             // Signed in
@@ -83,7 +127,10 @@ const ChangePasswordModal = (
               .catch((e) => {
                 // Error occurred
                 if ((e as FirebaseError).code === "auth/weak-password") {
-                  setFeedback("Please enter a stronger password.");
+                  setNewPasswordFeedback({
+                    isInvalid: true,
+                    errorMessage: "Password is too weak.",
+                  });
                 } else {
                   setSubmitted(true);
                   setError(true);
@@ -92,7 +139,10 @@ const ChangePasswordModal = (
           })
           .catch((e) => {
             if ((e as FirebaseError).code === "auth/wrong-password") {
-              setFeedback("The password you entered is incorrect.");
+              setOldPasswordFeedback({
+                isInvalid: true,
+                errorMessage: "The password you entered is incorrect.",
+              });
             } else {
               setFeedback(
                 "An error occurred, please refresh the page and try again.",
@@ -146,42 +196,61 @@ const ChangePasswordModal = (
         <ModalHeader>Change password</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Text fontWeight="bold" mb="8px">
-            Old password
-          </Text>
-          <Input
-            type="password"
-            placeholder="Old password"
-            mb="20px"
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-          />
-          <Text fontWeight="bold" mb="8px">
-            New password
-          </Text>
-          <Input
-            type="password"
-            placeholder="New password"
-            mb="20px"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-          <Text fontWeight="bold" mb="8px">
-            Confirm new password
-          </Text>
-          <Input
-            type="password"
-            placeholder="Confirm new password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          {feedback !== "" ? (
-            <Text color="red" mt="20px">
-              {feedback}
-            </Text>
-          ) : (
-            <></>
-          )}
+          <FormControl
+            isInvalid={
+              oldPasswordFeedback.isInvalid ||
+              newPasswordFeedback.isInvalid ||
+              confirmPasswordFeedback.isInvalid
+            }
+          >
+            <FormLabel htmlFor="Old password" fontWeight="bold" mb="8px">
+              Old password
+            </FormLabel>
+            <PasswordInputField
+              isInvalid={oldPasswordFeedback.isInvalid}
+              value={oldPassword}
+              placeholder="Old password"
+              onChangeHandler={(e) => setOldPassword(e.target.value)}
+              errorMessage={oldPasswordFeedback.errorMessage}
+            />
+            <FormLabel
+              htmlFor="New password"
+              fontWeight="bold"
+              mt="20px"
+              mb="8px"
+            >
+              New password
+            </FormLabel>
+            <PasswordInputField
+              isInvalid={newPasswordFeedback.isInvalid}
+              value={newPassword}
+              placeholder="New password"
+              onChangeHandler={(e) => setNewPassword(e.target.value)}
+              errorMessage={newPasswordFeedback.errorMessage}
+            />
+            <FormLabel
+              htmlFor="Confirm new password"
+              fontWeight="bold"
+              mt="20px"
+              mb="8px"
+            >
+              Confirm new password
+            </FormLabel>
+            <PasswordInputField
+              isInvalid={confirmPasswordFeedback.isInvalid}
+              value={confirmPassword}
+              placeholder="Confirm new password"
+              onChangeHandler={(e) => setConfirmPassword(e.target.value)}
+              errorMessage={confirmPasswordFeedback.errorMessage}
+            />
+            {feedback !== "" ? (
+              <Text color="crimson" mt="20px">
+                {feedback}
+              </Text>
+            ) : (
+              <></>
+            )}
+          </FormControl>
         </ModalBody>
         <ModalFooter justifyContent="flex-start">
           <Button colorScheme="teal" bg="#0EBCBD" onClick={submit}>
