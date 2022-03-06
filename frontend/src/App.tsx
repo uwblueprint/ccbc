@@ -29,6 +29,7 @@ import sampleContextReducer from "./reducers/SampleContextReducer";
 import customTheme from "./theme/index";
 import { AuthenticatedUser } from "./types/AuthTypes";
 import { getLocalStorageObj } from "./utils/LocalStorageUtils";
+import EditReviewPage from "./components/pages/EditReviewPage";
 
 const App = (): React.ReactElement => {
   const currentUser: AuthenticatedUser = getLocalStorageObj<AuthenticatedUser>(
@@ -87,6 +88,12 @@ const App = (): React.ReactElement => {
                   exact
                   path={Routes.CREATE_REVIEW_PAGE}
                   component={CreateReview}
+                  requiredRoles={[UserRole.Admin]}
+                />
+                <PrivateRoute
+                  exact
+                  path={Routes.EDIT_REVIEW_PAGE}
+                  component={EditReviewPage}
                   requiredRoles={[UserRole.Admin]}
                 />
                 <Route

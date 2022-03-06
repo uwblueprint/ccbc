@@ -22,6 +22,8 @@ export const ADMIN_DASHBOARD_PAGE = "/dashboard";
 
 export const CREATE_REVIEW_PAGE = "/create-review";
 
+export const EDIT_REVIEW_PAGE = "/edit-review/:id";
+
 export const AUTH_ACTIONS = "/auth/action";
 
 export const DEFAULT_PAGE = "/default"; // FOR TESTING ONLY
