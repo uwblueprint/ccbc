@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { BookFormats, Genre } from "../../../constants/Enums";
 import { Author, Book, BookFormat, Publisher } from "../../../types/BookTypes";
 import AddNumberInput from "./AddNumberInput";
@@ -310,13 +311,13 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   inputField={coverImage}
                   setInputField={setCoverImage}
                 />
-                <AddSelect
+                {/* <AddSelect
                   id="genre"
                   label="Genre"
                   required
                   values={Object.values(Genre)}
                   setSelectField={setGenre}
-                />
+                /> */}
                 <FormControl
                   isRequired
                   width="100%"
