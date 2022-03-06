@@ -95,6 +95,13 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     addBook(book);
   };
 
+  /**
+   * This function maps a list of AuthorResponse objects to a list
+   * of Author objects
+   *
+   * @param authorResponses - a list of AuthorResponse objects returned by the review API
+   * @returns a list of Author objects
+   */
   const mapAuthorResponseToAuthor = (
     authorResponses: AuthorResponse[],
   ): Author[] => {
@@ -107,6 +114,13 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     return result;
   };
 
+  /**
+   * This function maps a list of Format objects to a list of
+   * BookFormat objects
+   *
+   * @param formatResponse - a list of Format objects returned by the review API
+   * @returns a list of BookFormat objects
+   */
   const mapFormatToBookFormat = (
     formatResponse: Format[] | null,
   ): BookFormat[] => {
@@ -123,6 +137,10 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     return result;
   };
 
+  /**
+   * A callback function that maps a list of BookResponse objects
+   * to a list of Book objects and sets them in the component state
+   */
   const setBooksFromBookResponse = useCallback(
     (reviewResponse: ReviewResponse) => {
       const result: Book[] = reviewResponse.books.map((response) => ({
