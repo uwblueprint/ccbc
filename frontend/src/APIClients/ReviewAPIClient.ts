@@ -46,20 +46,23 @@ const getReviewById = async (id: string): Promise<ReviewResponse> => {
 };
 
 /**
- *
- * @returns {Promise<ReviewResponse[]>}
+ * Publishes a review
+ * @param review - The review to publish
+ * @returns The published review
  */
 const publishReview = async (
-  reviewBody: ReviewRequest,
-): Promise<ReviewResponse[]> => {
+  review: ReviewRequest,
+): Promise<ReviewResponse | null> => {
   try {
-    const { data } = await baseAPIClient.post("/", {
-      data: reviewBody,
-      headers: { Authorization: BEARER_TOKEN },
+    const { data } = await baseAPIClient.post("/reviews", review, {
+      headers: {
+        Authorization: BEARER_TOKEN,
+        "Content-Type": "application/json",
+      },
     });
     return data;
   } catch (error: unknown) {
-    return error as ReviewResponse[];
+    return null;
   }
 };
 

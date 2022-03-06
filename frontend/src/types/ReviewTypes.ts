@@ -65,8 +65,7 @@ export type ReviewRequest = {
   body: string;
   byline: string;
   featured: boolean;
-  // @TODO: uncomment when christine changes are merged
-  // createdBy: number;
+  createdBy: number;
   publishedAt?: number | null;
   books: BookRequest[];
   tags: Tag[];

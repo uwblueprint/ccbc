@@ -11,16 +11,18 @@ import {
   Text,
   Tooltip,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import MUIDataTable, {
   CustomHeadLabelRenderOptions,
   MUIDataTableColumn,
 } from "mui-datatables";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
+import NotificationContext from "../../../contexts/NotificationContext";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import PreviewReviewModal from "../../PreviewReviewModal";
 import Author from "./Author";
@@ -75,6 +77,8 @@ const AdminDashboard = (): React.ReactElement => {
   const [selectedReviewCoverURL, setSelectedReviewCoverURL] = useState<string>(
     "",
   );
+  const { notifications } = useContext(NotificationContext);
+  const toast = useToast();
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
@@ -137,6 +141,19 @@ const AdminDashboard = (): React.ReactElement => {
     setSelectedReviewCoverURL(row.books[0].coverImage);
     onPreviewModalOpen();
   };
+  useEffect(() => {
+    if (notifications.includes("published")) {
+      toast({
+        title: "Review published.",
+        description: "Your review has been published.",
+        status: "info",
+        duration: 10000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+      notifications.filter((n) => n !== "published");
+    }
+  }, [notifications, toast]);
 
   const getMuiTheme = () =>
     createTheme({
@@ -374,11 +391,14 @@ const AdminDashboard = (): React.ReactElement => {
           <Flex mt="50" mb="25">
             <Text textStyle="heading">Admin dashboard</Text>
             <Spacer />
-            <Link to="/create-review">
-              <Button w="159px" h="48px" colorScheme="teal">
-                + Add review
-              </Button>
-            </Link>
+            <Button
+              w="159px"
+              h="48px"
+              colorScheme="teal"
+              onClick={() => window.location.assign("/create-review")}
+            >
+              + Add review
+            </Button>
           </Flex>
           <ThemeProvider theme={getMuiTheme()}>
             <MUIDataTable
