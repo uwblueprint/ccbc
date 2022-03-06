@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-import PasswordChanged from "../../assets/PasswordChanged.png";
+import PasswordChanged from "../../../assets/PasswordChanged.png";
 
 /**
  * The model defining the props for the Change Password Success Modal component

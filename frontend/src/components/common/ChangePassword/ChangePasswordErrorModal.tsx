@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-import PasswordError from "../../assets/PasswordError.png";
+import PasswordError from "../../../assets/PasswordError.png";
 
 /**
  * The model defining the props for the Change Password Error Modal component
