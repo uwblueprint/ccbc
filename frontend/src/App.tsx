@@ -112,6 +112,11 @@ const App = (): React.ReactElement => {
                   path={Routes.PREVIEW_REVIEW_TEST}
                   component={PreviewReviewTest}
                 />
+                <Route
+                  exact
+                  path={Routes.NOT_FOUND_PAGE}
+                  component={NotFound}
+                />
                 <Route exact path="*" component={NotFound} />
               </Switch>
             </Router>

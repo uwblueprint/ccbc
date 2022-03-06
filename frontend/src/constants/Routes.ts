@@ -30,3 +30,5 @@ export const DEFAULT_PAGE = "/default"; // FOR TESTING ONLY
 
 // TODO: Remove once PreviewReviewModal is integrated
 export const PREVIEW_REVIEW_TEST = "/test/preview-review";
+
+export const NOT_FOUND_PAGE = "/404";

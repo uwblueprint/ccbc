@@ -12,6 +12,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { Author, Book, BookFormat } from "../../../types/BookTypes";
@@ -63,6 +64,8 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
   const onPublishModalClose = () => setShowPublishModal(false);
   const onDeleteReviewModalClose = () => setShowDeleteReviewModal(false);
+
+  const history = useHistory();
 
   // const handleTagSelected = (e: Option[]) => {
   //   setTagsSelected(e);
@@ -162,7 +165,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     [setBooks],
   );
 
-  // useEffect hook adds dummy data to the books array
   useEffect(() => {
     if (id) {
       reviewAPIClient
@@ -172,6 +174,9 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           setFeatured(reviewResponse.featured ? "1" : "0");
           setReviewerByline(reviewResponse.byline);
           setBooksFromBookResponse(reviewResponse);
+        })
+        .catch(() => {
+          history.push("/404");
         });
     } else {
       setBooks(data);
