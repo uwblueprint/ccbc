@@ -10,6 +10,7 @@ import {
   RadioGroup,
   Stack,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
@@ -29,7 +30,11 @@ import SingleBook from "./SingleBook";
 const CreateReview = (): React.ReactElement => {
   // State hooks to be used by the BookModal component
   // const [tagsSelected, setTagsSelected] = useState<Option[]>([]);
-  const [showBookModal, setShowBookModal] = useState<boolean>(false);
+  const {
+    isOpen: isOpenBookModal,
+    onOpen: onOpenBookModal,
+    onClose: onBookModalClose,
+  } = useDisclosure();
   const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
     false,
   );
@@ -42,7 +47,6 @@ const CreateReview = (): React.ReactElement => {
   const [review, setReview] = useState("");
   const [featured, setFeatured] = useState("0");
 
-  const onBookModalClose = () => setShowBookModal(false);
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
   const onPublishModalClose = () => setShowPublishModal(false);
   const onDeleteReviewModalClose = () => setShowDeleteReviewModal(false);
@@ -86,7 +90,7 @@ const CreateReview = (): React.ReactElement => {
   return (
     <Box>
       <BookModal
-        isOpen={showBookModal}
+        isOpen={isOpenBookModal}
         onClose={onBookModalClose}
         booksAdded={books}
         handleBooksAdded={setBooks}
@@ -203,7 +207,7 @@ const CreateReview = (): React.ReactElement => {
             cursor="pointer"
             m={6}
             ml={0}
-            onClick={() => setShowBookModal(true)}
+            onClick={onOpenBookModal}
           >
             <IconButton
               aria-label="Add new book"

@@ -94,11 +94,12 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     setPublicationYear("");
   };
 
-  // Clear book data whenever modal is closed
+  // Calls clearBookData() whenever modal is closed
   useEffect(() => {
     if (isOpen === false) clearBookData();
   }, [isOpen]);
 
+  /** Ensure that ISBN is valid or an empty field */
   const isEmptyOrValidISBN = () => {
     return (
       isbn === "" || // necessary to ensure that empty form won't error
@@ -108,6 +109,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     );
   };
 
+  /** Check that all required modal fields are properly filled out */
   const hasRequired = () => {
     return (
       prefix !== "" &&
@@ -127,6 +129,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     );
   };
 
+  /** Creates and saves a new book object, then closes the modal */
   const updateBookObj = () => {
     const authorObjs: Author[] = [];
 
