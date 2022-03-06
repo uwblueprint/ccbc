@@ -14,7 +14,7 @@ import {
   ModalOverlay,
   Stack,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { BookFormats, Genre } from "../../../constants/Enums";
 import { Author, Book, BookFormat, Publisher } from "../../../types/BookTypes";
@@ -94,6 +94,11 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     setPublicationYear("");
   };
 
+  // Clear book data whenever modal is closed
+  useEffect(() => {
+    if (isOpen === false) clearBookData();
+  }, [isOpen]);
+
   const isEmptyOrValidISBN = () => {
     return (
       isbn === "" || // necessary to ensure that empty form won't error
@@ -164,7 +169,6 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     };
     handleBooksAdded([...booksAdded, newBook]);
     onClose();
-    clearBookData();
   };
 
   return (
