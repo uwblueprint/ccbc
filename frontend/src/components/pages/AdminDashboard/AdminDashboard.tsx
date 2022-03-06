@@ -10,15 +10,17 @@ import {
   Tag,
   Text,
   Tooltip,
+  useToast,
 } from "@chakra-ui/react";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import MUIDataTable, {
   CustomHeadLabelRenderOptions,
   MUIDataTableColumn,
 } from "mui-datatables";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
+import NotificationContext from "../../../contexts/NotificationContext";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import Author from "./Author";
 
@@ -32,12 +34,28 @@ type ReviewRow = {
 
 const AdminDashboard = (): React.ReactElement => {
   const [data, setData] = useState<ReviewResponse[]>([]);
+  const { notifications } = useContext(NotificationContext);
+  const toast = useToast();
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
       setData(allReviews);
     });
   }, []);
+
+  useEffect(() => {
+    if (notifications.includes("published")) {
+      toast({
+        title: "Review published.",
+        description: "Your review has been published.",
+        status: "info",
+        duration: 10000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+      notifications.filter((n) => n !== "published");
+    }
+  }, [notifications, toast]);
 
   const getMuiTheme = () =>
     createTheme({
@@ -247,7 +265,12 @@ const AdminDashboard = (): React.ReactElement => {
           <Flex mt="50" mb="25">
             <Text textStyle="heading">Admin dashboard</Text>
             <Spacer />
-            <Button w="159px" h="48px" colorScheme="teal">
+            <Button
+              w="159px"
+              h="48px"
+              colorScheme="teal"
+              onClick={() => window.location.assign("/create-review")}
+            >
               + Add review
             </Button>
           </Flex>

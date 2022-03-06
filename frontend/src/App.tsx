@@ -21,10 +21,15 @@ import { AUTHENTICATED_USER_KEY } from "./constants/AuthConstants";
 import { UserRole } from "./constants/Enums";
 import * as Routes from "./constants/Routes";
 import AuthContext from "./contexts/AuthContext";
+import NotificationContext, {
+  DEFAULT_NOTIFICATION_CONTEXT,
+} from "./contexts/NotificationContext";
+import NotificationContextDispatcherContext from "./contexts/NotificationContextDispatcherContext";
 import SampleContext, {
   DEFAULT_SAMPLE_CONTEXT,
 } from "./contexts/SampleContext";
 import SampleContextDispatcherContext from "./contexts/SampleContextDispatcherContext";
+import notificationContextReducer from "./reducers/NotificationContextReducer";
 import sampleContextReducer from "./reducers/SampleContextReducer";
 import customTheme from "./theme/index";
 import { AuthenticatedUser } from "./types/AuthTypes";
@@ -47,68 +52,79 @@ const App = (): React.ReactElement => {
     DEFAULT_SAMPLE_CONTEXT,
   );
 
+  const [notificationContext, dispatchNotificationContextUpdate] = useReducer(
+    notificationContextReducer,
+    DEFAULT_NOTIFICATION_CONTEXT,
+  );
+
   return (
     <ChakraProvider theme={customTheme}>
       <SampleContext.Provider value={sampleContext}>
         <SampleContextDispatcherContext.Provider
           value={dispatchSampleContextUpdate}
         >
-          <AuthContext.Provider
-            value={{ authenticatedUser, setAuthenticatedUser }}
-          >
-            <Router>
-              <Switch>
-                <Route exact path={Routes.LOGIN_PAGE} component={Login} />
-                <Route exact path={Routes.SIGNUP_PAGE} component={Signup} />
-                <Route
-                  exact
-                  path={Routes.UNAUTHORIZED_PAGE}
-                  component={Unauthorized}
-                />
-                <PrivateRoute
-                  exact
-                  path={Routes.HOME_PAGE}
-                  component={MagazineReview}
-                  requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
-                />
-                <PrivateRoute
-                  exact
-                  path={Routes.PROFILE_PAGE}
-                  component={Profile}
-                  requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
-                />
-                <PrivateRoute
-                  exact
-                  path={Routes.ADMIN_DASHBOARD_PAGE}
-                  component={AdminDashboard}
-                  requiredRoles={[UserRole.Admin]}
-                />
-                <PrivateRoute
-                  exact
-                  path={Routes.CREATE_REVIEW_PAGE}
-                  component={CreateReview}
-                  requiredRoles={[UserRole.Admin]}
-                />
-                <Route
-                  exact={false}
-                  path={Routes.AUTH_ACTIONS}
-                  component={AuthActions}
-                />
-                <PrivateRoute
-                  exact
-                  path={Routes.DEFAULT_PAGE}
-                  component={Default}
-                  requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
-                />
-                <Route
-                  exact
-                  path={Routes.PREVIEW_REVIEW_TEST}
-                  component={PreviewReviewTest}
-                />
-                <Route exact path="*" component={NotFound} />
-              </Switch>
-            </Router>
-          </AuthContext.Provider>
+          <NotificationContext.Provider value={notificationContext}>
+            <NotificationContextDispatcherContext.Provider
+              value={dispatchNotificationContextUpdate}
+            >
+              <AuthContext.Provider
+                value={{ authenticatedUser, setAuthenticatedUser }}
+              >
+                <Router>
+                  <Switch>
+                    <Route exact path={Routes.LOGIN_PAGE} component={Login} />
+                    <Route exact path={Routes.SIGNUP_PAGE} component={Signup} />
+                    <Route
+                      exact
+                      path={Routes.UNAUTHORIZED_PAGE}
+                      component={Unauthorized}
+                    />
+                    <PrivateRoute
+                      exact
+                      path={Routes.HOME_PAGE}
+                      component={MagazineReview}
+                      requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
+                    />
+                    <PrivateRoute
+                      exact
+                      path={Routes.PROFILE_PAGE}
+                      component={Profile}
+                      requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
+                    />
+                    <PrivateRoute
+                      exact
+                      path={Routes.ADMIN_DASHBOARD_PAGE}
+                      component={AdminDashboard}
+                      requiredRoles={[UserRole.Admin]}
+                    />
+                    <PrivateRoute
+                      exact
+                      path={Routes.CREATE_REVIEW_PAGE}
+                      component={CreateReview}
+                      requiredRoles={[UserRole.Admin]}
+                    />
+                    <Route
+                      exact={false}
+                      path={Routes.AUTH_ACTIONS}
+                      component={AuthActions}
+                    />
+                    <PrivateRoute
+                      exact
+                      path={Routes.DEFAULT_PAGE}
+                      component={Default}
+                      requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
+                    />
+                    <Route
+                      exact
+                      path={Routes.PREVIEW_REVIEW_TEST}
+                      component={PreviewReviewTest}
+                    />
+                    <Route exact path="*" component={NotFound} />
+                  </Switch>
+                </Router>
+              </AuthContext.Provider>
+            </NotificationContextDispatcherContext.Provider>
+          </NotificationContext.Provider>
         </SampleContextDispatcherContext.Provider>
       </SampleContext.Provider>
     </ChakraProvider>

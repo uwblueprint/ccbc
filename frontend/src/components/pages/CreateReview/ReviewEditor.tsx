@@ -4,13 +4,21 @@ import { Box } from "@chakra-ui/react";
 import React from "react";
 import ReactQuill from "react-quill";
 
-const ReviewEditor = ({
-  value,
-  setValue,
-}: {
+/**
+ * The model defining the props for the ReviewEditor component
+ */
+interface ReviewEditorProps {
   value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
-}): React.ReactElement => {
+  setValue: (value: string) => void;
+  isInvalid: boolean;
+}
+
+/**
+ * This component is the editor for the review
+ */
+const ReviewEditor = (props: ReviewEditorProps): React.ReactElement => {
+  const { value, setValue, isInvalid } = props;
+
   const modules = {
     toolbar: [
       ["bold", "italic", "underline", "strike"],
@@ -20,7 +28,11 @@ const ReviewEditor = ({
   };
 
   return (
-    <Box>
+    <Box
+      borderWidth="2px"
+      borderColor={isInvalid ? "crimson" : "white"}
+      borderRadius="6px"
+    >
       <ReactQuill
         style={{
           borderRadius: "225px",

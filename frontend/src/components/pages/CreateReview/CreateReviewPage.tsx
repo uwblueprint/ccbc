@@ -10,12 +10,18 @@ import {
   RadioGroup,
   Stack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
-import { Book } from "../../../types/BookTypes";
+import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
+import AuthContext from "../../../contexts/AuthContext";
+import NotificationContext from "../../../contexts/NotificationContext";
 // import { Option } from "../../../types/TagTypes";
 // import BookModal from "./BookModal";
+import NotificationContextDispatcherContext from "../../../contexts/NotificationContextDispatcherContext";
+import { Book } from "../../../types/BookTypes";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
 import data from "./mockData";
@@ -45,6 +51,8 @@ const CreateReview = (): React.ReactElement => {
 
   const [canPublish, setCanPublish] = useState(false);
 
+  const cannotPublish = review === "" && byline === "";
+
   const [reviewError, setReviewError] = useState(false);
   const [bylineError, setBylineError] = useState(false);
 
@@ -52,6 +60,31 @@ const CreateReview = (): React.ReactElement => {
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
   const onPublishModalClose = () => setShowPublishModal(false);
   const onDeleteReviewModalClose = () => setShowDeleteReviewModal(false);
+
+  const history = useHistory();
+
+  const toast = useToast();
+
+  const { authenticatedUser } = useContext(AuthContext);
+  const { notifications } = useContext(NotificationContext);
+  const dispatchNotifications = useContext(
+    NotificationContextDispatcherContext,
+  );
+
+  useEffect(() => {
+    if (notifications.includes("error")) {
+      toast({
+        title: "Error publishing review.",
+        description:
+          "Something went wrong, please refresh the page and try again.",
+        status: "error",
+        duration: 10000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+      notifications.filter((n) => n !== "published");
+    }
+  }, [notifications, toast]);
 
   // const handleTagSelected = (e: Option[]) => {
   //   setTagsSelected(e);
@@ -84,10 +117,59 @@ const CreateReview = (): React.ReactElement => {
     addBook(book);
   };
 
-  const publishReview = () => {
+  /**
+   * Function to be called when the user clicks the publish button.
+   */
+  const handlePublish = () => {
+    setReviewError(false);
+    setBylineError(false);
+
+    // Check if all fields are filled in
+    if (review !== "" && review !== "<p><br></p>" && byline !== "") {
+      setShowPublishModal(true);
+    } else {
+      if (review === "" || review === "<p><br></p>") {
+        setReviewError(true);
+      }
+      if (byline === "") {
+        setBylineError(true);
+      }
+    }
+  };
+
+  /**
+   * Function to be called when the review is published.
+   */
+  const onPublish = () => {
     // check if all fields have been filled in
     if (review !== "" || byline !== "" || books.length !== 0) {
       // publish review
+      if (authenticatedUser?.id) {
+        reviewAPIClient
+          .publishReview({
+            body: review,
+            byline,
+            featured: featured === "1",
+            createdBy: parseInt(authenticatedUser?.id, 10),
+            publishedAt: new Date().getTime(),
+            books,
+            tags: [],
+          })
+          .then((response) => {
+            if (response) {
+              dispatchNotifications({
+                type: "EDIT_NOTIFICATIONS",
+                value: ["published"],
+              });
+              history.push("/dashboard");
+            } else {
+              dispatchNotifications({
+                type: "EDIT_NOTIFICATIONS",
+                value: ["error"],
+              });
+            }
+          });
+      }
     }
   };
 
@@ -96,7 +178,7 @@ const CreateReview = (): React.ReactElement => {
     setBooks(data);
   }, []);
 
-  // useEffect hook to check if the review and byline fields are filled in
+  // useEffect hook to check if the publish button should be enabled
   useEffect(() => {
     if (review !== "" && byline !== "") {
       setCanPublish(true);
@@ -124,7 +206,7 @@ const CreateReview = (): React.ReactElement => {
       <PublishModal
         isOpen={showPublishModal}
         onClose={onPublishModalClose}
-        publishReview={publishReview}
+        onPublish={onPublish}
       />
       <DeleteReviewModal
         isOpen={showDeleteReviewModal}
@@ -167,13 +249,15 @@ const CreateReview = (): React.ReactElement => {
         <Box display="flex" flexDirection="row" alignItems="center">
           <ButtonGroup spacing={6}>
             <Button variant="ghost">Preview</Button>
-            <Button variant="ghost">Save</Button>
+            <Button variant="ghost" onClick={() => {}}>
+              Save
+            </Button>
             <Button
               colorScheme="teal"
               bg="#0EBCBD"
               variant="solid"
-              onClick={() => setShowPublishModal(true)}
-              disabled={!canPublish}
+              onClick={handlePublish}
+              disabled={cannotPublish}
             >
               Publish
             </Button>
@@ -262,7 +346,11 @@ const CreateReview = (): React.ReactElement => {
                 *
               </Text>
             </Box>
-            <ReviewEditor value={review} setValue={setReview} />
+            <ReviewEditor
+              value={review}
+              setValue={setReview}
+              isInvalid={reviewError}
+            />
           </Box>
           <Box w="47%">
             <Box display="flex" flexDirection="row" mb="10px">
@@ -275,6 +363,7 @@ const CreateReview = (): React.ReactElement => {
               placeholder="Text here"
               value={byline}
               onChange={(e) => setByline(e.target.value)}
+              isInvalid={bylineError}
             />
             <Box display="flex" flexDirection="row" mt="30px">
               <Heading size="sm">Featured</Heading>

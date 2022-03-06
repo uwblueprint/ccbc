@@ -59,8 +59,7 @@ export type ReviewRequest = {
   body: string;
   byline: string;
   featured: boolean;
-  // @TODO: uncomment when christine changes are merged
-  // createdBy: number;
+  createdBy: number;
   publishedAt?: number | null;
   books: BookRequest[];
   tags: Tag[];
@@ -71,8 +70,7 @@ export type ReviewResponse = {
   body: string;
   byline: string;
   featured: boolean;
-  // @TODO: uncomment when christine changes are merged
-  // createdBy: number;
+  createdBy: number;
   books: BookResponse[];
   tags: Tag[];
   updatedAt: number;
