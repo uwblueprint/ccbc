@@ -29,7 +29,14 @@ import PublishModal from "./PublishModal";
 import ReviewEditor from "./ReviewEditor";
 import SingleBook from "./SingleBook";
 
+/**
+ * The model defining the props for the Create Review Component
+ */
 interface CreateReviewProps {
+  /**
+   * The unique identifer for the Review. This prop is optional
+   * and is used to pre-populate the component if a value is set.
+   */
   id?: string;
 }
 /**
@@ -143,7 +150,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       reviewAPIClient
         .getReviewById(id)
         .then((reviewResponse: ReviewResponse) => {
-          console.log(reviewResponse);
           setReview(reviewResponse.body);
           setFeatured(reviewResponse.featured ? "1" : "0");
           setReviewerByline(reviewResponse.byline);
