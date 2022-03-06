@@ -61,9 +61,16 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
   const [books, setBooks] = useState<Book[]>([]);
   const [review, setReview] = useState("");
+  const [byline, setByline] = useState("");
   const [featured, setFeatured] = useState("0");
   const [reviewerByline, setReviewerByline] = useState("");
 
+  const [canPublish, setCanPublish] = useState(false);
+
+  const [reviewError, setReviewError] = useState(false);
+  const [bylineError, setBylineError] = useState(false);
+
+  // const onBookModalClose = () => setShowBookModal(false);
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
   const onPublishModalClose = () => setShowPublishModal(false);
   const onDeleteReviewModalClose = () => setShowDeleteReviewModal(false);
@@ -113,6 +120,14 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     [setBooks],
   );
 
+  const publishReview = () => {
+    // check if all fields have been filled in
+    if (review !== "" || byline !== "" || books.length !== 0) {
+      // publish review
+    }
+  };
+
+  // useEffect hook adds dummy data to the books array
   useEffect(() => {
     if (id) {
       reviewAPIClient
@@ -131,6 +146,15 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       setBooks(data);
     }
   }, [history, id, setBooksFromBookResponse]);
+
+  // useEffect hook to check if the review and byline fields are filled in
+  useEffect(() => {
+    if (review !== "" && byline !== "") {
+      setCanPublish(true);
+    } else {
+      setCanPublish(false);
+    }
+  }, [review, byline]);
 
   return (
     <Box>
@@ -151,7 +175,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       <PublishModal
         isOpen={showPublishModal}
         onClose={onPublishModalClose}
-        publishBook={() => {}}
+        publishReview={publishReview}
       />
       <DeleteReviewModal
         isOpen={showDeleteReviewModal}
@@ -200,6 +224,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
               bg="#0EBCBD"
               variant="solid"
               onClick={() => setShowPublishModal(true)}
+              disabled={!canPublish}
             >
               Publish
             </Button>
