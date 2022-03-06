@@ -40,7 +40,13 @@ const CreateReview = (): React.ReactElement => {
   const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
   const [books, setBooks] = useState<Book[]>([]);
   const [review, setReview] = useState("");
+  const [byline, setByline] = useState("");
   const [featured, setFeatured] = useState("0");
+
+  const [canPublish, setCanPublish] = useState(false);
+
+  const [reviewError, setReviewError] = useState(false);
+  const [bylineError, setBylineError] = useState(false);
 
   // const onBookModalClose = () => setShowBookModal(false);
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
@@ -78,10 +84,26 @@ const CreateReview = (): React.ReactElement => {
     addBook(book);
   };
 
+  const publishReview = () => {
+    // check if all fields have been filled in
+    if (review !== "" || byline !== "" || books.length !== 0) {
+      // publish review
+    }
+  };
+
   // useEffect hook adds dummy data to the books array
   useEffect(() => {
     setBooks(data);
   }, []);
+
+  // useEffect hook to check if the review and byline fields are filled in
+  useEffect(() => {
+    if (review !== "" && byline !== "") {
+      setCanPublish(true);
+    } else {
+      setCanPublish(false);
+    }
+  }, [review, byline]);
 
   return (
     <Box>
@@ -102,7 +124,7 @@ const CreateReview = (): React.ReactElement => {
       <PublishModal
         isOpen={showPublishModal}
         onClose={onPublishModalClose}
-        publishBook={() => {}}
+        publishReview={publishReview}
       />
       <DeleteReviewModal
         isOpen={showDeleteReviewModal}
@@ -151,6 +173,7 @@ const CreateReview = (): React.ReactElement => {
               bg="#0EBCBD"
               variant="solid"
               onClick={() => setShowPublishModal(true)}
+              disabled={!canPublish}
             >
               Publish
             </Button>
@@ -248,7 +271,11 @@ const CreateReview = (): React.ReactElement => {
                 *
               </Text>
             </Box>
-            <Input placeholder="Text here" />
+            <Input
+              placeholder="Text here"
+              value={byline}
+              onChange={(e) => setByline(e.target.value)}
+            />
             <Box display="flex" flexDirection="row" mt="30px">
               <Heading size="sm">Featured</Heading>
               <Text color="red" ml={1} mt={-3} fontSize="1.5em">

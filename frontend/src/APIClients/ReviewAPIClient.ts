@@ -16,4 +16,20 @@ const getReviews = async (): Promise<ReviewResponse[]> => {
   }
 };
 
-export default { getReviews };
+/**
+ *
+ * @returns {Promise<ReviewResponse[]>}
+ */
+const publishReview = async (reviewBody: any): Promise<ReviewResponse[]> => {
+  try {
+    const { data } = await baseAPIClient.post("/", {
+      data: reviewBody,
+      headers: { Authorization: BEARER_TOKEN },
+    });
+    return data;
+  } catch (error: unknown) {
+    return error as ReviewResponse[];
+  }
+};
+
+export default { getReviews, publishReview };

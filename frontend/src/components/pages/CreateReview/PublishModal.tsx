@@ -20,14 +20,14 @@ interface PublishModalProps {
   /** A function that sets isOpen to false */
   onClose: () => void;
   /** A function that publishes the current review */
-  publishBook: () => void;
+  publishReview: () => void;
 }
 
 /**
  * This component is the modal that appears when the user wants to publish a review and asks for confirmation
  */
 const PublishModal = (props: PublishModalProps): React.ReactElement => {
-  const { isOpen, onClose, publishBook } = props;
+  const { isOpen, onClose, publishReview } = props;
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -59,7 +59,7 @@ const PublishModal = (props: PublishModalProps): React.ReactElement => {
               bgColor="#0EBCBD"
               w="48%"
               onClick={() => {
-                publishBook();
+                publishReview();
                 onClose();
               }}
             >
