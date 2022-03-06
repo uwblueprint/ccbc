@@ -273,15 +273,16 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         >
           {/* Current books display (sorted by seriesOrder) */}
           {books
-            // .sort((a: Book, b: Book) => {
-            //   if (a.seriesOrder < b.seriesOrder) {
-            //     return -1;
-            //   }
-            //   if (a.seriesOrder > b.seriesOrder) {
-            //     return 1;
-            //   }
-            //   return 0;
-            // })
+            .sort((a: Book, b: Book) => {
+              const seriesOrderA = a.seriesOrder
+                ? parseInt(a.seriesOrder, 10)
+                : 0;
+              const seriesOrderB = b.seriesOrder
+                ? parseInt(b.seriesOrder, 10)
+                : 0;
+
+              return seriesOrderA - seriesOrderB;
+            })
             .map((book, i) => (
               <SingleBook
                 key={i}
