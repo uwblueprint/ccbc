@@ -1,7 +1,5 @@
 import {
   Button,
-  Heading,
-  Image,
   Input,
   Modal,
   ModalBody,
@@ -20,13 +18,13 @@ import {
 } from "firebase/auth";
 import React, { useContext } from "react";
 
-import PasswordChanged from "../../assets/PasswordChanged.png";
-import PasswordError from "../../assets/PasswordError.png";
-import AuthContext from "../../contexts/AuthContext";
-import firebaseApp from "../../utils/Firebase";
+import AuthContext from "../../../contexts/AuthContext";
+import firebaseApp from "../../../utils/Firebase";
+import ChangePasswordErrorModal from "./ChangePasswordErrorModal";
+import ChangePasswordSuccessModal from "./ChangePasswordSuccessModal";
 
 /**
- * The model defining the props for the Delete Book Modal component
+ * The model defining the props for the Change Password Modal component
  */
 interface ChangePasswordModalProps {
   /** A boolean representing whether the modal is open or not */
@@ -111,75 +109,25 @@ const ChangePasswordModal = (
 
   if (submitted && !error) {
     return (
-      <Modal
+      <ChangePasswordSuccessModal
+        isOpen={isOpen}
         onClose={() => {
           onClose();
           reset();
         }}
-        isOpen={isOpen}
-        size="lg"
-        isCentered
-      >
-        <ModalOverlay />
-        <ModalContent padding="10px">
-          <ModalCloseButton />
-          <ModalBody>
-            <Heading size="lg" mt="40px" mb="40px">
-              Password changed!
-            </Heading>
-            <Text mb="220px">
-              You have successfully changed your password. You may now close
-              this window and return to your work
-            </Text>
-            <Image
-              src={PasswordChanged}
-              w="70%"
-              position="absolute"
-              bottom="0"
-              right="0"
-              borderRadius="8px"
-            />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      />
     );
   }
 
   if (submitted && error) {
     return (
-      <Modal
+      <ChangePasswordErrorModal
+        isOpen={isOpen}
         onClose={() => {
           onClose();
           reset();
         }}
-        isOpen={isOpen}
-        size="lg"
-        isCentered
-      >
-        <ModalOverlay />
-        <ModalContent padding="10px">
-          <ModalCloseButton />
-          <ModalBody>
-            <Heading size="lg" mt="40px" mb="40px">
-              An error has occurred
-            </Heading>
-            <Text mb="160px">
-              Uh oh! Something went wrong with changing your password. Please
-              try again later. <br />
-              <br /> If the error persists, try refreshing the page and
-              clearning your browser of cookies.
-            </Text>
-            <Image
-              src={PasswordError}
-              w="70%"
-              position="absolute"
-              bottom="0"
-              right="0"
-              borderRadius="8px"
-            />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      />
     );
   }
 

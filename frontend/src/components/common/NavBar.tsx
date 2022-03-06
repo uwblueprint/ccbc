@@ -7,6 +7,7 @@ import {
   MenuItem,
   MenuList,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { HiUser } from "react-icons/hi";
@@ -16,13 +17,12 @@ import authAPIClient from "../../APIClients/AuthAPIClient";
 import logo from "../../assets/ccbc.png";
 import { UserRole } from "../../constants/Enums";
 import AuthContext from "../../contexts/AuthContext";
-import ChangePasswordModal from "./ChangePasswordModal";
+import ChangePasswordModal from "./ChangePassword/ChangePasswordModal";
 
 const NavBar = (): React.ReactElement => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
   const isAdmin = authenticatedUser?.roleType === UserRole.Admin;
-  const [showModal, setShowModal] = React.useState<boolean>(false);
-  const onClose = () => setShowModal(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   let userFirstName = "";
   let userLastName = "";
   let userEmail = "";
@@ -45,7 +45,7 @@ const NavBar = (): React.ReactElement => {
 
   return (
     <div>
-      <ChangePasswordModal isOpen={showModal} onClose={onClose} />
+      <ChangePasswordModal isOpen={isOpen} onClose={onClose} />
       <Flex
         direction="row"
         h="80px"
@@ -123,7 +123,7 @@ const NavBar = (): React.ReactElement => {
                     fontSize="sm"
                     padding="3px 0px"
                     cursor="pointer"
-                    onClick={() => setShowModal(true)}
+                    onClick={onOpen}
                   >
                     Change password
                   </MenuItem>
