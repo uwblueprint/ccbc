@@ -11,9 +11,15 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-import { Book } from "../../../types/BookTypes";
+import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
+import { Author, Book, BookFormat } from "../../../types/BookTypes";
+import {
+  AuthorResponse,
+  Format,
+  ReviewResponse,
+} from "../../../types/ReviewTypes";
 // import { Option } from "../../../types/TagTypes";
 // import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
@@ -23,10 +29,13 @@ import PublishModal from "./PublishModal";
 import ReviewEditor from "./ReviewEditor";
 import SingleBook from "./SingleBook";
 
+interface CreateReviewProps {
+  id?: string;
+}
 /**
  * The component for the page where the user creates, edits, and publishes their review.
  */
-const CreateReview = (): React.ReactElement => {
+const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   // State hooks to be used by the BookModal component
   // const [tagsSelected, setTagsSelected] = useState<Option[]>([]);
   // const [showBookModal, setShowBookModal] = useState<boolean>(false);
@@ -41,6 +50,7 @@ const CreateReview = (): React.ReactElement => {
   const [books, setBooks] = useState<Book[]>([]);
   const [review, setReview] = useState("");
   const [featured, setFeatured] = useState("0");
+  const [reviewerByline, setReviewerByline] = useState("");
 
   // const onBookModalClose = () => setShowBookModal(false);
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
@@ -78,10 +88,71 @@ const CreateReview = (): React.ReactElement => {
     addBook(book);
   };
 
+  const mapAuthorResponseToAuthor = (
+    authorResponses: AuthorResponse[],
+  ): Author[] => {
+    const result: Author[] = authorResponses.map((authorResponse) => ({
+      fullName: authorResponse.fullName,
+      displayName: authorResponse.displayName,
+      attribution: authorResponse.attribution,
+    }));
+
+    return result;
+  };
+
+  const mapFormatToBookFormat = (
+    formatResponse: Format[] | null,
+  ): BookFormat[] => {
+    if (!formatResponse) {
+      return [];
+    }
+
+    const result: BookFormat[] = formatResponse.map((format) => ({
+      format: format.format,
+      price: format.price,
+      isbn: format.isbn,
+    }));
+
+    return result;
+  };
+
+  const setBooksFromBookResponse = useCallback(
+    (reviewResponse: ReviewResponse) => {
+      const result: Book[] = reviewResponse.books.map((response) => ({
+        title: response.title,
+        coverImage: response.coverImage,
+        titlePrefix: response.titlePrefix,
+        seriesOrder: response.seriesOrder,
+        illustrator: response.illustrator,
+        translator: response.translator,
+        formats: mapFormatToBookFormat(response.formats),
+        minAge: response.minAge,
+        maxAge: response.maxAge,
+        authors: mapAuthorResponseToAuthor(response.authors),
+        publishers: response.publishers,
+        seriesName: response.seriesName,
+      }));
+      setBooks(result);
+    },
+    [setBooks],
+  );
+
   // useEffect hook adds dummy data to the books array
   useEffect(() => {
-    setBooks(data);
-  }, []);
+    if (id) {
+      reviewAPIClient
+        .getReviewById(id)
+        .then((reviewResponse: ReviewResponse) => {
+          console.log(reviewResponse);
+          setReview(reviewResponse.body);
+          setFeatured(reviewResponse.featured ? "1" : "0");
+          setReviewerByline(reviewResponse.byline);
+          setBooksFromBookResponse(reviewResponse);
+        });
+    } else {
+      setBooks(data);
+    }
+  }, [id, setBooksFromBookResponse]);
 
   return (
     <Box>
@@ -178,15 +249,15 @@ const CreateReview = (): React.ReactElement => {
         >
           {/* Current books display (sorted by seriesOrder) */}
           {books
-            .sort((a: Book, b: Book) => {
-              if (a.seriesOrder < b.seriesOrder) {
-                return -1;
-              }
-              if (a.seriesOrder > b.seriesOrder) {
-                return 1;
-              }
-              return 0;
-            })
+            // .sort((a: Book, b: Book) => {
+            //   if (a.seriesOrder < b.seriesOrder) {
+            //     return -1;
+            //   }
+            //   if (a.seriesOrder > b.seriesOrder) {
+            //     return 1;
+            //   }
+            //   return 0;
+            // })
             .map((book, i) => (
               <SingleBook
                 key={i}
@@ -248,7 +319,11 @@ const CreateReview = (): React.ReactElement => {
                 *
               </Text>
             </Box>
-            <Input placeholder="Text here" />
+            <Input
+              placeholder="Text here"
+              value={reviewerByline}
+              onChange={(event) => setReviewerByline(event.target.value)}
+            />
             <Box display="flex" flexDirection="row" mt="30px">
               <Heading size="sm">Featured</Heading>
               <Text color="red" ml={1} mt={-3} fontSize="1.5em">
