@@ -49,8 +49,6 @@ const CreateReview = (): React.ReactElement => {
   const [byline, setByline] = useState("");
   const [featured, setFeatured] = useState("0");
 
-  const [canPublish, setCanPublish] = useState(false);
-
   const cannotPublish = review === "" && byline === "";
 
   const [reviewError, setReviewError] = useState(false);
@@ -177,15 +175,6 @@ const CreateReview = (): React.ReactElement => {
   useEffect(() => {
     setBooks(data);
   }, []);
-
-  // useEffect hook to check if the publish button should be enabled
-  useEffect(() => {
-    if (review !== "" && byline !== "") {
-      setCanPublish(true);
-    } else {
-      setCanPublish(false);
-    }
-  }, [review, byline]);
 
   return (
     <Box>
