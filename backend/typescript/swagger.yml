@@ -29,22 +29,54 @@ components:
       properties:
         idToken:
           type: string
-    Author: 
+    AuthorRequest: 
       type: object
       required:
         - fullName
       properties:
+        id:
+          type: number
         fullName:
           type: string
         displayName:
           type: string
+          nullable: true
         attribution:
           type: string
-    Publisher:
+          nullable: true
+    AuthorResponse: 
+      type: object
+      required:
+        - id, fullName, displayName, attribution
+      properties:
+        id:
+          type: number
+        fullName:
+          type: string
+        displayName:
+          type: string
+          nullable: true
+        attribution:
+          type: string
+          nullable: true
+    PublisherRequest:
       type: object
       required:
         - fullName, publishYear
       properties:
+        id: 
+          type: number
+        fullName:
+          type: string
+        publishYear:
+          type: string
+    PublisherResponse:
+      type: object
+      required:
+        - id, fullName, publishYear
+      properties:
+        id: 
+          type: number
         fullName:
           type: string
         publishYear:
@@ -60,28 +92,55 @@ components:
           type: string
         isbn: 
           type: string
-    Tag:
+    TagRequest:
       type: object
       required: 
         - name
       properties:
+        id:
+          type: number
         name:
           type: string
-    Book:
+    TagResponse:
       type: object
       required: 
-        - title, formats, minAge, maxAge, authors, publishers
+        - id, name
       properties:
+        id:
+          type: number
+        name:
+          type: string
+    Series:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+          nullable: true
+    BookRequest:
+      type: object
+      required: 
+        - title, coverImage, formats, minAge, maxAge, authors, publishers, series
+      properties:
+        id: 
+          type: number
         title:
+          type: string
+        coverImage:
           type: string
         titlePrefix:
           type: string
+          nullable: true
         seriesOrder:
           type: string
+          nullable: true
         illustrator:
           type: string
+          nullable: true
         translator: 
           type: string
+          nullable: true
         formats:
           type: array
           items: 
@@ -93,14 +152,108 @@ components:
         authors: 
           type: array
           items:
-            $ref: '#/components/schemas/Author'
+            $ref: '#/components/schemas/AuthorRequest'
         publishers:
           type: array
           items:
-            $ref: '#/components/schemas/Publisher'
-        seriesName:
+            $ref: '#/components/schemas/PublisherRequest'
+        series:
+            $ref: '#/components/schemas/Series'
+    BookResponse:
+      type: object
+      required: 
+        - id, title, coverImage, titlePrefix, seriesOrder, illustrator, translator, formats, minAge, maxAge, authors, publishers, series
+      properties:
+        id: 
+          type: number
+        title:
           type: string
-
+        coverImage:
+          type: string
+        titlePrefix:
+          type: string
+          nullable: true
+        seriesOrder:
+          type: string
+          nullable: true
+        illustrator:
+          type: string
+          nullable: true
+        translator: 
+          type: string
+          nullable: true
+        formats:
+          type: array
+          nullable: true
+          items: 
+            $ref: '#/components/schemas/Format'
+        minAge: 
+          type: number
+        maxAge: 
+          type: number
+        authors: 
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthorResponse'
+        publishers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublisherResponse'
+        series:
+            $ref: '#/components/schemas/Series'
+    ReviewRequestDTO:
+      type: object
+      required:
+          - body, byline, featured, createdBy, publishedA, books, tags 
+      properties:
+        body: 
+          type: string
+        byline:
+          type: string
+        featured:
+          type: boolean
+        createdBy:
+          type: number
+        books:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookRequest'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagRequest'
+        publishedAt: 
+          type: number
+          nullable: true
+    ReviewResponseDTO:
+      type: object
+      required:
+          - reviewId, body, byline, featured, createdBy, publishedAt, books, tags, updatedAt, createdAt 
+      properties:
+        reviewId:
+          type: number
+        body: 
+          type: string
+        byline:
+          type: string
+        featured:
+          type: boolean
+        createdBy:
+          type: number
+        publishedAt: 
+          type: number
+        books:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookRequest'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagRequest'
+        updatedAt:
+          type: number
+        createdAt:
+          type: number
 paths:
   /tags:
     get:
@@ -154,7 +307,6 @@ paths:
           description: Unauthorized
         '500':
           description: Invalid request
-
 
   /tags/{id}:
     delete:
@@ -214,7 +366,6 @@ paths:
           description: Unauthorized
         '500':
           description: Invalid request
-
 
     post:
       security:
@@ -831,66 +982,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - body, coverImages, byline, featured, createdBy, books, tags
-              properties:
-                body:
-                  type: string
-                coverImages:
-                  type: array
-                  items:
-                    type: string
-                byline:
-                  type: string
-                featured:
-                  type: boolean
-                createdBy: 
-                  type: number
-                publishedAt: 
-                  type: number
-                books: 
-                  type: array
-                  items: 
-                    $ref: '#/components/schemas/Book'
-                tags:
-                  type: array
-                  items: 
-                    $ref: '#/components/schemas/Tag'
+                $ref: '#/components/schemas/ReviewRequestDTO'
       responses:
         '201':
           description: Successfully created a new review
           content:
             application/json:
               schema:
-                type: object
-                required:
-                    - reviewId, body, cover_images, byline, featured, books, tags, updatedAt, publishedAt
-                properties:
-                  reviewId:
-                    type: number
-                  body: 
-                    type: string
-                  cover_images:
-                    type: array
-                    items:
-                      type: string
-                  byline:
-                    type: string
-                  featured:
-                    type: boolean
-                  books:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Book'
-                  tags:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Tag'
-                  updatedAt: 
-                    type: number
-                  publishedAt: 
-                    type: number
+                $ref: '#/components/schemas/ReviewResponseDTO'
         '401':
           description: Unauthorized
         '500':
@@ -908,36 +1007,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  required:
-                      - reviewId, body, cover_images, byline, featured, books, tags, updatedAt, publishedAt
-                  properties:
-                    reviewId:
-                      type: number
-                    body: 
-                      type: string
-                    cover_images:
-                      type: array
-                      items:
-                        type: string
-                    byline:
-                      type: string
-                    featured:
-                      type: boolean
-                    books:
-                      type: array
-                      items:
-                        $ref: '#/components/schemas/Book'
-                    tags:
-                      type: array
-                      items:
-                        $ref: '#/components/schemas/Tag'
-                    updatedAt: 
-                      type: number
-                    publishedAt: 
-                      type: number
+                $ref: '#/components/schemas/ReviewResponseDTO'
         '401':
           description: Unauthorized
         '500':
@@ -956,39 +1026,29 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                    - reviewId, body, cover_images, byline, featured, books, tags, updatedAt, publishedAt
-                properties:
-                  reviewId:
-                    type: number
-                  body: 
-                    type: string
-                  cover_images:
-                    type: array
-                    items:
-                      type: string
-                  byline:
-                    type: string
-                  featured:
-                    type: boolean
-                  books:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Book'
-                  tags:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Tag'
-                  updatedAt: 
-                    type: number
-                  publishedAt: 
-                    type: number
+                $ref: '#/components/schemas/ReviewResponseDTO'
         '401':
           description: Unauthorized
         '500':
           description: Invalid request
 
+    put:
+      summary: Updates a review
+      tags: 
+        - Review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/ReviewRequestDTO'
+      responses:
+        '201':
+          description: Successfully updated the review
+        '401':
+          description: Unauthorized
+        '500':
+          description: Invalid request
     delete:
       security:
         - bearerAuth: []

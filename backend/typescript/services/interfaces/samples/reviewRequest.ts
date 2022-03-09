@@ -4,6 +4,7 @@ import { ReviewRequestDTO } from "../IReviewService";
 export default [
   {
     body: "1",
+    createdBy: 123,
     byline: "Insert Byline here",
     featured: true,
     publishedAt: 12445,
@@ -37,7 +38,9 @@ export default [
             publishYear: 2002,
           },
         ],
-        seriesName: "Book1 Series Name",
+        series: {
+          name: "Book1 Series Name",
+        },
       },
       {
         title: "Book2 Title",
@@ -68,13 +71,16 @@ export default [
             publishYear: 2002,
           },
         ],
-        seriesName: "Book2 Series Name",
+        series: {
+          name: "Book2 Series Name",
+        },
       },
     ],
     tags: [{ name: "tag1 Name" }, { name: "tag2 Name" }],
   },
   {
     body: "2",
+    createdBy: 123,
     byline: "Insert Byline here",
     featured: true,
     publishedAt: 12445,
@@ -82,6 +88,7 @@ export default [
       {
         title: "Book1 Title",
         coverImage: "Book1 cover",
+        series: {},
         formats: [
           {
             format: "format1",
