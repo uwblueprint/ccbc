@@ -4,7 +4,7 @@ import "@fontsource/dm-sans";
 
 import { extendTheme } from "@chakra-ui/react";
 
-import PasswordInputFieldStyle from "./PasswordInputFieldStyle";
+import PasswordInputFieldStyle from "./Components/PasswordInputFieldStyle";
 
 const customTheme = extendTheme({
   textStyles: {

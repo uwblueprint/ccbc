@@ -84,7 +84,7 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
 
     // Send email with login details and ask to change password
     // once they change the password, user should be verified
-    await authService.sendPasswordSetupLink(createdUser, accessCode);
+    await authService.sendPasswordSetupLink(createdUser, accessCode, true);
 
     res
       .cookie("refreshToken", refreshToken, {
@@ -100,6 +100,30 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
       await userService.deleteUserByEmail(createdUser.email);
     }
     sendErrorResponse(error, res);
+  }
+});
+
+/* Sends the user an email to reset their password. Used when the user has forgotten their password */
+authRouter.post("/forgotPassword", async (req, res) => {
+  try {
+    // Find the user record with that email. If none found, error will be caught
+    const firebaseUserUid = await authService.getFirebaseUserIdByEmail(
+      req.body.email,
+    );
+
+    // Set the user's password to the random access code. This is needed on the front end to verify the user
+    const accessCode = await authService.setTemporaryUserPassword(
+      firebaseUserUid,
+    );
+
+    const currentUser = await userService.getUserByEmail(req.body.email);
+
+    // Send email to user to reset their password
+    await authService.sendPasswordSetupLink(currentUser, accessCode, false);
+
+    res.status(200).json();
+  } catch (error: unknown) {
+    res.status(200).json();
   }
 });
 
