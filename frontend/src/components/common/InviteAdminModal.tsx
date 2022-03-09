@@ -31,8 +31,6 @@ const InviteAdminModal = (props: InviteAdminModalProps): React.ReactElement => {
 
   const { isOpen, onClose } = props;
 
-  // const styles = useMultiStyleConfig("InviteAdminModalStyle", {});
-
   const onSubmitClick = async () => {
     if (!email || !firstName || !lastName) {
       setIsInvalid(true);
