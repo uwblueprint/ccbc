@@ -101,34 +101,28 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   }, [isOpen]);
 
   /** Ensure that ISBN is valid or an empty field */
-  const isEmptyOrValidISBN = () => {
-    return (
-      isbn === "" || // necessary to ensure that empty form won't error
-      (isbn.length === 13 &&
-        !Number.isNaN(Number(isbn)) &&
-        Number.isInteger(Number(isbn)))
-    );
-  };
+  const isEmptyOrValidISBN =
+    isbn === "" || // necessary to ensure that empty form won't error
+    (isbn.length === 13 &&
+      !Number.isNaN(Number(isbn)) &&
+      Number.isInteger(Number(isbn)));
 
   /** Check that all required modal fields are properly filled out */
-  const hasRequired = () => {
-    return (
-      prefix !== "" &&
-      title !== "" &&
-      authors.length > 0 &&
-      publisher !== "" &&
-      publicationYear !== "" &&
-      format !== "" &&
-      isbn !== "" &&
-      price > 0 &&
-      coverImage !== "" &&
-      genre !== "" &&
-      minAge > 0 &&
-      maxAge > 0 &&
-      maxAge >= minAge &&
-      isEmptyOrValidISBN()
-    );
-  };
+  const hasRequired =
+    prefix !== "" &&
+    title !== "" &&
+    authors.length > 0 &&
+    publisher !== "" &&
+    publicationYear !== "" &&
+    format !== "" &&
+    isbn !== "" &&
+    price > 0 &&
+    coverImage !== "" &&
+    // genre !== "" &&
+    minAge > 0 &&
+    maxAge > 0 &&
+    maxAge >= minAge &&
+    isEmptyOrValidISBN;
 
   /** Creates and saves a new book object, then closes the modal */
   const updateBookObj = () => {
@@ -284,7 +278,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     required
                     inputField={isbn}
                     setInputField={setIsbn}
-                    isInvalid={!isEmptyOrValidISBN()}
+                    isInvalid={!isEmptyOrValidISBN}
                     errorMessage="Invalid ISBN format."
                   />
                   <FormControl id="price" isRequired width="45%">
@@ -354,7 +348,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
             variant="add"
             mr={4}
             onClick={updateBookObj}
-            isDisabled={!hasRequired()}
+            isDisabled={!hasRequired}
           >
             Add Book
           </Button>

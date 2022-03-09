@@ -46,7 +46,7 @@ const customTheme = extendTheme({
           bg: "teal.400",
         },
         remove: {
-          _hover: "transparent",
+          hover: "transparent",
           color: "gray.500",
         },
         outline: {
