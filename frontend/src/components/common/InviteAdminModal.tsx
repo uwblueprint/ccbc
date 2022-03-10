@@ -26,7 +26,7 @@ export type InviteAdminModalProps = {
 
 /**
  * This component allows an admin to invite other user to the platform
-**/
+ * */
 const InviteAdminModal = (props: InviteAdminModalProps): React.ReactElement => {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
