@@ -16,4 +16,18 @@ const getReviews = async (): Promise<ReviewResponse[]> => {
   }
 };
 
-export default { getReviews };
+/*
+  Delete review by id
+*/
+const deleteReviewById = async (id: string): Promise<ReviewResponse> => {
+  try {
+    const { data } = await baseAPIClient.delete(`/reviews/${id.toString()}`, {
+      headers: { Authorization: BEARER_TOKEN },
+    });
+    return data;
+  } catch (error) {
+    return error as ReviewResponse;
+  }
+};
+
+export default { getReviews, deleteReviewById };

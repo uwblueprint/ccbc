@@ -5,6 +5,13 @@ import {
   Center,
   Flex,
   IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spacer,
   Stack,
   Tag,
@@ -23,6 +30,7 @@ import { ReviewResponse } from "../../../types/ReviewTypes";
 import Author from "./Author";
 
 type ReviewRow = {
+  id: number;
   title: string;
   authors: string;
   updated: string;
@@ -32,12 +40,20 @@ type ReviewRow = {
 
 const AdminDashboard = (): React.ReactElement => {
   const [data, setData] = useState<ReviewResponse[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
       setData(allReviews);
     });
   }, []);
+
+  const deleteReview = async (reviewId: number, reviewIndex: number) => {
+    await reviewAPIClient.deleteReviewById(reviewId.toString());
+    const newData = [...data];
+    newData.splice(reviewIndex, 1);
+    setData(newData);
+  }
 
   const getMuiTheme = () =>
     createTheme({
@@ -86,6 +102,13 @@ const AdminDashboard = (): React.ReactElement => {
 
   const getTableColumns = (): MUIDataTableColumn[] => {
     const columns: MUIDataTableColumn[] = [
+      {
+        name: "id",
+        label: "Id",
+        options: {
+          display: false,
+        }
+      },
       {
         name: "title",
         label: "Title",
@@ -136,7 +159,7 @@ const AdminDashboard = (): React.ReactElement => {
         name: "actions",
         label: " ",
         options: {
-          customBodyRender: () => {
+          customBodyRender: (value, tableMeta, updateValue) => {
             return (
               <div>
                 <Tooltip label="Edit review">
@@ -155,8 +178,49 @@ const AdminDashboard = (): React.ReactElement => {
                   <IconButton
                     aria-label="delete"
                     icon={<DeleteIcon color="#718096" />}
+                    onClick={() => setIsOpen(true)}
                   />
                 </Tooltip>
+                <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} isCentered>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader 
+                      mt="40px" 
+                      ml="40px" 
+                      mr="40px" 
+                      fontFamily="DM Sans" 
+                      fontSize="30px" 
+                      fontWeight="700"
+                    >
+                      Hey wait!
+                    </ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody ml="40px" mr="40px" fontFamily="DM Sans">
+                      Are you sure you want to delete this review of {tableMeta.rowData[1]}?
+                    </ModalBody>
+                    <ModalFooter mb="40px" mr="40px" ml="40px">
+                      <Button 
+                        w="167px"
+                        colorScheme='teal'
+                        onClick={() => {
+                          setIsOpen(false);
+                          deleteReview(tableMeta.rowData[0], tableMeta.rowIndex);
+                        }}
+                      >
+                        Yes, delete review
+                      </Button>
+                      <Button 
+                        w="167px" 
+                        ml="16px"
+                        colorScheme='teal'
+                        variant="outline"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        No, take me back
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
               </div>
             );
           },
@@ -206,6 +270,7 @@ const AdminDashboard = (): React.ReactElement => {
 
   const getTableRows = (): ReviewRow[] => {
     const rows: ReviewRow[] = [];
+    let id;
     let title;
     let authors;
     let updated;
@@ -214,6 +279,7 @@ const AdminDashboard = (): React.ReactElement => {
 
     if (data.length > 0) {
       data.forEach((review: ReviewResponse) => {
+        id = review.reviewId
         const names: string[] = [];
         if (review.books[0].seriesName === null) {
           title = review.books[0].title;
@@ -233,7 +299,7 @@ const AdminDashboard = (): React.ReactElement => {
         featured = review.featured ? "Yes" : "No";
         status = review.publishedAt ? "Published" : "Draft";
 
-        const row: ReviewRow = { title, authors, updated, featured, status };
+        const row: ReviewRow = { id, title, authors, updated, featured, status };
         rows.push(row);
       });
     }
