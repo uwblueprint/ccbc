@@ -159,6 +159,7 @@ const AdminDashboard = (): React.ReactElement => {
         name: "actions",
         label: " ",
         options: {
+          // eslint-disable-next-line
           customBodyRender: (value, tableMeta, updateValue) => {
             return (
               <div>
