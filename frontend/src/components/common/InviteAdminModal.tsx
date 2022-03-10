@@ -18,7 +18,9 @@ import React, { useState } from "react";
 import authAPIClient from "../../APIClients/AuthAPIClient";
 
 export type InviteAdminModalProps = {
+  // this describes the state of the modal
   isOpen: boolean;
+  // a callback function to close the modal
   onClose: () => void;
 };
 
