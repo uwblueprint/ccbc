@@ -44,6 +44,11 @@ const customTheme = extendTheme({
         add: {
           color: "white",
           bg: "teal.400",
+          _hover: {
+            _disabled: {
+              bg: "teal.400",
+            },
+          },
         },
         remove: {
           hover: "transparent",
