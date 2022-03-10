@@ -53,7 +53,7 @@ const AdminDashboard = (): React.ReactElement => {
     const newData = [...data];
     newData.splice(reviewIndex, 1);
     setData(newData);
-  }
+  };
 
   const getMuiTheme = () =>
     createTheme({
@@ -107,7 +107,7 @@ const AdminDashboard = (): React.ReactElement => {
         label: "Id",
         options: {
           display: false,
-        }
+        },
       },
       {
         name: "title",
@@ -181,38 +181,46 @@ const AdminDashboard = (): React.ReactElement => {
                     onClick={() => setIsOpen(true)}
                   />
                 </Tooltip>
-                <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} isCentered>
+                <Modal
+                  isOpen={isOpen}
+                  onClose={() => setIsOpen(false)}
+                  isCentered
+                >
                   <ModalOverlay />
                   <ModalContent>
-                    <ModalHeader 
-                      mt="40px" 
-                      ml="40px" 
-                      mr="40px" 
-                      fontFamily="DM Sans" 
-                      fontSize="30px" 
+                    <ModalHeader
+                      mt="40px"
+                      ml="40px"
+                      mr="40px"
+                      fontFamily="DM Sans"
+                      fontSize="30px"
                       fontWeight="700"
                     >
                       Hey wait!
                     </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody ml="40px" mr="40px" fontFamily="DM Sans">
-                      Are you sure you want to delete this review of {tableMeta.rowData[1]}?
+                      Are you sure you want to delete this review of
+                      {tableMeta.rowData[1]}?
                     </ModalBody>
                     <ModalFooter mb="40px" mr="40px" ml="40px">
-                      <Button 
+                      <Button
                         w="167px"
-                        colorScheme='teal'
+                        colorScheme="teal"
                         onClick={() => {
                           setIsOpen(false);
-                          deleteReview(tableMeta.rowData[0], tableMeta.rowIndex);
+                          deleteReview(
+                            tableMeta.rowData[0],
+                            tableMeta.rowIndex,
+                          );
                         }}
                       >
                         Yes, delete review
                       </Button>
-                      <Button 
-                        w="167px" 
+                      <Button
+                        w="167px"
                         ml="16px"
-                        colorScheme='teal'
+                        colorScheme="teal"
                         variant="outline"
                         onClick={() => setIsOpen(false)}
                       >
@@ -279,7 +287,7 @@ const AdminDashboard = (): React.ReactElement => {
 
     if (data.length > 0) {
       data.forEach((review: ReviewResponse) => {
-        id = review.reviewId
+        id = review.reviewId;
         const names: string[] = [];
         if (review.books[0].seriesName === null) {
           title = review.books[0].title;
@@ -299,7 +307,14 @@ const AdminDashboard = (): React.ReactElement => {
         featured = review.featured ? "Yes" : "No";
         status = review.publishedAt ? "Published" : "Draft";
 
-        const row: ReviewRow = { id, title, authors, updated, featured, status };
+        const row: ReviewRow = {
+          id,
+          title,
+          authors,
+          updated,
+          featured,
+          status,
+        };
         rows.push(row);
       });
     }
