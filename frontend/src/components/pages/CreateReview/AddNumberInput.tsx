@@ -13,7 +13,7 @@ type AddNumberInputProps = {
   mb?: number;
   minNum: number;
   maxNum: number;
-  numberInputField: number;
+  numberInputFieldValue: number;
   setNumberField: (n: number) => void;
 };
 
@@ -24,7 +24,7 @@ const AddNumberInput = ({
   mb,
   minNum,
   maxNum,
-  numberInputField,
+  numberInputFieldValue,
   setNumberField,
 }: AddNumberInputProps): React.ReactElement => {
   return (
@@ -38,7 +38,7 @@ const AddNumberInput = ({
       onChange={(value) => {
         setNumberField(parseInt(value, 10));
       }}
-      value={numberInputField}
+      value={numberInputFieldValue}
     >
       <NumberInputField placeholder={placeholder || "#"} />
       <NumberInputStepper>

@@ -230,7 +230,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     name="title-prefix"
                     required
                     maxWidth="50%"
-                    inputField={prefix}
+                    inputFieldValue={prefix}
                     setInputField={setPrefix}
                   />
                   <AddStringInput
@@ -238,7 +238,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     label="Title"
                     name="title"
                     required
-                    inputField={title}
+                    inputFieldValue={title}
                     setInputField={setTitle}
                   />
                 </Stack>
@@ -248,7 +248,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     label="Series"
                     name="series-name"
                     required={false}
-                    inputField={seriesName}
+                    inputFieldValue={seriesName}
                     setInputField={setSeriesName}
                   />
                   <AddStringInput
@@ -257,7 +257,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     name="series-order"
                     required={false}
                     maxWidth="50%"
-                    inputField={seriesOrder}
+                    inputFieldValue={seriesOrder}
                     setInputField={setSeriesOrder}
                   />
                 </Stack>
@@ -291,7 +291,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     label="Publisher"
                     name="publisher-name"
                     required
-                    inputField={publisher}
+                    inputFieldValue={publisher}
                     setInputField={setPublisher}
                   />
                   <AddSelect
@@ -323,7 +323,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     label="ISBN"
                     name="isbn"
                     required
-                    inputField={isbn}
+                    inputFieldValue={isbn}
                     setInputField={setIsbn}
                     isInvalid={!isEmptyOrValidISBN}
                     errorMessage="Invalid ISBN format."
@@ -333,7 +333,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       mb={2}
                       placeholder="$"
-                      numberInputField={price}
+                      numberInputFieldValue={price}
                       setNumberField={setPrice}
                       minNum={kMinPrice}
                       maxNum={kMaxPrice}
@@ -350,7 +350,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   name="bookCover"
                   placeholder="Image link here"
                   required
-                  inputField={coverImage}
+                  inputFieldValue={coverImage}
                   setInputField={setCoverImage}
                 />
                 {/* <AddSelect
@@ -370,7 +370,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       placeholder="Min Age"
                       mb={0}
-                      numberInputField={minAge}
+                      numberInputFieldValue={minAge}
                       setNumberField={setMinAge}
                       minNum={kMinAge}
                       maxNum={kMaxAge}
@@ -378,7 +378,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       placeholder="Max Age"
                       mb={0}
-                      numberInputField={maxAge}
+                      numberInputFieldValue={maxAge}
                       setNumberField={setMaxAge}
                       minNum={minAge}
                       maxNum={kMaxAge}
