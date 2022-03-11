@@ -37,7 +37,9 @@ const InviteAdminModal = (props: InviteAdminModalProps): React.ReactElement => {
 
   const { isOpen, onClose } = props;
 
-  // handler function to be executed when the submit button is clicked
+  /**
+   * handler function to be executed when the submit button is clicked
+   */
   const onSubmitClick = async () => {
     if (!email || !firstName || !lastName) {
       setIsInvalid(true);
