@@ -16,6 +16,7 @@ import {
 import React, { useState } from "react";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
+import { SIGNUP_ERROR } from "../../constants/ErrorMessages";
 
 export type InviteAdminModalProps = {
   // this describes the state of the modal
@@ -45,9 +46,7 @@ const InviteAdminModal = (props: InviteAdminModalProps): React.ReactElement => {
       const user = await authAPIClient.register(firstName, lastName, email);
       if (!user) {
         setIsInvalid(true);
-        setErrorMessage(
-          "Unable to sign up user. Please check entered details.",
-        );
+        setErrorMessage(SIGNUP_ERROR);
       } else {
         onClose();
       }
