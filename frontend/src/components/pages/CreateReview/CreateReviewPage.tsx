@@ -34,6 +34,8 @@ const CreateReview = (): React.ReactElement => {
     onOpen: onOpenBookModal,
     onClose: onBookModalClose,
   } = useDisclosure();
+  const [currBook, setCurrBook] = useState<Book | null>(null);
+
   const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
     false,
   );
@@ -93,6 +95,8 @@ const CreateReview = (): React.ReactElement => {
         onClose={onBookModalClose}
         booksAdded={books}
         handleBooksAdded={setBooks}
+        currBook={currBook}
+        setCurrBook={setCurrBook}
       />
       <DeleteModal
         isOpen={showDeleteBookModal}
@@ -193,8 +197,10 @@ const CreateReview = (): React.ReactElement => {
                 key={i}
                 index={i}
                 book={book}
-                showModal={setShowDeleteBookModal}
-                setIndex={setDeleteBookIndex}
+                showDeleteBookModal={setShowDeleteBookModal}
+                setDeleteBookIndex={setDeleteBookIndex}
+                showBookModal={onOpenBookModal}
+                setCurrBook={setCurrBook}
               />
             ))}
 
