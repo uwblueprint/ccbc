@@ -10,7 +10,7 @@ type AddStringInputProps = {
   placeholder?: string;
   required: boolean;
   maxWidth?: string;
-  inputField: string;
+  inputFieldValue: string;
   setInputField: (s: string) => void;
   isInvalid?: boolean;
   errorMessage?: string;
@@ -29,7 +29,7 @@ const AddStringInput = ({
   placeholder,
   required,
   maxWidth,
-  inputField = "",
+  inputFieldValue = "",
   setInputField,
   isInvalid,
   errorMessage,
@@ -53,7 +53,7 @@ const AddStringInput = ({
         placeholder={placeholder || "Text Here"}
         required={required}
         handleDelete={() => {}}
-        value={inputField}
+        value={inputFieldValue}
         handleInputChange={handleInputChange}
       />
       <FormErrorMessage>{errorMessage}</FormErrorMessage>

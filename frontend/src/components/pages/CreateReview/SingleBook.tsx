@@ -13,16 +13,27 @@ interface SingleBookProps {
   /** The index of the current book */
   index: number;
   /** A function that sets showDeleteBookModal */
-  showModal: (showDeleteBookModal: boolean) => void;
+  showDeleteBookModal: (showDeleteBookModal: boolean) => void;
   /** A function that sets deleteBookIndex */
-  setIndex: (deleteBookIndex: number) => void;
+  setDeleteBookIndex: (deleteBookIndex: number) => void;
+  /** A function that sets showBookModal */
+  showBookModal: () => void;
+  /** A function that sets currBook */
+  setCurrBook: (currBook: Book) => void;
 }
 
 /**
  * This component displays a single book and allows the user to delete or edit a book via the corresponding modals
  */
 const SingleBook = (props: SingleBookProps): React.ReactElement => {
-  const { book, index, showModal, setIndex } = props;
+  const {
+    book,
+    index,
+    showDeleteBookModal,
+    setDeleteBookIndex,
+    showBookModal,
+    setCurrBook,
+  } = props;
   const [hovering, setHovering] = useState<boolean>(false);
 
   return (
@@ -34,7 +45,6 @@ const SingleBook = (props: SingleBookProps): React.ReactElement => {
       m={6}
       ml={0}
       mr={10}
-      // onClick={() => setShowBookModal(true)}
     >
       <Box
         display="flex"
@@ -49,8 +59,8 @@ const SingleBook = (props: SingleBookProps): React.ReactElement => {
         boxShadow="dark-lg"
         zIndex={2}
         onClick={() => {
-          showModal(true);
-          setIndex(index);
+          showDeleteBookModal(true);
+          setDeleteBookIndex(index);
         }}
       >
         <CloseIcon color="white" w={3} h={3} />
@@ -67,6 +77,10 @@ const SingleBook = (props: SingleBookProps): React.ReactElement => {
         role="img"
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
+        onClick={() => {
+          setCurrBook(book);
+          showBookModal();
+        }}
       >
         {hovering && (
           <Box

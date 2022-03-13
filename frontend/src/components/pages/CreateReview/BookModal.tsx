@@ -24,11 +24,22 @@ import AddSelect from "./AddSelect";
 import AddStringInput from "./AddStringInput";
 import AddStringInputList from "./AddStringInputList";
 
+/**
+ * Interface defining props for BookModal component
+ */
 interface BookModalProps {
+  /** Boolean that represents if modal is open or not */
   isOpen: boolean;
+  /** Callback hook function that sets isOpen to false and closes modal */
   onClose: () => void;
+  /** List of Book objects that are part of the parent CreateReview's state */
   booksAdded: Book[];
+  /** State hook belonging to CreateReview that adds new books to booksAdded */
   handleBooksAdded: (b: Book[]) => void;
+  /** CreateReview state variable that references a Book only when BookModal is editing said Book */
+  currBook: Book | null;
+  /** CreateReview state hook that modifies currBook */
+  setCurrBook: (book: Book | null) => void;
 }
 
 const kStartingYear = 1967;
@@ -41,7 +52,14 @@ const kMaxPrice = 1000;
  * Modal for user to input new book for review
  * */
 const BookModal = (props: BookModalProps): React.ReactElement => {
-  const { isOpen, onClose, booksAdded, handleBooksAdded } = props;
+  const {
+    isOpen,
+    onClose,
+    booksAdded,
+    handleBooksAdded,
+    currBook,
+    setCurrBook,
+  } = props;
 
   // required Book Fields
   const [prefix, setPrefix] = useState<string>("");
@@ -75,30 +93,64 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     return years.reverse();
   };
 
-  /** Clears book data */
-  const clearBookData = () => {
-    setTitle("");
-    setCoverImage("");
-    setPrefix("");
-    setSeriesOrder("");
-    setIllustrator([]);
-    setTranslator([]);
-    setFormat("");
-    setGenre("");
-    setMinAge(0);
-    setMaxAge(0);
-    setAuthors([]);
-    setPublisher("");
-    setSeriesName("");
-    setIsbn("");
-    setPrice(0);
-    setPublicationYear("");
-  };
-
-  // Calls clearBookData() whenever modal is closed
+  /**
+   * Calls clearBookData() whenever modal is closed,
+   * otherwise calls setBookData if currBook is not null
+   */
   useEffect(() => {
-    if (isOpen === false) clearBookData();
-  }, [isOpen]);
+    /** Clears book data */
+    const clearBookData = () => {
+      setCurrBook(null);
+
+      setTitle("");
+      setCoverImage("");
+      setPrefix("");
+      setSeriesOrder("");
+      setIllustrator([]);
+      setTranslator([]);
+      setFormat("");
+      setGenre("");
+      setMinAge(0);
+      setMaxAge(0);
+      setAuthors([]);
+      setPublisher("");
+      setSeriesName("");
+      setIsbn("");
+      setPrice(0);
+      setPublicationYear("");
+    };
+
+    /** Sets the book data in the modal */
+    const setBookData = (book: Book) => {
+      setTitle(book.title);
+      setCoverImage(book.coverImage);
+      setPrefix(book.titlePrefix);
+      setSeriesOrder(book.seriesOrder);
+      setIllustrator(book.illustrator);
+      setTranslator(book.translator);
+
+      setGenre("");
+      setMinAge(book.minAge);
+      setMaxAge(book.maxAge);
+      setAuthors(book.authors.map((author) => author.fullName));
+      setSeriesName(book.seriesName);
+
+      const bookFormat = book.formats[0];
+      setFormat(bookFormat.format);
+      setPrice(parseInt(bookFormat.price, 10));
+      setIsbn(bookFormat.isbn);
+
+      const bookPublisher = book.publishers[0];
+      setPublisher(bookPublisher.fullName);
+      setPublicationYear(bookPublisher.publishYear.toString());
+    };
+
+    if (!isOpen) {
+      clearBookData();
+    } else if (currBook) {
+      setBookData(currBook);
+    }
+  }, [isOpen, currBook, setCurrBook]);
 
   /** Ensure that ISBN is valid or an empty field */
   const isEmptyOrValidISBN =
@@ -165,7 +217,12 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       publishers: publisherObj,
       seriesName,
     };
-    handleBooksAdded([...booksAdded, newBook]);
+
+    if (currBook) {
+      Object.assign(currBook, newBook);
+    } else {
+      handleBooksAdded([...booksAdded, newBook]);
+    }
     onClose();
   };
 
@@ -185,7 +242,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     name="title-prefix"
                     required
                     maxWidth="50%"
-                    inputField={prefix}
+                    inputFieldValue={prefix}
                     setInputField={setPrefix}
                   />
                   <AddStringInput
@@ -193,7 +250,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     label="Title"
                     name="title"
                     required
-                    inputField={title}
+                    inputFieldValue={title}
                     setInputField={setTitle}
                   />
                 </Stack>
@@ -203,7 +260,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     label="Series"
                     name="series-name"
                     required={false}
-                    inputField={seriesName}
+                    inputFieldValue={seriesName}
                     setInputField={setSeriesName}
                   />
                   <AddStringInput
@@ -212,7 +269,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     name="series-order"
                     required={false}
                     maxWidth="50%"
-                    inputField={seriesOrder}
+                    inputFieldValue={seriesOrder}
                     setInputField={setSeriesOrder}
                   />
                 </Stack>
@@ -246,13 +303,14 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     label="Publisher"
                     name="publisher-name"
                     required
-                    inputField={publisher}
+                    inputFieldValue={publisher}
                     setInputField={setPublisher}
                   />
                   <AddSelect
                     id="Publication Year"
                     label="Publication Year"
                     required
+                    selectField={publicationYear}
                     values={generateYearsArray()}
                     setSelectField={setPublicationYear}
                   />
@@ -268,6 +326,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     label="Format"
                     required
                     maxWidth="100%"
+                    selectField={format}
                     values={Object.values(BookFormats)}
                     setSelectField={setFormat}
                   />
@@ -276,7 +335,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     label="ISBN"
                     name="isbn"
                     required
-                    inputField={isbn}
+                    inputFieldValue={isbn}
                     setInputField={setIsbn}
                     isInvalid={!isEmptyOrValidISBN}
                     errorMessage="Invalid ISBN format."
@@ -286,6 +345,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       mb={2}
                       placeholder="$"
+                      numberInputFieldValue={price}
                       setNumberField={setPrice}
                       minNum={kMinPrice}
                       maxNum={kMaxPrice}
@@ -302,7 +362,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   name="bookCover"
                   placeholder="Image link here"
                   required
-                  inputField={coverImage}
+                  inputFieldValue={coverImage}
                   setInputField={setCoverImage}
                 />
                 {/* <AddSelect
@@ -322,6 +382,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       placeholder="Min Age"
                       mb={0}
+                      numberInputFieldValue={minAge}
                       setNumberField={setMinAge}
                       minNum={kMinAge}
                       maxNum={kMaxAge}
@@ -329,6 +390,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       placeholder="Max Age"
                       mb={0}
+                      numberInputFieldValue={maxAge}
                       setNumberField={setMaxAge}
                       minNum={minAge}
                       maxNum={kMaxAge}
@@ -350,7 +412,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
             onClick={updateBookObj}
             isDisabled={!hasRequired}
           >
-            Add Book
+            {currBook ? "Save Changes" : "Add Book"}
           </Button>
           <Button
             leftIcon={<SmallCloseIcon />}

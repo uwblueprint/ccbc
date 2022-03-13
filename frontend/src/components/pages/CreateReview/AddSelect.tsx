@@ -8,6 +8,7 @@ type AddSelectProps = {
   placeholder?: string;
   maxWidth?: string;
   values: string[];
+  selectField: string;
   setSelectField: (s: string) => void;
 };
 
@@ -22,6 +23,7 @@ const AddSelect = ({
   placeholder,
   maxWidth,
   values,
+  selectField,
   setSelectField,
 }: AddSelectProps): React.ReactElement => {
   return (
@@ -31,6 +33,7 @@ const AddSelect = ({
         mb={2}
         placeholder={placeholder || "Select Option"}
         onChange={(e) => setSelectField(e.target.value)}
+        value={selectField}
       >
         {values.map((elem, i) => (
           <option key={i} value={elem}>
