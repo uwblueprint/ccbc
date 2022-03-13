@@ -24,12 +24,21 @@ import AddSelect from "./AddSelect";
 import AddStringInput from "./AddStringInput";
 import AddStringInputList from "./AddStringInputList";
 
+/**
+ * Interface defining props for BookModal component
+ */
 interface BookModalProps {
+  /** Boolean that represents if modal is open or not */
   isOpen: boolean;
+  /** Callback hook function that sets isOpen to false and closes modal */
   onClose: () => void;
+  /** List of Book objects that are part of the parent CreateReview's state */
   booksAdded: Book[];
+  /** State hook belonging to CreateReview that adds new books to booksAdded */
   handleBooksAdded: (b: Book[]) => void;
+  /** CreateReview state variable that references a Book only when BookModal is editing said Book */
   currBook: Book | null;
+  /** CreateReview state hook that modifies currBook */
   setCurrBook: (book: Book | null) => void;
 }
 
@@ -84,7 +93,10 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     return years.reverse();
   };
 
-  // Calls clearBookData() whenever modal is closed
+  /**
+   * Calls clearBookData() whenever modal is closed,
+   * otherwise calls setBookData if currBook is not null
+   */
   useEffect(() => {
     /** Clears book data */
     const clearBookData = () => {
@@ -133,7 +145,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setPublicationYear(bookPublisher.publishYear.toString());
     };
 
-    if (isOpen === false) {
+    if (!isOpen) {
       clearBookData();
     } else if (currBook) {
       setBookData(currBook);
