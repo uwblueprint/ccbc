@@ -5,13 +5,6 @@ import {
   Center,
   Flex,
   IconButton,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Spacer,
   Stack,
   Tag,
@@ -28,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import Author from "./Author";
+import DeleteConfirmation from "./DeleteConfirmation";
 
 type ReviewRow = {
   id: number;
@@ -40,7 +34,10 @@ type ReviewRow = {
 
 const AdminDashboard = (): React.ReactElement => {
   const [data, setData] = useState<ReviewResponse[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [reviewName, setReviewName] = useState("");
+  const [reviewId, setReviewId] = useState(-1);
+  const [reviewIndex, setReviewIndex] = useState(-1);
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
@@ -48,11 +45,15 @@ const AdminDashboard = (): React.ReactElement => {
     });
   }, []);
 
-  const deleteReview = async (reviewId: number, reviewIndex: number) => {
+  const deleteReview = async () => {
     await reviewAPIClient.deleteReviewById(reviewId.toString());
     const newData = [...data];
     newData.splice(reviewIndex, 1);
     setData(newData);
+  };
+
+  const onDeleteModalClose = () => {
+    setIsDeleteModalOpen(false);
   };
 
   const getMuiTheme = () =>
@@ -179,57 +180,14 @@ const AdminDashboard = (): React.ReactElement => {
                   <IconButton
                     aria-label="delete"
                     icon={<DeleteIcon color="#718096" />}
-                    onClick={() => setIsOpen(true)}
+                    onClick={() => {
+                      setIsDeleteModalOpen(true);
+                      setReviewName(tableMeta.rowData[1]);
+                      setReviewId(tableMeta.rowData[0]);
+                      setReviewIndex(tableMeta.rowIndex);
+                    }}
                   />
                 </Tooltip>
-                <Modal
-                  isOpen={isOpen}
-                  onClose={() => setIsOpen(false)}
-                  isCentered
-                >
-                  <ModalOverlay />
-                  <ModalContent>
-                    <ModalHeader
-                      mt="40px"
-                      ml="40px"
-                      mr="40px"
-                      fontFamily="DM Sans"
-                      fontSize="30px"
-                      fontWeight="700"
-                    >
-                      Hey wait!
-                    </ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody ml="40px" mr="40px" fontFamily="DM Sans">
-                      Are you sure you want to delete this review of
-                      {tableMeta.rowData[1]}?
-                    </ModalBody>
-                    <ModalFooter mb="40px" mr="40px" ml="40px">
-                      <Button
-                        w="167px"
-                        colorScheme="teal"
-                        onClick={() => {
-                          setIsOpen(false);
-                          deleteReview(
-                            tableMeta.rowData[0],
-                            tableMeta.rowIndex,
-                          );
-                        }}
-                      >
-                        Yes, delete review
-                      </Button>
-                      <Button
-                        w="167px"
-                        ml="16px"
-                        colorScheme="teal"
-                        variant="outline"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        No, take me back
-                      </Button>
-                    </ModalFooter>
-                  </ModalContent>
-                </Modal>
               </div>
             );
           },
@@ -345,6 +303,12 @@ const AdminDashboard = (): React.ReactElement => {
             />
           </ThemeProvider>
         </Stack>
+        <DeleteConfirmation
+          isOpen={isDeleteModalOpen}
+          onClose={onDeleteModalClose}
+          onDelete={deleteReview}
+          reviewName={reviewName}
+        />
       </Center>
     </Box>
   );
