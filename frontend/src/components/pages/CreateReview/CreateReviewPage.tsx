@@ -28,7 +28,6 @@ import SingleBook from "./SingleBook";
  */
 const CreateReview = (): React.ReactElement => {
   // State hooks to be used by the BookModal component
-  // const [tagsSelected, setTagsSelected] = useState<Option[]>([]);
   const {
     isOpen: isOpenBookModal,
     onOpen: onOpenBookModal,
@@ -51,10 +50,6 @@ const CreateReview = (): React.ReactElement => {
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
   const onPublishModalClose = () => setShowPublishModal(false);
   const onDeleteReviewModalClose = () => setShowDeleteReviewModal(false);
-
-  // const handleTagSelected = (e: Option[]) => {
-  //   setTagsSelected(e);
-  // };
 
   /**
    * Adds a book to the list of books.
