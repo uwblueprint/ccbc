@@ -1,6 +1,6 @@
 import React from "react";
 
-import CreateReview from "./CreateReview/CreateReviewPage";
+import CreateReview from "./CreateReview/CreateReview";
 
 /**
  * This page is used to create a new Review

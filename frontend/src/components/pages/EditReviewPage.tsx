@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 
-import CreateReview from "./CreateReview/CreateReviewPage";
+import CreateReview from "./CreateReview/CreateReview";
 
 /**
  * The model defining the route parameters that can be passed to
