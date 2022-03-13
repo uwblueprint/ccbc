@@ -21,6 +21,11 @@ export type Format = {
   isbn: string;
 };
 
+export interface Series {
+  id?: number;
+  name?: string | null;
+}
+
 export type BookRequest = {
   title: string;
   coverImage: string;
@@ -48,7 +53,7 @@ export type BookResponse = {
   maxAge: number;
   authors: AuthorResponse[];
   publishers: Publisher[];
-  seriesName: string | null;
+  series: Series;
 };
 
 export type Tag = {

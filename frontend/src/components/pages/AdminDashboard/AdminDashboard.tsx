@@ -248,10 +248,13 @@ const AdminDashboard = (): React.ReactElement => {
       data.forEach((review: ReviewResponse) => {
         id = review.reviewId;
         const names: string[] = [];
-        if (review.books[0].seriesName === null) {
+        if (
+          review.books[0].series.name === null ||
+          review.books[0].series.name === undefined
+        ) {
           title = review.books[0].title;
         } else {
-          title = review.books[0].seriesName;
+          title = review.books[0].series.name;
         }
         review.books[0].authors.forEach((author) => {
           const authorDisplayName = author.displayName;
