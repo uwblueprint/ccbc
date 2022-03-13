@@ -1,4 +1,5 @@
 import * as firebaseAdmin from "firebase-admin";
+import randomPasswordGenerator from "secure-random-password";
 
 import IAuthService from "../interfaces/authService";
 import IEmailService from "../interfaces/emailService";
@@ -171,6 +172,7 @@ class AuthService implements IAuthService {
   async sendPasswordSetupLink(
     user: UserDTO,
     accessCode: string,
+    isNewAccount: boolean,
   ): Promise<void> {
     if (!this.emailService) {
       const errorMessage =
@@ -182,21 +184,26 @@ class AuthService implements IAuthService {
     try {
       const authId = await this.userService.getAuthIdById(user.id);
 
-      const setPasswordLink = `${process.env.CLIENT_URL}/auth/action?mode=verify-user&uid=${authId}`;
+      const setPasswordLink = `${process.env.CLIENT_URL}/auth/action?mode=verify-user&uid=${authId}&new-account=${isNewAccount}`;
 
-      const emailBody = `
-      Hello,
+      const emailBody = isNewAccount
+        ? `Hello,
       <br><br>
       You have been invited to join CCBC as a ${user.roleType.toLowerCase()}. Please click on the link 
       below to verify your account and set your new password. 
-      <br> Your unique access code is ${accessCode}.
+      <br>Your unique access code is ${accessCode}.
       <br><br>
-      <a href=${setPasswordLink}>Setup Account</a>
-      `;
+      <a href=${setPasswordLink}>Setup Account</a>`
+        : `Hello ${user.firstName}!
+      <br><br>
+      Please click on the link below to set your new password.
+      <br>Your unique access code is ${accessCode}.
+      <br><br>
+      <a href=${setPasswordLink}>Reset Password</a>`;
 
       this.emailService.sendEmail(
         user.email,
-        "Verify your CCBC Account",
+        isNewAccount ? "Verify your CCBC Account" : "CCBC: Reset your password",
         emailBody,
       );
     } catch (error) {
@@ -295,6 +302,18 @@ class AuthService implements IAuthService {
   }
 
   /**
+   * returns the uid for the firebase user given the email
+   * @param email the user's email
+   * @returns the user's uid associated with their firebase account
+   * @throws Error if can't get the user's uid
+   */
+  async getFirebaseUserIdByEmail(email: string): Promise<string> {
+    const firebaseUser = await firebaseAdmin.auth().getUserByEmail(email);
+    if (!firebaseUser) throw Error("No firebaseuser found with that email");
+    return firebaseUser.uid;
+  }
+
+  /**
    * Sets the firebase user with the given uid to be verified
    * @param uid the user id of the user inside Firebase
    */
@@ -311,6 +330,30 @@ class AuthService implements IAuthService {
       );
       throw error;
     }
+  }
+
+  /**
+   * Used when the user has forgotten their password. This sets their password to a random access code
+   * @param email the user's email associated with their account
+   * @returns the temporary password (aka: accessCode) set to the user's account
+   * @throws Error if unable to set the password
+   */
+  async setTemporaryUserPassword(uid: string): Promise<string> {
+    const accessCode = randomPasswordGenerator.randomPassword({
+      length: 8, // length of the password
+      characters: [
+        // acceptable characters in the password
+        randomPasswordGenerator.lower,
+        randomPasswordGenerator.upper,
+        randomPasswordGenerator.digits,
+      ],
+    });
+
+    await firebaseAdmin.auth().updateUser(uid, {
+      password: accessCode,
+    });
+
+    return accessCode;
   }
 }
 

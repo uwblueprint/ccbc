@@ -26,6 +26,8 @@ export const EDIT_REVIEW_PAGE = "/edit-review/:id";
 
 export const AUTH_ACTIONS = "/auth/action";
 
+export const FORGOT_PASSWORD_PAGE = "/forgot-password";
+
 export const DEFAULT_PAGE = "/default"; // FOR TESTING ONLY
 
 // TODO: Remove once PreviewReviewModal is integrated

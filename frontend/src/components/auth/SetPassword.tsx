@@ -24,12 +24,24 @@ import { AuthenticatedUser } from "../../types/AuthTypes";
 import firebaseApp from "../../utils/Firebase";
 import PasswordInputField from "../common/PasswordInputField";
 
+/**
+ * A model describing the props for SetPassword component
+ */
 export type SetPasswordProps = {
   email: string;
   uid: string;
+  isNewAccount: boolean;
 };
 
-const SetPassword = ({ email, uid }: SetPasswordProps): React.ReactElement => {
+/**
+ * This component is responsible for setting up a password for a new user OR
+ * reseting an existing user's password (the key difference being in if the account is marked as verified or not)
+ */
+const SetPassword = ({
+  email,
+  uid,
+  isNewAccount,
+}: SetPasswordProps): React.ReactElement => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -51,10 +63,12 @@ const SetPassword = ({ email, uid }: SetPasswordProps): React.ReactElement => {
           throw new Error("Unable to retreive current user");
         await updatePassword(currentUser, newPassword);
 
-        // verify the user
-        const couldVerify = await authAPIClient.verifyEmail(uid);
-        if (!couldVerify) {
-          throw new Error("Could not verify user");
+        if (isNewAccount) {
+          // verify the user
+          const couldVerify = await authAPIClient.verifyEmail(uid);
+          if (!couldVerify) {
+            throw new Error("Could not verify user");
+          }
         }
 
         // log the user in if password reset was successful
@@ -101,12 +115,15 @@ const SetPassword = ({ email, uid }: SetPasswordProps): React.ReactElement => {
       <GridItem>
         <Stack justify="center" p="25vh 10vw">
           <Center>
-            <Text textStyle="heading">Password Set Up</Text>
+            <Text textStyle="heading">
+              {isNewAccount ? "Password Set Up" : "Reset Password"}
+            </Text>
           </Center>
           <Center>
             <Text textStyle="body" color="gray.700">
-              A CCBC account was successfully created for you! Set your password
-              below to activate your account.
+              {isNewAccount
+                ? "A CCBC account was successfully created for you! Set your password below to activate your account."
+                : "Enter a new password below to reset it."}
             </Text>
           </Center>
           <FormControl mt="1rem">
@@ -137,7 +154,7 @@ const SetPassword = ({ email, uid }: SetPasswordProps): React.ReactElement => {
               />
             </Box>
             <Button variant="submit" type="submit" onClick={onSetPasswordClick}>
-              Create Account
+              {isNewAccount ? "Create account" : "Reset password"}
             </Button>
           </FormControl>
         </Stack>

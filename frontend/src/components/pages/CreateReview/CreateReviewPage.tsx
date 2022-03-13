@@ -10,6 +10,7 @@ import {
   RadioGroup,
   Stack,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -20,6 +21,7 @@ import { ReviewResponse } from "../../../types/ReviewTypes";
 import { mapBookResponeToBook } from "../../../utils/MappingUtils";
 // import { Option } from "../../../types/TagTypes";
 // import BookModal from "./BookModal";
+import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
 import data from "./mockData";
@@ -42,8 +44,13 @@ interface CreateReviewProps {
  */
 const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   // State hooks to be used by the BookModal component
-  // const [tagsSelected, setTagsSelected] = useState<Option[]>([]);
-  // const [showBookModal, setShowBookModal] = useState<boolean>(false);
+  const {
+    isOpen: isOpenBookModal,
+    onOpen: onOpenBookModal,
+    onClose: onBookModalClose,
+  } = useDisclosure();
+  const [currBook, setCurrBook] = useState<Book | null>(null);
+
   const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
     false,
   );
@@ -57,7 +64,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [featured, setFeatured] = useState("0");
   const [reviewerByline, setReviewerByline] = useState("");
 
-  // const onBookModalClose = () => setShowBookModal(false);
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
   const onPublishModalClose = () => setShowPublishModal(false);
   const onDeleteReviewModalClose = () => setShowDeleteReviewModal(false);
@@ -127,14 +133,14 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   return (
     <Box>
-      {/* <BookModal
-        isOpen={showBookModal}
+      <BookModal
+        isOpen={isOpenBookModal}
         onClose={onBookModalClose}
-        tagsSelected={tagsSelected}
-        handleSelected={handleTagSelected}
         booksAdded={books}
         handleBooksAdded={setBooks}
-      /> */}
+        currBook={currBook}
+        setCurrBook={setCurrBook}
+      />
       <DeleteModal
         isOpen={showDeleteBookModal}
         onClose={onDeleteBookModalClose}
@@ -235,8 +241,10 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
                 key={i}
                 index={i}
                 book={book}
-                showModal={setShowDeleteBookModal}
-                setIndex={setDeleteBookIndex}
+                showDeleteBookModal={setShowDeleteBookModal}
+                setDeleteBookIndex={setDeleteBookIndex}
+                showBookModal={onOpenBookModal}
+                setCurrBook={setCurrBook}
               />
             ))}
 
@@ -248,7 +256,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
             cursor="pointer"
             m={6}
             ml={0}
-            // onClick={() => setShowBookModal(true)}
+            onClick={onOpenBookModal}
           >
             <IconButton
               aria-label="Add new book"

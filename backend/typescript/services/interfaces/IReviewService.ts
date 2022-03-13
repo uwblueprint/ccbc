@@ -1,16 +1,25 @@
 export interface AuthorRequest {
+  id?: number;
   fullName: string;
   displayName?: string | null;
   attribution?: string | null;
 }
 
 export interface AuthorResponse {
+  id: number;
   fullName: string;
   displayName: string | null;
   attribution: string | null;
 }
 
-export interface Publisher {
+export interface PublisherRequest {
+  id?: number;
+  fullName: string;
+  publishYear: number;
+}
+
+export interface PublisherResponse {
+  id: number;
   fullName: string;
   publishYear: number;
 }
@@ -21,7 +30,13 @@ export interface Format {
   isbn: string;
 }
 
+export interface Series {
+  id?: number;
+  name?: string | null;
+}
+
 export interface BookRequest {
+  id?: number;
   title: string;
   coverImage: string;
   titlePrefix?: string | null;
@@ -32,11 +47,12 @@ export interface BookRequest {
   minAge: number;
   maxAge: number;
   authors: AuthorRequest[];
-  publishers: Publisher[];
-  seriesName?: string | null;
+  publishers: PublisherRequest[];
+  series: Series;
 }
 
 export interface BookResponse {
+  id: number;
   title: string;
   coverImage: string;
   titlePrefix: string | null;
@@ -47,11 +63,17 @@ export interface BookResponse {
   minAge: number;
   maxAge: number;
   authors: AuthorResponse[];
-  publishers: Publisher[];
-  seriesName: string | null;
+  publishers: PublisherResponse[];
+  series: Series;
 }
 
-export interface Tag {
+export interface TagRequest {
+  id?: number;
+  name: string;
+}
+
+export interface TagResponse {
+  id: number;
   name: string;
 }
 
@@ -71,7 +93,7 @@ export interface ReviewRequestDTO {
   createdBy: number;
   publishedAt?: number | null;
   books: BookRequest[];
-  tags: Tag[];
+  tags: TagRequest[];
 }
 
 export interface ReviewResponseDTO {
@@ -82,7 +104,7 @@ export interface ReviewResponseDTO {
   createdBy?: number | null;
   createdByUser?: User | null;
   books: BookResponse[];
-  tags: Tag[];
+  tags: TagResponse[];
   updatedAt: number;
   publishedAt: number | null;
   createdAt: number;
@@ -90,14 +112,42 @@ export interface ReviewResponseDTO {
 
 export interface IReviewService {
   /**
-   * create a review with the fields given in the DTO, return created review
-   * @param review fields
-   * @returns the created Review
+   * create a Review with the fields given in the DTO, return created Review
+   * @param review DTO
+   * @returns the created review
    * @throws Error if creation fails
    */
+  createReview(review: ReviewRequestDTO): Promise<ReviewResponseDTO>;
 
-  createReview(entity: ReviewRequestDTO): Promise<ReviewResponseDTO>;
+  /**
+   * retrieve the Review with the given id
+   * @param id review id
+   * @returns requested Review
+   * @throws Error if retrieval fails
+   */
   getReview(id: string): Promise<ReviewResponseDTO>;
+
+  /**
+   * retrieve all Reviews
+   * @param
+   * @returns returns array of Reviews
+   * @throws Error if retrieval fails
+   */
   getReviews(): Promise<ReviewResponseDTO[]>;
+
+  /**
+   * update the Review with the given id with fields in the DTO, return updated Review
+   * @param id review id
+   * @param review Updated Review
+   * @returns the updated Review
+   * @throws Error if update fails
+   */
+  updateReviews(id: string, review: ReviewRequestDTO): Promise<void>;
+
+  /**
+   * delete the review with the given id
+   * @param id review id
+   * @throws Error if deletion fails
+   */
   deleteReview(id: string): Promise<void>;
 }

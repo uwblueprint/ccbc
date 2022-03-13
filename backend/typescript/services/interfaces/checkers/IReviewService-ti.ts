@@ -5,18 +5,27 @@ import * as t from "ts-interface-checker";
 // tslint:disable:object-literal-key-quotes
 
 export const AuthorRequest = t.iface([], {
+  id: t.opt("number"),
   fullName: "string",
   displayName: t.opt(t.union("string", "null")),
   attribution: t.opt(t.union("string", "null")),
 });
 
 export const AuthorResponse = t.iface([], {
+  id: "number",
   fullName: "string",
   displayName: t.union("string", "null"),
   attribution: t.union("string", "null"),
 });
 
-export const Publisher = t.iface([], {
+export const PublisherRequest = t.iface([], {
+  id: t.opt("number"),
+  fullName: "string",
+  publishYear: "number",
+});
+
+export const PublisherResponse = t.iface([], {
+  id: "number",
   fullName: "string",
   publishYear: "number",
 });
@@ -27,7 +36,13 @@ export const Format = t.iface([], {
   isbn: "string",
 });
 
+export const Series = t.iface([], {
+  id: t.opt("number"),
+  name: t.opt(t.union("string", "null")),
+});
+
 export const BookRequest = t.iface([], {
+  id: t.opt("number"),
   title: "string",
   coverImage: "string",
   titlePrefix: t.opt(t.union("string", "null")),
@@ -38,11 +53,12 @@ export const BookRequest = t.iface([], {
   minAge: "number",
   maxAge: "number",
   authors: t.array("AuthorRequest"),
-  publishers: t.array("Publisher"),
-  seriesName: t.opt(t.union("string", "null")),
+  publishers: t.array("PublisherRequest"),
+  series: "Series",
 });
 
 export const BookResponse = t.iface([], {
+  id: "number",
   title: "string",
   coverImage: "string",
   titlePrefix: t.union("string", "null"),
@@ -53,11 +69,17 @@ export const BookResponse = t.iface([], {
   minAge: "number",
   maxAge: "number",
   authors: t.array("AuthorResponse"),
-  publishers: t.array("Publisher"),
-  seriesName: t.union("string", "null"),
+  publishers: t.array("PublisherResponse"),
+  series: "Series",
 });
 
-export const Tag = t.iface([], {
+export const TagRequest = t.iface([], {
+  id: t.opt("number"),
+  name: "string",
+});
+
+export const TagResponse = t.iface([], {
+  id: "number",
   name: "string",
 });
 
@@ -74,7 +96,7 @@ export const ReviewRequestDTO = t.iface([], {
   createdBy: "number",
   publishedAt: t.opt(t.union("number", "null")),
   books: t.array("BookRequest"),
-  tags: t.array("Tag"),
+  tags: t.array("TagRequest"),
 });
 
 export const ReviewResponseDTO = t.iface([], {
@@ -85,7 +107,7 @@ export const ReviewResponseDTO = t.iface([], {
   createdBy: t.opt(t.union("number", "null")),
   createdByUser: t.opt(t.union("User", "null")),
   books: t.array("BookResponse"),
-  tags: t.array("Tag"),
+  tags: t.array("TagResponse"),
   updatedAt: "number",
   publishedAt: t.union("number", "null"),
   createdAt: "number",
@@ -95,20 +117,29 @@ export const IReviewService = t.iface([], {
   createReview: t.func(
     "ReviewResponseDTO",
     t.param("entity", "ReviewRequestDTO"),
+    t.param("id", "string", true),
   ),
   getReview: t.func("ReviewResponseDTO", t.param("id", "string")),
   getReviews: t.func(t.array("ReviewResponseDTO")),
+  updateReviews: t.func(
+    "void",
+    t.param("id", "string"),
+    t.param("entity", "ReviewRequestDTO"),
+  ),
   deleteReview: t.func("void", t.param("id", "string")),
 });
 
 const exportedTypeSuite: t.ITypeSuite = {
   AuthorRequest,
   AuthorResponse,
-  Publisher,
+  PublisherRequest,
+  PublisherResponse,
   Format,
+  Series,
   BookRequest,
   BookResponse,
-  Tag,
+  TagRequest,
+  TagResponse,
   User,
   ReviewRequestDTO,
   ReviewResponseDTO,
