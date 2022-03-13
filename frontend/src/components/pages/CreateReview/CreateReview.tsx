@@ -15,12 +15,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
-import { Author, Book, BookFormat } from "../../../types/BookTypes";
-import {
-  AuthorResponse,
-  Format,
-  ReviewResponse,
-} from "../../../types/ReviewTypes";
+import { Book } from "../../../types/BookTypes";
+import { ReviewResponse } from "../../../types/ReviewTypes";
+import { mapBookResponeToBook } from "../../../utils/MappingUtils";
 // import { Option } from "../../../types/TagTypes";
 // import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
@@ -99,67 +96,12 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   };
 
   /**
-   * This function maps a list of AuthorResponse objects to a list
-   * of Author objects
-   *
-   * @param authorResponses - a list of AuthorResponse objects returned by the review API
-   * @returns a list of Author objects
-   */
-  const mapAuthorResponseToAuthor = (
-    authorResponses: AuthorResponse[],
-  ): Author[] => {
-    const result: Author[] = authorResponses.map((authorResponse) => ({
-      fullName: authorResponse.fullName,
-      displayName: authorResponse.displayName,
-      attribution: authorResponse.attribution,
-    }));
-
-    return result;
-  };
-
-  /**
-   * This function maps a list of Format objects to a list of
-   * BookFormat objects
-   *
-   * @param formatResponse - a list of Format objects returned by the review API
-   * @returns a list of BookFormat objects
-   */
-  const mapFormatToBookFormat = (
-    formatResponse: Format[] | null,
-  ): BookFormat[] => {
-    if (!formatResponse) {
-      return [];
-    }
-
-    const result: BookFormat[] = formatResponse.map((format) => ({
-      format: format.format,
-      price: format.price,
-      isbn: format.isbn,
-    }));
-
-    return result;
-  };
-
-  /**
    * A callback function that maps a list of BookResponse objects
    * to a list of Book objects and sets them in the component state
    */
   const setBooksFromBookResponse = useCallback(
     (reviewResponse: ReviewResponse) => {
-      const result: Book[] = reviewResponse.books.map((response) => ({
-        title: response.title,
-        coverImage: response.coverImage,
-        titlePrefix: response.titlePrefix,
-        seriesOrder: response.seriesOrder,
-        illustrator: response.illustrator,
-        translator: response.translator,
-        formats: mapFormatToBookFormat(response.formats),
-        minAge: response.minAge,
-        maxAge: response.maxAge,
-        authors: mapAuthorResponseToAuthor(response.authors),
-        publishers: response.publishers,
-        seriesName: response.seriesName,
-      }));
+      const result: Book[] = mapBookResponeToBook(reviewResponse.books);
       setBooks(result);
     },
     [setBooks],

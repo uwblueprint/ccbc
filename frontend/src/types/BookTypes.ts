@@ -32,7 +32,7 @@ export type Book = {
   coverImage: string;
   titlePrefix: string | null;
   seriesOrder: string | null;
-  illustrator: string[] | null;
+  illustrator: string[];
   translator: string[] | null;
   formats: BookFormat[];
   minAge: number;
