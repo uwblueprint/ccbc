@@ -112,6 +112,7 @@ const App = (): React.ReactElement => {
                   path={Routes.PREVIEW_REVIEW_TEST}
                   component={PreviewReviewTest}
                 />
+                {/** TODO: remove once there is a standardized way of handling errors */}
                 <Route
                   exact
                   path={Routes.NOT_FOUND_PAGE}
