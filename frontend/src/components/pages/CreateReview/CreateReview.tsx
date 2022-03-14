@@ -12,9 +12,15 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
+import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { Book } from "../../../types/BookTypes";
+import { ReviewResponse } from "../../../types/ReviewTypes";
+import { mapBookResponeToBook } from "../../../utils/MappingUtils";
+// import { Option } from "../../../types/TagTypes";
+// import BookModal from "./BookModal";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
@@ -24,9 +30,19 @@ import ReviewEditor from "./ReviewEditor";
 import SingleBook from "./SingleBook";
 
 /**
+ * The model defining the props for the Create Review Component
+ */
+interface CreateReviewProps {
+  /**
+   * The unique identifer for the Review. This prop is optional
+   * and is used to pre-populate the component if a value is set.
+   */
+  id?: string;
+}
+/**
  * The component for the page where the user creates, edits, and publishes their review.
  */
-const CreateReview = (): React.ReactElement => {
+const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   // State hooks to be used by the BookModal component
   const {
     isOpen: isOpenBookModal,
@@ -46,10 +62,17 @@ const CreateReview = (): React.ReactElement => {
   const [books, setBooks] = useState<Book[]>([]);
   const [review, setReview] = useState("");
   const [featured, setFeatured] = useState("0");
+  const [reviewerByline, setReviewerByline] = useState("");
 
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
   const onPublishModalClose = () => setShowPublishModal(false);
   const onDeleteReviewModalClose = () => setShowDeleteReviewModal(false);
+
+  const history = useHistory();
+
+  // const handleTagSelected = (e: Option[]) => {
+  //   setTagsSelected(e);
+  // };
 
   /**
    * Adds a book to the list of books.
@@ -78,10 +101,36 @@ const CreateReview = (): React.ReactElement => {
     addBook(book);
   };
 
-  // useEffect hook adds dummy data to the books array
+  /**
+   * A callback function that maps a list of BookResponse objects
+   * to a list of Book objects and sets them in the component state
+   */
+  const setBooksFromBookResponse = useCallback(
+    (reviewResponse: ReviewResponse) => {
+      const result: Book[] = mapBookResponeToBook(reviewResponse.books);
+      setBooks(result);
+    },
+    [setBooks],
+  );
+
   useEffect(() => {
-    setBooks(data);
-  }, []);
+    if (id) {
+      reviewAPIClient
+        .getReviewById(id)
+        .then((reviewResponse: ReviewResponse) => {
+          setReview(reviewResponse.body);
+          setFeatured(reviewResponse.featured ? "1" : "0");
+          setReviewerByline(reviewResponse.byline);
+          setBooksFromBookResponse(reviewResponse);
+        })
+        .catch(() => {
+          // history.push("/404");
+          history.replace("/404");
+        });
+    } else {
+      setBooks(data);
+    }
+  }, [history, id, setBooksFromBookResponse]);
 
   return (
     <Box>
@@ -179,13 +228,14 @@ const CreateReview = (): React.ReactElement => {
           {/* Current books display (sorted by seriesOrder) */}
           {books
             .sort((a: Book, b: Book) => {
-              if (a.seriesOrder < b.seriesOrder) {
-                return -1;
-              }
-              if (a.seriesOrder > b.seriesOrder) {
-                return 1;
-              }
-              return 0;
+              const seriesOrderA = a.seriesOrder
+                ? parseInt(a.seriesOrder, 10)
+                : 0;
+              const seriesOrderB = b.seriesOrder
+                ? parseInt(b.seriesOrder, 10)
+                : 0;
+
+              return seriesOrderA - seriesOrderB;
             })
             .map((book, i) => (
               <SingleBook
@@ -250,7 +300,11 @@ const CreateReview = (): React.ReactElement => {
                 *
               </Text>
             </Box>
-            <Input placeholder="Text here" />
+            <Input
+              placeholder="Text here"
+              value={reviewerByline}
+              onChange={(event) => setReviewerByline(event.target.value)}
+            />
             <Box display="flex" flexDirection="row" mt="30px">
               <Heading size="sm">Featured</Heading>
               <Text color="red" ml={1} mt={-3} fontSize="1.5em">

@@ -124,16 +124,16 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     const setBookData = (book: Book) => {
       setTitle(book.title);
       setCoverImage(book.coverImage);
-      setPrefix(book.titlePrefix);
-      setSeriesOrder(book.seriesOrder);
+      setPrefix(book.titlePrefix ? book.titlePrefix : "");
+      setSeriesOrder(book.seriesOrder ? book.seriesOrder : "");
       setIllustrator(book.illustrator);
-      setTranslator(book.translator);
+      setTranslator(book.translator ? book.translator : []);
 
       setGenre("");
       setMinAge(book.minAge);
       setMaxAge(book.maxAge);
       setAuthors(book.authors.map((author) => author.fullName));
-      setSeriesName(book.seriesName);
+      setSeriesName(book.seriesName ? book.seriesName : "");
 
       const bookFormat = book.formats[0];
       setFormat(bookFormat.format);

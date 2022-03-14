@@ -16,4 +16,19 @@ const getReviews = async (): Promise<ReviewResponse[]> => {
   }
 };
 
-export default { getReviews };
+/**
+ * This function obtains a review given a unique identifer
+ *
+ * @param id - the unique identifier of the review to obtain
+ * @returns Promise<ReviewResponse>
+ */
+const getReviewById = async (id: string): Promise<ReviewResponse> => {
+  // TODO: catch error
+  const requestRoute = `/reviews/${id}`;
+  const { data } = await baseAPIClient.get(requestRoute, {
+    headers: { Authorization: BEARER_TOKEN },
+  });
+  return data;
+};
+
+export default { getReviews, getReviewById };
