@@ -1,6 +1,6 @@
-import "@fontsource/open-sans";
 import "@fontsource/coustard";
 import "@fontsource/dm-sans";
+import "@fontsource/open-sans";
 
 import { extendTheme } from "@chakra-ui/react";
 
@@ -40,6 +40,24 @@ const customTheme = extendTheme({
           bg: "teal.500",
           color: "white",
           size: "md",
+        },
+        add: {
+          color: "white",
+          bg: "teal.400",
+          _hover: {
+            _disabled: {
+              bg: "teal.400",
+            },
+          },
+        },
+        remove: {
+          hover: "transparent",
+          color: "gray.500",
+        },
+        outline: {
+          border: "2px solid",
+          borderColor: "teal.400",
+          color: "teal.400",
         },
       },
     },

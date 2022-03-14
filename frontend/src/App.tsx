@@ -11,8 +11,9 @@ import Login from "./components/auth/Login";
 import PrivateRoute from "./components/auth/routes/PrivateRoute";
 import Signup from "./components/auth/Signup";
 import AdminDashboard from "./components/pages/AdminDashboard/AdminDashboard";
-import CreateReview from "./components/pages/CreateReview/CreateReviewPage";
+import CreateReviewPage from "./components/pages/CreateReviewPage";
 import Default from "./components/pages/Default";
+import EditReviewPage from "./components/pages/EditReviewPage";
 import MagazineReview from "./components/pages/MagazineReview";
 import NotFound from "./components/pages/NotFound";
 import PreviewReviewTest from "./components/pages/PreviewReviewTest";
@@ -92,7 +93,13 @@ const App = (): React.ReactElement => {
                 <PrivateRoute
                   exact
                   path={Routes.CREATE_REVIEW_PAGE}
-                  component={CreateReview}
+                  component={CreateReviewPage}
+                  requiredRoles={[UserRole.Admin]}
+                />
+                <PrivateRoute
+                  exact
+                  path={Routes.EDIT_REVIEW_PAGE}
+                  component={EditReviewPage}
                   requiredRoles={[UserRole.Admin]}
                 />
                 <Route
@@ -110,6 +117,12 @@ const App = (): React.ReactElement => {
                   exact
                   path={Routes.PREVIEW_REVIEW_TEST}
                   component={PreviewReviewTest}
+                />
+                {/** TODO: remove once there is a standardized way of handling errors */}
+                <Route
+                  exact
+                  path={Routes.NOT_FOUND_PAGE}
+                  component={NotFound}
                 />
                 <Route exact path="*" component={NotFound} />
               </Switch>

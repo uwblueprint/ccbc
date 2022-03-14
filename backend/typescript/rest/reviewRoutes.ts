@@ -2,9 +2,9 @@ import { Router } from "express";
 import ReviewService from "../services/implementations/reviewService";
 import {
   IReviewService,
-  Tag,
   BookRequest,
   ReviewResponseDTO,
+  TagRequest,
 } from "../services/interfaces/IReviewService";
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
@@ -28,7 +28,7 @@ reviewRouter.post(
         featured: req.body.featured,
         createdBy: req.body.createdBy,
         books: req.body.books as BookRequest[],
-        tags: req.body.tags as Tag[],
+        tags: req.body.tags as TagRequest[],
         publishedAt: req.body.publishedAt,
       });
       await sendResponseByMimeType<ReviewResponseDTO>(
@@ -76,6 +76,21 @@ reviewRouter.get(
           error: getErrorMessage(e),
         },
       ]);
+    }
+  },
+);
+
+reviewRouter.put(
+  "/:id",
+  isAuthorizedByRole(new Set(["Admin"])),
+  reviewRequestDtoValidator,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const review = await reviewService.updateReviews(id, req.body);
+      res.status(200).json(review);
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
     }
   },
 );
