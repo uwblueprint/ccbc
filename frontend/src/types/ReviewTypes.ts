@@ -42,6 +42,7 @@ export type BookRequest = {
 };
 
 export type BookResponse = {
+  id: number;
   title: string;
   coverImage: string;
   titlePrefix: string | null;
@@ -76,8 +77,11 @@ export type ReviewResponse = {
   body: string;
   byline: string;
   featured: boolean;
-  // @TODO: uncomment when christine changes are merged
-  // createdBy: number;
+  createdByUser: {
+    id: number;
+    firstName: string;
+    lastName: string;
+  };
   books: BookResponse[];
   tags: Tag[];
   updatedAt: number;
