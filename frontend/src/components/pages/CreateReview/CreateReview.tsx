@@ -124,7 +124,8 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           setBooksFromBookResponse(reviewResponse);
         })
         .catch(() => {
-          history.push("/404");
+          // history.push("/404");
+          history.replace("/404");
         });
     } else {
       setBooks(data);
