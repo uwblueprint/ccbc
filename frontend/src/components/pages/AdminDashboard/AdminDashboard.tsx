@@ -249,6 +249,7 @@ const AdminDashboard = (): React.ReactElement => {
         id = review.reviewId;
         const names: string[] = [];
         if (
+          review.books.length === 1 ||
           review.books[0].series.name === null ||
           review.books[0].series.name === undefined
         ) {

@@ -56,7 +56,7 @@ export const mapBookResponeToBook = (books: BookResponse[]): Book[] => {
     maxAge: response.maxAge,
     authors: mapAuthorResponseToAuthor(response.authors),
     publishers: response.publishers,
-    seriesName: response.seriesName,
+    seriesName: response.series?.name || "",
   }));
 
   return mappedBooks;
