@@ -17,6 +17,7 @@ import MUIDataTable, {
   MUIDataTableColumn,
 } from "mui-datatables";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { ReviewResponse } from "../../../types/ReviewTypes";
@@ -287,9 +288,11 @@ const AdminDashboard = (): React.ReactElement => {
           <Flex mt="50" mb="25">
             <Text textStyle="heading">Admin dashboard</Text>
             <Spacer />
-            <Button w="159px" h="48px" colorScheme="teal">
-              + Add review
-            </Button>
+            <Link to="/create-review">
+              <Button w="159px" h="48px" colorScheme="teal">
+                + Add review
+              </Button>
+            </Link>
           </Flex>
           <ThemeProvider theme={getMuiTheme()}>
             <MUIDataTable
