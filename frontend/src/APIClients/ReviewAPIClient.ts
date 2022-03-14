@@ -16,6 +16,20 @@ const getReviews = async (): Promise<ReviewResponse[]> => {
   }
 };
 
+/*
+  Delete review by id
+*/
+const deleteReviewById = async (id: string): Promise<ReviewResponse> => {
+  try {
+    const { data } = await baseAPIClient.delete(`/reviews/${id.toString()}`, {
+      headers: { Authorization: BEARER_TOKEN },
+    });
+    return data;
+  } catch (error) {
+    return error as ReviewResponse;
+  }
+};
+
 /**
  * This function obtains a review given a unique identifer
  *
@@ -31,4 +45,4 @@ const getReviewById = async (id: string): Promise<ReviewResponse> => {
   return data;
 };
 
-export default { getReviews, getReviewById };
+export default { getReviews, deleteReviewById, getReviewById };

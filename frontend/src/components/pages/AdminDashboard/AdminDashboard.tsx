@@ -21,8 +21,10 @@ import React, { useEffect, useState } from "react";
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import Author from "./Author";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 type ReviewRow = {
+  id: number;
   title: string;
   authors: string;
   updated: string;
@@ -32,12 +34,27 @@ type ReviewRow = {
 
 const AdminDashboard = (): React.ReactElement => {
   const [data, setData] = useState<ReviewResponse[]>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteReviewName, setDeleteReviewName] = useState("");
+  const [deleteReviewId, setDeleteReviewId] = useState(-1);
+  const [deleteReviewIndex, setDeleteReviewIndex] = useState(-1);
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
       setData(allReviews);
     });
   }, []);
+
+  const deleteReview = async () => {
+    await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
+    const newData = [...data];
+    newData.splice(deleteReviewIndex, 1);
+    setData(newData);
+  };
+
+  const onDeleteModalClose = () => {
+    setIsDeleteModalOpen(false);
+  };
 
   const getMuiTheme = () =>
     createTheme({
@@ -86,6 +103,13 @@ const AdminDashboard = (): React.ReactElement => {
 
   const getTableColumns = (): MUIDataTableColumn[] => {
     const columns: MUIDataTableColumn[] = [
+      {
+        name: "id",
+        label: "Id",
+        options: {
+          display: false,
+        },
+      },
       {
         name: "title",
         label: "Title",
@@ -136,7 +160,8 @@ const AdminDashboard = (): React.ReactElement => {
         name: "actions",
         label: " ",
         options: {
-          customBodyRender: () => {
+          // eslint-disable-next-line
+          customBodyRender: (value, tableMeta, updateValue) => {
             return (
               <div>
                 <Tooltip label="Edit review">
@@ -155,6 +180,12 @@ const AdminDashboard = (): React.ReactElement => {
                   <IconButton
                     aria-label="delete"
                     icon={<DeleteIcon color="#718096" />}
+                    onClick={() => {
+                      setIsDeleteModalOpen(true);
+                      setDeleteReviewName(tableMeta.rowData[1]);
+                      setDeleteReviewId(tableMeta.rowData[0]);
+                      setDeleteReviewIndex(tableMeta.rowIndex);
+                    }}
                   />
                 </Tooltip>
               </div>
@@ -206,6 +237,7 @@ const AdminDashboard = (): React.ReactElement => {
 
   const getTableRows = (): ReviewRow[] => {
     const rows: ReviewRow[] = [];
+    let id;
     let title;
     let authors;
     let updated;
@@ -214,6 +246,7 @@ const AdminDashboard = (): React.ReactElement => {
 
     if (data.length > 0) {
       data.forEach((review: ReviewResponse) => {
+        id = review.reviewId;
         const names: string[] = [];
         if (review.books[0].seriesName === null) {
           title = review.books[0].title;
@@ -233,7 +266,14 @@ const AdminDashboard = (): React.ReactElement => {
         featured = review.featured ? "Yes" : "No";
         status = review.publishedAt ? "Published" : "Draft";
 
-        const row: ReviewRow = { title, authors, updated, featured, status };
+        const row: ReviewRow = {
+          id,
+          title,
+          authors,
+          updated,
+          featured,
+          status,
+        };
         rows.push(row);
       });
     }
@@ -263,6 +303,12 @@ const AdminDashboard = (): React.ReactElement => {
             />
           </ThemeProvider>
         </Stack>
+        <DeleteConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onClose={onDeleteModalClose}
+          onDelete={deleteReview}
+          reviewName={deleteReviewName}
+        />
       </Center>
     </Box>
   );
