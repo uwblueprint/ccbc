@@ -21,7 +21,7 @@ import React, { useEffect, useState } from "react";
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import Author from "./Author";
-import DeleteConfirmation from "./DeleteConfirmation";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 type ReviewRow = {
   id: number;
@@ -35,9 +35,9 @@ type ReviewRow = {
 const AdminDashboard = (): React.ReactElement => {
   const [data, setData] = useState<ReviewResponse[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [reviewName, setReviewName] = useState("");
-  const [reviewId, setReviewId] = useState(-1);
-  const [reviewIndex, setReviewIndex] = useState(-1);
+  const [deleteReviewName, setDeleteReviewName] = useState("");
+  const [deleteReviewId, setDeleteReviewId] = useState(-1);
+  const [deleteReviewIndex, setDeleteReviewIndex] = useState(-1);
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
@@ -46,9 +46,9 @@ const AdminDashboard = (): React.ReactElement => {
   }, []);
 
   const deleteReview = async () => {
-    await reviewAPIClient.deleteReviewById(reviewId.toString());
+    await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
     const newData = [...data];
-    newData.splice(reviewIndex, 1);
+    newData.splice(deleteReviewIndex, 1);
     setData(newData);
   };
 
@@ -182,9 +182,9 @@ const AdminDashboard = (): React.ReactElement => {
                     icon={<DeleteIcon color="#718096" />}
                     onClick={() => {
                       setIsDeleteModalOpen(true);
-                      setReviewName(tableMeta.rowData[1]);
-                      setReviewId(tableMeta.rowData[0]);
-                      setReviewIndex(tableMeta.rowIndex);
+                      setDeleteReviewName(tableMeta.rowData[1]);
+                      setDeleteReviewId(tableMeta.rowData[0]);
+                      setDeleteReviewIndex(tableMeta.rowIndex);
                     }}
                   />
                 </Tooltip>
@@ -303,11 +303,11 @@ const AdminDashboard = (): React.ReactElement => {
             />
           </ThemeProvider>
         </Stack>
-        <DeleteConfirmation
+        <DeleteConfirmationModal
           isOpen={isDeleteModalOpen}
           onClose={onDeleteModalClose}
           onDelete={deleteReview}
-          reviewName={reviewName}
+          reviewName={deleteReviewName}
         />
       </Center>
     </Box>

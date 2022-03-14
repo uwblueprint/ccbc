@@ -17,7 +17,11 @@ export type DeleteConfirmationProps = {
   reviewName: string;
 };
 
-const DeleteConfirmation = ({
+/**
+ * DeleteConfirmationModal displays and asks for confirmation when
+ * the delete button on an Admin Dashboard row is clicked
+ */
+const DeleteConfirmationModal = ({
   isOpen,
   onClose,
   onDelete,
@@ -67,4 +71,4 @@ const DeleteConfirmation = ({
   );
 };
 
-export default DeleteConfirmation;
+export default DeleteConfirmationModal;
