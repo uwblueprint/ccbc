@@ -18,7 +18,7 @@ import MUIDataTable, {
   MUIDataTableColumn,
 } from "mui-datatables";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { ReviewResponse } from "../../../types/ReviewTypes";
@@ -75,6 +75,7 @@ const AdminDashboard = (): React.ReactElement => {
   const [selectedReviewCoverURL, setSelectedReviewCoverURL] = useState<string>(
     "",
   );
+  const history = useHistory();
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
@@ -136,6 +137,11 @@ const AdminDashboard = (): React.ReactElement => {
     setSelectedReviewTags(row.tags.map((tag) => tag.name));
     setSelectedReviewCoverURL(row.books[0].coverImage);
     onPreviewModalOpen();
+  };
+
+  const editButtonHandler = (index: number) => {
+    const { reviewId } = data[index];
+    history.push(`/edit-review/${reviewId}`);
   };
 
   const getMuiTheme = () =>
@@ -250,6 +256,7 @@ const AdminDashboard = (): React.ReactElement => {
                   <IconButton
                     aria-label="edit review"
                     icon={<EditIcon color="#718096" />}
+                    onClick={() => editButtonHandler(tableMeta.rowIndex)}
                   />
                 </Tooltip>
                 <Tooltip label="Preview">
