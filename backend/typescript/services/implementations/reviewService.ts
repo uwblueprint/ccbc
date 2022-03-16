@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
+import { Transaction } from "sequelize/types";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
@@ -15,10 +16,14 @@ import {
   ReviewRequestDTO,
   IReviewService,
   ReviewResponseDTO,
-  Publisher,
-  Tag,
   BookResponse,
+  BookRequest,
   AuthorResponse,
+  AuthorRequest,
+  TagRequest,
+  PublisherRequest,
+  PublisherResponse,
+  TagResponse,
   User,
 } from "../interfaces/IReviewService";
 
@@ -30,6 +35,160 @@ class ReviewService implements IReviewService {
   constructor(db: Sequelize = sequelize) {
     this.db = db;
     if (db !== sequelize) sequelize.close(); // Using test db instead of main db
+  }
+
+  /* eslint-disable class-methods-use-this, no-await-in-loop */
+  async findOrCreateTag(
+    review: PgReview,
+    tag: TagRequest,
+    t: Transaction,
+  ): Promise<PgTag> {
+    const [tagRef, created] = await PgTag.findOrCreate({
+      where: { name: tag.name },
+      transaction: t,
+    });
+    if (!created) return tagRef;
+    await review.$add("tags", tagRef, { transaction: t });
+    return tagRef;
+  }
+
+  async findOrCreateTags(
+    review: PgReview,
+    tags: TagRequest[],
+    t: Transaction,
+  ): Promise<TagResponse[]> {
+    const tagsRet: TagResponse[] = [];
+    for (let i = 0; i < tags.length; i += 1) {
+      const tag = await this.findOrCreateTag(review, tags[i], t);
+      tagsRet.push({ id: tag.id, name: tag.name });
+    }
+    return tagsRet;
+  }
+
+  async findOrCreateSeries(
+    seriesName: string | null | undefined,
+    t: Transaction,
+  ): Promise<PgSeries | null> {
+    let series = null;
+    let created = false;
+    if (seriesName) {
+      [series, created] = await PgSeries.findOrCreate({
+        where: { name: seriesName },
+        transaction: t,
+      });
+      if (!created) return series;
+    }
+    return series;
+  }
+
+  async findOrCreateAuthor(
+    book: PgBook,
+    author: AuthorRequest,
+    t: Transaction,
+  ): Promise<PgAuthor> {
+    const [authorRef, created] = await PgAuthor.findOrCreate({
+      where: {
+        full_name: author.fullName,
+        display_name: author.displayName || null,
+        attribution: author.attribution || null,
+      },
+      transaction: t,
+    });
+    if (!created) return authorRef;
+    await book.$add("authors", authorRef, { transaction: t });
+    return authorRef;
+  }
+
+  async findOrCreatePublisher(
+    book: PgBook,
+    publisher: PublisherRequest,
+    t: Transaction,
+  ): Promise<PgPublisher> {
+    const [pub, created] = await PgPublisher.findOrCreate({
+      where: {
+        full_name: publisher.fullName,
+        publish_year: publisher.publishYear,
+      },
+      transaction: t,
+    });
+    if (!created) return pub;
+    await book.$add("publishers", pub, { transaction: t });
+    return pub;
+  }
+
+  async createBook(
+    review: PgReview,
+    book: BookRequest,
+    t: Transaction,
+  ): Promise<BookResponse> {
+    const series = book.series
+      ? await this.findOrCreateSeries(book.series.name, t)
+      : undefined;
+
+    const newBook = await PgBook.create(
+      {
+        review_id: review.id,
+        cover_image: book.coverImage,
+        title_prefix: book.titlePrefix,
+        title: book.title,
+        series_id: series?.id || null,
+        series_order: book.seriesOrder || null,
+        illustrator: book.illustrator || null,
+        translator: book.translator || null,
+        formats: book.formats,
+        age_range: [book.minAge, book.maxAge],
+      },
+      { transaction: t },
+    );
+
+    const authorsRet: AuthorResponse[] = [];
+    for (let index = 0; index < book.authors.length; index += 1) {
+      const author = await this.findOrCreateAuthor(
+        newBook,
+        book.authors[index],
+        t,
+      );
+      authorsRet.push({
+        id: author.id,
+        fullName: author.full_name,
+        displayName: author.display_name || null,
+        attribution: author.attribution || null,
+      });
+    }
+
+    const publishersRet: PublisherResponse[] = [];
+    for (let i = 0; i < book.publishers.length; i += 1) {
+      const publisher = await this.findOrCreatePublisher(
+        newBook,
+        book.publishers[i],
+        t,
+      );
+      publishersRet.push({
+        id: publisher.id,
+        fullName: publisher.full_name,
+        publishYear: publisher.publish_year,
+      });
+    }
+
+    await review.$add("books", newBook, { transaction: t });
+    return {
+      id: newBook.id,
+      title: newBook.title,
+      coverImage: newBook.cover_image,
+      titlePrefix: newBook.title_prefix || null,
+      seriesOrder: newBook.series_order || null,
+      illustrator: newBook.illustrator || null,
+      translator: newBook.translator || null,
+      formats: newBook.formats,
+      minAge: newBook.age_range[0].value,
+      maxAge: newBook.age_range[1].value,
+      authors: authorsRet,
+      publishers: publishersRet,
+      series: {
+        id: series?.id || null,
+        name: series?.name || null,
+      },
+    };
   }
 
   async deleteReview(id: string): Promise<void> {
@@ -155,15 +314,17 @@ class ReviewService implements IReviewService {
     const books: BookResponse[] = review.books.map((book: PgBook) => {
       const authorsRet: AuthorResponse[] = book.authors.map((a: PgAuthor) => {
         return {
+          id: a.id,
           fullName: a.full_name,
           displayName: a.display_name || null,
           attribution: a.attribution || null,
         };
       });
 
-      const publishersRet: Publisher[] = book.publishers.map(
+      const publishersRet: PublisherResponse[] = book.publishers.map(
         (p: PgPublisher) => {
           return {
+            id: p.id,
             fullName: p.full_name,
             publishYear: p.publish_year,
           };
@@ -171,6 +332,7 @@ class ReviewService implements IReviewService {
       );
 
       return {
+        id: book.id,
         title: book.title,
         coverImage: book.cover_image,
         titlePrefix: book.title_prefix || null,
@@ -182,12 +344,16 @@ class ReviewService implements IReviewService {
         maxAge: book.age_range[1].value,
         authors: authorsRet,
         publishers: publishersRet,
-        seriesName: book.series?.name || null,
+        series: {
+          id: book.series?.id || null,
+          name: book.series?.name || null,
+        },
       };
     });
 
-    const tags: Tag[] = review.tags.map((tag: PgTag) => {
+    const tags: TagResponse[] = review.tags.map((tag: PgTag) => {
       return {
+        id: tag.id,
         name: tag.name,
       };
     });
@@ -285,94 +451,13 @@ class ReviewService implements IReviewService {
           { transaction: t },
         );
 
-        const tagsRet: Tag[] = [];
-        for (let i = 0; i < review.tags.length; i += 1) {
-          const tag = await PgTag.findOrCreate({
-            where: { name: review.tags[i].name },
-            transaction: t,
-          }).then((data) => data[0]);
-          await newReview.$add("tags", tag, { transaction: t });
-          tagsRet.push({ name: tag.name });
-        }
+        const tagsRet = await this.findOrCreateTags(newReview, review.tags, t);
 
         const booksRet: BookResponse[] = [];
         for (let bIndex = 0; bIndex < review.books.length; bIndex += 1) {
           const book = review.books[bIndex];
 
-          let series = null;
-          if (book.seriesName) {
-            series = await PgSeries.findOrCreate({
-              where: { name: book.seriesName },
-              transaction: t,
-            }).then((data) => data[0]);
-          }
-
-          const newBook = await PgBook.create(
-            {
-              review_id: newReview.id,
-              cover_image: book.coverImage,
-              title_prefix: book.titlePrefix,
-              title: book.title,
-              series_id: series?.id || null,
-              series_order: book.seriesOrder || null,
-              illustrator: book.illustrator || null,
-              translator: book.translator || null,
-              formats: book.formats,
-              age_range: [book.minAge, book.maxAge],
-            },
-            { transaction: t },
-          );
-
-          const authorsRet: AuthorResponse[] = [];
-          for (let index = 0; index < book.authors.length; index += 1) {
-            const author = await PgAuthor.findOrCreate({
-              where: {
-                full_name: book.authors[index].fullName,
-                display_name: book.authors[index].displayName || null,
-                attribution: book.authors[index].attribution || null,
-              },
-              transaction: t,
-            }).then((data) => data[0]);
-            await newBook.$add("authors", author, { transaction: t });
-            authorsRet.push({
-              fullName: author.full_name,
-              displayName: author.display_name || null,
-              attribution: author.attribution || null,
-            });
-          }
-
-          const publishersRet: Publisher[] = [];
-          for (let i = 0; i < book.publishers.length; i += 1) {
-            const publisher = await PgPublisher.findOrCreate({
-              where: {
-                full_name: book.publishers[i].fullName,
-                publish_year: book.publishers[i].publishYear,
-              },
-              transaction: t,
-            }).then((data) => data[0]);
-            await newBook.$add("publishers", publisher, { transaction: t });
-            publishersRet.push({
-              fullName: publisher.full_name,
-              publishYear: publisher.publish_year,
-            });
-          }
-
-          await newReview.$add("books", newBook, { transaction: t });
-
-          booksRet.push({
-            title: newBook.title,
-            coverImage: newBook.cover_image,
-            titlePrefix: newBook.title_prefix || null,
-            seriesOrder: newBook.series_order || null,
-            illustrator: newBook.illustrator || null,
-            translator: newBook.translator || null,
-            formats: newBook.formats,
-            minAge: newBook.age_range[0].value,
-            maxAge: newBook.age_range[1].value,
-            authors: authorsRet,
-            publishers: publishersRet,
-            seriesName: series?.name || null,
-          });
+          booksRet.push(await this.createBook(newReview, book, t));
         }
 
         return {
@@ -398,6 +483,293 @@ class ReviewService implements IReviewService {
     }
 
     return result;
+  }
+
+  async updateReviews(id: string, entity: ReviewRequestDTO): Promise<void> {
+    try {
+      await this.db.transaction(async (t) => {
+        const reviewToUpdate = await PgReview.findByPk(id, {
+          transaction: t,
+          include: [{ all: true, nested: true }],
+        });
+
+        if (!reviewToUpdate) {
+          throw new Error(`Review id ${id} not found`);
+        }
+
+        // update review fields
+        await reviewToUpdate.update(
+          {
+            body: entity.body,
+            byline: entity.byline,
+            featured: entity.featured,
+            created_by_id: entity.createdBy,
+            published_at: entity.publishedAt,
+          },
+          { transaction: t },
+        );
+
+        // delete tags
+        const newTagIds = entity.tags
+          .filter((tag: TagRequest) => typeof tag.id === "number")
+          .map((tag: TagRequest) => tag.id);
+        const allReviewTags = await PgReviewTag.findAll({
+          where: { review_id: id },
+          transaction: t,
+        });
+        const droppedTags = allReviewTags
+          .map((reviewTag: PgReviewTag) => reviewTag.tag_id)
+          .filter((oldId: number) => !newTagIds.includes(oldId));
+        await Promise.all(
+          droppedTags.map(async (tagId: number) => {
+            await PgReviewTag.destroy({
+              where: {
+                review_id: id,
+                tag_id: tagId,
+              },
+              transaction: t,
+            });
+          }),
+        );
+
+        // update tags
+        await Promise.all(
+          entity.tags.map(async (tag: TagRequest) => {
+            if (tag.id) {
+              const tagToUpdate = await PgTag.findByPk(tag.id, {
+                transaction: t,
+              });
+              if (!tagToUpdate) {
+                throw new Error(`Tag id ${tag.id} not found`);
+              }
+              await tagToUpdate.update({ name: tag.name });
+              await PgReviewTag.findOrCreate({
+                where: { review_id: id, tag_id: tag.id },
+                transaction: t,
+              });
+            } else {
+              await this.findOrCreateTag(reviewToUpdate, tag, t);
+            }
+          }),
+        );
+
+        // remove books
+        const oldBooks = await PgBook.findAll({ transaction: t });
+        const oldBookIds = oldBooks.map((oldBook: PgBook) => oldBook.id);
+        const newBookIds = entity.books
+          .map((book: BookRequest) => book.id)
+          .filter((bookId: number | undefined) => bookId !== undefined);
+        const droppedBookIds = oldBookIds.filter(
+          (oldId: number) => !newBookIds.includes(oldId),
+        );
+        await Promise.all(
+          droppedBookIds.map(async (bookId: number) => {
+            await PgBookAuthor.destroy({
+              where: {
+                book_id: bookId,
+              },
+              transaction: t,
+            });
+
+            await PgBookPublisher.destroy({
+              where: {
+                book_id: bookId,
+              },
+              transaction: t,
+            });
+
+            await PgBook.destroy({ where: { id: bookId }, transaction: t });
+          }),
+        );
+
+        // update books
+        await Promise.all(
+          entity.books.map(async (book: BookRequest) => {
+            const seriesId = book.series.id;
+            let series: PgSeries | null;
+            if (seriesId) {
+              const seriesToUpdate = await PgSeries.findByPk(seriesId, {
+                transaction: t,
+              });
+              if (!seriesToUpdate) {
+                throw new Error(`Series id ${seriesId} not found`);
+              }
+              await seriesToUpdate.update({ name: book.series.name });
+              series = seriesToUpdate;
+            } else {
+              series = await this.findOrCreateSeries(book.series.name, t);
+            }
+
+            const bookId = book.id;
+            if (bookId !== undefined && bookId !== null) {
+              const bookToUpdate = await PgBook.findByPk(bookId, {
+                transaction: t,
+              });
+
+              if (!bookToUpdate) {
+                throw new Error(`Book id ${bookId} not found`);
+              }
+              await bookToUpdate.update(
+                {
+                  review_id: id,
+                  title_prefix: book.titlePrefix,
+                  title: book.title,
+                  series_id: series?.id,
+                  series_order: book.seriesOrder,
+                  cover_image: book.coverImage,
+                  illustrator: book.illustrator,
+                  translator: book.translator,
+                  formats: book.formats,
+                  age_range: [book.minAge, book.maxAge],
+                },
+                { transaction: t },
+              );
+            } else {
+              await this.createBook(reviewToUpdate, book, t);
+            }
+          }),
+        );
+
+        // delete bookAuthors
+        await Promise.all(
+          entity.books.map(async (book: BookRequest) => {
+            if (book.id) {
+              const newAuthorIds = book.authors
+                .map((author: AuthorRequest) => author.id)
+                .filter((authId: number | undefined) => authId !== undefined);
+              const oldBooksAuthors = await PgBookAuthor.findAll({
+                where: { book_id: book.id },
+                transaction: t,
+              });
+              const oldAuthorIds = oldBooksAuthors.map(
+                (bookAuthor: PgBookAuthor) => bookAuthor.author_id,
+              );
+              const droppedIds = oldAuthorIds.filter(
+                (oldId: number) => !newAuthorIds.includes(oldId),
+              );
+              droppedIds.forEach(async (authorId: number) => {
+                await PgBookAuthor.destroy({
+                  where: {
+                    book_id: book.id,
+                    author_id: authorId,
+                  },
+                  transaction: t,
+                });
+              });
+            }
+          }),
+        );
+
+        // update authors
+        await Promise.all(
+          entity.books.map(async (book: BookRequest) => {
+            for (let i = 0; i < book.authors.length && book.id; i += 1) {
+              const bookToUpdate = await PgBook.findByPk(book.id, {
+                transaction: t,
+              });
+              if (!bookToUpdate) {
+                throw new Error(`Book id ${book.id} not found`);
+              }
+              const author = book.authors[i];
+              if (author.id) {
+                const authorToUpdate = await PgAuthor.findByPk(author.id, {
+                  transaction: t,
+                });
+                if (!authorToUpdate) {
+                  throw new Error(`Author id ${author.id} not found`);
+                }
+                await PgBookAuthor.findOrCreate({
+                  where: { author_id: author.id, book_id: book.id },
+                  transaction: t,
+                });
+                await authorToUpdate.update(
+                  {
+                    full_name: author.fullName,
+                    display_name: author.displayName,
+                    attribution: author.attribution,
+                  },
+                  { transaction: t },
+                );
+              } else {
+                await this.findOrCreateAuthor(bookToUpdate, author, t);
+              }
+            }
+          }),
+        );
+
+        // delete publishers
+        await Promise.all(
+          entity.books.map(async (book: BookRequest) => {
+            if (book.id) {
+              const newPublisherIds = book.publishers
+                .map((publisher: PublisherRequest) => publisher.id)
+                .filter((pubId: number | undefined) => pubId !== undefined);
+              const oldBooksPublishers = await PgBookPublisher.findAll({
+                where: { book_id: book.id },
+                transaction: t,
+              });
+              const oldPublisherIds = oldBooksPublishers.map(
+                (bookPublisher: PgBookPublisher) => bookPublisher.publisher_id,
+              );
+              const droppedIds = oldPublisherIds.filter(
+                (oldId: number) => !newPublisherIds.includes(oldId),
+              );
+              droppedIds.forEach(async (publisherId: number) => {
+                await PgBookPublisher.destroy({
+                  where: {
+                    book_id: book.id,
+                    publisher_id: publisherId,
+                  },
+                  transaction: t,
+                });
+              });
+            }
+          }),
+        );
+
+        // update publishers
+        await Promise.all(
+          entity.books.map(async (book: BookRequest) => {
+            for (let i = 0; i < book.publishers.length && book.id; i += 1) {
+              const bookToUpdate = await PgBook.findByPk(book.id, {
+                transaction: t,
+              });
+              if (!bookToUpdate) {
+                throw new Error(`Book id ${book.id} not found`);
+              }
+              const publisher = book.publishers[i];
+              if (publisher.id) {
+                const publisherToUpdate = await PgPublisher.findByPk(
+                  publisher.id,
+                  { transaction: t },
+                );
+                if (!publisherToUpdate) {
+                  throw new Error(`Publisher id ${publisher.id} not found`);
+                }
+                await PgBookPublisher.findOrCreate({
+                  where: { publisher_id: publisher.id, book_id: book.id },
+                  transaction: t,
+                });
+                await publisherToUpdate.update(
+                  {
+                    full_name: publisher.fullName,
+                    publish_year: publisher.publishYear,
+                  },
+                  { transaction: t },
+                );
+              } else {
+                await this.findOrCreatePublisher(bookToUpdate, publisher, t);
+              }
+            }
+          }),
+        );
+      });
+    } catch (error: unknown) {
+      Logger.error(
+        `Failed to update review. Reason = ${getErrorMessage(error)}`,
+      );
+      throw error;
+    }
   }
 }
 

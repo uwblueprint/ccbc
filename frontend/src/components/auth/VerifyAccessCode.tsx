@@ -26,7 +26,16 @@ import firebaseApp from "../../utils/Firebase";
 import PasswordInputField from "../common/PasswordInputField";
 import { SetPasswordProps } from "./SetPassword";
 
-const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
+interface VerifyAccessCodeProps {
+  uid: string; // the firebase user id of the user
+  isNewAccount: boolean; // boolean to determine if this is a new account
+}
+
+/* VerifyAccessCode component verifies the access code for the user (implicitly logs them in on firebase) */
+const VerifyAccessCode = ({
+  uid,
+  isNewAccount,
+}: VerifyAccessCodeProps): React.ReactElement => {
   const { authenticatedUser } = useContext(AuthContext);
   const [isInvalid, setIsInvalid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -63,9 +72,13 @@ const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
   const onSubmitClick = async () => {
     try {
       const auth = getAuth(firebaseApp);
-      // try to login the user to get the currentUser from firebase-auth
+      // try to login the user to get the currentUser from firebase-auth (this is needed in the setPassword step)
       await signInWithEmailAndPassword(auth, email, accessCode);
-      history.push(`/auth/action?mode=${SETUP_PASSWORD_MODE}`, { email, uid });
+      history.push(`/auth/action?mode=${SETUP_PASSWORD_MODE}`, {
+        email,
+        uid,
+        isNewAccount,
+      });
     } catch (error) {
       setIsInvalid(true);
       setErrorMessage("Invalid access code");
@@ -148,7 +161,11 @@ const VerifyAccessCode = ({ uid }: { uid: string }): React.ReactElement => {
           </Center>
         </Stack>
       </GridItem>
-      <GridItem>{isVerified ? verifiedContent : unverifiedContent}</GridItem>
+      <GridItem>
+        {(isVerified && !isNewAccount) || !isVerified
+          ? unverifiedContent
+          : verifiedContent}
+      </GridItem>
     </Grid>
   );
 
