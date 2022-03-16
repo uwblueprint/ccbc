@@ -42,7 +42,7 @@ const ChangePasswordErrorModal = (
           <Text mb="160px">
             Uh oh! Something went wrong with changing your password. Please try
             again later. <br />
-            <br /> If the error persists, try refreshing the page and clearning
+            <br /> If the error persists, try refreshing the page and clearing
             your browser of cookies.
           </Text>
           <Image

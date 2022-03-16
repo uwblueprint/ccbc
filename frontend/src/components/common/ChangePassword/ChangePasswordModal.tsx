@@ -36,12 +36,12 @@ interface ChangePasswordModalProps {
 }
 
 /**
- * Type for error-related props to the PasswordInputField component
+ * Interfaces for error-related props to the PasswordInputField component
  */
-type PasswordFeedback = {
+interface PasswordFeedback {
   isInvalid: boolean;
   errorMessage: string;
-};
+}
 
 /**
  * This component is the modal that appears when the user wants to change their password
@@ -80,7 +80,7 @@ const ChangePasswordModal = (
     setConfirmPasswordFeedback({ isInvalid: false, errorMessage: "" });
   };
 
-  const reset = () => {
+  const resetForm = () => {
     setOldPassword("");
     setNewPassword("");
     setConfirmPassword("");
@@ -162,7 +162,7 @@ const ChangePasswordModal = (
         isOpen={isOpen}
         onClose={() => {
           onClose();
-          reset();
+          resetForm();
         }}
       />
     );
@@ -174,7 +174,7 @@ const ChangePasswordModal = (
         isOpen={isOpen}
         onClose={() => {
           onClose();
-          reset();
+          resetForm();
         }}
       />
     );
@@ -184,7 +184,7 @@ const ChangePasswordModal = (
     <Modal
       onClose={() => {
         onClose();
-        reset();
+        resetForm();
       }}
       isOpen={isOpen}
       size="lg"
