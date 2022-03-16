@@ -22,6 +22,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
+import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
 import NotificationContext from "../../../contexts/NotificationContext";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import PreviewReviewModal from "../../PreviewReviewModal";
@@ -151,6 +152,8 @@ const AdminDashboard = (): React.ReactElement => {
         isClosable: true,
         position: "bottom-right",
       });
+
+      // toast has been displayed, remove "published" from notifications array so it doesn't appear again
       notifications.filter((n) => n !== "published");
     }
   }, [notifications, toast]);
@@ -395,7 +398,7 @@ const AdminDashboard = (): React.ReactElement => {
               w="159px"
               h="48px"
               colorScheme="teal"
-              onClick={() => window.location.assign("/create-review")}
+              onClick={() => window.location.assign(CREATE_REVIEW_PAGE)}
             >
               + Add review
             </Button>
