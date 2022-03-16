@@ -21,6 +21,11 @@ export type Format = {
   isbn: string;
 };
 
+export interface Series {
+  id?: number;
+  name?: string | null;
+}
+
 export type BookRequest = {
   title: string;
   coverImage: string;
@@ -37,6 +42,7 @@ export type BookRequest = {
 };
 
 export type BookResponse = {
+  id: number;
   title: string;
   coverImage: string;
   titlePrefix: string | null;
@@ -48,7 +54,7 @@ export type BookResponse = {
   maxAge: number;
   authors: AuthorResponse[];
   publishers: Publisher[];
-  seriesName: string | null;
+  series: Series;
 };
 
 export type Tag = {
@@ -70,7 +76,11 @@ export type ReviewResponse = {
   body: string;
   byline: string;
   featured: boolean;
-  createdBy: number;
+  createdByUser: {
+    id: number;
+    firstName: string;
+    lastName: string;
+  };
   books: BookResponse[];
   tags: Tag[];
   updatedAt: number;
