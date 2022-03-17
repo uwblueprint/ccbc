@@ -18,6 +18,7 @@ import MagazineReview from "./components/pages/MagazineReview";
 import NotFound from "./components/pages/NotFound";
 import PreviewReviewTest from "./components/pages/PreviewReviewTest";
 import Profile from "./components/pages/Profile";
+import SearchBox from "./components/pages/SearchBox";
 import Unauthorized from "./components/pages/UnauthorizedPage";
 import { AUTHENTICATED_USER_KEY } from "./constants/AuthConstants";
 import { UserRole } from "./constants/Enums";
@@ -132,6 +133,12 @@ const App = (): React.ReactElement => {
                       path={Routes.PREVIEW_REVIEW_TEST}
                       component={PreviewReviewTest}
                     />
+                    <Route 
+                      exact 
+                      path={Routes.SEARCH_BOX}
+                      component={SearchBox} 
+                    />
+
                     {/** TODO: remove once there is a standardized way of handling errors */}
                     <Route
                       exact
