@@ -12,8 +12,8 @@ export type BookFormat = {
  */
 export type Author = {
   fullName: string;
-  displayName: string;
-  attribution: string;
+  displayName: string | null;
+  attribution: string | null;
 };
 
 /**
@@ -30,14 +30,14 @@ export type Publisher = {
 export type Book = {
   title: string;
   coverImage: string;
-  titlePrefix: string;
-  seriesOrder: string;
+  titlePrefix: string | null;
+  seriesOrder: string | null;
   illustrator: string[];
-  translator: string[];
+  translator: string[] | null;
   formats: BookFormat[];
   minAge: number;
   maxAge: number;
   authors: Author[];
   publishers: Publisher[];
-  seriesName: string;
+  seriesName: string | null;
 };

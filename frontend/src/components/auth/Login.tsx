@@ -8,6 +8,7 @@ import {
   GridItem,
   Image,
   Input,
+  Link,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -16,6 +17,7 @@ import { Redirect } from "react-router-dom";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import { HOME_PAGE } from "../../constants/Routes";
+import * as Routes from "../../constants/Routes";
 import AuthContext from "../../contexts/AuthContext";
 /* Images */
 import CCBCLogo from "../../images/ccbc-logo.png";
@@ -93,6 +95,12 @@ const Login = (): React.ReactElement => {
                 placeholder="Password"
                 errorMessage="The username or password you entered is incorrect."
               />
+              <Link
+                href={`${Routes.FORGOT_PASSWORD_PAGE}`}
+                textColor="rgba(0, 0, 0, 0.75)"
+              >
+                Forgot password?
+              </Link>
             </Box>
             <Button variant="submit" type="submit" onClick={onLogInClick}>
               Log in

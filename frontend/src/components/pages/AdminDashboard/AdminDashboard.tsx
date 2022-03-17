@@ -10,6 +10,7 @@ import {
   Tag,
   Text,
   Tooltip,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import MUIDataTable, {
@@ -17,12 +18,16 @@ import MUIDataTable, {
   MUIDataTableColumn,
 } from "mui-datatables";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { ReviewResponse } from "../../../types/ReviewTypes";
+import PreviewReviewModal from "../../PreviewReviewModal";
 import Author from "./Author";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 type ReviewRow = {
+  id: number;
   title: string;
   authors: string;
   updated: string;
@@ -31,13 +36,107 @@ type ReviewRow = {
 };
 
 const AdminDashboard = (): React.ReactElement => {
+  const {
+    isOpen: isPreviewModalOpen,
+    onOpen: onPreviewModalOpen,
+    onClose: onPreviewModalClose,
+  } = useDisclosure();
   const [data, setData] = useState<ReviewResponse[]>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteReviewName, setDeleteReviewName] = useState("");
+  const [deleteReviewId, setDeleteReviewId] = useState(-1);
+  const [deleteReviewIndex, setDeleteReviewIndex] = useState(-1);
+  const [selectedReviewTitle, setSelectedReviewTitle] = useState<string>("");
+  const [selectedReviewSubtitle, setSelectedReviewSubtitle] = useState<string>(
+    "",
+  );
+  const [
+    selectedReviewWrittenBy,
+    setSelectedReviewWrittenBy,
+  ] = useState<string>("");
+  const [
+    selectedReviewReviewedBy,
+    setSelectedReviewReviewedBy,
+  ] = useState<string>("");
+  const [
+    selectedReviewPublisher,
+    setSelectedReviewPublisher,
+  ] = useState<string>("");
+  const [selectedReviewIsbn, setSelectedReviewIsbn] = useState<string>("");
+  const [selectedReviewBookType, setSelectedReviewBookType] = useState<string>(
+    "",
+  );
+  const [
+    selectedReviewAgeDescription,
+    setSelectedReviewAgeDescription,
+  ] = useState<string>("");
+  const [selectedReviewBody, setSelectedReviewBody] = useState<string>("");
+  const [selectedReviewTags, setSelectedReviewTags] = useState<string[]>([]);
+  const [selectedReviewCoverURL, setSelectedReviewCoverURL] = useState<string>(
+    "",
+  );
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
       setData(allReviews);
     });
   }, []);
+
+  const deleteReview = async () => {
+    await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
+    const newData = [...data];
+    newData.splice(deleteReviewIndex, 1);
+    setData(newData);
+  };
+
+  const onDeleteModalClose = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const previewButtonHandler = (index: number) => {
+    const row: ReviewResponse = data[index]; // The full Review object
+
+    setSelectedReviewTitle(row.books[0].title);
+    setSelectedReviewSubtitle(row.books[0].series?.name ?? "");
+
+    // Authors for the first book concatenated by commas
+    let authors = "";
+    const authorArray = row.books[0].authors.map((author) => author.fullName);
+    authorArray.forEach((authorName) => {
+      authors += `${authorName}, `;
+    });
+    authors = authors.slice(0, -2);
+    setSelectedReviewWrittenBy(authors);
+
+    setSelectedReviewReviewedBy(
+      `${row.createdByUser.firstName} ${row.createdByUser.lastName}`,
+    );
+
+    // Publishers for the first book concatenated by commas
+    let publishers = "";
+    const publisherArray = row.books[0].publishers.map(
+      (publisher) => publisher.fullName,
+    );
+    publisherArray.forEach((publisherName) => {
+      publishers += `${publisherName}, `;
+    });
+    publishers = publishers.slice(0, -2);
+    setSelectedReviewPublisher(publishers);
+
+    setSelectedReviewIsbn(
+      row.books[0].formats ? row.books[0].formats[0].isbn : "",
+    );
+    setSelectedReviewBookType(
+      row.books[0].formats ? row.books[0].formats[0].format : "",
+    );
+    setSelectedReviewAgeDescription(
+      `Ages ${row.books[0].minAge}-${row.books[0].maxAge}`,
+    );
+    setSelectedReviewBody(row.body);
+    setSelectedReviewTags(row.tags.map((tag) => tag.name));
+    setSelectedReviewCoverURL(row.books[0].coverImage);
+    onPreviewModalOpen();
+  };
 
   const getMuiTheme = () =>
     createTheme({
@@ -86,6 +185,13 @@ const AdminDashboard = (): React.ReactElement => {
 
   const getTableColumns = (): MUIDataTableColumn[] => {
     const columns: MUIDataTableColumn[] = [
+      {
+        name: "id",
+        label: "Id",
+        options: {
+          display: false,
+        },
+      },
       {
         name: "title",
         label: "Title",
@@ -136,7 +242,8 @@ const AdminDashboard = (): React.ReactElement => {
         name: "actions",
         label: " ",
         options: {
-          customBodyRender: () => {
+          // eslint-disable-next-line
+          customBodyRender: (value, tableMeta, updateValue) => {
             return (
               <div>
                 <Tooltip label="Edit review">
@@ -149,12 +256,19 @@ const AdminDashboard = (): React.ReactElement => {
                   <IconButton
                     aria-label="preview"
                     icon={<ViewIcon color="#718096" />}
+                    onClick={() => previewButtonHandler(tableMeta.rowIndex)}
                   />
                 </Tooltip>
                 <Tooltip label="Delete">
                   <IconButton
                     aria-label="delete"
                     icon={<DeleteIcon color="#718096" />}
+                    onClick={() => {
+                      setIsDeleteModalOpen(true);
+                      setDeleteReviewName(tableMeta.rowData[1]);
+                      setDeleteReviewId(tableMeta.rowData[0]);
+                      setDeleteReviewIndex(tableMeta.rowIndex);
+                    }}
                   />
                 </Tooltip>
               </div>
@@ -206,6 +320,7 @@ const AdminDashboard = (): React.ReactElement => {
 
   const getTableRows = (): ReviewRow[] => {
     const rows: ReviewRow[] = [];
+    let id;
     let title;
     let authors;
     let updated;
@@ -214,11 +329,16 @@ const AdminDashboard = (): React.ReactElement => {
 
     if (data.length > 0) {
       data.forEach((review: ReviewResponse) => {
+        id = review.reviewId;
         const names: string[] = [];
-        if (review.books[0].seriesName === null) {
+        if (
+          review.books.length === 1 ||
+          review.books[0].series.name === null ||
+          review.books[0].series.name === undefined
+        ) {
           title = review.books[0].title;
         } else {
-          title = review.books[0].seriesName;
+          title = review.books[0].series.name;
         }
         review.books[0].authors.forEach((author) => {
           const authorDisplayName = author.displayName;
@@ -233,7 +353,14 @@ const AdminDashboard = (): React.ReactElement => {
         featured = review.featured ? "Yes" : "No";
         status = review.publishedAt ? "Published" : "Draft";
 
-        const row: ReviewRow = { title, authors, updated, featured, status };
+        const row: ReviewRow = {
+          id,
+          title,
+          authors,
+          updated,
+          featured,
+          status,
+        };
         rows.push(row);
       });
     }
@@ -247,9 +374,11 @@ const AdminDashboard = (): React.ReactElement => {
           <Flex mt="50" mb="25">
             <Text textStyle="heading">Admin dashboard</Text>
             <Spacer />
-            <Button w="159px" h="48px" colorScheme="teal">
-              + Add review
-            </Button>
+            <Link to="/create-review">
+              <Button w="159px" h="48px" colorScheme="teal">
+                + Add review
+              </Button>
+            </Link>
           </Flex>
           <ThemeProvider theme={getMuiTheme()}>
             <MUIDataTable
@@ -263,6 +392,27 @@ const AdminDashboard = (): React.ReactElement => {
             />
           </ThemeProvider>
         </Stack>
+        <DeleteConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onClose={onDeleteModalClose}
+          onDelete={deleteReview}
+          reviewName={deleteReviewName}
+        />
+        <PreviewReviewModal
+          title={selectedReviewTitle}
+          subtitle={selectedReviewSubtitle}
+          writtenBy={selectedReviewWrittenBy}
+          reviewedBy={selectedReviewReviewedBy}
+          publisher={selectedReviewPublisher}
+          isbn={selectedReviewIsbn}
+          bookType={selectedReviewBookType}
+          ageDesciption={selectedReviewAgeDescription}
+          body={selectedReviewBody}
+          tags={selectedReviewTags}
+          coverUrl={selectedReviewCoverURL}
+          isOpen={isPreviewModalOpen}
+          onClose={onPreviewModalClose}
+        />
       </Center>
     </Box>
   );

@@ -39,7 +39,7 @@ baseAPIClient.interceptors.request.use(async (config: AxiosRequestConfig) => {
         accessToken,
       );
 
-      newConfig.headers.Authorization = accessToken;
+      newConfig.headers.Authorization = `Bearer ${accessToken}`;
     }
   }
 
