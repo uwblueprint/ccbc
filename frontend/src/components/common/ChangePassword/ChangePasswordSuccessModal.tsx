@@ -31,7 +31,16 @@ const ChangePasswordSuccessModal = (
   const { isOpen, onClose } = props;
 
   return (
-    <Modal onClose={onClose} isOpen={isOpen} size="lg" isCentered>
+    <Modal
+      onClose={() => {
+        onClose();
+        // window is reloaded in order to reset the BEARER_TOKEN constant in constants/AuthConstants.ts
+        window.location.reload();
+      }}
+      isOpen={isOpen}
+      size="lg"
+      isCentered
+    >
       <ModalOverlay />
       <ModalContent padding="10px">
         <ModalCloseButton />

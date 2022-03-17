@@ -19,6 +19,7 @@ import {
 } from "firebase/auth";
 import React, { useContext } from "react";
 
+import AuthAPIClient from "../../../APIClients/AuthAPIClient";
 import AuthContext from "../../../contexts/AuthContext";
 import firebaseApp from "../../../utils/Firebase";
 import PasswordInputField from "../PasswordInputField";
@@ -49,7 +50,7 @@ interface PasswordFeedback {
 const ChangePasswordModal = (
   props: ChangePasswordModalProps,
 ): React.ReactElement => {
-  const { authenticatedUser } = useContext(AuthContext);
+  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
 
   const { isOpen, onClose } = props;
   const [oldPassword, setOldPassword] = React.useState<string>("");
@@ -121,7 +122,19 @@ const ChangePasswordModal = (
             updatePassword(user, newPassword)
               .then(() => {
                 // Update successful
-                setSubmitted(true);
+
+                // programmatically sign the user back in with the new password
+                AuthAPIClient.login(authenticatedUser.email, newPassword).then(
+                  (response) => {
+                    if (response) {
+                      setAuthenticatedUser(response);
+                      setSubmitted(true);
+                    } else {
+                      setSubmitted(true);
+                      setError(true);
+                    }
+                  },
+                );
               })
               .catch((e) => {
                 // Error occurred
