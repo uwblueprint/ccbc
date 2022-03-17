@@ -1,5 +1,6 @@
 import { Search2Icon } from "@chakra-ui/icons";
 import {
+  Button,
   Input,
   InputGroup,
   InputLeftElement,
@@ -14,17 +15,20 @@ const SearchBox = (): React.ReactElement => {
         <InputLeftElement pointerEvents="none" color="#110A23">
           <Search2Icon />
         </InputLeftElement>
-        <InputRightElement
-          h="full"
-          w="auto"
-          bg="#110A23"
-          color="white"
-          padding="0 26px"
-          fontSize="14px"
-          textStyle="body"
-          borderRadius="0 8px 8px 0"
-        >
-          Search
+        <InputRightElement w="auto">
+          <Button
+            h="full"
+            bg="#110A23"
+            color="white"
+            padding="0 26px"
+            fontSize="14px"
+            textStyle="body"
+            borderRadius="0 8px 8px 0"
+            _hover={{ bg: "#110A23", borderColor: "#110A23" }}
+            _active={{ bg: "#110A23", borderColor: "#110A23" }}
+          >
+            Search
+          </Button>
         </InputRightElement>
         <Input
           focusBorderColor="#110A23"
