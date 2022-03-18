@@ -45,6 +45,8 @@ const AdminDashboard = (): React.ReactElement => {
     onClose: onPreviewModalClose,
   } = useDisclosure();
   const [data, setData] = useState<ReviewResponse[]>([]);
+  const { notifications } = useContext(NotificationContext);
+  const toast = useToast();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteReviewName, setDeleteReviewName] = useState("");
   const [deleteReviewId, setDeleteReviewId] = useState(-1);
@@ -86,6 +88,22 @@ const AdminDashboard = (): React.ReactElement => {
       setData(allReviews);
     });
   }, []);
+
+  useEffect(() => {
+    if (notifications.includes("published")) {
+      toast({
+        title: "Review published.",
+        description: "Your review has been published.",
+        status: "info",
+        duration: 10000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+
+      // toast has been displayed, remove "published" from notifications array so it doesn't appear again
+      notifications.filter((n) => n !== "published");
+    }
+  }, [notifications, toast]);
 
   const deleteReview = async () => {
     await reviewAPIClient.deleteReviewById(deleteReviewId.toString());

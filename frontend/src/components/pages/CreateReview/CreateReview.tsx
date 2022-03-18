@@ -23,8 +23,6 @@ import NotificationContextDispatcherContext from "../../../contexts/Notification
 import { Book } from "../../../types/BookTypes";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import { mapBookResponeToBook } from "../../../utils/MappingUtils";
-// import { Option } from "../../../types/TagTypes";
-// import BookModal from "./BookModal";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
@@ -132,6 +130,62 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const editBook = (book: Book, index: number) => {
     deleteBook(index);
     addBook(book);
+  };
+
+  /**
+   * Function to be called when the user clicks the publish button.
+   */
+  const handlePublish = () => {
+    setReviewError(false);
+    setBylineError(false);
+
+    // Check if all fields are filled in
+    if (review !== "" && review !== "<p><br></p>" && reviewerByline !== "") {
+      setShowPublishModal(true);
+    } else {
+      if (review === "" || review === "<p><br></p>") {
+        setReviewError(true);
+      }
+      if (reviewerByline === "") {
+        setBylineError(true);
+      }
+    }
+  };
+
+  /**
+   * Function to be called when the review is published.
+   */
+  const onPublish = () => {
+    // check if all fields have been filled in
+    if (review !== "" || reviewerByline !== "" || books.length !== 0) {
+      // publish review
+      if (authenticatedUser?.id) {
+        reviewAPIClient
+          .publishReview({
+            body: review,
+            byline: reviewerByline,
+            featured: featured === "1",
+            createdBy: parseInt(authenticatedUser?.id, 10),
+            publishedAt: new Date().getTime(),
+            books,
+            tags: [],
+          })
+          .then((response) => {
+            if (response) {
+              dispatchNotifications({
+                type: "EDIT_NOTIFICATIONS",
+                value: ["published"],
+              });
+              history.push("/dashboard");
+            } else {
+              dispatchNotifications({
+                type: "EDIT_NOTIFICATIONS",
+                value: ["error"],
+              });
+            }
+          });
+      }
+    }
   };
 
   /**

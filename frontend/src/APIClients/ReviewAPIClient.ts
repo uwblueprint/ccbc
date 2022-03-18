@@ -16,6 +16,27 @@ const getReviews = async (): Promise<ReviewResponse[]> => {
   }
 };
 
+/**
+ * Publishes a review
+ * @param review - The review to publish
+ * @returns The published review
+ */
+const publishReview = async (
+  review: ReviewRequest,
+): Promise<ReviewResponse | null> => {
+  try {
+    const { data } = await baseAPIClient.post("/reviews", review, {
+      headers: {
+        Authorization: BEARER_TOKEN,
+        "Content-Type": "application/json",
+      },
+    });
+    return data;
+  } catch (error: unknown) {
+    return null;
+  }
+};
+
 /*
   Delete review by id
 */
@@ -45,25 +66,4 @@ const getReviewById = async (id: string): Promise<ReviewResponse> => {
   return data;
 };
 
-/**
- * Publishes a review
- * @param review - The review to publish
- * @returns The published review
- */
-const publishReview = async (
-  review: ReviewRequest,
-): Promise<ReviewResponse | null> => {
-  try {
-    const { data } = await baseAPIClient.post("/reviews", review, {
-      headers: {
-        Authorization: BEARER_TOKEN,
-        "Content-Type": "application/json",
-      },
-    });
-    return data;
-  } catch (error: unknown) {
-    return null;
-  }
-};
-
-export default { getReviews, deleteReviewById, getReviewById, publishReview };
+export default { getReviews, publishReview, deleteReviewById, getReviewById };
