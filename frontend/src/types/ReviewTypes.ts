@@ -38,7 +38,7 @@ export type BookRequest = {
   maxAge: number;
   authors: AuthorRequest[];
   publishers: Publisher[];
-  seriesName?: string | null;
+  series?: Series;
 };
 
 export type BookResponse = {

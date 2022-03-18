@@ -80,8 +80,6 @@ const AdminDashboard = (): React.ReactElement => {
   const [selectedReviewCoverURL, setSelectedReviewCoverURL] = useState<string>(
     "",
   );
-  const { notifications } = useContext(NotificationContext);
-  const toast = useToast();
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
@@ -160,21 +158,6 @@ const AdminDashboard = (): React.ReactElement => {
     setSelectedReviewCoverURL(row.books[0].coverImage);
     onPreviewModalOpen();
   };
-  useEffect(() => {
-    if (notifications.includes("published")) {
-      toast({
-        title: "Review published.",
-        description: "Your review has been published.",
-        status: "info",
-        duration: 10000,
-        isClosable: true,
-        position: "bottom-right",
-      });
-
-      // toast has been displayed, remove "published" from notifications array so it doesn't appear again
-      notifications.filter((n) => n !== "published");
-    }
-  }, [notifications, toast]);
 
   const getMuiTheme = () =>
     createTheme({
