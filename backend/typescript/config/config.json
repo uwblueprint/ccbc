@@ -1,9 +1,27 @@
 {
   "development": {
-    "use_env_variable": "DATABASE_URL"
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres",
+    "protocol": "postgres",
+    "ssl": true,
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
   },
-  "test": {
-    "use_env_variable": "DATABASE_URL"
+  "staging": {
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres",
+    "protocol": "postgres",
+    "ssl": true,
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
   },
   "production": {
     "use_env_variable": "DATABASE_URL",
@@ -12,8 +30,8 @@
     "ssl": true,
     "dialectOptions": {
       "ssl": {
-       "require": true,
-       "rejectUnauthorized": false
+        "require": true,
+        "rejectUnauthorized": false
       }
     }
   }
