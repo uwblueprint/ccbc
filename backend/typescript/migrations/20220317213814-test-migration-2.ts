@@ -1,13 +1,13 @@
+/* eslint-disable */ 
 'use strict';
 
 module.exports = {
-  up: (queryInterface:any, Sequelize:any) => {
+  up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('test', {
       name: Sequelize.DataTypes.STRING,
     });
   },
-  down: (queryInterface:any, Sequelize:any) => {
+  down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('test');
   }
 };
-
