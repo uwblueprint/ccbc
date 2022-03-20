@@ -1,4 +1,4 @@
-// /* eslint-disable */ 
+// /* eslint-disable */
 // 'use strict';
 
 // module.exports = {
@@ -11,18 +11,17 @@
 //     return queryInterface.dropTable('test');
 //   }
 // };
-import { QueryInterface, DataTypes } from 'sequelize';
+import { QueryInterface, DataTypes } from "sequelize";
 
 module.exports = {
-    up: (queryInterface: QueryInterface): Promise<void> => {
-      return queryInterface.createTable("test", {
-        id: {
-          type: DataTypes.INTEGER
-        }
-      });
-    },
-
-    down: (queryInterface: QueryInterface): Promise<void> => {
-      return queryInterface.dropTable("test");
-    }
+  up: (queryInterface: QueryInterface): Promise<void> => {
+    return queryInterface.createTable("test", {
+      id: {
+        type: DataTypes.INTEGER,
+      },
+    });
+  },
+  down: (queryInterface: QueryInterface): Promise<void> => {
+    return queryInterface.dropTable("test");
+  },
 };
