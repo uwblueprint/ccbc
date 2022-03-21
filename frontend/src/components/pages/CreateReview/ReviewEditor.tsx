@@ -8,8 +8,11 @@ import ReactQuill from "react-quill";
  * The model defining the props for the ReviewEditor component
  */
 interface ReviewEditorProps {
+  /** The value of the editor contents (HTML) */
   value: string;
+  /** The function to call when the contents are updated */
   setValue: (value: string) => void;
+  /** Boolean representing whether the component is invalid and should be highlighted red */
   isInvalid: boolean;
 }
 
