@@ -11,16 +11,21 @@ import {
   Stack,
   Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
+import AuthContext from "../../../contexts/AuthContext";
+import NotificationContext from "../../../contexts/NotificationContext";
+import NotificationContextDispatcherContext from "../../../contexts/NotificationContextDispatcherContext";
 import { Book } from "../../../types/BookTypes";
 import { ReviewResponse } from "../../../types/ReviewTypes";
-import { mapBookResponeToBook } from "../../../utils/MappingUtils";
-// import { Option } from "../../../types/TagTypes";
-// import BookModal from "./BookModal";
+import {
+  mapBookResponeToBook,
+  mapBookToBookRequest,
+} from "../../../utils/MappingUtils";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
@@ -64,11 +69,40 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [featured, setFeatured] = useState("0");
   const [reviewerByline, setReviewerByline] = useState("");
 
+  const cannotPublish = review === "" && reviewerByline === "";
+
+  const [reviewError, setReviewError] = useState(false);
+  const [bylineError, setBylineError] = useState(false);
+
+  // const onBookModalClose = () => setShowBookModal(false);
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
   const onPublishModalClose = () => setShowPublishModal(false);
   const onDeleteReviewModalClose = () => setShowDeleteReviewModal(false);
 
   const history = useHistory();
+
+  const toast = useToast();
+
+  const { authenticatedUser } = useContext(AuthContext);
+  const { notifications } = useContext(NotificationContext);
+  const dispatchNotifications = useContext(
+    NotificationContextDispatcherContext,
+  );
+
+  useEffect(() => {
+    if (notifications.includes("error")) {
+      toast({
+        title: "Error publishing review.",
+        description:
+          "Something went wrong, please refresh the page and try again.",
+        status: "error",
+        duration: 10000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+      notifications.filter((n) => n !== "published");
+    }
+  }, [notifications, toast]);
 
   // const handleTagSelected = (e: Option[]) => {
   //   setTagsSelected(e);
@@ -102,6 +136,62 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   };
 
   /**
+   * Function to be called when the user clicks the publish button.
+   */
+  const handlePublish = () => {
+    setReviewError(false);
+    setBylineError(false);
+
+    // Check if all fields are filled in
+    if (review !== "" && review !== "<p><br></p>" && reviewerByline !== "") {
+      setShowPublishModal(true);
+    } else {
+      if (review === "" || review === "<p><br></p>") {
+        setReviewError(true);
+      }
+      if (reviewerByline === "") {
+        setBylineError(true);
+      }
+    }
+  };
+
+  /**
+   * Function to be called when the review is published.
+   */
+  const onPublish = () => {
+    // check if all fields have been filled in
+    if (review !== "" || reviewerByline !== "" || books.length !== 0) {
+      // publish review
+      if (authenticatedUser?.id) {
+        reviewAPIClient
+          .publishReview({
+            body: review,
+            byline: reviewerByline,
+            featured: featured === "1",
+            createdBy: parseInt(authenticatedUser?.id, 10),
+            publishedAt: new Date().getTime(),
+            books: mapBookToBookRequest(books),
+            tags: [],
+          })
+          .then((response) => {
+            if (response) {
+              dispatchNotifications({
+                type: "EDIT_NOTIFICATIONS",
+                value: ["published"],
+              });
+              history.push("/dashboard");
+            } else {
+              dispatchNotifications({
+                type: "EDIT_NOTIFICATIONS",
+                value: ["error"],
+              });
+            }
+          });
+      }
+    }
+  };
+
+  /**
    * A callback function that maps a list of BookResponse objects
    * to a list of Book objects and sets them in the component state
    */
@@ -113,6 +203,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     [setBooks],
   );
 
+  // useEffect hook adds dummy data to the books array
   useEffect(() => {
     if (id) {
       reviewAPIClient
@@ -151,7 +242,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       <PublishModal
         isOpen={showPublishModal}
         onClose={onPublishModalClose}
-        publishBook={() => {}}
+        onPublish={onPublish}
       />
       <DeleteReviewModal
         isOpen={showDeleteReviewModal}
@@ -194,12 +285,15 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         <Box display="flex" flexDirection="row" alignItems="center">
           <ButtonGroup spacing={6}>
             <Button variant="ghost">Preview</Button>
-            <Button variant="ghost">Save</Button>
+            <Button variant="ghost" onClick={() => {}}>
+              Save
+            </Button>
             <Button
               colorScheme="teal"
               bg="#0EBCBD"
               variant="solid"
-              onClick={() => setShowPublishModal(true)}
+              onClick={handlePublish}
+              disabled={cannotPublish}
             >
               Publish
             </Button>
@@ -291,7 +385,11 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
                 *
               </Text>
             </Box>
-            <ReviewEditor value={review} setValue={setReview} />
+            <ReviewEditor
+              value={review}
+              setValue={setReview}
+              isInvalid={reviewError}
+            />
           </Box>
           <Box w="47%">
             <Box display="flex" flexDirection="row" mb="10px">
@@ -304,6 +402,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
               placeholder="Text here"
               value={reviewerByline}
               onChange={(event) => setReviewerByline(event.target.value)}
+              isInvalid={bylineError}
             />
             <Box display="flex" flexDirection="row" mt="30px">
               <Heading size="sm">Featured</Heading>

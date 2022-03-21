@@ -1,5 +1,5 @@
 import { BEARER_TOKEN } from "../constants/AuthConstants";
-import { ReviewResponse } from "../types/ReviewTypes";
+import { ReviewRequest, ReviewResponse } from "../types/ReviewTypes";
 import baseAPIClient from "./BaseAPIClient";
 
 /*
@@ -13,6 +13,27 @@ const getReviews = async (): Promise<ReviewResponse[]> => {
     return data;
   } catch (error: unknown) {
     return error as ReviewResponse[];
+  }
+};
+
+/**
+ * Publishes a review
+ * @param review - The review to publish
+ * @returns The published review
+ */
+const publishReview = async (
+  review: ReviewRequest,
+): Promise<ReviewResponse | null> => {
+  try {
+    const { data } = await baseAPIClient.post("/reviews", review, {
+      headers: {
+        Authorization: BEARER_TOKEN,
+        "Content-Type": "application/json",
+      },
+    });
+    return data;
+  } catch (error: unknown) {
+    return null;
   }
 };
 
@@ -45,4 +66,4 @@ const getReviewById = async (id: string): Promise<ReviewResponse> => {
   return data;
 };
 
-export default { getReviews, deleteReviewById, getReviewById };
+export default { getReviews, publishReview, deleteReviewById, getReviewById };

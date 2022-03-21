@@ -11,16 +11,19 @@ import {
   Text,
   Tooltip,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import MUIDataTable, {
   CustomHeadLabelRenderOptions,
   MUIDataTableColumn,
 } from "mui-datatables";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
+import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
+import NotificationContext from "../../../contexts/NotificationContext";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import PreviewReviewModal from "../../PreviewReviewModal";
 import Author from "./Author";
@@ -42,6 +45,8 @@ const AdminDashboard = (): React.ReactElement => {
     onClose: onPreviewModalClose,
   } = useDisclosure();
   const [data, setData] = useState<ReviewResponse[]>([]);
+  const { notifications } = useContext(NotificationContext);
+  const toast = useToast();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteReviewName, setDeleteReviewName] = useState("");
   const [deleteReviewId, setDeleteReviewId] = useState(-1);
@@ -82,6 +87,22 @@ const AdminDashboard = (): React.ReactElement => {
       setData(allReviews);
     });
   }, []);
+
+  useEffect(() => {
+    if (notifications.includes("published")) {
+      toast({
+        title: "Review published.",
+        description: "Your review has been published.",
+        status: "info",
+        duration: 10000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+
+      // toast has been displayed, remove "published" from notifications array so it doesn't appear again
+      notifications.filter((n) => n !== "published");
+    }
+  }, [notifications, toast]);
 
   const deleteReview = async () => {
     await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
@@ -381,7 +402,7 @@ const AdminDashboard = (): React.ReactElement => {
           <Flex mt="50" mb="25">
             <Text textStyle="heading">Admin dashboard</Text>
             <Spacer />
-            <Link to="/create-review">
+            <Link to={CREATE_REVIEW_PAGE}>
               <Button w="159px" h="48px" colorScheme="teal">
                 + Add review
               </Button>
