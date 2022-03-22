@@ -2,11 +2,11 @@ name: Perform Lint Checks on Frontend
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the development branch
+  # Triggers the workflow on push or pull request events but only for the main and development branches
   push:
-    branches: [ development ]
+    branches: [ development, main ]
   pull_request:
-    branches: [ development ]
+    branches: [ development, main ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
