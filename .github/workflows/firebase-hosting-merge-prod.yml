@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      # ".._PROD" refers to staging, ".._PRODUCTION" refers to production, TODO change this
       - run: echo "REACT_APP_BACKEND_URL=${{ secrets.REACT_APP_BACKEND_URL_PRODUCTION }}" > .env
       - run: rm -rf node_modules && yarn install --frozen-lockfile && yarn build
       - uses: FirebaseExtended/action-hosting-deploy@v0
