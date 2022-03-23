@@ -17,11 +17,11 @@ const getReviews = async (): Promise<ReviewResponse[]> => {
 };
 
 /**
- * Publishes a review
+ * Publishes a created review
  * @param review - The review to publish
  * @returns The published review
  */
-const publishReview = async (
+const publishCreatedReview = async (
   review: ReviewRequest,
 ): Promise<ReviewResponse | null> => {
   try {
@@ -32,6 +32,29 @@ const publishReview = async (
       },
     });
     return data;
+  } catch (error: unknown) {
+    return null;
+  }
+};
+
+/**
+ * Publishes an edited review
+ * @param id - The id of the review to publish
+ * @param review - The review to publish
+ * @returns "sucess" if publishing was successfull
+ */
+const publishEditeReview = async (
+  id: number,
+  review: ReviewRequest,
+): Promise<"success" | null> => {
+  try {
+    await baseAPIClient.put(`/reviews/${id}`, review, {
+      headers: {
+        Authorization: BEARER_TOKEN,
+        "Content-Type": "application/json",
+      },
+    });
+    return "success";
   } catch (error: unknown) {
     return null;
   }
@@ -66,4 +89,10 @@ const getReviewById = async (id: string): Promise<ReviewResponse> => {
   return data;
 };
 
-export default { getReviews, publishReview, deleteReviewById, getReviewById };
+export default {
+  getReviews,
+  publishCreatedReview,
+  publishEditeReview,
+  deleteReviewById,
+  getReviewById,
+};
