@@ -163,17 +163,34 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     if (review !== "" || reviewerByline !== "" || books.length !== 0) {
       // publish review
       if (authenticatedUser?.id) {
-        reviewAPIClient
-          .publishReview({
-            body: review,
-            byline: reviewerByline,
-            featured: featured === "1",
-            createdBy: parseInt(authenticatedUser?.id, 10),
-            publishedAt: new Date().getTime(),
-            books: mapBookToBookRequest(books),
-            tags: [],
-          })
-          .then((response) => {
+        const book = {
+          body: review,
+          byline: reviewerByline,
+          featured: featured === "1",
+          createdBy: parseInt(authenticatedUser?.id, 10),
+          publishedAt: new Date().getTime(),
+          books: mapBookToBookRequest(books),
+          tags: [],
+        };
+        if (id) {
+          reviewAPIClient
+            .publishEditeReview(parseInt(id, 10), book)
+            .then((response) => {
+              if (response) {
+                dispatchNotifications({
+                  type: "EDIT_NOTIFICATIONS",
+                  value: ["published"],
+                });
+                history.push("/dashboard");
+              } else {
+                dispatchNotifications({
+                  type: "EDIT_NOTIFICATIONS",
+                  value: ["error"],
+                });
+              }
+            });
+        } else {
+          reviewAPIClient.publishCreatedReview(book).then((response) => {
             if (response) {
               dispatchNotifications({
                 type: "EDIT_NOTIFICATIONS",
@@ -187,6 +204,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
               });
             }
           });
+        }
       }
     }
   };
