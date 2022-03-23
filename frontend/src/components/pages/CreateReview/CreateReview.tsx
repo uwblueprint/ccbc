@@ -174,7 +174,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         };
         if (id) {
           reviewAPIClient
-            .publishEditeReview(parseInt(id, 10), book)
+            .publishEditedReview(parseInt(id, 10), book)
             .then((response) => {
               if (response) {
                 dispatchNotifications({
