@@ -277,14 +277,14 @@ const AdminDashboard = (): React.ReactElement => {
                   <IconButton
                     aria-label="edit review"
                     icon={<EditIcon color="#718096" />}
-                    onClick={() => editButtonHandler(tableMeta.rowIndex)}
+                    onClick={() => editButtonHandler(tableMeta.rowData[0])}
                   />
                 </Tooltip>
                 <Tooltip label="Preview">
                   <IconButton
                     aria-label="preview"
                     icon={<ViewIcon color="#718096" />}
-                    onClick={() => previewButtonHandler(tableMeta.rowIndex)}
+                    onClick={() => previewButtonHandler(tableMeta.rowData[0])}
                   />
                 </Tooltip>
                 <Tooltip label="Delete">
