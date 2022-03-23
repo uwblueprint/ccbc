@@ -41,12 +41,12 @@ const publishCreatedReview = async (
  * Publishes an edited review
  * @param id - The id of the review to publish
  * @param review - The review to publish
- * @returns "sucess" if publishing was successfull
+ * @returns true if publishing was successfull, otherwise false
  */
-const publishEditeReview = async (
+const publishEditedReview = async (
   id: number,
   review: ReviewRequest,
-): Promise<"success" | null> => {
+): Promise<boolean> => {
   try {
     await baseAPIClient.put(`/reviews/${id}`, review, {
       headers: {
@@ -54,9 +54,9 @@ const publishEditeReview = async (
         "Content-Type": "application/json",
       },
     });
-    return "success";
+    return true;
   } catch (error: unknown) {
-    return null;
+    return false;
   }
 };
 
@@ -92,7 +92,7 @@ const getReviewById = async (id: string): Promise<ReviewResponse> => {
 export default {
   getReviews,
   publishCreatedReview,
-  publishEditeReview,
+  publishEditedReview,
   deleteReviewById,
   getReviewById,
 };
