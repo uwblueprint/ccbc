@@ -26,5 +26,5 @@ jobs:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CCBC_PRODUCTION }}"
           channelId: live
-          projectId: ccbc-95e66
+          projectId: ccbc-production
           entryPoint: ./frontend
