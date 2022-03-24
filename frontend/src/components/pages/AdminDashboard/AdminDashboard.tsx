@@ -50,7 +50,6 @@ const AdminDashboard = (): React.ReactElement => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteReviewName, setDeleteReviewName] = useState("");
   const [deleteReviewId, setDeleteReviewId] = useState(-1);
-  const [deleteReviewIndex, setDeleteReviewIndex] = useState(-1);
   const [selectedReviewTitle, setSelectedReviewTitle] = useState<string>("");
   const [selectedReviewSubtitle, setSelectedReviewSubtitle] = useState<string>(
     "",
@@ -104,9 +103,15 @@ const AdminDashboard = (): React.ReactElement => {
     }
   }, [notifications, toast]);
 
+  const getIndex = (id: number) => {
+    const idIndex = data.findIndex((element) => element.reviewId === id);
+    return idIndex;
+  };
+
   const deleteReview = async () => {
     await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
     const newData = [...data];
+    const deleteReviewIndex = getIndex(deleteReviewId);
     newData.splice(deleteReviewIndex, 1);
     setData(newData);
   };
@@ -115,8 +120,9 @@ const AdminDashboard = (): React.ReactElement => {
     setIsDeleteModalOpen(false);
   };
 
-  const previewButtonHandler = (index: number) => {
-    const row: ReviewResponse = data[index]; // The full Review object
+  const previewButtonHandler = (id: number) => {
+    const previewReviewIndex = getIndex(id);
+    const row: ReviewResponse = data[previewReviewIndex]; // The full Review object
 
     setSelectedReviewTitle(row.books[0].title);
     setSelectedReviewSubtitle(row.books[0].series?.name ?? "");
@@ -160,8 +166,9 @@ const AdminDashboard = (): React.ReactElement => {
     onPreviewModalOpen();
   };
 
-  const editButtonHandler = (index: number) => {
-    const { reviewId } = data[index];
+  const editButtonHandler = (id: number) => {
+    const editReviewIndex = getIndex(id);
+    const { reviewId } = data[editReviewIndex];
     history.push(`/edit-review/${reviewId}`);
   };
 
@@ -277,14 +284,14 @@ const AdminDashboard = (): React.ReactElement => {
                   <IconButton
                     aria-label="edit review"
                     icon={<EditIcon color="#718096" />}
-                    onClick={() => editButtonHandler(tableMeta.rowIndex)}
+                    onClick={() => editButtonHandler(tableMeta.rowData[0])}
                   />
                 </Tooltip>
                 <Tooltip label="Preview">
                   <IconButton
                     aria-label="preview"
                     icon={<ViewIcon color="#718096" />}
-                    onClick={() => previewButtonHandler(tableMeta.rowIndex)}
+                    onClick={() => previewButtonHandler(tableMeta.rowData[0])}
                   />
                 </Tooltip>
                 <Tooltip label="Delete">
@@ -295,7 +302,6 @@ const AdminDashboard = (): React.ReactElement => {
                       setIsDeleteModalOpen(true);
                       setDeleteReviewName(tableMeta.rowData[1]);
                       setDeleteReviewId(tableMeta.rowData[0]);
-                      setDeleteReviewIndex(tableMeta.rowIndex);
                     }}
                   />
                 </Tooltip>
