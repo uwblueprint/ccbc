@@ -1,5 +1,5 @@
-import { BEARER_TOKEN } from "../constants/AuthConstants";
 import { ReviewRequest, ReviewResponse } from "../types/ReviewTypes";
+import { getBearerToken } from "../utils/AuthUtils";
 import baseAPIClient from "./BaseAPIClient";
 
 /*
@@ -8,7 +8,7 @@ import baseAPIClient from "./BaseAPIClient";
 const getReviews = async (): Promise<ReviewResponse[]> => {
   try {
     const { data } = await baseAPIClient.get("/reviews", {
-      headers: { Authorization: BEARER_TOKEN },
+      headers: { Authorization: getBearerToken() },
     });
     return data;
   } catch (error: unknown) {
@@ -27,7 +27,7 @@ const publishReview = async (
   try {
     const { data } = await baseAPIClient.post("/reviews", review, {
       headers: {
-        Authorization: BEARER_TOKEN,
+        Authorization: getBearerToken(),
         "Content-Type": "application/json",
       },
     });
@@ -43,7 +43,7 @@ const publishReview = async (
 const deleteReviewById = async (id: string): Promise<ReviewResponse> => {
   try {
     const { data } = await baseAPIClient.delete(`/reviews/${id.toString()}`, {
-      headers: { Authorization: BEARER_TOKEN },
+      headers: { Authorization: getBearerToken() },
     });
     return data;
   } catch (error) {
@@ -61,9 +61,9 @@ const getReviewById = async (id: string): Promise<ReviewResponse> => {
   // TODO: catch error
   const requestRoute = `/reviews/${id}`;
   const { data } = await baseAPIClient.get(requestRoute, {
-    headers: { Authorization: BEARER_TOKEN },
+    headers: { Authorization: getBearerToken() },
   });
   return data;
 };
-
+// test
 export default { getReviews, publishReview, deleteReviewById, getReviewById };
