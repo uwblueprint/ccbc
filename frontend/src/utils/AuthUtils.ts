@@ -1,3 +1,4 @@
+import { AUTHENTICATED_USER_KEY } from "../constants/AuthConstants";
 import { getLocalStorageObjProperty } from "./LocalStorageUtils";
 
 const validateEmail = (email: string): boolean => {
@@ -10,8 +11,10 @@ const validateEmail = (email: string): boolean => {
  * @returns The token value, prepended by 'Bearer'
  */
 export const getBearerToken = (): string => {
-  const key = `${window.location.hostname}:AUTHENTICATED_USER`;
-  const token = `Bearer ${getLocalStorageObjProperty(key, "accessToken")}`;
+  const token = `Bearer ${getLocalStorageObjProperty(
+    AUTHENTICATED_USER_KEY,
+    "accessToken",
+  )}`;
   return token;
 };
 
