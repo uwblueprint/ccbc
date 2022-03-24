@@ -104,8 +104,7 @@ const AdminDashboard = (): React.ReactElement => {
   }, [notifications, toast]);
 
   const getIndex = (id: number) => {
-    const idIndex = data.findIndex((element) => element.reviewId === id);
-    return idIndex;
+    return data.findIndex((element) => element.reviewId === id);
   };
 
   const deleteReview = async () => {
