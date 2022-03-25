@@ -50,7 +50,7 @@ const publishEditedReview = async (
   try {
     await baseAPIClient.put(`/reviews/${id}`, review, {
       headers: {
-        Authorization: BEARER_TOKEN,
+        Authorization: getBearerToken(),
         "Content-Type": "application/json",
       },
     });
