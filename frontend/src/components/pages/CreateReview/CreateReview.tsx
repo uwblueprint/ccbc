@@ -172,9 +172,9 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           books: mapBookToBookRequest(books),
           tags: [],
         };
-        if (id) {
+          const reviewId = id ? parseInt(id, 10) : undefined;
           reviewAPIClient
-            .publishEditedReview(parseInt(id, 10), book)
+            .handleReview(book, reviewId)
             .then((response) => {
               if (response) {
                 dispatchNotifications({
@@ -189,22 +189,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
                 });
               }
             });
-        } else {
-          reviewAPIClient.publishCreatedReview(book).then((response) => {
-            if (response) {
-              dispatchNotifications({
-                type: "EDIT_NOTIFICATIONS",
-                value: ["published"],
-              });
-              history.push("/dashboard");
-            } else {
-              dispatchNotifications({
-                type: "EDIT_NOTIFICATIONS",
-                value: ["error"],
-              });
-            }
-          });
-        }
+        } 
       }
     }
   };
