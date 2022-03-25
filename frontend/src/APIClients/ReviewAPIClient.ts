@@ -65,5 +65,5 @@ const getReviewById = async (id: string): Promise<ReviewResponse> => {
   });
   return data;
 };
-// test
+
 export default { getReviews, publishReview, deleteReviewById, getReviewById };
