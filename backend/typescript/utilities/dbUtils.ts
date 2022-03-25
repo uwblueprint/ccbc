@@ -10,7 +10,7 @@ export const SQLOptions = (
   modelPath: string[],
   testdb: boolean,
 ): SequelizeOptions => {
-  return process.env.NODE_ENV === 'development'
+  return process.env.NODE_ENV === "development"
     ? {
         models: modelPath,
         ...(testdb && { logging: false }), // https://stackoverflow.com/questions/11704267/in-javascript-how-to-conditionally-add-a-member-to-an-object
