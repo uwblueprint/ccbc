@@ -137,7 +137,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
 
       const bookFormat = book.formats[0];
       setFormat(bookFormat.format);
-      setPrice(parseInt(bookFormat.price.substring(1), 10));
+      setPrice(parseInt(bookFormat.price, 10));
       setIsbn(bookFormat.isbn);
       const bookPublisher = book.publishers[0];
       setPublisher(bookPublisher.fullName);
