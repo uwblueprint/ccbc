@@ -1,11 +1,11 @@
-import { BEARER_TOKEN } from "../constants/AuthConstants";
 import { TagResponse } from "../types/TagTypes";
+import { getBearerToken } from "../utils/AuthUtils";
 import baseAPIClient from "./BaseAPIClient";
 
 const getTags = async (): Promise<TagResponse[]> => {
   try {
     const { data } = await baseAPIClient.get("/tags", {
-      headers: { Authorization: BEARER_TOKEN },
+      headers: { Authorization: getBearerToken() },
     });
 
     // For testing comment out above and use below:
@@ -25,7 +25,7 @@ const getTags = async (): Promise<TagResponse[]> => {
 const deleteTagById = async (id: string): Promise<TagResponse> => {
   try {
     const { data } = await baseAPIClient.delete(`/tags/${id.toString()}`, {
-      headers: { Authorization: BEARER_TOKEN },
+      headers: { Authorization: getBearerToken() },
     });
     return data;
   } catch (error) {
