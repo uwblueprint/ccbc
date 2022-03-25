@@ -17,20 +17,6 @@ const getReviews = async (): Promise<ReviewResponse[]> => {
 };
 
 /**
- * Calls publishEditedReview if an id is passed otherwise calls publishCreatedReview
- * @param review  - Review to publish
- * @param id - Id of review
- * @returns - Created Review if it was created or a boolean describing if the review was edited successfully
- */
-const handleReview = async(review:ReviewRequest, id?: number):Promise<ReviewResponse | null | boolean> => {
-  if (id) {
-    return publishEditedReview(id, review);
-  } else {
-    return publishCreatedReview(review);
-  }
-}
-
-/**
  * Publishes a created review
  * @param review - The review to publish
  * @returns The published review
@@ -74,6 +60,22 @@ const publishEditedReview = async (
   }
 };
 
+/**
+ * Calls publishEditedReview if an id is passed otherwise calls publishCreatedReview
+ * @param review  - Review to publish
+ * @param id - Id of review
+ * @returns - Created Review if it was created or a boolean describing if the review was edited successfully
+ */
+const handleReview = async (
+  review: ReviewRequest,
+  id?: number,
+): Promise<ReviewResponse | null | boolean> => {
+  if (id) {
+    return publishEditedReview(id, review);
+  }
+  return publishCreatedReview(review);
+};
+
 /*
   Delete review by id
 */
@@ -109,5 +111,5 @@ export default {
   publishEditedReview,
   deleteReviewById,
   getReviewById,
-  handleReview
+  handleReview,
 };
