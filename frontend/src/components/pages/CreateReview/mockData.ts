@@ -10,7 +10,7 @@ const data = [
     formats: [
       {
         format: "Soft cover",
-        isbn: "42069",
+        isbn: "1234567891011",
         price: "13",
       },
     ],
