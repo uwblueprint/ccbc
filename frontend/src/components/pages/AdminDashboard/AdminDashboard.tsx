@@ -166,9 +166,7 @@ const AdminDashboard = (): React.ReactElement => {
   };
 
   const editButtonHandler = (id: number) => {
-    const editReviewIndex = getIndex(id);
-    const { reviewId } = data[editReviewIndex];
-    history.push(`/edit-review/${reviewId}`);
+    history.push(`/edit-review/${id}`);
   };
 
   const getMuiTheme = () =>
