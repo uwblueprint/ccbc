@@ -1,9 +1,12 @@
+import { UserRole } from "../constants/Enums";
+
 export type AuthenticatedUser = {
   id: string;
   firstName: string;
   lastName: string;
   email: string;
-  role: "Admin" | "User";
+  roleType: UserRole;
+  active: boolean;
   accessToken: string;
 } | null;
 

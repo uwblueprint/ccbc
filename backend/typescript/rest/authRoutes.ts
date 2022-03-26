@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import password from "secure-random-password";
 import { isAuthorizedByEmail, isAuthorizedByUserId } from "../middlewares/auth";
 import {
   loginRequestValidator,
@@ -12,6 +13,7 @@ import UserService from "../services/implementations/userService";
 import IAuthService from "../services/interfaces/authService";
 import IEmailService from "../services/interfaces/emailService";
 import IUserService from "../services/interfaces/userService";
+import { sendErrorResponse } from "../utilities/errorResponse";
 
 const authRouter: Router = Router();
 const userService: IUserService = new UserService();
@@ -31,45 +33,97 @@ authRouter.post("/login", loginRequestValidator, async (req, res) => {
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "none",
         secure: process.env.NODE_ENV === "production",
       })
       .status(200)
       .json(rest);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    sendErrorResponse(error, res);
+  }
+});
+
+/* returns a firebase user given a user id */
+authRouter.get("/:uid", async (req, res) => {
+  try {
+    const firebaseUser = await authService.getFirebaseUserByUid(req.params.uid);
+    res.status(200).json(firebaseUser);
+  } catch (error: unknown) {
+    sendErrorResponse(error, res);
   }
 });
 
 /* Register a user, returns access token and user info in response body and sets refreshToken as an httpOnly cookie */
 authRouter.post("/register", registerRequestValidator, async (req, res) => {
+  const accessCode = password.randomPassword({
+    length: 8, // length of the password
+    characters: [
+      // acceptable characters in the password
+      password.lower,
+      password.upper,
+      password.digits,
+    ],
+  });
+
+  let createdUser = null;
+
   try {
-    await userService.createUser({
+    createdUser = await userService.createUser({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
-      role: "User",
-      password: req.body.password,
+      roleType: "Admin", // TODO: pass in the role as a parameter to function for author and subscriber
+      active: true,
+      password: accessCode,
     });
 
-    const authDTO = await authService.generateToken(
-      req.body.email,
-      req.body.password,
-    );
+    // try to sign in the user and return the expiring token
+    const authDTO = await authService.generateToken(req.body.email, accessCode);
+
     const { refreshToken, ...rest } = authDTO;
 
-    await authService.sendEmailVerificationLink(req.body.email);
+    // Send email with login details and ask to change password
+    // once they change the password, user should be verified
+    await authService.sendPasswordSetupLink(createdUser, accessCode, true);
 
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "none",
         secure: process.env.NODE_ENV === "production",
       })
       .status(200)
       .json(rest);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    if (createdUser != null) {
+      // rollback created user if we could not log them in
+      await userService.deleteUserByEmail(createdUser.email);
+    }
+    sendErrorResponse(error, res);
+  }
+});
+
+/* Sends the user an email to reset their password. Used when the user has forgotten their password */
+authRouter.post("/forgotPassword", async (req, res) => {
+  try {
+    // Find the user record with that email. If none found, error will be caught
+    const firebaseUserUid = await authService.getFirebaseUserIdByEmail(
+      req.body.email,
+    );
+
+    // Set the user's password to the random access code. This is needed on the front end to verify the user
+    const accessCode = await authService.setTemporaryUserPassword(
+      firebaseUserUid,
+    );
+
+    const currentUser = await userService.getUserByEmail(req.body.email);
+
+    // Send email to user to reset their password
+    await authService.sendPasswordSetupLink(currentUser, accessCode, false);
+
+    res.status(200).json();
+  } catch (error: unknown) {
+    res.status(200).json();
   }
 });
 
@@ -81,13 +135,13 @@ authRouter.post("/refresh", async (req, res) => {
     res
       .cookie("refreshToken", token.refreshToken, {
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "none",
         secure: process.env.NODE_ENV === "production",
       })
       .status(200)
       .json({ accessToken: token.accessToken });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    sendErrorResponse(error, res);
   }
 });
 
@@ -99,8 +153,8 @@ authRouter.post(
     try {
       await authService.revokeTokens(req.params.userId);
       res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      sendErrorResponse(error, res);
     }
   },
 );
@@ -113,10 +167,20 @@ authRouter.post(
     try {
       await authService.resetPassword(req.params.email);
       res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    } catch (error: unknown) {
+      sendErrorResponse(error, res);
     }
   },
 );
+
+/* verifies a user by the given uid in the url */
+authRouter.post("/verifyEmail/:uid", async (req, res) => {
+  try {
+    await authService.markVerified(req.params.uid);
+    res.status(204).send();
+  } catch (error: unknown) {
+    sendErrorResponse(error, res);
+  }
+});
 
 export default authRouter;

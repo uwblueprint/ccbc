@@ -8,6 +8,7 @@ import {
 } from "../interfaces/IEntityService";
 import IFileStorageService from "../interfaces/fileStorageService";
 import logger from "../../utilities/logger";
+import { getErrorMessage } from "../../utilities/errorResponse";
 
 const Logger = logger(__filename);
 
@@ -27,7 +28,7 @@ class EntityService implements IEntityService {
         throw new Error(`Entity id ${id} not found`);
       }
     } catch (error) {
-      Logger.error(`Failed to get entity. Reason = ${error.message}`);
+      Logger.error(`Failed to get entity. Reason = ${getErrorMessage(error)}`);
       throw error;
     }
 
@@ -55,7 +56,9 @@ class EntityService implements IEntityService {
         fileName: entity.file_name,
       }));
     } catch (error) {
-      Logger.error(`Failed to get entities. Reason = ${error.message}`);
+      Logger.error(
+        `Failed to get entities. Reason = ${getErrorMessage(error)}`,
+      );
       throw error;
     }
   }
@@ -80,7 +83,9 @@ class EntityService implements IEntityService {
         file_name: fileName,
       });
     } catch (error) {
-      Logger.error(`Failed to create entity. Reason = ${error.message}`);
+      Logger.error(
+        `Failed to create entity. Reason = ${getErrorMessage(error)}`,
+      );
       throw error;
     }
     return {
@@ -142,7 +147,9 @@ class EntityService implements IEntityService {
       }
       [, [resultingEntity]] = updateResult;
     } catch (error) {
-      Logger.error(`Failed to update entity. Reason = ${error.message}`);
+      Logger.error(
+        `Failed to update entity. Reason = ${getErrorMessage(error)}`,
+      );
       throw error;
     }
     return {
@@ -170,11 +177,12 @@ class EntityService implements IEntityService {
         await this.storageService.deleteFile(entityToDelete.file_name);
       }
     } catch (error) {
-      Logger.error(`Failed to delete entity. Reason = ${error.message}`);
+      Logger.error(
+        `Failed to delete entity. Reason = ${getErrorMessage(error)}`,
+      );
       throw error;
     }
   }
 }
 
 export default EntityService;
-

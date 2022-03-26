@@ -17,11 +17,13 @@ Made from [Starter Code](https://uwblueprint.github.io/starter-code-v2), brought
 * 👨‍💻 [Getting Started:](#getting-started)
   * ✔️ [Prerequisites](#prerequisites)
   * ⚙️ [Set up](#set-up)
+  * ⬆️ [Updating Models](#updating-models)
 * 🧰 [Useful Commands](#useful-commands)
   * ℹ️ [Get Names & Statuses of Running Containers](#get-names--statuses-of-running-containers)
   * 💽 [Accessing PostgreSQL Database](#accessing-postgresql-database)
   * ✨ [Linting & Formatting](#linting--formatting)
   * 🧪 [Running Tests](#running-tests)
+  * :outbox_tray: [Running Migrations](#running-migrations)
 * 🌳 [Version Control Guide](#version-control-guide)
   * 🌿 [Branching](#branching)
   * 🔒 [Commits](#commits)
@@ -33,7 +35,7 @@ Made from [Starter Code](https://uwblueprint.github.io/starter-code-v2), brought
 
 * Install Docker Desktop ([MacOS](https://docs.docker.com/docker-for-mac/install/) | [Windows (Home)](https://docs.docker.com/docker-for-windows/install-windows-home/) | [Windows (Pro, Enterprise, Education)](https://docs.docker.com/docker-for-windows/install/) | [Linux](https://docs.docker.com/engine/install/#server)) and ensure that it is running
 * Install [Node](https://nodejs.org/en/) latest LTS
-* Set up Vault client for secret management, see instructions [here](https://www.notion.so/uwblueprintexecs/Secret-Management-2d5b59ef0987415e93ec951ce05bf03e)
+* Set up Vault client for secret management, see instructions [here](https://www.notion.so/uwblueprintexecs/Secret-Management-2d5b59ef0987415e93ec951ce05bf03e). Only perform the steps up to the point where you login on terminal and the ui. No need to do anything from "Configure dev tools for your project repo" onwards
 
 
 ### Set up
@@ -48,11 +50,12 @@ cd ccbc
 vault kv get -format=json kv/ccbc | python update_secret_files.py
 ```
 
-You should have three new files in your repo after this:
+You should have four new files in your repo after this:
 
 - `.env`
-- `backend/.env`
+- `frontend/.env`
 - `backend/typescript/firebaseServiceAccount.json`
+- `backend/typescript/nodemailer.config.ts`
 
 4. Run the application
 
@@ -69,6 +72,17 @@ docker-compose down --volumes
 This will take down the database and all it's data too.
 If you don't need to rebuild packages between switching branches, you probably don't _need_ `--volumes`.
 
+## Updating Models
+Interface validation for reviews is done using the [ts-interface-checker library](https://github.com/gristlabs/ts-interface-checker). For that, you need to generate an interface checker file every time a change is made to the interface in [IReviewService.ts](https://github.com/uwblueprint/ccbc/blob/development/backend/typescript/services/interfaces/IReviewService.ts) by executing the command:
+```
+docker-compose exec ts-backend bash
+```
+
+and then executing the following command inside the container:
+```
+`npm bin`/ts-interface-builder services/interfaces/IReviewService.ts -o services/interfaces/checkers
+```
+
 ## Useful Commands
 
 ### Get Names & Statuses of Running Containers
@@ -76,11 +90,21 @@ If you don't need to rebuild packages between switching branches, you probably d
 docker ps
 ```
 
+### Starting Up Containers in a Background Process
+Add the `-d` flag to start up a container in a daemon process
+```bash
+# For starting up containers
+docker-compose up -d
+
+# For building and starting up containers
+docker-compose up --build -d
+```
+
 ### Accessing PostgreSQL Database
 
 ```bash
 # run a bash shell in the container
-docker exec -it <container-name> /bin/bash
+docker-compose exec db bash
 
 # in container now
 psql -U postgres -d ccbc
@@ -96,28 +120,63 @@ SELECT * FROM <table-name>;
 
 ### Linting & Formatting
 
-```
-
 TypeScript backend and frontend:
 ```bash
 # linting & formatting warnings only
-docker exec -it <container-name> /bin/bash -c "yarn lint"
+docker-compose exec ts-backend yarn lint  # backend
+docker-compose exec frontend yarn lint    # frontend
 
 # linting with fix & formatting
-docker exec -it <container-name> /bin/bash -c "yarn fix"
+docker-compose exec <service-name> yarn fix
+# service-name: ts-backend or frontend
 ```
 
 ### Running Tests
 
 TypeScript backend and frontend:
 ```bash
-docker exec -it <container-name> /bin/bash -c "yarn test"
+docker-compose exec <service-name> yarn test
+# service-name: ts-backend or frontend
 ```
+
+### Running Migrations & Seeding Database
+
+1. Run both the TypeScript backend and database containers, you can use 
+```bash
+docker-compose up
+```
+2. `cd` into the backend/typescript folder
+```bash
+cd backend/typescript
+```
+
+3. Run a bash shell in the TypeScript backend container
+```bash
+# get container name
+$ docker ps
+# run a bash shell
+$ docker-compose exec ts-backend bash  
+```
+
+4. Ensure you have migration files in the migrations folder
+
+5. Run the following command
+```bash
+node migrate up
+```
+
+6. Seeding commands
+Note: seeding the database will remove any existing records of reviews, tags, series, authors, publishers, and books
+``` bash
+node seed up # to seed with sample data
+node seed down --to 0  # to remove all seed data
+```
+
 
 ## Version Control Guide
 
 ### Branching
-* Branch off of `main` for all feature work and bug fixes, creating a "feature branch". Prefix the feature branch name with your name. The branch name should be in kebab case and it should be short and descriptive. E.g. `tahmeed/new-feature`
+* Branch off of `development` for all feature work and bug fixes, creating a "feature branch". Prefix the feature branch name with your name. The branch name should be in kebab case and it should be short and descriptive. E.g. `tahmeed/new-feature`
 
 ### Commits
 * Commits should be atomic (guideline: the commit is self-contained; a reviewer could make sense of it even if they viewed the commit diff in isolation)

@@ -1,7 +1,12 @@
 import * as path from "path";
-import { Sequelize } from "sequelize-typescript";
+import { Sequelize, SequelizeOptions } from "sequelize-typescript";
+import { dbURL, SQLOptions } from "../utilities/dbUtils";
 
-export const sequelize = new Sequelize(
-  `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.DB_HOST}:5432/${process.env.POSTGRES_DB}`,
-  { models: [path.join(__dirname, "/*.model.ts")] },
+const sequelizeOptions: SequelizeOptions = SQLOptions(
+  [path.join(__dirname, "/*.model.{ts,js}")],
+  false,
 );
+
+const sequelize = new Sequelize(dbURL, sequelizeOptions);
+
+export default sequelize;

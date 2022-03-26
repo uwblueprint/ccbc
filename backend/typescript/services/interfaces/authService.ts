@@ -1,4 +1,5 @@
-import { AuthDTO, Role, Token } from "../../types";
+import * as firebaseAdmin from "firebase-admin";
+import { AuthDTO, Role, Token, UserDTO } from "../../types";
 
 interface IAuthService {
   /**
@@ -52,6 +53,19 @@ interface IAuthService {
   sendEmailVerificationLink(email: string): Promise<void>;
 
   /**
+   * Sends an email to the created user with their login details and a
+   * link to change their password
+   * @param user the UserDTO that has user information
+   * @param accessCode the access code the user has to use to set up their password
+   * @param isNewAccount a flag determining if set up is for new account or forgot password
+   */
+  sendPasswordSetupLink(
+    user: UserDTO,
+    accessCode: string,
+    isNewAccount: boolean,
+  ): Promise<void>;
+
+  /**
    * Determine if the provided access token is valid and authorized for at least
    * one of the specified roles
    * @param accessToken user's access token
@@ -82,6 +96,38 @@ interface IAuthService {
     accessToken: string,
     requestedEmail: string,
   ): Promise<boolean>;
+
+  /**
+   * returns the firebase user record given the userId
+   * @param uid user's id on firebase
+   * @returns a firebase UserRecord representing the user on firebase auth
+   * @throws Error if user retrieval fails
+   */
+  getFirebaseUserByUid(uid: string): Promise<firebaseAdmin.auth.UserRecord>;
+
+  /**
+   * returns the uid for the firebase user given the email
+   * @param email the user's email
+   * @returns the user's uid associated with their firebase account
+   * @throws Error if can't get the user's uid
+   */
+  getFirebaseUserIdByEmail(email: string): Promise<string>;
+
+  /**
+   * verifies the user with the uid account
+   * @param uid user's id on firebase
+   * @returns void
+   * @throws Error if user can't be verified
+   */
+  markVerified(uid: string): Promise<void>;
+
+  /**
+   * Used when the user has forgotten their password. This sets their password to a random access code
+   * @param email the user's email associated with their account
+   * @returns the temporary password (aka: accessCode) set to the user's account
+   * @throws Error if unable to set the password
+   */
+  setTemporaryUserPassword(email: string): Promise<string>;
 }
 
 export default IAuthService;

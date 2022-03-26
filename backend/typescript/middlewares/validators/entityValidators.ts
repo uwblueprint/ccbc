@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { getErrorMessage } from "../../utilities/errorResponse";
 import {
   getApiValidationError,
   getFileTypeValidationError,
@@ -7,17 +8,16 @@ import {
   validatePrimitive,
 } from "./util";
 
-/* eslint-disable-next-line import/prefer-default-export */
-export const entityRequestDtoValidator = async (
+const entityRequestDtoValidator = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<Response | void> => {
   let body;
   try {
     body = JSON.parse(req.body.body);
-  } catch (e) {
-    return res.status(400).send(e.message);
+  } catch (e: unknown) {
+    return res.status(400).send(getErrorMessage(e));
   }
   if (!validatePrimitive(body.stringField, "string")) {
     return res.status(400).send(getApiValidationError("stringField", "string"));
@@ -41,3 +41,5 @@ export const entityRequestDtoValidator = async (
   }
   return next();
 };
+
+export default entityRequestDtoValidator;

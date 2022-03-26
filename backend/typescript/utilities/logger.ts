@@ -16,6 +16,7 @@ if (process.env.NODE_ENV !== "production") {
   WinstonLogger.add(new winston.transports.Console());
 }
 
+/* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types */
 const logger = (fileName: string) => {
   return {
     error: (message: string) => {

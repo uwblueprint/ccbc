@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import jwt from "jsonwebtoken";
 
-import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
+import { AUTHENTICATED_USER_KEY } from "../constants/AuthConstants";
 import { DecodedJWT } from "../types/AuthTypes";
 import { setLocalStorageObjProperty } from "../utils/LocalStorageUtils";
 
@@ -39,7 +39,7 @@ baseAPIClient.interceptors.request.use(async (config: AxiosRequestConfig) => {
         accessToken,
       );
 
-      newConfig.headers.Authorization = accessToken;
+      newConfig.headers.Authorization = `Bearer ${accessToken}`;
     }
   }
 
