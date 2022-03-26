@@ -17,11 +17,11 @@ const getReviews = async (): Promise<ReviewResponse[]> => {
 };
 
 /**
- * Publishes a review
+ * Publishes a created review
  * @param review - The review to publish
  * @returns The published review
  */
-const publishReview = async (
+const publishCreatedReview = async (
   review: ReviewRequest,
 ): Promise<ReviewResponse | null> => {
   try {
@@ -35,6 +35,45 @@ const publishReview = async (
   } catch (error: unknown) {
     return null;
   }
+};
+
+/**
+ * Publishes an edited review
+ * @param id - The id of the review to publish
+ * @param review - The review to publish
+ * @returns true if publishing was successfull, otherwise false
+ */
+const publishEditedReview = async (
+  id: number,
+  review: ReviewRequest,
+): Promise<boolean> => {
+  try {
+    await baseAPIClient.put(`/reviews/${id}`, review, {
+      headers: {
+        Authorization: getBearerToken(),
+        "Content-Type": "application/json",
+      },
+    });
+    return true;
+  } catch (error: unknown) {
+    return false;
+  }
+};
+
+/**
+ * Calls publishEditedReview if an id is passed otherwise calls publishCreatedReview
+ * @param review  - Review to publish
+ * @param id - Id of review
+ * @returns - Created Review if it was created or a boolean describing if the review was edited successfully
+ */
+const handleReview = async (
+  review: ReviewRequest,
+  id?: number,
+): Promise<ReviewResponse | null | boolean> => {
+  if (id) {
+    return publishEditedReview(id, review);
+  }
+  return publishCreatedReview(review);
 };
 
 /*
@@ -66,4 +105,11 @@ const getReviewById = async (id: string): Promise<ReviewResponse> => {
   return data;
 };
 
-export default { getReviews, publishReview, deleteReviewById, getReviewById };
+export default {
+  getReviews,
+  publishCreatedReview,
+  publishEditedReview,
+  deleteReviewById,
+  getReviewById,
+  handleReview,
+};
