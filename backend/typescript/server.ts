@@ -15,7 +15,12 @@ import tagRouter from "./rest/tagRoutes";
 const clientHost = new RegExp(
   "https://ccbc-95e66(--([A-Za-z0-9-])+-[A-Za-z0-9]+)?.web.app",
 );
+
 const CORS_ALLOW_LIST = ["http://localhost:3000", clientHost];
+
+if (process.env.CLIENT_URL) {
+  CORS_ALLOW_LIST.push(process.env.CLIENT_URL);
+}
 
 const CORS_OPTIONS: cors.CorsOptions = {
   origin: CORS_ALLOW_LIST,
