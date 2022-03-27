@@ -2,7 +2,7 @@ import * as firebase from "firebase/app";
 
 // It is ok to expose apiKey as per this slack article: https://stackoverflow.com/questions/37482366/is-it-safe-to-expose-firebase-apikey-to-the-public
 const firebaseConfig =
-  process.env.NODE_ENV === "production"
+  process.env.REACT_APP_NODE_ENV === "production"
     ? {
         apiKey: "AIzaSyAjB4g5t5AnVGUE3N9o-z4ltVhsjRkEz4w",
         authDomain: "ccbc-production.firebaseapp.com",
