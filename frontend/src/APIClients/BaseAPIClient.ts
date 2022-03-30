@@ -51,7 +51,7 @@ baseAPIClient.interceptors.response.use(
   (error) => {
     if (error.response.status === 401) {
       localStorage.removeItem(AUTHENTICATED_USER_KEY);
-      window.location.reload()
+      window.location.reload();
     }
     return Promise.reject(error);
   },
