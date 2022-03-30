@@ -46,4 +46,15 @@ baseAPIClient.interceptors.request.use(async (config: AxiosRequestConfig) => {
   return newConfig;
 });
 
+baseAPIClient.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error.response.status === 401) {
+      localStorage.removeItem(AUTHENTICATED_USER_KEY);
+      window.location.reload()
+    }
+    return Promise.reject(error);
+  },
+);
+
 export default baseAPIClient;
