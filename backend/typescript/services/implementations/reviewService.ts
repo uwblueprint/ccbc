@@ -552,7 +552,12 @@ class ReviewService implements IReviewService {
         );
 
         // remove books
-        const oldBooks = await PgBook.findAll({ transaction: t });
+        const oldBooks = await PgBook.findAll({
+          where: {
+            review_id: id,
+          },
+          transaction: t,
+        });
         const oldBookIds = oldBooks.map((oldBook: PgBook) => oldBook.id);
         const newBookIds = entity.books
           .map((book: BookRequest) => book.id)

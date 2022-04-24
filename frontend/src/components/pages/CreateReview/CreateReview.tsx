@@ -69,7 +69,8 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [featured, setFeatured] = useState("0");
   const [reviewerByline, setReviewerByline] = useState("");
 
-  const cannotPublish = review === "" && reviewerByline === "";
+  const cannotPublish =
+    review === "" || reviewerByline === "" || books.length === 0;
 
   const [reviewError, setReviewError] = useState(false);
   const [bylineError, setBylineError] = useState(false);
