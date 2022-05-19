@@ -170,8 +170,8 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     price > 0 &&
     coverImage !== "" &&
     // genre !== "" &&
-    minAge > 0 &&
-    maxAge > 0 &&
+    minAge >= 0 &&
+    maxAge >= 0 &&
     maxAge >= minAge &&
     isEmptyOrValidISBN;
 
@@ -381,7 +381,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       placeholder="Min Age"
                       mb={0}
-                      numberInputFieldValue={minAge}
+                      numberInputFieldValue={minAge >= 0 ? minAge : ""}
                       setNumberField={setMinAge}
                       minNum={kMinAge}
                       maxNum={kMaxAge}
@@ -389,7 +389,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       placeholder="Max Age"
                       mb={0}
-                      numberInputFieldValue={maxAge}
+                      numberInputFieldValue={maxAge >= 0 ? maxAge : ""}
                       setNumberField={setMaxAge}
                       minNum={minAge}
                       maxNum={kMaxAge}
