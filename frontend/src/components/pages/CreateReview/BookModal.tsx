@@ -47,6 +47,8 @@ const kMinAge = 0;
 const kMaxAge = 150;
 const kMinPrice = 0;
 const kMaxPrice = 1000;
+const kMinBookNum = 1;
+const kMaxBookNum = 1000;
 
 /**
  * Modal for user to input new book for review
@@ -78,7 +80,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
 
   // optional book fields
   const [seriesName, setSeriesName] = useState<string>("");
-  const [seriesOrder, setSeriesOrder] = useState<string>("");
+  const [seriesOrder, setSeriesOrder] = useState<number>(1);
   const [illustrators, setIllustrator] = useState<string[]>([]);
   const [translators, setTranslator] = useState<string[]>([]);
 
@@ -105,7 +107,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setTitle("");
       setCoverImage("");
       setPrefix("");
-      setSeriesOrder("");
+      setSeriesOrder(1);
       setIllustrator([]);
       setTranslator([]);
       setFormat("");
@@ -125,7 +127,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setTitle(book.title);
       setCoverImage(book.coverImage);
       setPrefix(book.titlePrefix ? book.titlePrefix : "");
-      setSeriesOrder(book.seriesOrder ? book.seriesOrder : "");
+      setSeriesOrder(book.seriesOrder ? book.seriesOrder : 1);
       setIllustrator(book.illustrator);
       setTranslator(book.translator ? book.translator : []);
 
@@ -262,15 +264,17 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     inputFieldValue={seriesName}
                     setInputField={setSeriesName}
                   />
-                  <AddStringInput
-                    id="seriesOrder"
-                    label="Book number"
-                    name="series-order"
-                    required={false}
-                    maxWidth="50%"
-                    inputFieldValue={seriesOrder}
-                    setInputField={setSeriesOrder}
-                  />
+                  <div>
+                    <FormLabel mb={2}>Book number</FormLabel>
+                    <AddNumberInput
+                      placeholder="Book number"
+                      mb={1}
+                      numberInputFieldValue={seriesOrder}
+                      setNumberField={setSeriesOrder}
+                      minNum={kMinBookNum}
+                      maxNum={kMaxBookNum}
+                    />
+                  </div>
                 </Stack>
                 <AddStringInputList
                   id="authors"

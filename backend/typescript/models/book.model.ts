@@ -36,8 +36,8 @@ export default class Book extends Model {
   @Column({ type: DataType.INTEGER })
   series_id?: number;
 
-  @Column({ type: DataType.STRING })
-  series_order?: string;
+  @Column({ type: DataType.INTEGER })
+  series_order?: number;
 
   @Column({ type: DataType.ARRAY(DataType.STRING) })
   illustrator?: string[];
