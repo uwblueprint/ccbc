@@ -13,7 +13,7 @@ export default [
         title: "Book1 Title",
         coverImage: "Book1 cover Image",
         titlePrefix: "Book1 Title Prefix",
-        seriesOrder: "1",
+        seriesOrder: 1,
         illustrator: ["illustrator1"],
         translator: ["translator1"],
         formats: [
@@ -46,7 +46,7 @@ export default [
         title: "Book2 Title",
         coverImage: "Book2 cover Image",
         titlePrefix: "Book2 Title Prefix",
-        seriesOrder: "2",
+        seriesOrder: 2,
         illustrator: ["illustrator1"],
         translator: ["translator1"],
         formats: [
