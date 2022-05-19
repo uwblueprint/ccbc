@@ -322,12 +322,8 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           {/* Current books display (sorted by seriesOrder) */}
           {books
             .sort((a: Book, b: Book) => {
-              const seriesOrderA = a.seriesOrder
-                ? parseInt(a.seriesOrder, 10)
-                : 0;
-              const seriesOrderB = b.seriesOrder
-                ? parseInt(b.seriesOrder, 10)
-                : 0;
+              const seriesOrderA = a.seriesOrder ? a.seriesOrder : 0;
+              const seriesOrderB = b.seriesOrder ? b.seriesOrder : 0;
 
               return seriesOrderA - seriesOrderB;
             })
