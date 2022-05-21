@@ -133,10 +133,10 @@ const App = (): React.ReactElement => {
                       path={Routes.PREVIEW_REVIEW_TEST}
                       component={PreviewReviewTest}
                     />
-                    <Route 
-                      exact 
+                    <Route
+                      exact
                       path={Routes.SEARCH_BOX}
-                      component={SearchBox} 
+                      component={SearchBox}
                     />
 
                     {/** TODO: remove once there is a standardized way of handling errors */}
