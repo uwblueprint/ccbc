@@ -96,9 +96,14 @@ const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
               </Box>
               <Box fontSize={12} paddingBottom={1}>
                 <Stack spacing={1}>
-                  <Text>
+                  {review.books[currentBook].publishers.map((publisher) => (
+                    <>
+                      <Text>{`${publisher.fullName}, ${publisher.publishYear}`}</Text>
+                    </>
+                  ))}
+                  {/* <Text>
                     {`${review.books[currentBook].publishers[currentBook].fullName}, ${review.books[currentBook].publishers[currentBook].publishYear}`}
-                  </Text>
+                  </Text> */}
                   {review.books[currentBook].formats?.map((format) => (
                     <>
                       <Text>{`${format.format}, ${format.isbn}`}</Text>
@@ -132,8 +137,13 @@ const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
           />
         </HStack>
         <HStack>
-          {Array.from(Array(3).keys()).map((_, index) => (
-            <Icon key={index} viewBox="0 0 200 200">
+          {Array.from(Array(review.books.length).keys()).map((_, index) => (
+            <Icon
+              key={index}
+              viewBox="0 0 200 200"
+              onClick={() => setCurrentBook(index)}
+              style={{ cursor: "pointer" }}
+            >
               <path
                 fill={`${index === currentBook ? "black" : "none"}`}
                 stroke="black"
