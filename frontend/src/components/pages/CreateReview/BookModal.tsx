@@ -269,7 +269,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       placeholder="Book number"
                       mb={1}
-                      numberInputFieldValue={seriesOrder}
+                      numberInputFieldValue={seriesOrder >= 1 ? seriesOrder : ""}
                       setNumberField={setSeriesOrder}
                       minNum={kMinBookNum}
                       maxNum={kMaxBookNum}
