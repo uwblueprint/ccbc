@@ -13,7 +13,7 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     return Promise.all([
       queryInterface.changeColumn("books", "series_order", {
-        type: 'STRING USING CAST("series_order" as STRING)',
+        type: 'VARCHAR USING CAST("series_order" as VARCHAR)',
         // allowNull: true
       }),
     ]);
