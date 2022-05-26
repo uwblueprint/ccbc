@@ -133,7 +133,7 @@ components:
           type: string
           nullable: true
         seriesOrder:
-          type: string
+          type: number
           nullable: true
         illustrator:
           type: string
@@ -174,7 +174,7 @@ components:
           type: string
           nullable: true
         seriesOrder:
-          type: string
+          type: number
           nullable: true
         illustrator:
           type: string
