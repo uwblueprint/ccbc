@@ -160,7 +160,6 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
 
   /** Check that all required modal fields are properly filled out */
   const hasRequired =
-    prefix !== "" &&
     title !== "" &&
     authors.length > 0 &&
     publisher !== "" &&
@@ -239,8 +238,8 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     id="titlePrefix"
                     label="Prefix"
                     name="title-prefix"
-                    required
                     maxWidth="50%"
+                    required={false}
                     inputFieldValue={prefix}
                     setInputField={setPrefix}
                   />
