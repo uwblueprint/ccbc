@@ -18,7 +18,6 @@ import MagazineReview from "./components/pages/MagazineReview";
 import NotFound from "./components/pages/NotFound";
 import Profile from "./components/pages/Profile";
 import Unauthorized from "./components/pages/UnauthorizedPage";
-import PreviewReviewTest from "./components/PreviewReview/PreviewReviewTest";
 import { AUTHENTICATED_USER_KEY } from "./constants/AuthConstants";
 import { UserRole } from "./constants/Enums";
 import * as Routes from "./constants/Routes";
@@ -127,12 +126,6 @@ const App = (): React.ReactElement => {
                       component={Default}
                       requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
                     />
-                    <Route
-                      exact
-                      path={Routes.PREVIEW_REVIEW_TEST}
-                      component={PreviewReviewTest}
-                    />
-                    {/** TODO: remove once there is a standardized way of handling errors */}
                     <Route
                       exact
                       path={Routes.NOT_FOUND_PAGE}
