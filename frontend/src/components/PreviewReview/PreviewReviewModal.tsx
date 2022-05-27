@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-import { ReviewResponse } from "../../types/ReviewTypes";
+import { Review } from "../../types/ReviewTypes";
 import PreviewReview from "./PreviewReview";
 
 /**
@@ -18,7 +18,7 @@ import PreviewReview from "./PreviewReview";
  */
 interface PreviewReviewModalProps {
   /** An array of book objects for the Modal to display (pass to PreviewReview) */
-  review: ReviewResponse;
+  review: Review;
   /** A boolean indicating whether the Modal is open or not */
   isOpen: boolean;
   /** A react hook function to toggle isOpen */
@@ -36,8 +36,8 @@ const PreviewReviewModal = ({
 }: PreviewReviewModalProps): React.ReactElement => {
   // modalTitle returns the series name if it exists, otherwise, returns the title of the book
   const modalTitle = () => {
-    if (review.books && review.books[0].series.name) {
-      return review.books[0].series.name;
+    if (review.books && review.books[0].seriesName) {
+      return review.books[0].seriesName;
     }
     if (review.books) {
       return review.books[0].title;

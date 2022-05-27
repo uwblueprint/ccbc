@@ -4,6 +4,8 @@ import {
   BookRequest,
   BookResponse,
   Format,
+  Review,
+  ReviewResponse,
 } from "../types/ReviewTypes";
 
 /**
@@ -53,7 +55,7 @@ export const mapFormatToBookFormat = (
  * @param books - a list of BookResponse objects returned by the review API
  * @returns  a list of Book objects
  */
-export const mapBookResponeToBook = (books: BookResponse[]): Book[] => {
+export const mapBookResponseToBook = (books: BookResponse[]): Book[] => {
   const mappedBooks: Book[] = books.map((response) => ({
     title: response.title,
     coverImage: response.coverImage,
@@ -94,4 +96,31 @@ export const mapBookToBookRequest = (books: Book[]): BookRequest[] => {
     },
   }));
   return mappedBookRequests;
+};
+
+/**
+ * This function maps a list of ReviewResponse objects to a list of Review objects
+ * @param reviews - a list of ReviewResponse objects
+ * @returns a list of Review objects
+ */
+export const mapReviewResponseToReview = (
+  reviews: ReviewResponse[],
+): Review[] => {
+  const mappedReviews: Review[] = reviews.map((review) => ({
+    reviewId: review.reviewId,
+    body: review.body,
+    byline: review.byline,
+    featured: review.featured,
+    createdByUser: {
+      firstName: review.createdByUser.firstName,
+      lastName: review.createdByUser.lastName,
+    },
+    books: mapBookResponseToBook(review.books),
+    tags: review.tags,
+    updatedAt: review.updatedAt,
+    publishedAt: review.publishedAt,
+    createdAt: review.createdAt,
+  }));
+
+  return mappedReviews;
 };

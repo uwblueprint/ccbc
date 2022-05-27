@@ -24,7 +24,8 @@ import { Link, useHistory } from "react-router-dom";
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
 import NotificationContext from "../../../contexts/NotificationContext";
-import { ReviewResponse } from "../../../types/ReviewTypes";
+import { Review, ReviewResponse } from "../../../types/ReviewTypes";
+import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";
 import Author from "./Author";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
@@ -44,20 +45,18 @@ const AdminDashboard = (): React.ReactElement => {
     onOpen: onPreviewModalOpen,
     onClose: onPreviewModalClose,
   } = useDisclosure();
-  const [data, setData] = useState<ReviewResponse[]>([]);
+  const [data, setData] = useState<Review[]>([]);
   const { notifications } = useContext(NotificationContext);
   const toast = useToast();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteReviewName, setDeleteReviewName] = useState("");
   const [deleteReviewId, setDeleteReviewId] = useState(-1);
-  const [selectedReview, setSelectedReview] = useState<ReviewResponse>(
-    {} as ReviewResponse,
-  );
+  const [selectedReview, setSelectedReview] = useState<Review>({} as Review);
   const history = useHistory();
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
-      setData(allReviews);
+      setData(mapReviewResponseToReview(allReviews));
     });
   }, []);
 
@@ -95,7 +94,7 @@ const AdminDashboard = (): React.ReactElement => {
 
   const previewButtonHandler = (id: number) => {
     const previewReviewIndex = getIndex(id);
-    const row: ReviewResponse = data[previewReviewIndex]; // The full Review object
+    const row: Review = data[previewReviewIndex]; // The full Review object
     setSelectedReview(row);
     onPreviewModalOpen();
   };
@@ -294,17 +293,13 @@ const AdminDashboard = (): React.ReactElement => {
     let status;
 
     if (data.length > 0) {
-      data.forEach((review: ReviewResponse) => {
+      data.forEach((review: Review) => {
         id = review.reviewId;
         const names: string[] = [];
-        if (
-          review.books.length === 1 ||
-          review.books[0].series.name === null ||
-          review.books[0].series.name === undefined
-        ) {
+        if (review.books.length === 1 || review.books[0].seriesName === null) {
           title = review.books[0].title;
         } else {
-          title = review.books[0].series.name;
+          title = review.books[0].seriesName;
         }
         review.books[0].authors.forEach((author) => {
           const authorDisplayName = author.displayName;

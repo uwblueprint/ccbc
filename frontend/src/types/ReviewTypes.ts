@@ -1,3 +1,5 @@
+import { Book } from "./BookTypes";
+
 export type AuthorRequest = {
   fullName: string;
   displayName?: string | null;
@@ -82,6 +84,22 @@ export type ReviewResponse = {
     lastName: string;
   };
   books: BookResponse[];
+  tags: Tag[];
+  updatedAt: number;
+  publishedAt: number | null;
+  createdAt: number;
+};
+
+export type Review = {
+  reviewId: number; // this is necessary for deleting reviews
+  body: string;
+  byline: string;
+  featured: boolean;
+  createdByUser: {
+    firstName: string;
+    lastName: string;
+  };
+  books: Book[];
   tags: Tag[];
   updatedAt: number;
   publishedAt: number | null;

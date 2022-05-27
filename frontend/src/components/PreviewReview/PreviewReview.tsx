@@ -11,14 +11,14 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 
-import { ReviewResponse } from "../../types/ReviewTypes";
+import { Review } from "../../types/ReviewTypes";
 
 /**
  * The model defining the props for the Preview Review component
  */
 interface PreviewReviewProps {
   /** The review to be previewed */
-  review: ReviewResponse;
+  review: Review;
 }
 
 /**
@@ -58,7 +58,11 @@ const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
               maxHeight={60}
               maxWidth={60}
               objectFit="contain"
-              src={review.books[currentBook].coverImage}
+              src={
+                review.books[currentBook].coverImage
+                  ? review.books[currentBook].coverImage
+                  : "https://lgimages.s3.amazonaws.com/nc-md.gif"
+              }
               boxShadow="lg"
             />
           </Box>
@@ -69,9 +73,11 @@ const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
                   <Text fontSize={24} fontWeight={800}>
                     {review.books[currentBook].title}
                   </Text>
-                  <Text fontSize={12} as="i">
-                    {review.books[currentBook].series.name}
-                  </Text>
+                  {review.books[currentBook].seriesName && (
+                    <Text fontSize={12} as="i">
+                      {review.books[currentBook].seriesName}
+                    </Text>
+                  )}
                 </Stack>
               </Box>
               <Box fontSize={12} paddingBottom={3}>
@@ -101,10 +107,7 @@ const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
                       <Text>{`${publisher.fullName}, ${publisher.publishYear}`}</Text>
                     </>
                   ))}
-                  {/* <Text>
-                    {`${review.books[currentBook].publishers[currentBook].fullName}, ${review.books[currentBook].publishers[currentBook].publishYear}`}
-                  </Text> */}
-                  {review.books[currentBook].formats?.map((format) => (
+                  {review.books[currentBook].formats.map((format) => (
                     <>
                       <Text>{`${format.format}, ${format.isbn}`}</Text>
                     </>
