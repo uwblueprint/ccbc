@@ -46,7 +46,7 @@ const kStartingYear = 1967;
 const kMinAge = 0;
 const kMaxAge = 150;
 const kMinPrice = 0;
-const kMaxPrice = 1000;
+const kMaxPrice = Number.MAX_SAFE_INTEGER;
 
 /**
  * Modal for user to input new book for review
