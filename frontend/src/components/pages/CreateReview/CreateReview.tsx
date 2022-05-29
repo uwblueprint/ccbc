@@ -316,7 +316,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       {/* Main page content */}
       {isLoading ? (
         <Center mt="20%">
-          <Spinner />
+          <Spinner size="xl" />
         </Center>
       ) : (
         <Box display="flex" flexDirection="column" m="0px auto" w="70%">
