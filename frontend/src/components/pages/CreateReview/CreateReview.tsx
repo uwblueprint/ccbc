@@ -315,7 +315,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       </Box>
       {/* Main page content */}
       {isLoading ? (
-        <Center mt="20%">
+        <Center mt="22%">
           <Spinner size="xl" />
         </Center>
       ) : (
