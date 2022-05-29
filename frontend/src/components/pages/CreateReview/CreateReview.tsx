@@ -31,6 +31,7 @@ import {
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
+import LoadingSpinner from "./LoadingSpinner";
 import data from "./mockData";
 import PublishModal from "./PublishModal";
 import ReviewEditor from "./ReviewEditor";
@@ -315,9 +316,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       </Box>
       {/* Main page content */}
       {isLoading ? (
-        <Center mt="22%">
-          <Spinner size="xl" />
-        </Center>
+        <LoadingSpinner />
       ) : (
         <Box display="flex" flexDirection="column" m="0px auto" w="70%">
           <Heading size="lg">Book Information</Heading>
