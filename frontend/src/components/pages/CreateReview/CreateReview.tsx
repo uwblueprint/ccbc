@@ -23,7 +23,7 @@ import NotificationContextDispatcherContext from "../../../contexts/Notification
 import { Book } from "../../../types/BookTypes";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import {
-  mapBookResponeToBook,
+  mapBookResponseToBook,
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
 import BookModal from "./BookModal";
@@ -198,7 +198,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
    */
   const setBooksFromBookResponse = useCallback(
     (reviewResponse: ReviewResponse) => {
-      const result: Book[] = mapBookResponeToBook(reviewResponse.books);
+      const result: Book[] = mapBookResponseToBook(reviewResponse.books);
       setBooks(result);
     },
     [setBooks],
