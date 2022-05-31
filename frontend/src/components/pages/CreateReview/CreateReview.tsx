@@ -26,6 +26,7 @@ import {
   mapBookResponeToBook,
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
+import GlobalToast from "../../Toast";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
@@ -56,13 +57,11 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   } = useDisclosure();
   const [currBook, setCurrBook] = useState<Book | null>(null);
 
-  const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
-    false,
-  );
+  const [showDeleteBookModal, setShowDeleteBookModal] =
+    useState<boolean>(false);
   const [showPublishModal, setShowPublishModal] = useState<boolean>(false);
-  const [showDeleteReviewModal, setShowDeleteReviewModal] = useState<boolean>(
-    false,
-  );
+  const [showDeleteReviewModal, setShowDeleteReviewModal] =
+    useState<boolean>(false);
   const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
   const [books, setBooks] = useState<Book[]>([]);
   const [review, setReview] = useState("");
@@ -82,7 +81,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   const history = useHistory();
 
-  const toast = useToast();
+  const toast = GlobalToast({ message: "max age", type: "error" });
 
   const { authenticatedUser } = useContext(AuthContext);
   const { notifications } = useContext(NotificationContext);
@@ -92,15 +91,15 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   useEffect(() => {
     if (notifications.includes("error")) {
-      toast({
-        title: "Error publishing review.",
-        description:
-          "Something went wrong, please refresh the page and try again.",
-        status: "error",
-        duration: 10000,
-        isClosable: true,
-        position: "bottom-right",
-      });
+      // toast({
+      //   title: "Error publishing review.",
+      //   description:
+      //     "Something went wrong, please refresh the page and try again.",
+      //   status: "error",
+      //   duration: 10000,
+      //   isClosable: true,
+      //   position: "bottom-right",
+      // });
       notifications.filter((n) => n !== "published");
     }
   }, [notifications, toast]);
@@ -114,6 +113,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
    * @param book - The book to be added.
    */
   const addBook = (book: Book) => {
+    GlobalToast({ message: "max age", type: "error" });
     setBooks([...books, book]);
   };
 
@@ -122,6 +122,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
    * @param index - The index of the book to be deleted.
    */
   const deleteBook = (index: number) => {
+    GlobalToast({ message: "max age", type: "error" });
     setBooks(books.filter((_, i) => i !== index));
   };
 
@@ -132,6 +133,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const editBook = (book: Book, index: number) => {
+    GlobalToast({ message: "max age", type: "error" });
     deleteBook(index);
     addBook(book);
   };
@@ -226,6 +228,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   return (
     <Box>
+      {toast}
       <BookModal
         isOpen={isOpenBookModal}
         onClose={onBookModalClose}
