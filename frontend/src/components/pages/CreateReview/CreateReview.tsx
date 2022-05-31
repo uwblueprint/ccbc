@@ -81,8 +81,11 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   const history = useHistory();
 
+<<<<<<< Updated upstream
   const toast = GlobalToast({ message: "max age", type: "error" });
 
+=======
+>>>>>>> Stashed changes
   const { authenticatedUser } = useContext(AuthContext);
   const { notifications } = useContext(NotificationContext);
   const dispatchNotifications = useContext(
@@ -91,6 +94,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   useEffect(() => {
     if (notifications.includes("error")) {
+<<<<<<< Updated upstream
       // toast({
       //   title: "Error publishing review.",
       //   description:
@@ -100,9 +104,16 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       //   isClosable: true,
       //   position: "bottom-right",
       // });
+=======
+      const notify = GlobalToast({
+        message: "Error publishing review.",
+        type: "error",
+      });
+      notify();
+>>>>>>> Stashed changes
       notifications.filter((n) => n !== "published");
     }
-  }, [notifications, toast]);
+  }, [notifications]);
 
   // const handleTagSelected = (e: Option[]) => {
   //   setTagsSelected(e);

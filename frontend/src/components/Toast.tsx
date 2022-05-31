@@ -1,6 +1,6 @@
 import "react-toastify/dist/ReactToastify.css";
 
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 type ToastProps = {
@@ -8,47 +8,36 @@ type ToastProps = {
   type: "error" | "warning" | "success" | "info" | "default";
 };
 
-// const GlobalToast = ({ message, type }: ToastProps) => {
-// console.log(`LETS GO`);
-// if (type === "error") {
-//   toast.error(message);
-// } else if (type === "warning") {
-//   toast.warning(message);
-// } else if (type === "success") {
-//   toast.success(message);
-// } else if (type === "info") {
-//   toast.info(message);
-// } else if (type === "default") {
-//   toast(message);
-// }
-// <ToastContainer />;
-// return notify;
-// };
-
 const GlobalToast = ({ message, type }: ToastProps) => {
-  const notify = () => {
-    console.log("hi");
-    toast("Default!", { position: toast.POSITION.TOP_LEFT });
-    toast.success("Success!", {
-      position: toast.POSITION.TOP_CENTER,
-      autoClose: 8000,
-    });
-    toast.info("Info!", {
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: false,
-    });
-    toast.warn("info", {
-      position: toast.POSITION.BOTTOM_RIGHT,
-    });
-    toast.error("Error!", { position: toast.POSITION.BOTTOM_CENTER });
-    toast("Wow so easy !", { position: toast.POSITION.BOTTOM_RIGHT });
-  };
+  let notify: MouseEventHandler<HTMLButtonElement> | undefined = undefined;
+  console.log(`LETS GO`);
+  if (type === "error") {
+    notify = () => toast.error(message);
+  } else if (type === "warning") {
+    notify = () => toast.warning(message);
+  } else if (type === "success") {
+    notify = () => toast.success(message);
+  } else if (type === "info") {
+    notify = () => toast.info(message);
+  } else if (type === "default") {
+    notify = () => toast(message);
+  }
   return (
     <div>
       <button type="button" onClick={notify}>
         Notify !
       </button>
-      <ToastContainer />;
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
