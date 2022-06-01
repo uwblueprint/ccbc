@@ -26,7 +26,7 @@ export interface PublisherResponse {
 
 export interface Format {
   format: string;
-  price: string;
+  price: number;
   isbn: string;
 }
 

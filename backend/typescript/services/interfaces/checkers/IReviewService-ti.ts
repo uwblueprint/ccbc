@@ -32,7 +32,7 @@ export const PublisherResponse = t.iface([], {
 
 export const Format = t.iface([], {
   format: "string",
-  price: "string",
+  price: "number",
   isbn: "string",
 });
 
@@ -116,15 +116,14 @@ export const ReviewResponseDTO = t.iface([], {
 export const IReviewService = t.iface([], {
   createReview: t.func(
     "ReviewResponseDTO",
-    t.param("entity", "ReviewRequestDTO"),
-    t.param("id", "string", true),
+    t.param("review", "ReviewRequestDTO"),
   ),
   getReview: t.func("ReviewResponseDTO", t.param("id", "string")),
   getReviews: t.func(t.array("ReviewResponseDTO")),
   updateReviews: t.func(
     "void",
     t.param("id", "string"),
-    t.param("entity", "ReviewRequestDTO"),
+    t.param("review", "ReviewRequestDTO"),
   ),
   deleteReview: t.func("void", t.param("id", "string")),
 });

@@ -89,7 +89,7 @@ components:
         format:
           type: string
         price:
-          type: string
+          type: number
         isbn: 
           type: string
     TagRequest:
