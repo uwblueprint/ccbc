@@ -17,7 +17,7 @@ export type Publisher = {
 
 export type Format = {
   format: string;
-  price: string;
+  price: number;
   isbn: string;
 };
 

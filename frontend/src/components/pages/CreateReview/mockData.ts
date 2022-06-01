@@ -11,7 +11,7 @@ const data = [
       {
         format: "Soft cover",
         isbn: "1234567891011",
-        price: "13",
+        price: 13,
       },
     ],
     minAge: 4,
