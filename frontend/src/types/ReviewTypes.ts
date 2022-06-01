@@ -1,3 +1,5 @@
+import { Book } from "./BookTypes";
+
 export type AuthorRequest = {
   fullName: string;
   displayName?: string | null;
@@ -30,7 +32,7 @@ export type BookRequest = {
   title: string;
   coverImage: string;
   titlePrefix?: string | null;
-  seriesOrder?: string | null;
+  seriesOrder?: number | null;
   illustrator?: string[] | null;
   translator?: string[] | null;
   formats: Format[] | null;
@@ -46,7 +48,7 @@ export type BookResponse = {
   title: string;
   coverImage: string;
   titlePrefix: string | null;
-  seriesOrder: string | null;
+  seriesOrder: number | null;
   illustrator: string[] | null;
   translator: string[] | null;
   formats: Format[] | null;
@@ -82,6 +84,22 @@ export type ReviewResponse = {
     lastName: string;
   };
   books: BookResponse[];
+  tags: Tag[];
+  updatedAt: number;
+  publishedAt: number | null;
+  createdAt: number;
+};
+
+export type Review = {
+  reviewId: number; // this is necessary for deleting reviews
+  body: string;
+  byline: string;
+  featured: boolean;
+  createdByUser: {
+    firstName: string;
+    lastName: string;
+  };
+  books: Book[];
   tags: Tag[];
   updatedAt: number;
   publishedAt: number | null;

@@ -23,12 +23,13 @@ import NotificationContextDispatcherContext from "../../../contexts/Notification
 import { Book } from "../../../types/BookTypes";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import {
-  mapBookResponeToBook,
+  mapBookResponseToBook,
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
+import LoadingSpinner from "./LoadingSpinner";
 import data from "./mockData";
 import PublishModal from "./PublishModal";
 import ReviewEditor from "./ReviewEditor";
@@ -74,6 +75,8 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   const [reviewError, setReviewError] = useState(false);
   const [bylineError, setBylineError] = useState(false);
+
+  const [isLoading, setLoading] = useState(false);
 
   // const onBookModalClose = () => setShowBookModal(false);
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
@@ -198,8 +201,9 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
    */
   const setBooksFromBookResponse = useCallback(
     (reviewResponse: ReviewResponse) => {
-      const result: Book[] = mapBookResponeToBook(reviewResponse.books);
+      const result: Book[] = mapBookResponseToBook(reviewResponse.books);
       setBooks(result);
+      setLoading(false);
     },
     [setBooks],
   );
@@ -207,6 +211,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   // useEffect hook adds dummy data to the books array
   useEffect(() => {
     if (id) {
+      setLoading(true);
       reviewAPIClient
         .getReviewById(id)
         .then((reviewResponse: ReviewResponse) => {
@@ -308,118 +313,118 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         </Box>
       </Box>
       {/* Main page content */}
-      <Box display="flex" flexDirection="column" m="0px auto" w="70%">
-        <Heading size="lg">Book Information</Heading>
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <Box display="flex" flexDirection="column" m="0px auto" w="70%">
+          <Heading size="lg">Book Information</Heading>
 
-        {/* Add new book and book list */}
-        <Box
-          display="flex"
-          flexDirection="row"
-          alignItems="flex-start"
-          justifyContent="flex-start"
-          mt="10px"
-          mb="50px"
-        >
-          {/* Current books display (sorted by seriesOrder) */}
-          {books
-            .sort((a: Book, b: Book) => {
-              const seriesOrderA = a.seriesOrder
-                ? parseInt(a.seriesOrder, 10)
-                : 0;
-              const seriesOrderB = b.seriesOrder
-                ? parseInt(b.seriesOrder, 10)
-                : 0;
-
-              return seriesOrderA - seriesOrderB;
-            })
-            .map((book, i) => (
-              <SingleBook
-                key={i}
-                index={i}
-                book={book}
-                showDeleteBookModal={setShowDeleteBookModal}
-                setDeleteBookIndex={setDeleteBookIndex}
-                showBookModal={onOpenBookModal}
-                setCurrBook={setCurrBook}
-              />
-            ))}
-
-          {/* Add new book button */}
+          {/* Add new book and book list */}
           <Box
             display="flex"
-            flexDirection="column"
-            alignItems="center"
-            cursor="pointer"
-            m={6}
-            ml={0}
-            onClick={onOpenBookModal}
+            flexDirection="row"
+            alignItems="flex-start"
+            justifyContent="flex-start"
+            mt="10px"
+            mb="50px"
           >
-            <IconButton
-              aria-label="Add new book"
-              variant="outline"
-              h="180px"
-              // should this be 112px for a 1.6:1 ratio?
-              w="130px"
-              mb="10px"
-              color="#4299E1"
-              borderColor="4299E1"
-              icon={<AddIcon h={6} w={6} />}
-            />
-            <Text color="#4299E1">Add new book</Text>
-          </Box>
-        </Box>
+            {/* Current books display (sorted by seriesOrder) */}
+            {books
+              .sort((a: Book, b: Book) => {
+                const seriesOrderA = a.seriesOrder ? a.seriesOrder : 0;
+                const seriesOrderB = b.seriesOrder ? b.seriesOrder : 0;
 
-        {/* Review Information Section */}
-        <Heading size="lg">Review Information</Heading>
-        <Box
-          display="flex"
-          flexDirection="row"
-          alignItems="flex-start"
-          justifyContent="space-between"
-          p="10px"
-          mt="20px"
-        >
-          <Box w="47%">
-            <Box display="flex" flexDirection="row" mb="10px">
-              <Heading size="sm">Review</Heading>
-              <Text color="red" ml={1} mt={-3} fontSize="1.5em">
-                *
-              </Text>
+                return seriesOrderA - seriesOrderB;
+              })
+              .map((book, i) => (
+                <SingleBook
+                  key={i}
+                  index={i}
+                  book={book}
+                  showDeleteBookModal={setShowDeleteBookModal}
+                  setDeleteBookIndex={setDeleteBookIndex}
+                  showBookModal={onOpenBookModal}
+                  setCurrBook={setCurrBook}
+                />
+              ))}
+
+            {/* Add new book button */}
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              cursor="pointer"
+              m={6}
+              ml={0}
+              onClick={onOpenBookModal}
+            >
+              <IconButton
+                aria-label="Add new book"
+                variant="outline"
+                h="180px"
+                // should this be 112px for a 1.6:1 ratio?
+                w="130px"
+                mb="10px"
+                color="#4299E1"
+                borderColor="4299E1"
+                icon={<AddIcon h={6} w={6} />}
+              />
+              <Text color="#4299E1">Add new book</Text>
             </Box>
-            <ReviewEditor
-              value={review}
-              setValue={setReview}
-              isInvalid={reviewError}
-            />
           </Box>
-          <Box w="47%">
-            <Box display="flex" flexDirection="row" mb="10px">
-              <Heading size="sm">Reviewer byline</Heading>
-              <Text color="red" ml={1} mt={-3} fontSize="1.5em">
-                *
-              </Text>
+
+          {/* Review Information Section */}
+          <Heading size="lg">Review Information</Heading>
+          <Box
+            display="flex"
+            flexDirection="row"
+            alignItems="flex-start"
+            justifyContent="space-between"
+            p="10px"
+            mt="20px"
+          >
+            <Box w="47%">
+              <Box display="flex" flexDirection="row" mb="10px">
+                <Heading size="sm">Review</Heading>
+                <Text color="red" ml={1} mt={-3} fontSize="1.5em">
+                  *
+                </Text>
+              </Box>
+              <ReviewEditor
+                value={review}
+                setValue={setReview}
+                isInvalid={reviewError}
+              />
             </Box>
-            <Input
-              placeholder="Text here"
-              value={reviewerByline}
-              onChange={(event) => setReviewerByline(event.target.value)}
-              isInvalid={bylineError}
-            />
-            <Box display="flex" flexDirection="row" mt="30px">
-              <Heading size="sm">Featured</Heading>
-              <Text color="red" ml={1} mt={-3} fontSize="1.5em">
-                *
-              </Text>
+            <Box w="47%">
+              <Box display="flex" flexDirection="row" mb="10px">
+                <Heading size="sm">Reviewer byline</Heading>
+                <Text color="red" ml={1} mt={-3} fontSize="1.5em">
+                  *
+                </Text>
+              </Box>
+              <Input
+                placeholder="Text here"
+                value={reviewerByline}
+                onChange={(event) => setReviewerByline(event.target.value)}
+                isInvalid={bylineError}
+              />
+              <Box display="flex" flexDirection="row" mt="30px">
+                <Heading size="sm">Featured</Heading>
+                <Text color="red" ml={1} mt={-3} fontSize="1.5em">
+                  *
+                </Text>
+              </Box>
+              <RadioGroup onChange={setFeatured} value={featured}>
+                <Stack direction="column" spacing={0}>
+                  <Radio value="1">Yes</Radio>
+                  <Radio value="0">No</Radio>
+                </Stack>
+              </RadioGroup>
             </Box>
-            <RadioGroup onChange={setFeatured} value={featured}>
-              <Stack direction="column" spacing={0}>
-                <Radio value="1">Yes</Radio>
-                <Radio value="0">No</Radio>
-              </Stack>
-            </RadioGroup>
           </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 };
