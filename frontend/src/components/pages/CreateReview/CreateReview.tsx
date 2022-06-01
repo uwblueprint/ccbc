@@ -26,6 +26,7 @@ import {
   mapBookResponseToBook,
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
+import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
@@ -55,6 +56,11 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     onOpen: onOpenBookModal,
     onClose: onBookModalClose,
   } = useDisclosure();
+  const {
+    isOpen: isPreviewModalOpen,
+    onOpen: onPreviewModalOpen,
+    onClose: onPreviewModalClose,
+  } = useDisclosure();
   const [currBook, setCurrBook] = useState<Book | null>(null);
 
   const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
@@ -71,7 +77,10 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [reviewerByline, setReviewerByline] = useState("");
 
   const cannotPublish =
-    review === "" || reviewerByline === "" || books.length === 0;
+    review === "" ||
+    review === "<p><br></p>" ||
+    reviewerByline === "" ||
+    books.length === 0;
 
   const [reviewError, setReviewError] = useState(false);
   const [bylineError, setBylineError] = useState(false);
@@ -255,6 +264,13 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         onClose={onDeleteReviewModalClose}
         deleteReview={() => {}}
       />
+      <PreviewReviewModal
+        isOpen={isPreviewModalOpen}
+        onClose={onPreviewModalClose}
+        books={books}
+        tags={[]}
+        body={review}
+      />
       {/* Tool bar */}
       <Box
         display="flex"
@@ -290,7 +306,13 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         {/* Contains buttons */}
         <Box display="flex" flexDirection="row" alignItems="center">
           <ButtonGroup spacing={6}>
-            <Button variant="ghost">Preview</Button>
+            <Button
+              variant="ghost"
+              onClick={() => onPreviewModalOpen()}
+              disabled={cannotPublish}
+            >
+              Preview
+            </Button>
             <Button variant="ghost" onClick={() => {}}>
               Save
             </Button>
