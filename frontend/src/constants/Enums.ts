@@ -34,6 +34,6 @@ export enum Genre {
 
 export enum BookFormats {
   Hardcover = "Hardcover",
-  Paperbound = "Paperbound",
-  eBook = "e-Book",
+  Paperback = "Paperback",
+  eBook = "eBook",
 }
