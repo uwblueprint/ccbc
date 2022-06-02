@@ -36,12 +36,12 @@ const PreviewReviewModal = ({
 }: PreviewReviewModalProps): React.ReactElement => {
   // modalTitle returns the series name if it exists, otherwise, returns the title of the book
   const modalTitle = () => {
-    if (review.books && review.books[0].seriesName) {
-      return review.books[0].seriesName;
+    if (review.books && review.books[0]) {
+      return review.books[0].seriesName
+        ? review.books[0].seriesName
+        : review.books[0].title;
     }
-    if (review.books) {
-      return review.books[0].title;
-    }
+
     return "";
   };
 
