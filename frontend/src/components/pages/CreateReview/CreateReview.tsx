@@ -11,7 +11,6 @@ import {
   Stack,
   Text,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -26,7 +25,6 @@ import {
   mapBookResponeToBook,
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
-import GlobalToast from "../../Toast";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
@@ -81,11 +79,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   const history = useHistory();
 
-<<<<<<< Updated upstream
-  const toast = GlobalToast({ message: "max age", type: "error" });
-
-=======
->>>>>>> Stashed changes
   const { authenticatedUser } = useContext(AuthContext);
   const { notifications } = useContext(NotificationContext);
   const dispatchNotifications = useContext(
@@ -94,23 +87,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   useEffect(() => {
     if (notifications.includes("error")) {
-<<<<<<< Updated upstream
-      // toast({
-      //   title: "Error publishing review.",
-      //   description:
-      //     "Something went wrong, please refresh the page and try again.",
-      //   status: "error",
-      //   duration: 10000,
-      //   isClosable: true,
-      //   position: "bottom-right",
-      // });
-=======
-      const notify = GlobalToast({
-        message: "Error publishing review.",
-        type: "error",
-      });
-      notify();
->>>>>>> Stashed changes
+      // ToastExample({ message: "idk", type: "error" });
       notifications.filter((n) => n !== "published");
     }
   }, [notifications]);
@@ -124,7 +101,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
    * @param book - The book to be added.
    */
   const addBook = (book: Book) => {
-    GlobalToast({ message: "max age", type: "error" });
     setBooks([...books, book]);
   };
 
@@ -133,7 +109,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
    * @param index - The index of the book to be deleted.
    */
   const deleteBook = (index: number) => {
-    GlobalToast({ message: "max age", type: "error" });
     setBooks(books.filter((_, i) => i !== index));
   };
 
@@ -144,7 +119,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const editBook = (book: Book, index: number) => {
-    GlobalToast({ message: "max age", type: "error" });
     deleteBook(index);
     addBook(book);
   };
@@ -239,7 +213,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   return (
     <Box>
-      {toast}
       <BookModal
         isOpen={isOpenBookModal}
         onClose={onBookModalClose}

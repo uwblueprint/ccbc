@@ -19,6 +19,7 @@ import NotFound from "./components/pages/NotFound";
 import PreviewReviewTest from "./components/pages/PreviewReviewTest";
 import Profile from "./components/pages/Profile";
 import Unauthorized from "./components/pages/UnauthorizedPage";
+import UseToastHook from "./components/Toast";
 import { AUTHENTICATED_USER_KEY } from "./constants/AuthConstants";
 import { UserRole } from "./constants/Enums";
 import * as Routes from "./constants/Routes";
@@ -72,6 +73,7 @@ const App = (): React.ReactElement => {
               <AuthContext.Provider
                 value={{ authenticatedUser, setAuthenticatedUser }}
               >
+                <UseToastHook />
                 <Router>
                   <Switch>
                     <Route exact path={Routes.LOGIN_PAGE} component={Login} />
