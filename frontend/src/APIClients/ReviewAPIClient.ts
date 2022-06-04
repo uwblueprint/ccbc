@@ -46,18 +46,13 @@ const publishCreatedReview = async (
 const publishEditedReview = async (
   id: number,
   review: ReviewRequest,
-): Promise<boolean> => {
-  try {
-    await baseAPIClient.put(`/reviews/${id}`, review, {
-      headers: {
-        Authorization: getBearerToken(),
-        "Content-Type": "application/json",
-      },
-    });
-    return true;
-  } catch (error: unknown) {
-    return false;
-  }
+): Promise<void> => {
+  return await baseAPIClient.put(`/reviews/${id}`, review, {
+    headers: {
+      Authorization: getBearerToken(),
+      "Content-Type": "application/json",
+    },
+  });
 };
 
 /**

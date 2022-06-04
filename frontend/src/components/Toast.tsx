@@ -1,15 +1,21 @@
 import { useToast } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
+type ToastStatus = "error" | "warning" | "success" | "info" | undefined;
+
 type ToastProps = {
   message: string;
-  status: "error" | "warning" | "success" | "info" | undefined;
-  prevState: null;
+  status: ToastStatus;
 };
 
 const UseToastHook = () => {
   const [state, setState] = useState<ToastProps | null>();
   const toast = useToast();
+
+  const addToast = (message: string, status: ToastStatus) => {
+    const newToast: ToastProps = { message, status };
+    setState(newToast);
+  };
 
   useEffect(() => {
     if (state) {
@@ -26,7 +32,7 @@ const UseToastHook = () => {
     }
   }, [state, toast]);
 
-  return <div>{(state?.message, state?.status)}</div>;
+  return addToast;
 };
 
 export default UseToastHook;

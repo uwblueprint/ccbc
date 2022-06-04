@@ -26,6 +26,7 @@ import {
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
 import BookModal from "./BookModal";
+import UseToastHook from "../../Toast";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
 import data from "./mockData";
@@ -53,7 +54,9 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     onOpen: onOpenBookModal,
     onClose: onBookModalClose,
   } = useDisclosure();
+
   const [currBook, setCurrBook] = useState<Book | null>(null);
+  const newToast = UseToastHook();
 
   const [showDeleteBookModal, setShowDeleteBookModal] =
     useState<boolean>(false);
@@ -146,7 +149,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   /**
    * Function to be called when the review is published.
    */
-  const onPublish = () => {
+  const onPublish = async () => {
     // check if all fields have been filled in
     if (review !== "" || reviewerByline !== "" || books.length !== 0) {
       // publish review
@@ -161,20 +164,12 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           tags: [],
         };
         const reviewId = id ? parseInt(id, 10) : undefined;
-        reviewAPIClient.handleReview(book, reviewId).then((response) => {
-          if (response) {
-            dispatchNotifications({
-              type: "EDIT_NOTIFICATIONS",
-              value: ["published"],
-            });
-            history.push("/dashboard");
-          } else {
-            dispatchNotifications({
-              type: "EDIT_NOTIFICATIONS",
-              value: ["error"],
-            });
-          }
-        });
+        try {
+          await reviewAPIClient.handleReview(book, reviewId);
+          newToast("added review", "success");
+        } catch (e) {
+          newToast("failed to add", "error");
+        }
       }
     }
   };
