@@ -167,6 +167,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     if (review !== "" || reviewerByline !== "" || books.length !== 0) {
       // publish review
       if (authenticatedUser?.id) {
+        setLoading(true);
         const book = {
           body: review,
           byline: reviewerByline,
@@ -185,6 +186,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
             });
             history.push("/dashboard");
           } else {
+            setLoading(false);
             dispatchNotifications({
               type: "EDIT_NOTIFICATIONS",
               value: ["error"],
