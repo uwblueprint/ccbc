@@ -22,7 +22,6 @@ import { Link, useHistory } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
-import NotificationContext from "../../../contexts/NotificationContext";
 import { Review, ReviewResponse } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";

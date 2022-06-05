@@ -60,7 +60,7 @@ const publishEditedReview = async (
 const handleReview = async (
   review: ReviewRequest,
   id?: number,
-): Promise<void> => {
+): Promise<void | ReviewResponse> => {
   if (id) {
     await publishEditedReview(id, review);
   } else {
