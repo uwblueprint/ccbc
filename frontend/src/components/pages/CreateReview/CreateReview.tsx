@@ -27,6 +27,7 @@ import {
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
 import LoadingSpinner from "../../common/LoadingSpinner";
+import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
@@ -55,6 +56,12 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     onOpen: onOpenBookModal,
     onClose: onBookModalClose,
   } = useDisclosure();
+
+  const {
+    isOpen: isOpenPreviewModal,
+    onOpen: onPreviewModalOpen,
+    onClose: onPreviewModalClose,
+  } = useDisclosure();
   const [currBook, setCurrBook] = useState<Book | null>(null);
 
   const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
@@ -69,9 +76,14 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [review, setReview] = useState("");
   const [featured, setFeatured] = useState("0");
   const [reviewerByline, setReviewerByline] = useState("");
+  const [reviewerFirstName, setReviewerFirstName] = useState<string>("");
+  const [reviewerLastName, setReviewerLastName] = useState<string>("");
 
   const cannotPublish =
-    review === "" || reviewerByline === "" || books.length === 0;
+    review === "" ||
+    review === "<p><br></p>" ||
+    reviewerByline === "" ||
+    books.length === 0;
 
   const [reviewError, setReviewError] = useState(false);
   const [bylineError, setBylineError] = useState(false);
@@ -167,6 +179,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     if (review !== "" || reviewerByline !== "" || books.length !== 0) {
       // publish review
       if (authenticatedUser?.id) {
+        setLoading(true);
         const book = {
           body: review,
           byline: reviewerByline,
@@ -185,6 +198,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
             });
             history.push("/dashboard");
           } else {
+            setLoading(false);
             dispatchNotifications({
               type: "EDIT_NOTIFICATIONS",
               value: ["error"],
@@ -193,6 +207,33 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         });
       }
     }
+  };
+
+  /** Function that creates a Review object to pass into the Preview Modal */
+  const createPreviewModalReviewObject = () => {
+    let firstName = reviewerFirstName;
+    let lastName = reviewerLastName;
+
+    if ((!firstName || !lastName) && authenticatedUser) {
+      firstName = authenticatedUser.firstName;
+      lastName = authenticatedUser.lastName;
+    }
+    const previewModalReviewObject = {
+      reviewId: 0,
+      body: review,
+      byline: reviewerByline,
+      featured: false,
+      createdByUser: {
+        firstName,
+        lastName,
+      },
+      books,
+      tags: [],
+      updatedAt: 0,
+      publishedAt: 0,
+      createdAt: 0,
+    };
+    return previewModalReviewObject;
   };
 
   /**
@@ -218,6 +259,8 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           setReview(reviewResponse.body);
           setFeatured(reviewResponse.featured ? "1" : "0");
           setReviewerByline(reviewResponse.byline);
+          setReviewerFirstName(reviewResponse.createdByUser.firstName);
+          setReviewerLastName(reviewResponse.createdByUser.lastName);
           setBooksFromBookResponse(reviewResponse);
         })
         .catch(() => {
@@ -255,6 +298,11 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         onClose={onDeleteReviewModalClose}
         deleteReview={() => {}}
       />
+      <PreviewReviewModal
+        review={createPreviewModalReviewObject()}
+        isOpen={isOpenPreviewModal}
+        onClose={onPreviewModalClose}
+      />
       {/* Tool bar */}
       <Box
         display="flex"
@@ -290,7 +338,13 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         {/* Contains buttons */}
         <Box display="flex" flexDirection="row" alignItems="center">
           <ButtonGroup spacing={6}>
-            <Button variant="ghost">Preview</Button>
+            <Button
+              variant="ghost"
+              disabled={cannotPublish}
+              onClick={() => onPreviewModalOpen()}
+            >
+              Preview
+            </Button>
             <Button variant="ghost" onClick={() => {}}>
               Save
             </Button>
