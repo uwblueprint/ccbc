@@ -255,7 +255,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       <DeleteReviewModal
         isOpen={showDeleteReviewModal}
         onClose={onDeleteReviewModalClose}
-        deleteReview={() => { }}
+        deleteReview={() => {}}
       />
       {/* Tool bar */}
       <Box
@@ -293,7 +293,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         <Box display="flex" flexDirection="row" alignItems="center">
           <ButtonGroup spacing={6}>
             <Button variant="ghost">Preview</Button>
-            <Button variant="ghost" onClick={() => { }}>
+            <Button variant="ghost" onClick={() => {}}>
               Save
             </Button>
             <Button
