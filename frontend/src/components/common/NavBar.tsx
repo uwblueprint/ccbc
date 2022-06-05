@@ -17,11 +17,17 @@ import authAPIClient from "../../APIClients/AuthAPIClient";
 import logo from "../../assets/ccbc.png";
 import { UserRole } from "../../constants/Enums";
 import AuthContext from "../../contexts/AuthContext";
+import ChangePasswordModal from "./ChangePassword/ChangePasswordModal";
 import InviteAdminModal from "./InviteAdminModal";
 
 const NavBar = (): React.ReactElement => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
   const isAdmin = authenticatedUser?.roleType === UserRole.Admin;
+  const {
+    isOpen: isChangePasswordModalOpen,
+    onOpen: onChangePasswordModalOpen,
+    onClose: onChangePasswordModalClose,
+  } = useDisclosure();
   let userFirstName = "";
   let userLastName = "";
   let userEmail = "";
@@ -50,6 +56,10 @@ const NavBar = (): React.ReactElement => {
 
   return (
     <div>
+      <ChangePasswordModal
+        isOpen={isChangePasswordModalOpen}
+        onClose={onChangePasswordModalClose}
+      />
       <Flex
         direction="row"
         h="80px"
@@ -128,6 +138,7 @@ const NavBar = (): React.ReactElement => {
                     fontSize="sm"
                     padding="3px 0px"
                     cursor="pointer"
+                    onClick={onChangePasswordModalOpen}
                   >
                     Change password
                   </MenuItem>
