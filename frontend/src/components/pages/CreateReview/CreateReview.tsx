@@ -167,6 +167,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     if (review !== "" || reviewerByline !== "" || books.length !== 0) {
       // publish review
       if (authenticatedUser?.id) {
+        setLoading(true);
         const book = {
           body: review,
           byline: reviewerByline,
@@ -185,6 +186,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
             });
             history.push("/dashboard");
           } else {
+            setLoading(false);
             dispatchNotifications({
               type: "EDIT_NOTIFICATIONS",
               value: ["error"],
@@ -253,7 +255,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       <DeleteReviewModal
         isOpen={showDeleteReviewModal}
         onClose={onDeleteReviewModalClose}
-        deleteReview={() => {}}
+        deleteReview={() => { }}
       />
       {/* Tool bar */}
       <Box
@@ -291,7 +293,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         <Box display="flex" flexDirection="row" alignItems="center">
           <ButtonGroup spacing={6}>
             <Button variant="ghost">Preview</Button>
-            <Button variant="ghost" onClick={() => {}}>
+            <Button variant="ghost" onClick={() => { }}>
               Save
             </Button>
             <Button
