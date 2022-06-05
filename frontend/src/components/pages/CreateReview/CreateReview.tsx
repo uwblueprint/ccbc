@@ -88,13 +88,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     NotificationContextDispatcherContext,
   );
 
-  useEffect(() => {
-    if (notifications.includes("error")) {
-      // ToastExample({ message: "idk", type: "error" });
-      notifications.filter((n) => n !== "published");
-    }
-  }, [notifications]);
-
   // const handleTagSelected = (e: Option[]) => {
   //   setTagsSelected(e);
   // };
