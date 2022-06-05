@@ -338,7 +338,7 @@ const AdminDashboard = (): React.ReactElement => {
     <Box>
       <Center>
         <Stack w="90%" mb="50">
-          <Flex mt="50" mb="25">
+          <Flex mt="10" mb="25">
             <Text textStyle="heading">Admin dashboard</Text>
             <Spacer />
             {!isLoading ? (
@@ -351,10 +351,10 @@ const AdminDashboard = (): React.ReactElement => {
               ""
             )}
           </Flex>
-          <ThemeProvider theme={getMuiTheme()}>
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : (
+          {isLoading ? (
+              <LoadingSpinner h="20%"/>
+          ) : (
+            <ThemeProvider theme={getMuiTheme()}>
               <MUIDataTable
                 title={
                   <Text style={{ fontFamily: "Coustard", fontSize: "22px" }}>
@@ -364,8 +364,8 @@ const AdminDashboard = (): React.ReactElement => {
                 data={getTableRows()}
                 columns={getTableColumns()}
               />
-            )}
-          </ThemeProvider>
+            </ThemeProvider>
+          )}  
         </Stack>
         <DeleteConfirmationModal
           isOpen={isDeleteModalOpen}

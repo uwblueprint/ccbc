@@ -4,9 +4,19 @@ import React from "react";
 /**
  * This component is the loading spinner that appears when data is being loaded onto the page
  */
-const LoadingSpinner = (): React.ReactElement => {
+
+type LoadingSpinnerProps = {
+  h?: string;
+  mt?: string;
+  mb?: string;
+}
+const LoadingSpinner = ({
+  h,
+  mt,
+  mb,
+}: LoadingSpinnerProps): React.ReactElement => {
   return (
-    <Center mt="21%" h="60">
+    <Center mt={mt || '10%'} mb={mb || '10%'} h={h || '0%'}>
       <Spinner
         boxSize="84px"
         color="cyan.500"
