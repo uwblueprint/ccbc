@@ -11,21 +11,19 @@ import {
   Stack,
   Text,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import AuthContext from "../../../contexts/AuthContext";
-import NotificationContext from "../../../contexts/NotificationContext";
-import NotificationContextDispatcherContext from "../../../contexts/NotificationContextDispatcherContext";
 import { Book } from "../../../types/BookTypes";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import {
   mapBookResponseToBook,
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
+import ToastHook from "../../Toast";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
@@ -55,15 +53,15 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     onOpen: onOpenBookModal,
     onClose: onBookModalClose,
   } = useDisclosure();
-  const [currBook, setCurrBook] = useState<Book | null>(null);
 
-  const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
-    false,
-  );
+  const [currBook, setCurrBook] = useState<Book | null>(null);
+  const newToast = ToastHook();
+
+  const [showDeleteBookModal, setShowDeleteBookModal] =
+    useState<boolean>(false);
   const [showPublishModal, setShowPublishModal] = useState<boolean>(false);
-  const [showDeleteReviewModal, setShowDeleteReviewModal] = useState<boolean>(
-    false,
-  );
+  const [showDeleteReviewModal, setShowDeleteReviewModal] =
+    useState<boolean>(false);
   const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
   const [books, setBooks] = useState<Book[]>([]);
   const [review, setReview] = useState("");
@@ -85,28 +83,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   const history = useHistory();
 
-  const toast = useToast();
-
   const { authenticatedUser } = useContext(AuthContext);
-  const { notifications } = useContext(NotificationContext);
-  const dispatchNotifications = useContext(
-    NotificationContextDispatcherContext,
-  );
-
-  useEffect(() => {
-    if (notifications.includes("error")) {
-      toast({
-        title: "Error publishing review.",
-        description:
-          "Something went wrong, please refresh the page and try again.",
-        status: "error",
-        duration: 10000,
-        isClosable: true,
-        position: "bottom-right",
-      });
-      notifications.filter((n) => n !== "published");
-    }
-  }, [notifications, toast]);
 
   // const handleTagSelected = (e: Option[]) => {
   //   setTagsSelected(e);
@@ -162,7 +139,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   /**
    * Function to be called when the review is published.
    */
-  const onPublish = () => {
+  const onPublish = async () => {
     // check if all fields have been filled in
     if (review !== "" || reviewerByline !== "" || books.length !== 0) {
       // publish review
@@ -177,20 +154,21 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           tags: [],
         };
         const reviewId = id ? parseInt(id, 10) : undefined;
-        reviewAPIClient.handleReview(book, reviewId).then((response) => {
-          if (response) {
-            dispatchNotifications({
-              type: "EDIT_NOTIFICATIONS",
-              value: ["published"],
-            });
-            history.push("/dashboard");
-          } else {
-            dispatchNotifications({
-              type: "EDIT_NOTIFICATIONS",
-              value: ["error"],
-            });
-          }
-        });
+        try {
+          await reviewAPIClient.handleReview(book, reviewId);
+          newToast(
+            "Review published.",
+            "Your review has been published.",
+            "info",
+          );
+          history.push("/dashboard");
+        } catch (e) {
+          newToast(
+            "Error publishing review.",
+            "Something went wrong, please refresh the page and try again.",
+            "error",
+          );
+        }
       }
     }
   };
