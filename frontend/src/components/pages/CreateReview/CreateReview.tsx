@@ -146,6 +146,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     if (review !== "" || reviewerByline !== "" || books.length !== 0) {
       // publish review
       if (authenticatedUser?.id) {
+        setLoading(true);
         const book = {
           body: review,
           byline: reviewerByline,
