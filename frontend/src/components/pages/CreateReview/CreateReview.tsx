@@ -17,15 +17,13 @@ import { useHistory } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import AuthContext from "../../../contexts/AuthContext";
-import NotificationContext from "../../../contexts/NotificationContext";
-import NotificationContextDispatcherContext from "../../../contexts/NotificationContextDispatcherContext";
 import { Book } from "../../../types/BookTypes";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import {
   mapBookResponeToBook,
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
-import UseToastHook from "../../Toast";
+import ToastHook from "../../Toast";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
@@ -56,7 +54,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   } = useDisclosure();
 
   const [currBook, setCurrBook] = useState<Book | null>(null);
-  const newToast = UseToastHook();
+  const newToast = ToastHook();
 
   const [showDeleteBookModal, setShowDeleteBookModal] =
     useState<boolean>(false);
@@ -83,10 +81,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const history = useHistory();
 
   const { authenticatedUser } = useContext(AuthContext);
-  const { notifications } = useContext(NotificationContext);
-  const dispatchNotifications = useContext(
-    NotificationContextDispatcherContext,
-  );
 
   // const handleTagSelected = (e: Option[]) => {
   //   setTagsSelected(e);
@@ -159,10 +153,18 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         const reviewId = id ? parseInt(id, 10) : undefined;
         try {
           await reviewAPIClient.handleReview(book, reviewId);
-          newToast("added review", "success");
+          newToast(
+            "Review published.",
+            "Your review has been published.",
+            "info",
+          );
           history.push("/dashboard");
         } catch (e) {
-          newToast("failed to add", "error");
+          newToast(
+            "Error publishing review.",
+            "Something went wrong, please refresh the page and try again.",
+            "error",
+          );
         }
       }
     }

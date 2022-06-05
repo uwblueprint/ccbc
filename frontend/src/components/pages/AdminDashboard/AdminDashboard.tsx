@@ -17,15 +17,14 @@ import MUIDataTable, {
   CustomHeadLabelRenderOptions,
   MUIDataTableColumn,
 } from "mui-datatables";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import UseToastHook from "../../Toast";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
-import NotificationContext from "../../../contexts/NotificationContext";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import PreviewReviewModal from "../../PreviewReviewModal";
+import ToastHook from "../../Toast";
 import Author from "./Author";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
@@ -45,7 +44,6 @@ const AdminDashboard = (): React.ReactElement => {
     onClose: onPreviewModalClose,
   } = useDisclosure();
   const [data, setData] = useState<ReviewResponse[]>([]);
-  const { notifications } = useContext(NotificationContext);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteReviewName, setDeleteReviewName] = useState("");
   const [deleteReviewId, setDeleteReviewId] = useState(-1);
@@ -68,7 +66,7 @@ const AdminDashboard = (): React.ReactElement => {
   const [selectedReviewCoverURL, setSelectedReviewCoverURL] =
     useState<string>("");
   const history = useHistory();
-  const newToast = UseToastHook();
+  const newToast = ToastHook();
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
@@ -81,7 +79,16 @@ const AdminDashboard = (): React.ReactElement => {
   };
 
   const deleteReview = async () => {
-    await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
+    try {
+      await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
+      newToast("Review deleted", "Your review has been published", "info");
+    } catch (e) {
+      newToast(
+        "Error deleting review",
+        "Something went wrong, please refresh the page and try again.",
+        "error",
+      );
+    }
     const newData = [...data];
     const deleteReviewIndex = getIndex(deleteReviewId);
     newData.splice(deleteReviewIndex, 1);

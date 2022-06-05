@@ -39,7 +39,10 @@ const publishCreatedReview = async (
  * @param review - The review to publish
  * @returns true if publishing was successfull, otherwise false
  */
-const publishEditedReview = async (id: number, review: ReviewRequest) => {
+const publishEditedReview = async (
+  id: number,
+  review: ReviewRequest,
+): Promise<void> => {
   await baseAPIClient.put(`/reviews/${id}`, review, {
     headers: {
       Authorization: getBearerToken(),
@@ -54,7 +57,10 @@ const publishEditedReview = async (id: number, review: ReviewRequest) => {
  * @param id - Id of review
  * @returns - Created Review if it was created or a boolean describing if the review was edited successfully
  */
-const handleReview = async (review: ReviewRequest, id?: number) => {
+const handleReview = async (
+  review: ReviewRequest,
+  id?: number,
+): Promise<void> => {
   if (id) {
     await publishEditedReview(id, review);
   } else {
