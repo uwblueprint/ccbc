@@ -25,7 +25,7 @@ import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
 import { Review, ReviewResponse } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";
-import ToastHook from "../../Toast";
+import useToasts, { ToastStatus } from "../../Toast";
 import Author from "./Author";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
@@ -49,13 +49,8 @@ const AdminDashboard = (): React.ReactElement => {
   const [deleteReviewName, setDeleteReviewName] = useState("");
   const [deleteReviewId, setDeleteReviewId] = useState(-1);
   const [selectedReview, setSelectedReview] = useState<Review>({} as Review);
-  useState<string>("");
-  useState<string>("");
-  useState<string>("");
-  useState<string>("");
-  useState<string>("");
   const history = useHistory();
-  const newToast = ToastHook();
+  const newToast = useToasts();
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
@@ -70,12 +65,16 @@ const AdminDashboard = (): React.ReactElement => {
   const deleteReview = async () => {
     try {
       await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
-      newToast("Review deleted", "Your review has been published", "info");
+      newToast(
+        ToastStatus.success,
+        "Review deleted",
+        "Your review has been deleted",
+      );
     } catch (e) {
       newToast(
+        ToastStatus.error,
         "Error deleting review",
         "Something went wrong, please refresh the page and try again.",
-        "error",
       );
     }
     const newData = [...data];

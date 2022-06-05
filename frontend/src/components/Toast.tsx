@@ -1,30 +1,36 @@
 import { useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
-type ToastStatus = "error" | "warning" | "success" | "info" | undefined;
+export enum ToastStatus {
+  success = "success",
+  info = "info",
+  warning = "warning",
+  error = "error",
+  undefined = "",
+}
 
 type ToastProps = {
+  status: ToastStatus;
   title: string;
   message: string;
-  status: ToastStatus;
 };
 
-const ToastHook = (): ((
+const useToasts = (): ((
+  status: ToastStatus,
   title: string,
   message: string,
-  status: ToastStatus,
 ) => void) => {
   const [state, setState] = useState<ToastProps | null>();
   const toast = useToast();
 
-  const addToast = (title: string, message: string, status: ToastStatus) => {
-    const newToast: ToastProps = { title, message, status };
+  const addToast = (status: ToastStatus, title: string, message: string) => {
+    const newToast: ToastProps = { status, title, message };
     setState(newToast);
   };
 
   useEffect(() => {
     if (state) {
-      const { title, message, status } = state;
+      const { status, title, message } = state;
       toast({
         title,
         description: message,
@@ -39,4 +45,4 @@ const ToastHook = (): ((
   return addToast;
 };
 
-export default ToastHook;
+export default useToasts;
