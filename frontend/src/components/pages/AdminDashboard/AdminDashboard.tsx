@@ -341,11 +341,15 @@ const AdminDashboard = (): React.ReactElement => {
           <Flex mt="50" mb="25">
             <Text textStyle="heading">Admin dashboard</Text>
             <Spacer />
-            <Link to={CREATE_REVIEW_PAGE}>
-              <Button w="159px" h="48px" colorScheme="teal">
-                + Add review
-              </Button>
-            </Link>
+            {!isLoading ? (
+              <Link to={CREATE_REVIEW_PAGE}>
+                <Button w="159px" h="48px" colorScheme="teal">
+                  + Add review
+                </Button>
+              </Link>
+            ) : (
+              ""
+            )}
           </Flex>
           <ThemeProvider theme={getMuiTheme()}>
             {isLoading ? (
