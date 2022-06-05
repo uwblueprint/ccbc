@@ -1,13 +1,7 @@
 import { useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
-export enum ToastStatus {
-  success = "success",
-  info = "info",
-  warning = "warning",
-  error = "error",
-  undefined = "",
-}
+type ToastStatus = "info" | "warning" | "success" | "error" | undefined;
 
 type ToastProps = {
   status: ToastStatus;

@@ -23,7 +23,7 @@ import {
   mapBookResponseToBook,
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
-import useToasts, { ToastStatus } from "../../Toast";
+import useToasts from "../../Toast";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
@@ -57,11 +57,13 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [currBook, setCurrBook] = useState<Book | null>(null);
   const newToast = useToasts();
 
-  const [showDeleteBookModal, setShowDeleteBookModal] =
-    useState<boolean>(false);
+  const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
+    false,
+  );
   const [showPublishModal, setShowPublishModal] = useState<boolean>(false);
-  const [showDeleteReviewModal, setShowDeleteReviewModal] =
-    useState<boolean>(false);
+  const [showDeleteReviewModal, setShowDeleteReviewModal] = useState<boolean>(
+    false,
+  );
   const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
   const [books, setBooks] = useState<Book[]>([]);
   const [review, setReview] = useState("");
@@ -157,14 +159,14 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         try {
           await reviewAPIClient.handleReview(book, reviewId);
           newToast(
-            ToastStatus.success,
+            "success",
             "Review published.",
             "Your review has been published.",
           );
           history.push("/dashboard");
         } catch (e) {
           newToast(
-            ToastStatus.error,
+            "error",
             "Error publishing review.",
             "Something went wrong, please refresh the page and try again.",
           );
