@@ -26,6 +26,7 @@ import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
 import NotificationContext from "../../../contexts/NotificationContext";
 import { Review, ReviewResponse } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
+import LoadingSpinner from "../../common/LoadingSpinner";
 import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";
 import Author from "./Author";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
@@ -52,11 +53,14 @@ const AdminDashboard = (): React.ReactElement => {
   const [deleteReviewName, setDeleteReviewName] = useState("");
   const [deleteReviewId, setDeleteReviewId] = useState(-1);
   const [selectedReview, setSelectedReview] = useState<Review>({} as Review);
+  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
+    setIsLoading(true);
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
       setData(mapReviewResponseToReview(allReviews));
+      setIsLoading(false);
     });
   }, []);
 
@@ -81,11 +85,13 @@ const AdminDashboard = (): React.ReactElement => {
   };
 
   const deleteReview = async () => {
+    setIsLoading(true);
     await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
     const newData = [...data];
     const deleteReviewIndex = getIndex(deleteReviewId);
     newData.splice(deleteReviewIndex, 1);
     setData(newData);
+    setIsLoading(false);
   };
 
   const onDeleteModalClose = () => {
@@ -342,15 +348,19 @@ const AdminDashboard = (): React.ReactElement => {
             </Link>
           </Flex>
           <ThemeProvider theme={getMuiTheme()}>
-            <MUIDataTable
-              title={
-                <Text style={{ fontFamily: "Coustard", fontSize: "22px" }}>
-                  Reviews
-                </Text>
-              }
-              data={getTableRows()}
-              columns={getTableColumns()}
-            />
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <MUIDataTable
+                title={
+                  <Text style={{ fontFamily: "Coustard", fontSize: "22px" }}>
+                    Reviews
+                  </Text>
+                }
+                data={getTableRows()}
+                columns={getTableColumns()}
+              />
+            )}
           </ThemeProvider>
         </Stack>
         <DeleteConfirmationModal

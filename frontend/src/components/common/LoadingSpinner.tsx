@@ -6,7 +6,7 @@ import React from "react";
  */
 const LoadingSpinner = (): React.ReactElement => {
   return (
-    <Center mt="21%">
+    <Center mt="21%" h="60">
       <Spinner
         boxSize="84px"
         color="cyan.500"
