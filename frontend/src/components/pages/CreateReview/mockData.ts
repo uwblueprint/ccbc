@@ -4,13 +4,13 @@ const data = [
     coverImage:
       "https://images-na.ssl-images-amazon.com/images/I/51WCelNAo1L.jpg",
     titlePrefix: "The",
-    seriesOrder: "1",
+    seriesOrder: 1,
     illustrator: ["Spencer Fencer"],
     translator: ["Translator Alligator"],
     formats: [
       {
         format: "Soft cover",
-        isbn: "42069",
+        isbn: "1234567891011",
         price: "13",
       },
     ],

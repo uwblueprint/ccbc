@@ -86,15 +86,14 @@ class ReviewService implements IReviewService {
     author: AuthorRequest,
     t: Transaction,
   ): Promise<PgAuthor> {
-    const [authorRef, created] = await PgAuthor.findOrCreate({
+    const authorRef = await PgAuthor.findOrCreate({
       where: {
         full_name: author.fullName,
         display_name: author.displayName || null,
         attribution: author.attribution || null,
       },
       transaction: t,
-    });
-    if (!created) return authorRef;
+    }).then((res) => res[0]);
     await book.$add("authors", authorRef, { transaction: t });
     return authorRef;
   }
@@ -104,14 +103,13 @@ class ReviewService implements IReviewService {
     publisher: PublisherRequest,
     t: Transaction,
   ): Promise<PgPublisher> {
-    const [pub, created] = await PgPublisher.findOrCreate({
+    const pub = await PgPublisher.findOrCreate({
       where: {
         full_name: publisher.fullName,
         publish_year: publisher.publishYear,
       },
       transaction: t,
-    });
-    if (!created) return pub;
+    }).then((res) => res[0]);
     await book.$add("publishers", pub, { transaction: t });
     return pub;
   }
@@ -554,7 +552,12 @@ class ReviewService implements IReviewService {
         );
 
         // remove books
-        const oldBooks = await PgBook.findAll({ transaction: t });
+        const oldBooks = await PgBook.findAll({
+          where: {
+            review_id: id,
+          },
+          transaction: t,
+        });
         const oldBookIds = oldBooks.map((oldBook: PgBook) => oldBook.id);
         const newBookIds = entity.books
           .map((book: BookRequest) => book.id)
