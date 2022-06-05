@@ -29,7 +29,7 @@ const useToasts = (): ((
         title,
         description: message,
         status,
-        duration: 5000,
+        duration: 3000,
         position: "bottom-right",
         isClosable: true,
       });
