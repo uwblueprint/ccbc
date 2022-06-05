@@ -99,7 +99,6 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
    * Calls clearBookData() whenever modal is closed,
    * otherwise calls setBookData if currBook is not null
    */
-
   useEffect(() => {
     /** Clears book data */
     const clearBookData = () => {
@@ -154,6 +153,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     }
   }, [isOpen, currBook, setCurrBook]);
 
+  /** Ensure that ISBN is valid or an empty field */
   const isEmptyOrValidISBN =
     isbn === "" || // necessary to ensure that empty form won't error
     /^([0-9]|[-])*$/.test(isbn);
