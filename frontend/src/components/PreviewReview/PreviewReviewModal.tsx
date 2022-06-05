@@ -44,7 +44,14 @@ const PreviewReviewModal = ({
     }
     return "";
   };
-
+  // modalState returns "Published" if published_at has a value and "Draft" if it is null
+  const modalState = () => {
+    if (review.publishedAt==null) {
+      return "Draft";
+    }
+    return "Published";
+  };
+  // below needs to be changed
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} size="2xl" isCentered>
@@ -54,7 +61,7 @@ const PreviewReviewModal = ({
             <HStack spacing={150} fontSize={14}>
               <HStack>
                 <Text fontWeight={600}>Previewing:</Text>
-                <Text fontWeight={400}>Draft</Text>
+                <Text fontWeight={400}>{modalState()}</Text>  
               </HStack>
               <Text fontWeight={600}>{modalTitle()}</Text>
             </HStack>
