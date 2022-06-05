@@ -46,7 +46,7 @@ const PreviewReviewModal = ({
   };
   // modalState returns "Published" if published_at has a value and "Draft" if it is null
   const modalState = () => {
-    if (review.publishedAt==null) {
+    if (review.publishedAt == null) {
       return "Draft";
     }
     return "Published";
@@ -61,7 +61,7 @@ const PreviewReviewModal = ({
             <HStack spacing={150} fontSize={14}>
               <HStack>
                 <Text fontWeight={600}>Previewing:</Text>
-                <Text fontWeight={400}>{modalState()}</Text>  
+                <Text fontWeight={400}>{modalState()}</Text>
               </HStack>
               <Text fontWeight={600}>{modalTitle()}</Text>
             </HStack>
