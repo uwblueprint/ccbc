@@ -29,7 +29,7 @@ const ToastHook = (): ((
         title,
         description: message,
         status,
-        duration: 10000,
+        duration: 5000,
         position: "bottom-right",
         isClosable: true,
       });
