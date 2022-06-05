@@ -314,7 +314,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       </Box>
       {/* Main page content */}
       {isLoading ? (
-        <LoadingSpinner mt="21%"/>
+        <LoadingSpinner mt="21%" />
       ) : (
         <Box display="flex" flexDirection="column" m="0px auto" w="70%">
           <Heading size="lg">Book Information</Heading>

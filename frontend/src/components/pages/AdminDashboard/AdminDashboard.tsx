@@ -352,7 +352,7 @@ const AdminDashboard = (): React.ReactElement => {
             )}
           </Flex>
           {isLoading ? (
-              <LoadingSpinner h="20%"/>
+            <LoadingSpinner h="20%" />
           ) : (
             <ThemeProvider theme={getMuiTheme()}>
               <MUIDataTable
@@ -365,7 +365,7 @@ const AdminDashboard = (): React.ReactElement => {
                 columns={getTableColumns()}
               />
             </ThemeProvider>
-          )}  
+          )}
         </Stack>
         <DeleteConfirmationModal
           isOpen={isDeleteModalOpen}

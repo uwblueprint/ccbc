@@ -9,14 +9,14 @@ type LoadingSpinnerProps = {
   h?: string;
   mt?: string;
   mb?: string;
-}
+};
 const LoadingSpinner = ({
   h,
   mt,
   mb,
 }: LoadingSpinnerProps): React.ReactElement => {
   return (
-    <Center mt={mt || '10%'} mb={mb || '10%'} h={h || '0%'}>
+    <Center mt={mt || "10%"} mb={mb || "10%"} h={h || "0%"}>
       <Spinner
         boxSize="84px"
         color="cyan.500"
