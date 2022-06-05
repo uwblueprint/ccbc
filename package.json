@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "@fontsource/dm-sans": "^4.5.0",
-    "react-toastify": "^9.0.2"
-  },
-  "devDependencies": {
-    "@types/react": "^18.0.9",
-    "eslint": "^8.16.0",
-    "prettier": "^2.6.2"
+    "@fontsource/dm-sans": "^4.5.0"
   }
 }
