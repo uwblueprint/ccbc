@@ -25,8 +25,8 @@ import {
   mapBookResponeToBook,
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
-import BookModal from "./BookModal";
 import UseToastHook from "../../Toast";
+import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
 import data from "./mockData";
@@ -167,6 +167,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         try {
           await reviewAPIClient.handleReview(book, reviewId);
           newToast("added review", "success");
+          history.push("/dashboard");
         } catch (e) {
           newToast("failed to add", "error");
         }

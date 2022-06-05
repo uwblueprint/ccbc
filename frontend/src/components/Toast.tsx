@@ -20,13 +20,12 @@ const UseToastHook = () => {
   useEffect(() => {
     if (state) {
       const { message, status } = state;
-
       toast({
         title: status,
         description: message,
         status,
         duration: 9000,
-        position: "top",
+        position: "bottom-right",
         isClosable: true,
       });
     }

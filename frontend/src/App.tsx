@@ -73,7 +73,6 @@ const App = (): React.ReactElement => {
               <AuthContext.Provider
                 value={{ authenticatedUser, setAuthenticatedUser }}
               >
-                <UseToastHook />
                 <Router>
                   <Switch>
                     <Route exact path={Routes.LOGIN_PAGE} component={Login} />

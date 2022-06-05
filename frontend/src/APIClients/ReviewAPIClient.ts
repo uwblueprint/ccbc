@@ -24,17 +24,13 @@ const getReviews = async (): Promise<ReviewResponse[]> => {
 const publishCreatedReview = async (
   review: ReviewRequest,
 ): Promise<ReviewResponse | null> => {
-  try {
-    const { data } = await baseAPIClient.post("/reviews", review, {
-      headers: {
-        Authorization: getBearerToken(),
-        "Content-Type": "application/json",
-      },
-    });
-    return data;
-  } catch (error: unknown) {
-    return null;
-  }
+  const { data } = await baseAPIClient.post("/reviews", review, {
+    headers: {
+      Authorization: getBearerToken(),
+      "Content-Type": "application/json",
+    },
+  });
+  return data;
 };
 
 /**
@@ -43,11 +39,8 @@ const publishCreatedReview = async (
  * @param review - The review to publish
  * @returns true if publishing was successfull, otherwise false
  */
-const publishEditedReview = async (
-  id: number,
-  review: ReviewRequest,
-): Promise<void> => {
-  return await baseAPIClient.put(`/reviews/${id}`, review, {
+const publishEditedReview = async (id: number, review: ReviewRequest) => {
+  await baseAPIClient.put(`/reviews/${id}`, review, {
     headers: {
       Authorization: getBearerToken(),
       "Content-Type": "application/json",
@@ -61,14 +54,12 @@ const publishEditedReview = async (
  * @param id - Id of review
  * @returns - Created Review if it was created or a boolean describing if the review was edited successfully
  */
-const handleReview = async (
-  review: ReviewRequest,
-  id?: number,
-): Promise<ReviewResponse | null | boolean> => {
+const handleReview = async (review: ReviewRequest, id?: number) => {
   if (id) {
-    return publishEditedReview(id, review);
+    await publishEditedReview(id, review);
+  } else {
+    await publishCreatedReview(review);
   }
-  return publishCreatedReview(review);
 };
 
 /*

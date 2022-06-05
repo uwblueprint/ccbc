@@ -11,7 +11,6 @@ import {
   Text,
   Tooltip,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import MUIDataTable, {
@@ -20,6 +19,7 @@ import MUIDataTable, {
 } from "mui-datatables";
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import UseToastHook from "../../Toast";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
@@ -46,62 +46,35 @@ const AdminDashboard = (): React.ReactElement => {
   } = useDisclosure();
   const [data, setData] = useState<ReviewResponse[]>([]);
   const { notifications } = useContext(NotificationContext);
-  const toast = useToast();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteReviewName, setDeleteReviewName] = useState("");
   const [deleteReviewId, setDeleteReviewId] = useState(-1);
   const [selectedReviewTitle, setSelectedReviewTitle] = useState<string>("");
-  const [selectedReviewSubtitle, setSelectedReviewSubtitle] = useState<string>(
-    "",
-  );
-  const [
-    selectedReviewWrittenBy,
-    setSelectedReviewWrittenBy,
-  ] = useState<string>("");
-  const [
-    selectedReviewReviewedBy,
-    setSelectedReviewReviewedBy,
-  ] = useState<string>("");
-  const [
-    selectedReviewPublisher,
-    setSelectedReviewPublisher,
-  ] = useState<string>("");
+  const [selectedReviewSubtitle, setSelectedReviewSubtitle] =
+    useState<string>("");
+  const [selectedReviewWrittenBy, setSelectedReviewWrittenBy] =
+    useState<string>("");
+  const [selectedReviewReviewedBy, setSelectedReviewReviewedBy] =
+    useState<string>("");
+  const [selectedReviewPublisher, setSelectedReviewPublisher] =
+    useState<string>("");
   const [selectedReviewIsbn, setSelectedReviewIsbn] = useState<string>("");
-  const [selectedReviewBookType, setSelectedReviewBookType] = useState<string>(
-    "",
-  );
-  const [
-    selectedReviewAgeDescription,
-    setSelectedReviewAgeDescription,
-  ] = useState<string>("");
+  const [selectedReviewBookType, setSelectedReviewBookType] =
+    useState<string>("");
+  const [selectedReviewAgeDescription, setSelectedReviewAgeDescription] =
+    useState<string>("");
   const [selectedReviewBody, setSelectedReviewBody] = useState<string>("");
   const [selectedReviewTags, setSelectedReviewTags] = useState<string[]>([]);
-  const [selectedReviewCoverURL, setSelectedReviewCoverURL] = useState<string>(
-    "",
-  );
+  const [selectedReviewCoverURL, setSelectedReviewCoverURL] =
+    useState<string>("");
   const history = useHistory();
+  const newToast = UseToastHook();
 
   useEffect(() => {
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
       setData(allReviews);
     });
   }, []);
-
-  useEffect(() => {
-    if (notifications.includes("published")) {
-      toast({
-        title: "Review published.",
-        description: "Your review has been published.",
-        status: "info",
-        duration: 10000,
-        isClosable: true,
-        position: "bottom-right",
-      });
-
-      // toast has been displayed, remove "published" from notifications array so it doesn't appear again
-      notifications.filter((n) => n !== "published");
-    }
-  }, [notifications, toast]);
 
   const getIndex = (id: number) => {
     return data.findIndex((element) => element.reviewId === id);
