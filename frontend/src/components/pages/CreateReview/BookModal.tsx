@@ -156,9 +156,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   /** Ensure that ISBN is valid or an empty field */
   const isEmptyOrValidISBN =
     isbn === "" || // necessary to ensure that empty form won't error
-    (isbn.length === 13 &&
-      !Number.isNaN(Number(isbn)) &&
-      Number.isInteger(Number(isbn)));
+    /^([0-9]|[-])*$/.test(isbn);
 
   /** Check that all required modal fields are properly filled out */
   const hasRequired =
@@ -343,6 +341,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     setInputField={setIsbn}
                     isInvalid={!isEmptyOrValidISBN}
                     errorMessage="Invalid ISBN format."
+                    regexPattern={/^([0-9]|[-])*$/}
                   />
                   <FormControl id="price" isRequired width="45%">
                     <FormLabel mb={2}>Price</FormLabel>
