@@ -18,12 +18,13 @@ const getReviews = async (): Promise<ReviewResponse[]> => {
 
 /**
  * Publishes a created review
+ * Needs to be wrapped in a try catch
  * @param review - The review to publish
- * @returns The published review
+ * @returns The published review, otherwise throws an error
  */
 const publishCreatedReview = async (
   review: ReviewRequest,
-): Promise<ReviewResponse | null> => {
+): Promise<ReviewResponse> => {
   const { data } = await baseAPIClient.post("/reviews", review, {
     headers: {
       Authorization: getBearerToken(),
@@ -35,9 +36,10 @@ const publishCreatedReview = async (
 
 /**
  * Publishes an edited review
+ *  Needs to be wrapped in a try catch
  * @param id - The id of the review to publish
  * @param review - The review to publish
- * @returns true if publishing was successfull, otherwise false
+ * @returns nothing if successful, throws an error if not successful
  */
 const publishEditedReview = async (
   id: number,
@@ -53,9 +55,10 @@ const publishEditedReview = async (
 
 /**
  * Calls publishEditedReview if an id is passed otherwise calls publishCreatedReview
+ * Needs to be wrapped in a try catch
  * @param review  - Review to publish
  * @param id - Id of review
- * @returns - Created Review if it was created or a boolean describing if the review was edited successfully
+ * @returns - Created Review if it was created, no returns on edited reviews
  */
 const handleReview = async (
   review: ReviewRequest,
@@ -64,7 +67,7 @@ const handleReview = async (
   if (id) {
     await publishEditedReview(id, review);
   } else {
-    await publishCreatedReview(review);
+    return await publishCreatedReview(review);
   }
 };
 

@@ -23,8 +23,8 @@ import {
   mapBookResponseToBook,
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
-import useToasts from "../../Toast";
 import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";
+import useToasts from "../../Toast";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
@@ -54,7 +54,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     onOpen: onOpenBookModal,
     onClose: onBookModalClose,
   } = useDisclosure();
-
 
   const {
     isOpen: isOpenPreviewModal,

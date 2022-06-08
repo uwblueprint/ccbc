@@ -9,6 +9,13 @@ type ToastProps = {
   message: string;
 };
 
+/**
+ * Display a chakraUI toast for a notification
+ * @param status from the predetermined list of ToastStatus
+ * @param title of the toast
+ * @param message to be displayed in the body of the toast
+ * @returns the new state and displays a toast on the bottom right of the screen
+ */
 const useToasts = (): ((
   status: ToastStatus,
   title: string,
@@ -26,6 +33,7 @@ const useToasts = (): ((
     if (state) {
       const { status, title, message } = state;
       toast({
+        //these settings are global
         title,
         description: message,
         status,
