@@ -58,7 +58,7 @@ const publishEditedReview = async (
  * Needs to be wrapped in a try catch
  * @param review  - Review to publish
  * @param id - Id of review
- * @returns - Created Review if it was created, no returns on edited reviews
+ * Throws an error if not successfull
  */
 const handleReview = async (
   review: ReviewRequest,
@@ -67,7 +67,7 @@ const handleReview = async (
   if (id) {
     await publishEditedReview(id, review);
   } else {
-    return await publishCreatedReview(review);
+    await publishCreatedReview(review);
   }
 };
 

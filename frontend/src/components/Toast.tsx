@@ -33,7 +33,7 @@ const useToasts = (): ((
     if (state) {
       const { status, title, message } = state;
       toast({
-        //these settings are global
+        // these settings are global
         title,
         description: message,
         status,
