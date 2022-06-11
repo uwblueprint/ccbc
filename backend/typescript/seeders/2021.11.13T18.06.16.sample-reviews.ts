@@ -16,6 +16,7 @@ const seedReviews = [
     published_at: new Date(1636226732806),
     createdAt: new Date(1636226732806),
     updatedAt: new Date(1636226732806),
+    created_by_id: 1,
   },
   {
     id: 2,
@@ -36,6 +37,7 @@ const seedReviews = [
     published_at: new Date(1636226732806),
     createdAt: new Date(1636226732806),
     updatedAt: new Date(1636226732806),
+    created_by_id: 1,
   },
   {
     id: 3,
@@ -46,6 +48,7 @@ const seedReviews = [
     published_at: new Date(Date.now()),
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
+    created_by_id: 1,
   },
   {
     id: 4,
@@ -56,6 +59,7 @@ const seedReviews = [
     published_at: new Date(Date.now()),
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
+    created_by_id: 1,
   },
   {
     id: 5,
@@ -66,6 +70,7 @@ const seedReviews = [
     published_at: new Date(Date.now()),
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
+    created_by_id: 1,
   },
 ];
 

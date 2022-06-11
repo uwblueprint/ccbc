@@ -23,6 +23,13 @@ const seedAuthors = [
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
   },
+  {
+    id: 4,
+    full_name: "JK Rowling",
+    display_name: "JK Rowling",
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {

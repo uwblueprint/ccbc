@@ -24,7 +24,7 @@ const seedBooks = [
   },
   {
     id: 3,
-    review_id: 2,
+    review_id: 3,
     cover_image:
       "https://redeemedreader.com/wp-content/uploads/2021/06/Hatch-198x300.jpg",
     title: "Hatch",
@@ -35,11 +35,22 @@ const seedBooks = [
   },
   {
     id: 4,
-    review_id: 2,
+    review_id: 4,
     cover_image: "https://images2.penguinrandomhouse.com/cover/9780593339848",
     title: "Thrive",
     series_id: 1,
     series_order: 3,
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
+  {
+    id: 5,
+    review_id: 5,
+    cover_image:
+      "https://media.harrypotterfanzone.com/philsophers-stone-uk-childrens-edition.jpg",
+    title: "Philosopher's Stone",
+    series_id: 2,
+    series_order: 1,
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
   },

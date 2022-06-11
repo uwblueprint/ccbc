@@ -31,6 +31,12 @@ const seedBookAuthors = [
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
   },
+  {
+    author_id: 4,
+    book_id: 5,
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {
