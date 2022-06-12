@@ -11,15 +11,12 @@ import {
   Stack,
   Text,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import AuthContext from "../../../contexts/AuthContext";
-import NotificationContext from "../../../contexts/NotificationContext";
-import NotificationContextDispatcherContext from "../../../contexts/NotificationContextDispatcherContext";
 import { Book } from "../../../types/BookTypes";
 import { ReviewResponse } from "../../../types/ReviewTypes";
 import {
@@ -28,6 +25,7 @@ import {
 } from "../../../utils/MappingUtils";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";
+import useToasts from "../../Toast";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
@@ -63,6 +61,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     onClose: onPreviewModalClose,
   } = useDisclosure();
   const [currBook, setCurrBook] = useState<Book | null>(null);
+  const newToast = useToasts();
 
   const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
     false,
@@ -97,28 +96,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   const history = useHistory();
 
-  const toast = useToast();
-
   const { authenticatedUser } = useContext(AuthContext);
-  const { notifications } = useContext(NotificationContext);
-  const dispatchNotifications = useContext(
-    NotificationContextDispatcherContext,
-  );
-
-  useEffect(() => {
-    if (notifications.includes("error")) {
-      toast({
-        title: "Error publishing review.",
-        description:
-          "Something went wrong, please refresh the page and try again.",
-        status: "error",
-        duration: 10000,
-        isClosable: true,
-        position: "bottom-right",
-      });
-      notifications.filter((n) => n !== "published");
-    }
-  }, [notifications, toast]);
 
   // const handleTagSelected = (e: Option[]) => {
   //   setTagsSelected(e);
@@ -174,7 +152,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   /**
    * Function to be called when the review is published.
    */
-  const onPublish = () => {
+  const onPublish = async () => {
     // check if all fields have been filled in
     if (review !== "" || reviewerByline !== "" || books.length !== 0) {
       // publish review
@@ -190,21 +168,22 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           tags: [],
         };
         const reviewId = id ? parseInt(id, 10) : undefined;
-        reviewAPIClient.handleReview(book, reviewId).then((response) => {
-          if (response) {
-            dispatchNotifications({
-              type: "EDIT_NOTIFICATIONS",
-              value: ["published"],
-            });
-            history.push("/dashboard");
-          } else {
-            setLoading(false);
-            dispatchNotifications({
-              type: "EDIT_NOTIFICATIONS",
-              value: ["error"],
-            });
-          }
-        });
+        const status = id ? "success" : "info";
+        try {
+          await reviewAPIClient.handleReview(book, reviewId);
+          newToast(
+            status,
+            "Review published.",
+            "Your review has been published.",
+          );
+          history.push("/dashboard");
+        } catch (e) {
+          newToast(
+            "error",
+            "Error publishing review.",
+            "Something went wrong, please refresh the page and try again.",
+          );
+        }
       }
     }
   };

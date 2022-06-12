@@ -11,23 +11,22 @@ import {
   Text,
   Tooltip,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import MUIDataTable, {
   CustomHeadLabelRenderOptions,
   MUIDataTableColumn,
 } from "mui-datatables";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
-import NotificationContext from "../../../contexts/NotificationContext";
 import { Review, ReviewResponse } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";
+import useToasts from "../../Toast";
 import Author from "./Author";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
@@ -47,14 +46,13 @@ const AdminDashboard = (): React.ReactElement => {
     onClose: onPreviewModalClose,
   } = useDisclosure();
   const [data, setData] = useState<Review[]>([]);
-  const { notifications } = useContext(NotificationContext);
-  const toast = useToast();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteReviewName, setDeleteReviewName] = useState("");
   const [deleteReviewId, setDeleteReviewId] = useState(-1);
   const [selectedReview, setSelectedReview] = useState<Review>({} as Review);
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
+  const newToast = useToasts();
 
   useEffect(() => {
     setIsLoading(true);
@@ -64,29 +62,22 @@ const AdminDashboard = (): React.ReactElement => {
     });
   }, []);
 
-  useEffect(() => {
-    if (notifications.includes("published")) {
-      toast({
-        title: "Review published.",
-        description: "Your review has been published.",
-        status: "info",
-        duration: 10000,
-        isClosable: true,
-        position: "bottom-right",
-      });
-
-      // toast has been displayed, remove "published" from notifications array so it doesn't appear again
-      notifications.filter((n) => n !== "published");
-    }
-  }, [notifications, toast]);
-
   const getIndex = (id: number) => {
     return data.findIndex((element) => element.reviewId === id);
   };
 
   const deleteReview = async () => {
-    setIsLoading(true);
-    await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
+    try {
+      setIsLoading(true);
+      await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
+      newToast("success", "Review deleted", "Your review has been deleted");
+    } catch (e) {
+      newToast(
+        "error",
+        "Error deleting review",
+        "Something went wrong, please refresh the page and try again.",
+      );
+    }
     const newData = [...data];
     const deleteReviewIndex = getIndex(deleteReviewId);
     newData.splice(deleteReviewIndex, 1);
