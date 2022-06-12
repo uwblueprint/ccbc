@@ -24,6 +24,7 @@ import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
 import { Review, ReviewResponse } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
+import LoadingSpinner from "../../common/LoadingSpinner";
 import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";
 import useToasts from "../../Toast";
 import Author from "./Author";
@@ -49,12 +50,15 @@ const AdminDashboard = (): React.ReactElement => {
   const [deleteReviewName, setDeleteReviewName] = useState("");
   const [deleteReviewId, setDeleteReviewId] = useState(-1);
   const [selectedReview, setSelectedReview] = useState<Review>({} as Review);
+  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
   const newToast = useToasts();
 
   useEffect(() => {
+    setIsLoading(true);
     reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
       setData(mapReviewResponseToReview(allReviews));
+      setIsLoading(false);
     });
   }, []);
 
@@ -64,6 +68,7 @@ const AdminDashboard = (): React.ReactElement => {
 
   const deleteReview = async () => {
     try {
+      setIsLoading(true);
       await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
       newToast("success", "Review deleted", "Your review has been deleted");
     } catch (e) {
@@ -77,6 +82,7 @@ const AdminDashboard = (): React.ReactElement => {
     const deleteReviewIndex = getIndex(deleteReviewId);
     newData.splice(deleteReviewIndex, 1);
     setData(newData);
+    setIsLoading(false);
   };
 
   const onDeleteModalClose = () => {
@@ -323,26 +329,34 @@ const AdminDashboard = (): React.ReactElement => {
     <Box>
       <Center>
         <Stack w="90%" mb="50">
-          <Flex mt="50" mb="25">
+          <Flex mt="10" mb="25">
             <Text textStyle="heading">Admin dashboard</Text>
             <Spacer />
-            <Link to={CREATE_REVIEW_PAGE}>
-              <Button w="159px" h="48px" colorScheme="teal">
-                + Add review
-              </Button>
-            </Link>
+            {!isLoading ? (
+              <Link to={CREATE_REVIEW_PAGE}>
+                <Button w="159px" h="48px" colorScheme="teal">
+                  + Add review
+                </Button>
+              </Link>
+            ) : (
+              ""
+            )}
           </Flex>
-          <ThemeProvider theme={getMuiTheme()}>
-            <MUIDataTable
-              title={
-                <Text style={{ fontFamily: "Coustard", fontSize: "22px" }}>
-                  Reviews
-                </Text>
-              }
-              data={getTableRows()}
-              columns={getTableColumns()}
-            />
-          </ThemeProvider>
+          {isLoading ? (
+            <LoadingSpinner h="20%" />
+          ) : (
+            <ThemeProvider theme={getMuiTheme()}>
+              <MUIDataTable
+                title={
+                  <Text style={{ fontFamily: "Coustard", fontSize: "22px" }}>
+                    Reviews
+                  </Text>
+                }
+                data={getTableRows()}
+                columns={getTableColumns()}
+              />
+            </ThemeProvider>
+          )}
         </Stack>
         <DeleteConfirmationModal
           isOpen={isDeleteModalOpen}

@@ -23,12 +23,12 @@ import {
   mapBookResponseToBook,
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
+import LoadingSpinner from "../../common/LoadingSpinner";
 import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";
 import useToasts from "../../Toast";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
-import LoadingSpinner from "./LoadingSpinner";
 import data from "./mockData";
 import PublishModal from "./PublishModal";
 import ReviewEditor from "./ReviewEditor";
@@ -347,7 +347,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       </Box>
       {/* Main page content */}
       {isLoading ? (
-        <LoadingSpinner />
+        <LoadingSpinner mt="21%" />
       ) : (
         <Box display="flex" flexDirection="column" m="0px auto" w="70%">
           <Heading size="lg">Book Information</Heading>
