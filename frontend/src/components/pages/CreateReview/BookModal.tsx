@@ -364,6 +364,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     isInvalid={!isValidPrice}
                     setInputField={setPrice}
                     errorMessage="Invalid Price."
+                    regexPattern={/^[0-9]*(?:\.[0-9]{0,2})?$/}
                   />
                 </Stack>
               </Stack>
