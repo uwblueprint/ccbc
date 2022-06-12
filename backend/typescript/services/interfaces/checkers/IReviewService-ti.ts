@@ -32,7 +32,7 @@ export const PublisherResponse = t.iface([], {
 
 export const Format = t.iface([], {
   format: "string",
-  price: "string",
+  price: "number",
   isbn: "string",
 });
 
