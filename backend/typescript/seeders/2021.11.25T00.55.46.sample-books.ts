@@ -123,8 +123,9 @@ const seedBooks = [
   {
     id: 12,
     review_id: 6,
-    cover_image: "https://ia903207.us.archive.org/BookReader/BookReaderPreview.php?id=kingdomoffantasy00gero&subPrefix=kingdomoffantasy00gero&itemPath=/21/items/kingdomoffantasy00gero&server=ia903207.us.archive.org&page=leaf1&fail=preview&&scale=8&rotate=0",
-    title: 'Kingdom of Fantasy',
+    cover_image:
+      "https://ia903207.us.archive.org/BookReader/BookReaderPreview.php?id=kingdomoffantasy00gero&subPrefix=kingdomoffantasy00gero&itemPath=/21/items/kingdomoffantasy00gero&server=ia903207.us.archive.org&page=leaf1&fail=preview&&scale=8&rotate=0",
+    title: "Kingdom of Fantasy",
     series_id: 3,
     series_order: 1,
     createdAt: new Date(Date.now()),
@@ -133,15 +134,14 @@ const seedBooks = [
   {
     id: 13,
     review_id: 6,
-    cover_image: "https://bigcartoon.org/images/thumb/4/47/The_Phoenix_of_Destiny-Cover.png/180px-The_Phoenix_of_Destiny-Cover.png",
-    title: 'Pheonix of Destiny',
+    cover_image:
+      "https://bigcartoon.org/images/thumb/4/47/The_Phoenix_of_Destiny-Cover.png/180px-The_Phoenix_of_Destiny-Cover.png",
+    title: "Pheonix of Destiny",
     series_id: 3,
     series_order: 2,
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
   },
-
-
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {

@@ -18,7 +18,7 @@ const seedSeries = [
     name: "Geronimo Stilton",
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
-  }
+  },
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {

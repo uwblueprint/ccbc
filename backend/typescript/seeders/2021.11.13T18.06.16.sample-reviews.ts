@@ -74,15 +74,15 @@ const seedReviews = [
   },
   {
     id: 6,
-    body: 'Geronimo Stilton packs a fun adventure in every book, taking kids all over the world!',
-    byline: 'Tina Parker is a established children book critiquer and educator.',
+    body: "Geronimo Stilton packs a fun adventure in every book, taking kids all over the world!",
+    byline:
+      "Tina Parker is a established children book critiquer and educator.",
     featured: true,
     published_at: new Date(Date.now()),
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
     created_by_id: 1,
-
-  }
+  },
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {
