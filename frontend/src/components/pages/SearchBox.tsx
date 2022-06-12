@@ -15,7 +15,15 @@ const SearchBox = (): React.ReactElement => {
         <InputLeftElement pointerEvents="none" color="#110A23">
           <Search2Icon />
         </InputLeftElement>
-        <InputRightElement w="auto">
+        <Input
+          focusBorderColor="#110A23"
+          _hover={{ borderColor: "#110A23" }}
+          fontSize="14px"
+          textStyle="body"
+          pr="4.5rem"
+          placeholder="Search"
+        />
+        <InputRightElement width="4.5rem">
           <Button
             h="full"
             bg="#110A23"
@@ -30,16 +38,8 @@ const SearchBox = (): React.ReactElement => {
             Search
           </Button>
         </InputRightElement>
-        <Input
-          focusBorderColor="#110A23"
-          _hover={{ borderColor: "#110A23" }}
-          fontSize="14px"
-          placeholder="Search"
-          textStyle="body"
-        />
       </InputGroup>
     </div>
   );
 };
-
 export default SearchBox;
