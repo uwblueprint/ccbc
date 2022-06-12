@@ -139,7 +139,11 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
 
       const bookFormat = book.formats[0];
       setFormat(bookFormat.format);
-      setPrice(!Number.isNaN(bookFormat.price) ? (Number(bookFormat.price)).toFixed(2) : "0.00");
+      setPrice(
+        !Number.isNaN(bookFormat.price)
+          ? Number(bookFormat.price).toFixed(2)
+          : "0.00",
+      );
       setIsbn(bookFormat.isbn);
       const bookPublisher = book.publishers[0];
       setPublisher(bookPublisher.fullName);
