@@ -30,6 +30,13 @@ const seedAuthors = [
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
   },
+  {
+    id: 5,
+    full_name: 'Elisabetta Dami',
+    display_name: 'Elisabetta Dami',
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  }
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {

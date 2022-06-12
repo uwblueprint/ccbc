@@ -13,6 +13,12 @@ const seedSeries = [
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
   },
+  {
+    id: 3,
+    name: "Geronimo Stilton",
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  }
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {
