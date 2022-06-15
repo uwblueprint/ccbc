@@ -26,7 +26,7 @@ export interface PublisherResponse {
 
 export interface Format {
   format: string;
-  price: string;
+  price: number;
   isbn: string;
 }
 
@@ -40,7 +40,7 @@ export interface BookRequest {
   title: string;
   coverImage: string;
   titlePrefix?: string | null;
-  seriesOrder?: string | null;
+  seriesOrder?: number | null;
   illustrator?: string[] | null;
   translator?: string[] | null;
   formats: Format[] | null;
@@ -56,7 +56,7 @@ export interface BookResponse {
   title: string;
   coverImage: string;
   titlePrefix: string | null;
-  seriesOrder: string | null;
+  seriesOrder: number | null;
   illustrator: string[] | null;
   translator: string[] | null;
   formats: Format[] | null;

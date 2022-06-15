@@ -46,7 +46,9 @@ const kStartingYear = 1967;
 const kMinAge = 0;
 const kMaxAge = 150;
 const kMinPrice = 0;
-const kMaxPrice = 1000;
+const kMaxPrice = Number.MAX_SAFE_INTEGER;
+const kMinBookNum = 1;
+const kMaxBookNum = 1000;
 
 /**
  * Modal for user to input new book for review
@@ -69,7 +71,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   const [publicationYear, setPublicationYear] = useState<string>("");
   const [format, setFormat] = useState<string>("");
   const [isbn, setIsbn] = useState<string>("");
-  const [price, setPrice] = useState<number>(0);
+  const [price, setPrice] = useState<string>("");
   const [coverImage, setCoverImage] = useState<string>("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [genre, setGenre] = useState<string>("");
@@ -78,7 +80,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
 
   // optional book fields
   const [seriesName, setSeriesName] = useState<string>("");
-  const [seriesOrder, setSeriesOrder] = useState<string>("");
+  const [seriesOrder, setSeriesOrder] = useState<number>(1);
   const [illustrators, setIllustrator] = useState<string[]>([]);
   const [translators, setTranslator] = useState<string[]>([]);
 
@@ -105,7 +107,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setTitle("");
       setCoverImage("");
       setPrefix("");
-      setSeriesOrder("");
+      setSeriesOrder(1);
       setIllustrator([]);
       setTranslator([]);
       setFormat("");
@@ -116,7 +118,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setPublisher("");
       setSeriesName("");
       setIsbn("");
-      setPrice(0);
+      setPrice("");
       setPublicationYear("");
     };
 
@@ -125,7 +127,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setTitle(book.title);
       setCoverImage(book.coverImage);
       setPrefix(book.titlePrefix ? book.titlePrefix : "");
-      setSeriesOrder(book.seriesOrder ? book.seriesOrder : "");
+      setSeriesOrder(book.seriesOrder ? book.seriesOrder : 1);
       setIllustrator(book.illustrator);
       setTranslator(book.translator ? book.translator : []);
 
@@ -137,7 +139,11 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
 
       const bookFormat = book.formats[0];
       setFormat(bookFormat.format);
-      setPrice(parseInt(bookFormat.price, 10));
+      setPrice(
+        !Number.isNaN(bookFormat.price)
+          ? Number(bookFormat.price).toFixed(2)
+          : "0.00",
+      );
       setIsbn(bookFormat.isbn);
       const bookPublisher = book.publishers[0];
       setPublisher(bookPublisher.fullName);
@@ -151,27 +157,31 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     }
   }, [isOpen, currBook, setCurrBook]);
 
+  /** Ensure that price is valid and within range */
+  const isValidPrice =
+    price === "" ||
+    (!Number.isNaN(Number(price)) &&
+      !/^[a-zA-Z]+$/.test(price) &&
+      Number(price) > kMinPrice &&
+      Number(price) < kMaxPrice);
   /** Ensure that ISBN is valid or an empty field */
   const isEmptyOrValidISBN =
     isbn === "" || // necessary to ensure that empty form won't error
-    (isbn.length === 13 &&
-      !Number.isNaN(Number(isbn)) &&
-      Number.isInteger(Number(isbn)));
+    /^([0-9]|[-])*$/.test(isbn);
 
   /** Check that all required modal fields are properly filled out */
   const hasRequired =
-    prefix !== "" &&
     title !== "" &&
     authors.length > 0 &&
     publisher !== "" &&
     publicationYear !== "" &&
     format !== "" &&
     isbn !== "" &&
-    price > 0 &&
+    price !== "" &&
     coverImage !== "" &&
     // genre !== "" &&
-    minAge > 0 &&
-    maxAge > 0 &&
+    minAge >= 0 &&
+    maxAge >= 0 &&
     maxAge >= minAge &&
     isEmptyOrValidISBN;
 
@@ -197,7 +207,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     const formatList: BookFormat[] = [
       {
         format,
-        price: price.toString(),
+        price: Number(price) || 0,
         isbn,
       },
     ];
@@ -239,8 +249,8 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     id="titlePrefix"
                     label="Prefix"
                     name="title-prefix"
-                    required
                     maxWidth="50%"
+                    required={false}
                     inputFieldValue={prefix}
                     setInputField={setPrefix}
                   />
@@ -262,15 +272,19 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     inputFieldValue={seriesName}
                     setInputField={setSeriesName}
                   />
-                  <AddStringInput
-                    id="seriesOrder"
-                    label="Book number"
-                    name="series-order"
-                    required={false}
-                    maxWidth="50%"
-                    inputFieldValue={seriesOrder}
-                    setInputField={setSeriesOrder}
-                  />
+                  <div>
+                    <FormLabel mb={2}>Book number</FormLabel>
+                    <AddNumberInput
+                      placeholder="Book number"
+                      mb={1}
+                      numberInputFieldValue={
+                        seriesOrder >= 1 ? seriesOrder : ""
+                      }
+                      setNumberField={setSeriesOrder}
+                      minNum={kMinBookNum}
+                      maxNum={kMaxBookNum}
+                    />
+                  </div>
                 </Stack>
                 <AddStringInputList
                   id="authors"
@@ -338,18 +352,20 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     setInputField={setIsbn}
                     isInvalid={!isEmptyOrValidISBN}
                     errorMessage="Invalid ISBN format."
+                    regexPattern={/^([0-9]|[-])*$/}
                   />
-                  <FormControl id="price" isRequired width="45%">
-                    <FormLabel mb={2}>Price</FormLabel>
-                    <AddNumberInput
-                      mb={2}
-                      placeholder="$"
-                      numberInputFieldValue={price}
-                      setNumberField={setPrice}
-                      minNum={kMinPrice}
-                      maxNum={kMaxPrice}
-                    />
-                  </FormControl>
+                  <AddStringInput
+                    id="price"
+                    label="Price"
+                    name="price"
+                    required
+                    placeholder="$"
+                    inputFieldValue={price}
+                    isInvalid={!isValidPrice}
+                    setInputField={setPrice}
+                    errorMessage="Invalid Price."
+                    regexPattern={/^[0-9]*(?:\.[0-9]{0,2})?$/}
+                  />
                 </Stack>
               </Stack>
             </GridItem>
@@ -381,7 +397,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       placeholder="Min Age"
                       mb={0}
-                      numberInputFieldValue={minAge}
+                      numberInputFieldValue={minAge >= 0 ? minAge : ""}
                       setNumberField={setMinAge}
                       minNum={kMinAge}
                       maxNum={kMaxAge}
@@ -389,7 +405,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       placeholder="Max Age"
                       mb={0}
-                      numberInputFieldValue={maxAge}
+                      numberInputFieldValue={maxAge >= 0 ? maxAge : ""}
                       setNumberField={setMaxAge}
                       minNum={minAge}
                       maxNum={kMaxAge}

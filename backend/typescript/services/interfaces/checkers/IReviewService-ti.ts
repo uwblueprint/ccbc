@@ -32,7 +32,7 @@ export const PublisherResponse = t.iface([], {
 
 export const Format = t.iface([], {
   format: "string",
-  price: "string",
+  price: "number",
   isbn: "string",
 });
 
@@ -46,7 +46,7 @@ export const BookRequest = t.iface([], {
   title: "string",
   coverImage: "string",
   titlePrefix: t.opt(t.union("string", "null")),
-  seriesOrder: t.opt(t.union("string", "null")),
+  seriesOrder: t.opt(t.union("number", "null")),
   illustrator: t.opt(t.union(t.array("string"), "null")),
   translator: t.opt(t.union(t.array("string"), "null")),
   formats: t.union(t.array("Format"), "null"),
@@ -62,7 +62,7 @@ export const BookResponse = t.iface([], {
   title: "string",
   coverImage: "string",
   titlePrefix: t.union("string", "null"),
-  seriesOrder: t.union("string", "null"),
+  seriesOrder: t.union("number", "null"),
   illustrator: t.union(t.array("string"), "null"),
   translator: t.union(t.array("string"), "null"),
   formats: t.union(t.array("Format"), "null"),
@@ -116,15 +116,14 @@ export const ReviewResponseDTO = t.iface([], {
 export const IReviewService = t.iface([], {
   createReview: t.func(
     "ReviewResponseDTO",
-    t.param("entity", "ReviewRequestDTO"),
-    t.param("id", "string", true),
+    t.param("review", "ReviewRequestDTO"),
   ),
   getReview: t.func("ReviewResponseDTO", t.param("id", "string")),
   getReviews: t.func(t.array("ReviewResponseDTO")),
   updateReviews: t.func(
     "void",
     t.param("id", "string"),
-    t.param("entity", "ReviewRequestDTO"),
+    t.param("review", "ReviewRequestDTO"),
   ),
   deleteReview: t.func("void", t.param("id", "string")),
 });

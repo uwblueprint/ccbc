@@ -89,7 +89,7 @@ components:
         format:
           type: string
         price:
-          type: string
+          type: number
         isbn: 
           type: string
     TagRequest:
@@ -133,7 +133,7 @@ components:
           type: string
           nullable: true
         seriesOrder:
-          type: string
+          type: number
           nullable: true
         illustrator:
           type: string
@@ -174,7 +174,7 @@ components:
           type: string
           nullable: true
         seriesOrder:
-          type: string
+          type: number
           nullable: true
         illustrator:
           type: string

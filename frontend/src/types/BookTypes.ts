@@ -3,7 +3,7 @@
  */
 export type BookFormat = {
   format: string;
-  price: string;
+  price: number;
   isbn: string;
 };
 
@@ -31,7 +31,7 @@ export type Book = {
   title: string;
   coverImage: string;
   titlePrefix: string | null;
-  seriesOrder: string | null;
+  seriesOrder: number | null;
   illustrator: string[];
   translator: string[] | null;
   formats: BookFormat[];

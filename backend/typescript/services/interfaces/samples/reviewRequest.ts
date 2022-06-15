@@ -13,13 +13,13 @@ export default [
         title: "Book1 Title",
         coverImage: "Book1 cover Image",
         titlePrefix: "Book1 Title Prefix",
-        seriesOrder: "1",
+        seriesOrder: 1,
         illustrator: ["illustrator1"],
         translator: ["translator1"],
         formats: [
           {
             format: "format1",
-            price: "$15.0",
+            price: 15.0,
             isbn: "1234-5678-931",
           },
         ],
@@ -46,13 +46,13 @@ export default [
         title: "Book2 Title",
         coverImage: "Book2 cover Image",
         titlePrefix: "Book2 Title Prefix",
-        seriesOrder: "2",
+        seriesOrder: 2,
         illustrator: ["illustrator1"],
         translator: ["translator1"],
         formats: [
           {
             format: "format1",
-            price: "$15.0",
+            price: 15.0,
             isbn: "1234-5678-931",
           },
         ],
@@ -92,7 +92,7 @@ export default [
         formats: [
           {
             format: "format1",
-            price: "$15.0",
+            price: 15.0,
             isbn: "1234-5678-931",
           },
         ],
