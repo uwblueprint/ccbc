@@ -3,15 +3,24 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('Genre', {
-      name: {
-        type: Sequelize.DataTypes.STRING,
-        allowNull: false,
-      }
-    })
+    return Promise.all([
+      queryInterface.createTable('genres', {
+        name: {
+          type: Sequelize.DataTypes.STRING,
+          allowNull: false,
+          references: {
+            model: 'books',
+            key: 'id',
+            as: 'book_id',
+          },
+        }
+      }),
+    ]);
   },
 
   async down(queryInterface, Sequelize) {
-    return queryInterface.dropTable("Genre");
+    return Promise.all([
+      queryInterface.dropTable("genres"),
+    ]);
   },
 };
