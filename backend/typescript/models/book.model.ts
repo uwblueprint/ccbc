@@ -14,6 +14,8 @@ import BookPublisher from "./book_publisher.model";
 import Publisher from "./publisher.model";
 import Review from "./review.model";
 import Series from "./series.model";
+import Tag from "./tag.model";
+import BookTag from "./book_tag.model";
 import { Format } from "../services/interfaces/IReviewService";
 import { Range } from "./interfaces/range";
 
@@ -62,4 +64,7 @@ export default class Book extends Model {
 
   @BelongsToMany(() => Publisher, () => BookPublisher)
   publishers!: Publisher[];
+
+  @BelongsToMany(() => Tag, () => BookTag)
+  tags!: Tag[];
 }

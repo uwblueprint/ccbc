@@ -8,13 +8,13 @@ import {
   ForeignKey,
 } from "sequelize-typescript";
 import Tag from "./tag.model";
-import Review from "./review.model";
+import Book from "./book.model";
 
-@Table({ tableName: "review_tag" })
-export default class ReviewTag extends Model {
-  @ForeignKey(() => Review)
+@Table({ tableName: "book_tag" })
+export default class BookTag extends Model {
+  @ForeignKey(() => Book)
   @Column({ type: DataType.INTEGER })
-  review_id!: number;
+  book_id!: number;
 
   @ForeignKey(() => Tag)
   @Column({ type: DataType.INTEGER })
