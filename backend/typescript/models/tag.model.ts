@@ -7,6 +7,7 @@ import {
   Table,
   BelongsToMany,
   PrimaryKey,
+  Unique,
 } from "sequelize-typescript";
 import Book from "./book.model";
 import BookTag from "./book_tag.model";
@@ -14,6 +15,7 @@ import BookTag from "./book_tag.model";
 @Table({ tableName: "tags" })
 export default class Tag extends Model {
   @PrimaryKey
+  @Unique
   @Column({ type: DataType.STRING })
   name!: string;
 

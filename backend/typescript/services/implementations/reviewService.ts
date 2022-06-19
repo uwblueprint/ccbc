@@ -5,7 +5,7 @@ import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
 import PgBookAuthor from "../../models/book_author.model";
 import PgBookPublisher from "../../models/book_publisher.model";
-import PgReviewTag from "../../models/review_tag.model";
+// import PgReviewTag from "../../models/review_tag.model";
 import PgTag from "../../models/tag.model";
 import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
@@ -271,30 +271,38 @@ class ReviewService implements IReviewService {
         );
 
         // Delete tags (if necessary)
-        const deleteTags = Promise.all(
-          reviewToDelete.tags.map((tag: PgTag) => {
-            return PgReviewTag.findAll({
-              where: { tag_id: tag.id },
-            }).then(async (ret: PgReviewTag[]) => {
-              if (ret.length === 1) {
-                // Delete tags
-                await PgTag.destroy({
-                  where: { id: [tag.id] },
-                });
-              }
+        // const deleteTags = Promise.all(
+        //   reviewToDelete.tags.map((tag: PgTag) => {
+        //     return PgReviewTag.findAll({
+        //       where: { tag_id: tag.id },
+        //     }).then(async (ret: PgReviewTag[]) => {
+        //       if (ret.length === 1) {
+        //         // Delete tags
+        //         await PgTag.destroy({
+        //           where: { id: [tag.id] },
+        //         });
+        //       }
+        //     });
+        //   }),
+        // );
+
+        return Promise.all([deletePublishersAndAuthors, deleteBooks]).then(
+          () => {
+            return PgReview.destroy({
+              where: { id: [id] },
             });
-          }),
+          },
         );
 
-        return Promise.all([
-          deletePublishersAndAuthors,
-          deleteBooks,
-          deleteTags,
-        ]).then(() => {
-          return PgReview.destroy({
-            where: { id: [id] },
-          });
-        });
+        // return Promise.all([
+        //   deletePublishersAndAuthors,
+        //   deleteBooks,
+        //   deleteTags,
+        // ]).then(() => {
+        //   return PgReview.destroy({
+        //     where: { id: [id] },
+        //   });
+        // });
       });
 
       if (!deleteResult) {
@@ -349,12 +357,12 @@ class ReviewService implements IReviewService {
       };
     });
 
-    const tags: TagResponse[] = review.tags.map((tag: PgTag) => {
-      return {
-        id: tag.id,
-        name: tag.name,
-      };
-    });
+    // const tags: TagResponse[] = review.tags.map((tag: PgTag) => {
+    //   return {
+    //     id: tag.id,
+    //     name: tag.name,
+    //   };
+    // });
 
     return {
       reviewId: review.id,
@@ -363,7 +371,7 @@ class ReviewService implements IReviewService {
       featured: review.featured,
       createdByUser: this.getUserDetails(review),
       books,
-      tags,
+      tags: [],
       updatedAt: review.updatedAt.getTime(),
       publishedAt: review.published_at?.getTime()
         ? review.published_at.getTime()
@@ -508,48 +516,48 @@ class ReviewService implements IReviewService {
         );
 
         // delete tags
-        const newTagIds = entity.tags
-          .filter((tag: TagRequest) => typeof tag.id === "number")
-          .map((tag: TagRequest) => tag.id);
-        const allReviewTags = await PgReviewTag.findAll({
-          where: { review_id: id },
-          transaction: t,
-        });
-        const droppedTags = allReviewTags
-          .map((reviewTag: PgReviewTag) => reviewTag.tag_id)
-          .filter((oldId: number) => !newTagIds.includes(oldId));
-        await Promise.all(
-          droppedTags.map(async (tagId: number) => {
-            await PgReviewTag.destroy({
-              where: {
-                review_id: id,
-                tag_id: tagId,
-              },
-              transaction: t,
-            });
-          }),
-        );
+        // const newTagIds = entity.tags
+        //   .filter((tag: TagRequest) => typeof tag.id === "number")
+        //   .map((tag: TagRequest) => tag.id);
+        // const allReviewTags = await PgReviewTag.findAll({
+        //   where: { review_id: id },
+        //   transaction: t,
+        // });
+        // const droppedTags = allReviewTags
+        //   .map((reviewTag: PgReviewTag) => reviewTag.tag_id)
+        //   .filter((oldId: number) => !newTagIds.includes(oldId));
+        // await Promise.all(
+        //   droppedTags.map(async (tagId: number) => {
+        //     await PgReviewTag.destroy({
+        //       where: {
+        //         review_id: id,
+        //         tag_id: tagId,
+        //       },
+        //       transaction: t,
+        //     });
+        //   }),
+        // );
 
         // update tags
-        await Promise.all(
-          entity.tags.map(async (tag: TagRequest) => {
-            if (tag.id) {
-              const tagToUpdate = await PgTag.findByPk(tag.id, {
-                transaction: t,
-              });
-              if (!tagToUpdate) {
-                throw new Error(`Tag id ${tag.id} not found`);
-              }
-              await tagToUpdate.update({ name: tag.name });
-              await PgReviewTag.findOrCreate({
-                where: { review_id: id, tag_id: tag.id },
-                transaction: t,
-              });
-            } else {
-              await this.findOrCreateTag(reviewToUpdate, tag, t);
-            }
-          }),
-        );
+        // await Promise.all(
+        //   entity.tags.map(async (tag: TagRequest) => {
+        //     if (tag.id) {
+        //       const tagToUpdate = await PgTag.findByPk(tag.id, {
+        //         transaction: t,
+        //       });
+        //       if (!tagToUpdate) {
+        //         throw new Error(`Tag id ${tag.id} not found`);
+        //       }
+        //       await tagToUpdate.update({ name: tag.name });
+        //       await PgReviewTag.findOrCreate({
+        //         where: { review_id: id, tag_id: tag.id },
+        //         transaction: t,
+        //       });
+        //     } else {
+        //       await this.findOrCreateTag(reviewToUpdate, tag, t);
+        //     }
+        //   }),
+        // );
 
         // remove books
         const oldBooks = await PgBook.findAll({

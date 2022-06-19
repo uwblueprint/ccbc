@@ -5,7 +5,6 @@ import {
   DataType,
   Model,
   Table,
-  BelongsToMany,
   HasMany,
   ForeignKey,
   BelongsTo,

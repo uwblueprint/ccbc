@@ -17,6 +17,6 @@ export default class BookTag extends Model {
   book_id!: number;
 
   @ForeignKey(() => Tag)
-  @Column({ type: DataType.INTEGER })
-  tag_id!: number;
+  @Column({ type: DataType.STRING })
+  tag_name!: String;
 }
