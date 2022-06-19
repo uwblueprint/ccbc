@@ -18,5 +18,5 @@ export default class BookTag extends Model {
 
   @ForeignKey(() => Tag)
   @Column({ type: DataType.STRING })
-  tag_name!: String;
+  tag_name!: string;
 }
