@@ -6,24 +6,23 @@ module.exports = {
     try {
       await queryInterface.createTable('genres', {
         name: {
-          type: Sequelize.DataTypes.STRING,
-          allowNull: false,
+          type: Sequelize.STRING,
           primaryKey: true,
           unique: true,
         }
       });
       await queryInterface.createTable('book_genre', {
         genre_name: {
-          type: Sequelize.DataTypes.STRING,
-          allowNull: false,
+          type: Sequelize.STRING,
+          primaryKey: true,
           references: {
             model: 'genres',
             key: 'name',
           }
         },
         book_id: {
-          type: Sequelize.DataTypes.INTEGER,
-          allowNull: false,
+          type: Sequelize.INTEGER,
+          primaryKey: true,
           references: {
             model: 'books',
             key: 'id',
@@ -38,6 +37,7 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     return Promise.all([
+      queryInterface.dropTable('genre'),
       queryInterface.dropTable("book_genre"),
     ]);
   },

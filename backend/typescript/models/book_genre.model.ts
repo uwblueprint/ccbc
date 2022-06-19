@@ -13,8 +13,8 @@ import Genre from "./genre.model";
 @Table({ tableName: "book_publisher" })
 export default class BookGenre extends Model {
   @ForeignKey(() => Genre)
-  @Column({ type: DataType.INTEGER })
-  genre_id!: number;
+  @Column({ type: DataType.STRING })
+  genre_name!: string;
 
   @ForeignKey(() => Book)
   @Column({ type: DataType.INTEGER })
