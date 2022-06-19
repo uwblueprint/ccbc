@@ -6,9 +6,18 @@ import {
   InputLeftElement,
   InputRightElement,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 
-const SearchBox = (): React.ReactElement => {
+interface SearchBoxProps {
+  setSearchText: (searchText: string) => void;
+}
+const SearchBox = ({ setSearchText }: SearchBoxProps): React.ReactElement => {
+  const [searchText, setSearchTextState] = useState("");
+  const onSubmitClick = async () => {
+    if (searchText) {
+      setSearchText(searchText);
+    }
+  };
   return (
     <div style={{ textAlign: "center", padding: "10px 20px" }}>
       <InputGroup borderColor="#110A23">
@@ -22,9 +31,13 @@ const SearchBox = (): React.ReactElement => {
           textStyle="body"
           pr="4.5rem"
           placeholder="Search"
+          onChange={(event) => {
+            setSearchTextState(event.target.value);
+          }}
         />
         <InputRightElement width="4.5rem">
           <Button
+            onClick={onSubmitClick}
             h="full"
             bg="#110A23"
             color="white"

@@ -129,11 +129,6 @@ const App = (): React.ReactElement => {
                     />
                     <Route
                       exact
-                      path={Routes.PREVIEW_REVIEW_TEST}
-                      component={PreviewReviewTest}
-                    />
-                    <Route
-                      exact
                       path={Routes.SEARCH_BOX}
                       component={SearchBox}
                     />
