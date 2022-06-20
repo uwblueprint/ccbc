@@ -21,7 +21,7 @@ import AuthContext from "../../../contexts/AuthContext";
 import NotificationContext from "../../../contexts/NotificationContext";
 import NotificationContextDispatcherContext from "../../../contexts/NotificationContextDispatcherContext";
 import { Book } from "../../../types/BookTypes";
-import { ReviewResponse } from "../../../types/ReviewTypes";
+import { ReviewRequest, ReviewResponse } from "../../../types/ReviewTypes";
 import {
   mapBookResponseToBook,
   mapBookToBookRequest,
@@ -168,7 +168,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       // publish review
       if (authenticatedUser?.id) {
         setLoading(true);
-        const book = {
+        const reviewReq: ReviewRequest = {
           body: review,
           byline: reviewerByline,
           featured: featured === "1",
@@ -178,7 +178,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           tags: [],
         };
         const reviewId = id ? parseInt(id, 10) : undefined;
-        reviewAPIClient.handleReview(book, reviewId).then((response) => {
+        reviewAPIClient.handleReview(reviewReq, reviewId).then((response) => {
           if (response) {
             dispatchNotifications({
               type: "EDIT_NOTIFICATIONS",
