@@ -64,13 +64,11 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [currBook, setCurrBook] = useState<Book | null>(null);
   const newToast = useToasts();
 
-  const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
-    false,
-  );
+  const [showDeleteBookModal, setShowDeleteBookModal] =
+    useState<boolean>(false);
   const [showPublishModal, setShowPublishModal] = useState<boolean>(false);
-  const [showDeleteReviewModal, setShowDeleteReviewModal] = useState<boolean>(
-    false,
-  );
+  const [showDeleteReviewModal, setShowDeleteReviewModal] =
+    useState<boolean>(false);
   // const [showSaveDraftBeforeModal, setSaveDraftBeforeModal] =
   //   useState<boolean>(false);
   const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
@@ -392,7 +390,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       </Box>
       {/* Main page content */}
       {isLoading ? (
-        <LoadingSpinner />
+        <LoadingSpinner mt="21%" />
       ) : (
         <Box display="flex" flexDirection="column" m="0px auto" w="70%">
           <Heading size="lg">Book Information</Heading>
