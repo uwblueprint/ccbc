@@ -19,7 +19,7 @@ export default [
         formats: [
           {
             format: "format1",
-            price: "$15.0",
+            price: 15.0,
             isbn: "1234-5678-931",
           },
         ],
@@ -52,7 +52,7 @@ export default [
         formats: [
           {
             format: "format1",
-            price: "$15.0",
+            price: 15.0,
             isbn: "1234-5678-931",
           },
         ],
@@ -92,7 +92,7 @@ export default [
         formats: [
           {
             format: "format1",
-            price: "$15.0",
+            price: 15.0,
             isbn: "1234-5678-931",
           },
         ],

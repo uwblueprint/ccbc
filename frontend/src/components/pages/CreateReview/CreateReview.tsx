@@ -11,25 +11,24 @@ import {
   Stack,
   Text,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import AuthContext from "../../../contexts/AuthContext";
-import NotificationContext from "../../../contexts/NotificationContext";
-import NotificationContextDispatcherContext from "../../../contexts/NotificationContextDispatcherContext";
 import { Book } from "../../../types/BookTypes";
 import { ReviewRequest, ReviewResponse } from "../../../types/ReviewTypes";
 import {
   mapBookResponseToBook,
   mapBookToBookRequest,
 } from "../../../utils/MappingUtils";
+import LoadingSpinner from "../../common/LoadingSpinner";
+import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";
+import useToasts from "../../Toast";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
-import LoadingSpinner from "./LoadingSpinner";
 import data from "./mockData";
 import PublishModal from "./PublishModal";
 import ReviewEditor from "./ReviewEditor";
@@ -55,7 +54,14 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     onOpen: onOpenBookModal,
     onClose: onBookModalClose,
   } = useDisclosure();
+
+  const {
+    isOpen: isOpenPreviewModal,
+    onOpen: onPreviewModalOpen,
+    onClose: onPreviewModalClose,
+  } = useDisclosure();
   const [currBook, setCurrBook] = useState<Book | null>(null);
+  const newToast = useToasts();
 
   const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
     false,
@@ -69,9 +75,14 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [review, setReview] = useState("");
   const [featured, setFeatured] = useState("0");
   const [reviewerByline, setReviewerByline] = useState("");
+  const [reviewerFirstName, setReviewerFirstName] = useState<string>("");
+  const [reviewerLastName, setReviewerLastName] = useState<string>("");
 
   const cannotPublish =
-    review === "" || reviewerByline === "" || books.length === 0;
+    review === "" ||
+    review === "<p><br></p>" ||
+    reviewerByline === "" ||
+    books.length === 0;
 
   const [reviewError, setReviewError] = useState(false);
   const [bylineError, setBylineError] = useState(false);
@@ -85,28 +96,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   const history = useHistory();
 
-  const toast = useToast();
-
   const { authenticatedUser } = useContext(AuthContext);
-  const { notifications } = useContext(NotificationContext);
-  const dispatchNotifications = useContext(
-    NotificationContextDispatcherContext,
-  );
-
-  useEffect(() => {
-    if (notifications.includes("error")) {
-      toast({
-        title: "Error publishing review.",
-        description:
-          "Something went wrong, please refresh the page and try again.",
-        status: "error",
-        duration: 10000,
-        isClosable: true,
-        position: "bottom-right",
-      });
-      notifications.filter((n) => n !== "published");
-    }
-  }, [notifications, toast]);
 
   // const handleTagSelected = (e: Option[]) => {
   //   setTagsSelected(e);
@@ -162,7 +152,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   /**
    * Function to be called when the review is published.
    */
-  const onPublish = () => {
+  const onPublish = async () => {
     // check if all fields have been filled in
     if (review !== "" || reviewerByline !== "" || books.length !== 0) {
       // publish review
@@ -178,23 +168,51 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           tags: [],
         };
         const reviewId = id ? parseInt(id, 10) : undefined;
-        reviewAPIClient.handleReview(reviewReq, reviewId).then((response) => {
-          if (response) {
-            dispatchNotifications({
-              type: "EDIT_NOTIFICATIONS",
-              value: ["published"],
-            });
-            history.push("/dashboard");
-          } else {
-            setLoading(false);
-            dispatchNotifications({
-              type: "EDIT_NOTIFICATIONS",
-              value: ["error"],
-            });
-          }
-        });
+        const status = id ? "success" : "info";
+        try {
+          await reviewAPIClient.handleReview(reviewReq, reviewId);
+          newToast(
+            status,
+            "Review published.",
+            "Your review has been published.",
+          );
+          history.push("/dashboard");
+        } catch (e) {
+          newToast(
+            "error",
+            "Error publishing review.",
+            "Something went wrong, please refresh the page and try again.",
+          );
+        }
       }
     }
+  };
+
+  /** Function that creates a Review object to pass into the Preview Modal */
+  const createPreviewModalReviewObject = () => {
+    let firstName = reviewerFirstName;
+    let lastName = reviewerLastName;
+
+    if ((!firstName || !lastName) && authenticatedUser) {
+      firstName = authenticatedUser.firstName;
+      lastName = authenticatedUser.lastName;
+    }
+    const previewModalReviewObject = {
+      reviewId: 0,
+      body: review,
+      byline: reviewerByline,
+      featured: false,
+      createdByUser: {
+        firstName,
+        lastName,
+      },
+      books,
+      tags: [],
+      updatedAt: 0,
+      publishedAt: 0,
+      createdAt: 0,
+    };
+    return previewModalReviewObject;
   };
 
   /**
@@ -220,6 +238,8 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           setReview(reviewResponse.body);
           setFeatured(reviewResponse.featured ? "1" : "0");
           setReviewerByline(reviewResponse.byline);
+          setReviewerFirstName(reviewResponse.createdByUser.firstName);
+          setReviewerLastName(reviewResponse.createdByUser.lastName);
           setBooksFromBookResponse(reviewResponse);
         })
         .catch(() => {
@@ -257,6 +277,11 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         onClose={onDeleteReviewModalClose}
         deleteReview={() => {}}
       />
+      <PreviewReviewModal
+        review={createPreviewModalReviewObject()}
+        isOpen={isOpenPreviewModal}
+        onClose={onPreviewModalClose}
+      />
       {/* Tool bar */}
       <Box
         display="flex"
@@ -292,7 +317,13 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         {/* Contains buttons */}
         <Box display="flex" flexDirection="row" alignItems="center">
           <ButtonGroup spacing={6}>
-            <Button variant="ghost">Preview</Button>
+            <Button
+              variant="ghost"
+              disabled={cannotPublish}
+              onClick={() => onPreviewModalOpen()}
+            >
+              Preview
+            </Button>
             <Button variant="ghost" onClick={() => {}}>
               Save
             </Button>
@@ -316,7 +347,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       </Box>
       {/* Main page content */}
       {isLoading ? (
-        <LoadingSpinner />
+        <LoadingSpinner mt="21%" />
       ) : (
         <Box display="flex" flexDirection="column" m="0px auto" w="70%">
           <Heading size="lg">Book Information</Heading>

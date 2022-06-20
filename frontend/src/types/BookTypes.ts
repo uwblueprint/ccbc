@@ -3,7 +3,7 @@
  */
 export type BookFormat = {
   format: string;
-  price: string;
+  price: number;
   isbn: string;
 };
 
