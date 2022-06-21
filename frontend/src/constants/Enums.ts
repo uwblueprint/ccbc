@@ -3,6 +3,7 @@
 export enum UserRole {
   Admin = "Admin",
   Subscriber = "Subscriber",
+  Creator = "Creator",
 }
 
 export enum Genre {
