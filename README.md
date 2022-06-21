@@ -23,7 +23,7 @@ Made from [Starter Code](https://uwblueprint.github.io/starter-code-v2), brought
   * 💽 [Accessing PostgreSQL Database](#accessing-postgresql-database)
   * ✨ [Linting & Formatting](#linting--formatting)
   * 🧪 [Running Tests](#running-tests)
-  * :outbox_tray: [Running Migrations](#running-migrations)
+  * :outbox_tray: [Running Migrations](#running-migrations--seeding-database)
 * 🌳 [Version Control Guide](#version-control-guide)
   * 🌿 [Branching](#branching)
   * 🔒 [Commits](#commits)
