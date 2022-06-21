@@ -21,8 +21,8 @@ export default class User extends Model {
   @Column({ type: DataType.STRING })
   email!: string;
 
-  @Column({ type: DataType.BOOLEAN })
-  active!: boolean;
+  @Column({ type: DataType.NUMBER })
+  subscription_expires_on!: number | null;
 
   @HasMany(() => Review)
   reviews!: Review[];
