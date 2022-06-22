@@ -21,8 +21,8 @@ export default class User extends Model {
   @Column({ type: DataType.STRING })
   email!: string;
 
-  @Column({ type: DataType.NUMBER })
-  subscription_expires_on!: number | null;
+  @Column({ type: DataType.Date })
+  subscription_expires_on!: Date | null;
 
   @HasMany(() => Review)
   reviews!: Review[];

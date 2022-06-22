@@ -6,7 +6,7 @@ module.exports = {
           "users",
           "subscription_expires_on",
           {
-            type: Sequelize.DataTypes.STRING,
+            type: Sequelize.DataTypes.DATE,
           },
           { transaction: t },
         ),
@@ -25,7 +25,7 @@ module.exports = {
           "users",
           "active",
           {
-            type: Sequelize.DataTypes.boolean,
+            type: Sequelize.DataTypes.BOOLEAN,
           },
           { transaction: t },
         ),

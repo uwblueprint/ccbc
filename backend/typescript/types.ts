@@ -11,7 +11,7 @@ export type UserDTO = {
   firstName: string;
   lastName: string;
   email: string;
-  subscriptionExpiresOn: number | null;
+  subscriptionExpiresOn: Date | null;
 };
 
 export type CreateUserDTO = Omit<UserDTO, "id"> & { password: string };
