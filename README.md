@@ -160,11 +160,11 @@ $ docker-compose exec ts-backend bash
 
 4. Ensure you have migration files in the migrations folder
 
-5a. Run the following command
+5. Run the following command
 ```bash
 yarn sequelize-cli db:migrate
 ```
-5b. to undo a migration run the command 
+&nbsp;&nbsp;&nbsp;&nbsp;To undo a migration run the command 
 ```bash
 yarn sequelize-cli db:migrate:undo
 ```
