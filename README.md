@@ -168,6 +168,7 @@ yarn sequelize-cli db:migrate
 ```bash
 yarn sequelize-cli db:migrate:undo
 ```
+
 Help : refer to [Database Migrations](https://www.notion.so/uwblueprintexecs/Database-Migrations-18dd52dd13e648e6a472a0c74762d884) for more details
 
 6. Seeding commands
