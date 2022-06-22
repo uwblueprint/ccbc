@@ -3,14 +3,14 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    try {
+    return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.createTable('genres', {
         name: {
           type: Sequelize.STRING,
           primaryKey: true,
           unique: true,
-        }
-      });
+        },
+      }, { transaction: t });
       await queryInterface.createTable('book_genre', {
         genre_name: {
           type: Sequelize.STRING,
@@ -22,23 +22,28 @@ module.exports = {
         },
         book_id: {
           type: Sequelize.INTEGER,
-          primaryKey: true,
           references: {
             model: 'books',
             key: 'id',
           }
         }
-      });
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+      }, { transaction: t });
+      return Promise.resolve(); 
+    })
   },
 
   async down(queryInterface, Sequelize) {
-    return Promise.all([
-      queryInterface.dropTable('genre'),
-      queryInterface.dropTable("book_genre"),
-    ]);
+    return queryInterface.sequelize.transaction((t) => {
+      return Promise.all([
+        queryInterface.dropTable(
+          'genres', 
+          { transaction: t}
+        ),
+        queryInterface.dropTable(
+          'book_genre', 
+          { transaction: t}
+        ),  
+      ]);
+    })
   },
 };

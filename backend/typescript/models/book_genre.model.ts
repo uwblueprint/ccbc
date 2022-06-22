@@ -10,7 +10,7 @@ import {
 import Book from "./book.model";
 import Genre from "./genre.model";
 
-@Table({ tableName: "book_publisher" })
+@Table({ tableName: "book_genre" })
 export default class BookGenre extends Model {
   @ForeignKey(() => Genre)
   @Column({ type: DataType.STRING })
