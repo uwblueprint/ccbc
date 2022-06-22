@@ -64,11 +64,13 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [currBook, setCurrBook] = useState<Book | null>(null);
   const newToast = useToasts();
 
-  const [showDeleteBookModal, setShowDeleteBookModal] =
-    useState<boolean>(false);
+  const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
+    false,
+  );
   const [showPublishModal, setShowPublishModal] = useState<boolean>(false);
-  const [showDeleteReviewModal, setShowDeleteReviewModal] =
-    useState<boolean>(false);
+  const [showDeleteReviewModal, setShowDeleteReviewModal] = useState<boolean>(
+    false,
+  );
   // const [showSaveDraftBeforeModal, setSaveDraftBeforeModal] =
   //   useState<boolean>(false);
   const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
@@ -168,7 +170,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   /**
    * Function to be called when the review is published/saved as a draft.
    */
-  const onPublishOrSave = async (save = false) => {
+  const onSubmit = async (save = false) => {
     // check if all fields have been filled in
     if (review !== "" || reviewerByline !== "" || books.length !== 0 || save) {
       // publish review
@@ -216,7 +218,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     setReviewError(false);
     setBylineError(false);
     if (review !== "" || reviewerByline !== "") {
-      onPublishOrSave(true);
+      onSubmit(true);
     }
   };
 
@@ -302,7 +304,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       <PublishModal
         isOpen={showPublishModal}
         onClose={onPublishModalClose}
-        onPublish={onPublishOrSave}
+        onPublish={onSubmit}
       />
       <DeleteReviewModal
         isOpen={showDeleteReviewModal}
@@ -315,7 +317,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           isOpen={showSaveDraftBeforeModal}
           onClose={onDeleteDraftReviewModalClose}
           deleteReview={() => {}}
-          saveReview={() => onPublishOrSave(save = true)}
+          saveReview={() => onSubmit(save = true)}
           bookTitle="idk"
         />
       }
