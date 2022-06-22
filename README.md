@@ -160,10 +160,15 @@ $ docker-compose exec ts-backend bash
 
 4. Ensure you have migration files in the migrations folder
 
-5. Run the following command
+5a. Run the following command
 ```bash
-node migrate up
+yarn sequelize-cli db:migrate
 ```
+5b. to undo a migration run the command 
+```bash
+yarn sequelize-cli db:migrate:undo
+```
+Help : refer to [Database Migrations](https://www.notion.so/uwblueprintexecs/Database-Migrations-18dd52dd13e648e6a472a0c74762d884) for more details
 
 6. Seeding commands
 Note: seeding the database will remove any existing records of reviews, tags, series, authors, publishers, and books
