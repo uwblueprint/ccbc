@@ -170,9 +170,14 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   /**
    * Function to be called when the review is published/saved as a draft.
    */
-  const onSubmit = async (save = false) => {
+  const onSubmit = async (publish = false) => {
     // check if all fields have been filled in
-    if (review !== "" || reviewerByline !== "" || books.length !== 0 || save) {
+    if (
+      review !== "" ||
+      reviewerByline !== "" ||
+      books.length !== 0 ||
+      !publish
+    ) {
       // publish review
       if (authenticatedUser?.id) {
         setLoading(true);
@@ -181,7 +186,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           byline: reviewerByline,
           featured: featured === "1",
           createdBy: parseInt(authenticatedUser?.id, 10),
-          publishedAt: save ? null : new Date().getTime(),
+          publishedAt: publish ? new Date().getTime() : null,
           books: mapBookToBookRequest(books),
           tags: [],
         };
@@ -189,24 +194,24 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         const status = id ? "success" : "info";
         try {
           await reviewAPIClient.handleReview(book, reviewId);
-          if (save) {
-            newToast(
-              "info",
-              "Review saved.",
-              `Your review has been saved as a draft.`,
-            );
-          } else {
+          if (publish) {
             newToast(
               status,
               "Review published.",
               "Your review has been published.",
+            );
+          } else {
+            newToast(
+              "info",
+              "Review saved.",
+              `Your review has been saved as a draft.`,
             );
           }
           history.push("/dashboard");
         } catch (e) {
           newToast(
             "error",
-            "Error saving review.",
+            "Error submitting review.",
             "Something went wrong, please refresh the page and try again.",
           );
         }
@@ -218,7 +223,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     setReviewError(false);
     setBylineError(false);
     if (review !== "" || reviewerByline !== "") {
-      onSubmit(true);
+      onSubmit();
     }
   };
 
@@ -304,7 +309,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       <PublishModal
         isOpen={showPublishModal}
         onClose={onPublishModalClose}
-        onPublish={onSubmit}
+        onPublish={() => onSubmit(true)}
       />
       <DeleteReviewModal
         isOpen={showDeleteReviewModal}
