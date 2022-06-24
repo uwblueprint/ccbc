@@ -13,7 +13,7 @@ import PreviewReview from "../../PreviewReview/PreviewReview";
  * The model defining the route parameters that can be passed to
  * the Display Review Page
  */
-interface Params {
+interface DisplayReviewParams {
   /** The unique identifer for the Review that is being viewed */
   id: string;
 }
@@ -22,7 +22,7 @@ interface Params {
  * The component for the page where the user views a review.
  */
 const DisplayReview = (): React.ReactElement => {
-  const { id } = useParams<Params>();
+  const { id } = useParams<DisplayReviewParams>();
   const [currentReview, setCurrentReview] = useState<Review | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -67,7 +67,7 @@ const DisplayReview = (): React.ReactElement => {
               isRound
               icon={<ArrowBackIcon w={7} h={7} />}
               mr={6}
-              onClick={() => window.location.assign("/")}
+              onClick={() => history.goBack()}
             />
             <Text fontSize="15px" fontWeight="medium" cursor="default">
               Return to Search
