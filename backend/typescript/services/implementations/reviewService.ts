@@ -5,11 +5,13 @@ import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
 import PgBookAuthor from "../../models/book_author.model";
 import PgBookPublisher from "../../models/book_publisher.model";
+import PgBookGenre from "../../models/book_genre.model";
 import PgReviewTag from "../../models/review_tag.model";
 import PgTag from "../../models/tag.model";
 import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
+import PgGenre from "../../models/genre.model";
 import logger from "../../utilities/logger";
 import { sequelize } from "../../umzug";
 import {
@@ -20,6 +22,7 @@ import {
   BookRequest,
   AuthorResponse,
   AuthorRequest,
+  GenreResponse,
   TagRequest,
   PublisherRequest,
   PublisherResponse,
@@ -168,6 +171,8 @@ class ReviewService implements IReviewService {
       });
     }
 
+    const genresRet: GenreResponse[] = [];
+
     await review.$add("books", newBook, { transaction: t });
     return {
       id: newBook.id,
@@ -181,6 +186,7 @@ class ReviewService implements IReviewService {
       minAge: newBook.age_range[0].value,
       maxAge: newBook.age_range[1].value,
       authors: authorsRet,
+      genres: genresRet,
       publishers: publishersRet,
       series: {
         id: series?.id || null,
@@ -329,6 +335,12 @@ class ReviewService implements IReviewService {
         },
       );
 
+      const genresRet: GenreResponse[] = book.genres.map((p: PgGenre) => {
+        return {
+          name: p.name,
+        };
+      });
+
       return {
         id: book.id,
         title: book.title,
@@ -341,6 +353,7 @@ class ReviewService implements IReviewService {
         minAge: book.age_range[0].value,
         maxAge: book.age_range[1].value,
         authors: authorsRet,
+        genres: genresRet,
         publishers: publishersRet,
         series: {
           id: book.series?.id || null,

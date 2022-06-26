@@ -30,6 +30,10 @@ export const PublisherResponse = t.iface([], {
   publishYear: "number",
 });
 
+export const GenreResponse = t.iface([], {
+  name: "string",
+});
+
 export const Format = t.iface([], {
   format: "string",
   price: "number",
