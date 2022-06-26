@@ -64,11 +64,13 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [currBook, setCurrBook] = useState<Book | null>(null);
   const newToast = useToasts();
 
-  const [showDeleteBookModal, setShowDeleteBookModal] =
-    useState<boolean>(false);
+  const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
+    false,
+  );
   const [showPublishModal, setShowPublishModal] = useState<boolean>(false);
-  const [showDeleteReviewModal, setShowDeleteReviewModal] =
-    useState<boolean>(false);
+  const [showDeleteReviewModal, setShowDeleteReviewModal] = useState<boolean>(
+    false,
+  );
   // const [showSaveDraftBeforeModal, setSaveDraftBeforeModal] =
   //   useState<boolean>(false);
   const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
