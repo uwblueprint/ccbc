@@ -16,6 +16,8 @@ import Review from "./review.model";
 import Series from "./series.model";
 import { Format } from "../services/interfaces/IReviewService";
 import { Range } from "./interfaces/range";
+import Genre from "./genre.model";
+import BookGenre from "./book_genre.model";
 
 @Table({ tableName: "books" })
 export default class Book extends Model {
@@ -62,4 +64,7 @@ export default class Book extends Model {
 
   @BelongsToMany(() => Publisher, () => BookPublisher)
   publishers!: Publisher[];
+
+  @BelongsToMany(() => Genre, () => BookGenre)
+  genres!: Genre[];
 }
