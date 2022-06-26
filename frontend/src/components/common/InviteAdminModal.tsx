@@ -54,12 +54,6 @@ const InviteAdminModal = (props: InviteAdminModalProps): React.ReactElement => {
         newToast("error", "Error inviting admin", SIGNUP_ERROR);
       } else {
         onClose();
-        // clear states
-        setEmail("");
-        setFirstName("");
-        setLastName("");
-        setIsInvalid(false);
-        setErrorMessage("");
         newToast(
           `success`,
           `Invite sent`,
