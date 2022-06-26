@@ -34,16 +34,14 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     return queryInterface.sequelize.transaction((t) => {
-      return Promise.all([
-        queryInterface.dropTable(
-          'genres', 
-          { transaction: t}
-        ),
-        queryInterface.dropTable(
-          'book_genre', 
-          { transaction: t}
-        ),  
-      ]);
+      await queryInterface.dropTable(
+        'book_genre',
+        { transaction: t }
+      );
+      await queryInterface.dropTable(
+        'genres',
+        { transaction: t }
+      );
     })
   },
 };
