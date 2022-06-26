@@ -34,3 +34,5 @@ export const DEFAULT_PAGE = "/default"; // FOR TESTING ONLY
 export const PREVIEW_REVIEW_TEST = "/test/preview-review";
 
 export const NOT_FOUND_PAGE = "/404";
+
+export const SEARCH_BOX = "/test/search-box";

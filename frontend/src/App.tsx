@@ -17,6 +17,7 @@ import EditReviewPage from "./components/pages/EditReviewPage";
 import MagazineReview from "./components/pages/MagazineReview";
 import NotFound from "./components/pages/NotFound";
 import Profile from "./components/pages/Profile";
+import SearchBox from "./components/pages/SearchBox";
 import Unauthorized from "./components/pages/UnauthorizedPage";
 import { AUTHENTICATED_USER_KEY } from "./constants/AuthConstants";
 import { UserRole } from "./constants/Enums";
@@ -125,6 +126,11 @@ const App = (): React.ReactElement => {
                       path={Routes.DEFAULT_PAGE}
                       component={Default}
                       requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
+                    />
+                    <Route
+                      exact
+                      path={Routes.SEARCH_BOX}
+                      component={SearchBox}
                     />
                     <Route
                       exact

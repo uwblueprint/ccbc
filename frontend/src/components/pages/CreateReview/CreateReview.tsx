@@ -32,6 +32,7 @@ import DeleteReviewModal from "./DeleteReviewModal";
 import data from "./mockData";
 import PublishModal from "./PublishModal";
 import ReviewEditor from "./ReviewEditor";
+// import SaveDraftReviewModal from "./SaveDraftReviewModal";
 import SingleBook from "./SingleBook";
 
 /**
@@ -70,6 +71,8 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [showDeleteReviewModal, setShowDeleteReviewModal] = useState<boolean>(
     false,
   );
+  // const [showSaveDraftBeforeModal, setSaveDraftBeforeModal] =
+  //   useState<boolean>(false);
   const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
   const [books, setBooks] = useState<Book[]>([]);
   const [review, setReview] = useState("");
@@ -84,6 +87,10 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     reviewerByline === "" ||
     books.length === 0;
 
+  const cannotSave =
+    ((review === "" || review === "<p><br></p>") && reviewerByline === "") ||
+    books.length === 0;
+
   const [reviewError, setReviewError] = useState(false);
   const [bylineError, setBylineError] = useState(false);
 
@@ -93,14 +100,25 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const onDeleteBookModalClose = () => setShowDeleteBookModal(false);
   const onPublishModalClose = () => setShowPublishModal(false);
   const onDeleteReviewModalClose = () => setShowDeleteReviewModal(false);
+  // const onDeleteDraftReviewModalClose = () => setSaveDraftBeforeModal(false);
 
   const history = useHistory();
 
   const { authenticatedUser } = useContext(AuthContext);
 
+  /* on leaving the page we need to have the save as draft window confirmation pop up
+  // useEffect(() => {
+  //   window.addEventListener("beforeunload", () => {
+  //     if (!cannotSave) {
+  //       console.log("hi");
+  //       setSaveDraftBeforeModal(true);
+  //     }
+  //   });
+  // }, [cannotSave]);
+
   // const handleTagSelected = (e: Option[]) => {
   //   setTagsSelected(e);
-  // };
+  /* };
 
   /**
    * Adds a book to the list of books.
@@ -150,11 +168,16 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   };
 
   /**
-   * Function to be called when the review is published.
+   * Function to be called when the review is published/saved as a draft.
    */
-  const onPublish = async () => {
+  const onSubmit = async (publish = false) => {
     // check if all fields have been filled in
-    if (review !== "" || reviewerByline !== "" || books.length !== 0) {
+    if (
+      review !== "" ||
+      reviewerByline !== "" ||
+      books.length !== 0 ||
+      !publish
+    ) {
       // publish review
       if (authenticatedUser?.id) {
         setLoading(true);
@@ -163,7 +186,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           byline: reviewerByline,
           featured: featured === "1",
           createdBy: parseInt(authenticatedUser?.id, 10),
-          publishedAt: new Date().getTime(),
+          publishedAt: publish ? new Date().getTime() : null,
           books: mapBookToBookRequest(books),
           tags: [],
         };
@@ -171,20 +194,36 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         const status = id ? "success" : "info";
         try {
           await reviewAPIClient.handleReview(reviewReq, reviewId);
-          newToast(
-            status,
-            "Review published.",
-            "Your review has been published.",
-          );
+          if (publish) {
+            newToast(
+              status,
+              "Review published.",
+              "Your review has been published.",
+            );
+          } else {
+            newToast(
+              "info",
+              "Review saved.",
+              `Your review has been saved as a draft.`,
+            );
+          }
           history.push("/dashboard");
         } catch (e) {
           newToast(
             "error",
-            "Error publishing review.",
+            "Error submitting review.",
             "Something went wrong, please refresh the page and try again.",
           );
         }
       }
+    }
+  };
+
+  const handleSave = () => {
+    setReviewError(false);
+    setBylineError(false);
+    if (review !== "" || reviewerByline !== "") {
+      onSubmit();
     }
   };
 
@@ -270,13 +309,24 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       <PublishModal
         isOpen={showPublishModal}
         onClose={onPublishModalClose}
-        onPublish={onPublish}
+        onPublish={() => onSubmit(true)}
       />
       <DeleteReviewModal
         isOpen={showDeleteReviewModal}
         onClose={onDeleteReviewModalClose}
         deleteReview={() => {}}
       />
+      {/*  on leaving the page we need to have the save as draft window confirmation pop up, disabled for now 
+      {
+        <SaveDraftReviewModal
+          isOpen={showSaveDraftBeforeModal}
+          onClose={onDeleteDraftReviewModalClose}
+          deleteReview={() => {}}
+          saveReview={() => onSubmit(save = true)}
+          bookTitle="idk"
+        />
+      }
+      */}
       <PreviewReviewModal
         review={createPreviewModalReviewObject()}
         isOpen={isOpenPreviewModal}
@@ -324,8 +374,8 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
             >
               Preview
             </Button>
-            <Button variant="ghost" onClick={() => {}}>
-              Save
+            <Button variant="ghost" onClick={handleSave} disabled={cannotSave}>
+              Save as Draft
             </Button>
             <Button
               colorScheme="teal"
