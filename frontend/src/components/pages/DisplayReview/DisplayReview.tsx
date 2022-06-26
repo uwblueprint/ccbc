@@ -60,17 +60,22 @@ const DisplayReview = (): React.ReactElement => {
           bgColor="#F6F6F6"
           padding="2% 10% 0 10%"
         >
-          <Box display="flex" flexDirection="row" alignItems="center">
+          <Box
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            onClick={() => history.goBack()}
+            style={{ cursor: "pointer" }}
+          >
             <IconButton
               aria-label="Go back"
               variant="ghost"
               isRound
               icon={<ArrowBackIcon w={7} h={7} />}
               mr={6}
-              onClick={() => history.goBack()}
             />
-            <Text fontSize="15px" fontWeight="medium" cursor="default">
-              Return to Search
+            <Text fontSize="15px" fontWeight="medium">
+              Go Back
             </Text>
           </Box>
         </Box>
