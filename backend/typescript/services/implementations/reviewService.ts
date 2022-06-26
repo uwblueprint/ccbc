@@ -134,7 +134,7 @@ class ReviewService implements IReviewService {
         illustrator: book.illustrator || null,
         translator: book.translator || null,
         formats: book.formats,
-        age_range: [book.minAge, book.maxAge],
+        age_range: [{ value: book.minAge, inclusive: true }, { value: book.maxAge, inclusive: true }],
       },
       { transaction: t },
     );
