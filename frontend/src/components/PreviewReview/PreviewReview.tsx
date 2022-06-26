@@ -26,20 +26,20 @@ interface PreviewReviewProps {
  * what the subscribers of the review will see
  */
 const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
-  const [currentBook, setCurrentBook] = useState<number>(0);
+  const len = review.books.length - 1;
+  const [currentBook, setCurrentBook] = useState<number>(len);
 
   const handleLeftClick = () => {
-    if (currentBook > 0) {
-      setCurrentBook(currentBook - 1);
-    }
-  };
-
-  const handleRightClick = () => {
-    if (currentBook < review.books.length - 1) {
+    if (currentBook < len) {
       setCurrentBook(currentBook + 1);
     }
   };
 
+  const handleRightClick = () => {
+    if (currentBook > 0) {
+      setCurrentBook(currentBook - 1);
+    }
+  };
   return (
     <>
       <VStack spacing={10}>
@@ -47,8 +47,8 @@ const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
           <ChevronLeftIcon
             boxSize="2em"
             style={{
-              cursor: `${currentBook !== 0 ? "pointer" : "auto"}`,
-              color: `${currentBook !== 0 ? "black" : "lightgray"}`,
+              cursor: `${currentBook !== len ? "pointer" : "auto"}`,
+              color: `${currentBook !== len ? "black" : "lightgray"}`,
             }}
             onClick={handleLeftClick}
           />
@@ -129,12 +129,8 @@ const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
           <ChevronRightIcon
             boxSize="2em"
             style={{
-              cursor: `${
-                currentBook !== review.books.length - 1 ? "pointer" : "auto"
-              }`,
-              color: `${
-                currentBook !== review.books.length - 1 ? "black" : "lightgray"
-              }`,
+              cursor: `${currentBook !== 0 ? "pointer" : "auto"}`,
+              color: `${currentBook !== 0 ? "black" : "lightgray"}`,
             }}
             onClick={handleRightClick}
           />
@@ -144,11 +140,11 @@ const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
             <Icon
               key={index}
               viewBox="0 0 200 200"
-              onClick={() => setCurrentBook(index)}
+              onClick={() => setCurrentBook(len - index)}
               style={{ cursor: "pointer" }}
             >
               <path
-                fill={`${index === currentBook ? "black" : "none"}`}
+                fill={`${index === len - currentBook ? "black" : "none"}`}
                 stroke="black"
                 strokeWidth="12"
                 d="M 100, 100 m -75, 0 a 75,75 0 1,0 150,0 a 75,75 0 1,0 -150,0"
