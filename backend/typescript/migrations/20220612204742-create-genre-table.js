@@ -33,7 +33,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    return queryInterface.sequelize.transaction((t) => {
+    return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.dropTable(
         'book_genre',
         { transaction: t }
@@ -42,6 +42,7 @@ module.exports = {
         'genres',
         { transaction: t }
       );
+      return Promise.resolve();
     })
   },
 };
