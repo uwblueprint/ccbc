@@ -19,13 +19,17 @@ import { Review } from "../../types/ReviewTypes";
 interface PreviewReviewProps {
   /** The review to be previewed */
   review: Review;
+  isPageView?: boolean;
 }
 
 /**
  * This component allows an admin to preview their review and get an understanding of
  * what the subscribers of the review will see
  */
-const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
+const PreviewReview = ({
+  review,
+  isPageView = false,
+}: PreviewReviewProps): React.ReactElement => {
   const [currentBook, setCurrentBook] = useState<number>(0);
 
   const handleLeftClick = () => {
@@ -43,7 +47,11 @@ const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
   return (
     <>
       <VStack spacing={10}>
-        <HStack justify="space-between" mb="-12px">
+        <HStack
+          justify="space-between"
+          mb="-12px"
+          spacing={isPageView ? 20 : 0}
+        >
           <ChevronLeftIcon
             boxSize="2em"
             style={{
@@ -55,8 +63,8 @@ const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
           <Box paddingRight={16}>
             <Image
               borderRadius={5}
-              maxHeight={60}
-              maxWidth={60}
+              maxHeight={isPageView ? 80 : 60}
+              maxWidth={isPageView ? 80 : 60}
               objectFit="contain"
               src={
                 review.books[currentBook].coverImage
@@ -90,7 +98,7 @@ const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
                         .join(", ")}
                     </Text>
                   </HStack>
-                  {review.books[currentBook].illustrator && (
+                  {review.books[currentBook].illustrator.length > 0 && (
                     <HStack>
                       <Text fontWeight={600}>Illustrated By:</Text>
                       <Text fontWeight={400}>
@@ -156,7 +164,7 @@ const PreviewReview = ({ review }: PreviewReviewProps): React.ReactElement => {
             </Icon>
           ))}
         </HStack>
-        <VStack align="flex-start" width="80%">
+        <VStack align="flex-start" width={isPageView ? "50%" : "80%"}>
           <HStack fontSize="12px">
             <Text fontWeight={600}>Reviewed By:</Text>
             <Text

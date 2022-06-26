@@ -36,3 +36,5 @@ export const PREVIEW_REVIEW_TEST = "/test/preview-review";
 export const NOT_FOUND_PAGE = "/404";
 
 export const SEARCH_BOX = "/test/search-box";
+
+export const DISPLAY_REVIEW_PAGE = "/reviews/:id";
