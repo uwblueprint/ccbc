@@ -196,222 +196,17 @@ class ReviewService implements IReviewService {
   // otherwise, deleteReview should be called inside a try catch block with t as parameter
   async deleteReview(id: string, txn?: Transaction): Promise<void> {
     if (txn) {
-      const reviewToDelete = await PgReview.findByPk(id, {
-        transaction: txn,
-        include: [{ all: true, nested: true }],
-      });
-
-      if (!reviewToDelete) {
-        throw new Error(`Review id ${id} not found`);
-      }
-
-      const allBookIds = reviewToDelete.books.map((book: PgBook) => book.id);
-      const deletePublishersAndAuthors = Promise.all(
-        reviewToDelete.books.map(async (book: PgBook) => {
-          // Delete authors (if necessary)
-          book.authors.forEach((author: PgAuthor) => {
-            PgBookAuthor.findAll({
-              where: { author_id: author.id },
-            }).then(async (ret: PgBookAuthor[]) => {
-              const bookAuthorIds = ret.map(
-                (bookAuthor: PgBookAuthor) => bookAuthor.book_id,
-              );
-              if (
-                bookAuthorIds.every((bookId) => allBookIds.includes(bookId))
-              ) {
-                // Delete author
-                await PgAuthor.destroy({
-                  where: { id: [author.id] },
-                });
-              }
-            });
-          });
-
-          // Delete publishers (if necessary)
-          book.publishers.forEach((publisher: PgPublisher) => {
-            PgBookPublisher.findAll({
-              where: { publisher_id: publisher.id },
-            }).then(async (ret: PgBookPublisher[]) => {
-              const bookPublisherIds = ret.map(
-                (bookPublisher: PgBookPublisher) => bookPublisher.book_id,
-              );
-              if (
-                bookPublisherIds.every((bookId) => allBookIds.includes(bookId))
-              ) {
-                // Delete publisher
-                await PgPublisher.destroy({
-                  where: { id: [publisher.id] },
-                });
-              }
-            });
-          });
-        }),
-      );
-
-      const deleteBooks = Promise.all(
-        reviewToDelete.books.map(async (book: PgBook) => {
-          // Delete book
-          PgBook.destroy({
-            where: { id: [book.id] },
-          }).then(() => {
-            // Delete series (if necessary)
-            if (book.series) {
-              PgBook.findAll({
-                where: { series_id: book.series.id },
-              }).then((ret: PgBook[]) => {
-                // We check for 0 because we deleted the book (can't be 1)
-                if (ret.length === 0) {
-                  // Delete series
-                  PgSeries.destroy({
-                    where: { id: [book.series.id] },
-                  });
-                }
-              });
-            }
-          });
-        }),
-      );
-
-      // Delete tags (if necessary)
-      const deleteTags = Promise.all(
-        reviewToDelete.tags.map((tag: Tag) => {
-          return PgReviewTag.findAll({
-            where: { tag_id: tag.id },
-          }).then(async (ret: PgReviewTag[]) => {
-            if (ret.length === 1) {
-              // Delete tags
-              await Tag.destroy({
-                where: { id: [tag.id] },
-              });
-            }
-          });
-        }),
-      );
-
-      const deleteResult = await Promise.all([
-        deletePublishersAndAuthors,
-        deleteBooks,
-        deleteTags,
-      ]).then(() => {
-        return PgReview.destroy({
-          where: { id: [id] },
-        });
-      });
-
+      const deleteResult = await this.deleteReviewHelper(id, txn);
       if (!deleteResult) {
         throw new Error(`Review id ${id} not found`);
       }
-
       return;
     }
 
     try {
-      const deleteResult = await this.db.transaction(async (t) => {
-        const reviewToDelete = await PgReview.findByPk(id, {
-          transaction: t,
-          include: [{ all: true, nested: true }],
-        });
-
-        if (!reviewToDelete) {
-          throw new Error(`Review id ${id} not found`);
-        }
-
-        const allBookIds = reviewToDelete.books.map((book: PgBook) => book.id);
-        const deletePublishersAndAuthors = Promise.all(
-          reviewToDelete.books.map(async (book: PgBook) => {
-            // Delete authors (if necessary)
-            book.authors.forEach((author: PgAuthor) => {
-              PgBookAuthor.findAll({
-                where: { author_id: author.id },
-              }).then(async (ret: PgBookAuthor[]) => {
-                const bookAuthorIds = ret.map(
-                  (bookAuthor: PgBookAuthor) => bookAuthor.book_id,
-                );
-                if (
-                  bookAuthorIds.every((bookId) => allBookIds.includes(bookId))
-                ) {
-                  // Delete author
-                  await PgAuthor.destroy({
-                    where: { id: [author.id] },
-                  });
-                }
-              });
-            });
-
-            // Delete publishers (if necessary)
-            book.publishers.forEach((publisher: PgPublisher) => {
-              PgBookPublisher.findAll({
-                where: { publisher_id: publisher.id },
-              }).then(async (ret: PgBookPublisher[]) => {
-                const bookPublisherIds = ret.map(
-                  (bookPublisher: PgBookPublisher) => bookPublisher.book_id,
-                );
-                if (
-                  bookPublisherIds.every((bookId) =>
-                    allBookIds.includes(bookId),
-                  )
-                ) {
-                  // Delete publisher
-                  await PgPublisher.destroy({
-                    where: { id: [publisher.id] },
-                  });
-                }
-              });
-            });
-          }),
-        );
-
-        const deleteBooks = Promise.all(
-          reviewToDelete.books.map(async (book: PgBook) => {
-            // Delete book
-            PgBook.destroy({
-              where: { id: [book.id] },
-            }).then(() => {
-              // Delete series (if necessary)
-              if (book.series) {
-                PgBook.findAll({
-                  where: { series_id: book.series.id },
-                }).then((ret: PgBook[]) => {
-                  // We check for 0 because we deleted the book (can't be 1)
-                  if (ret.length === 0) {
-                    // Delete series
-                    PgSeries.destroy({
-                      where: { id: [book.series.id] },
-                    });
-                  }
-                });
-              }
-            });
-          }),
-        );
-
-        // Delete tags (if necessary)
-        const deleteTags = Promise.all(
-          reviewToDelete.tags.map((tag: Tag) => {
-            return PgReviewTag.findAll({
-              where: { tag_id: tag.id },
-            }).then(async (ret: PgReviewTag[]) => {
-              if (ret.length === 1) {
-                // Delete tags
-                await Tag.destroy({
-                  where: { id: [tag.id] },
-                });
-              }
-            });
-          }),
-        );
-
-        return Promise.all([
-          deletePublishersAndAuthors,
-          deleteBooks,
-          deleteTags,
-        ]).then(() => {
-          return PgReview.destroy({
-            where: { id: [id] },
-          });
-        });
-      });
-
+      const deleteResult = await this.db.transaction(async (t) =>
+        this.deleteReviewHelper(id, t),
+      );
       if (!deleteResult) {
         throw new Error(`Review id ${id} not found`);
       }
@@ -421,6 +216,93 @@ class ReviewService implements IReviewService {
       );
       throw error;
     }
+  }
+
+  async deleteReviewHelper(id: string, txn: Transaction): Promise<number> {
+    const reviewToDelete = await PgReview.findByPk(id, {
+      transaction: txn,
+      include: [{ all: true, nested: true }],
+    });
+
+    if (!reviewToDelete) {
+      throw new Error(`Review id ${id} not found`);
+    }
+
+    const allBookIds = reviewToDelete.books.map((book: PgBook) => book.id);
+    const deletePublishersAndAuthors = Promise.all(
+      reviewToDelete.books.map(async (book: PgBook) => {
+        // Delete authors (if necessary)
+        book.authors.forEach((author: PgAuthor) => {
+          PgBookAuthor.findAll({
+            where: { author_id: author.id },
+          }).then(async (ret: PgBookAuthor[]) => {
+            const bookAuthorIds = ret.map(
+              (bookAuthor: PgBookAuthor) => bookAuthor.book_id,
+            );
+            if (bookAuthorIds.every((bookId) => allBookIds.includes(bookId))) {
+              // Delete author
+              await PgAuthor.destroy({
+                where: { id: [author.id] },
+              });
+            }
+          });
+        });
+
+        // Delete publishers (if necessary)
+        book.publishers.forEach((publisher: PgPublisher) => {
+          PgBookPublisher.findAll({
+            where: { publisher_id: publisher.id },
+          }).then(async (ret: PgBookPublisher[]) => {
+            const bookPublisherIds = ret.map(
+              (bookPublisher: PgBookPublisher) => bookPublisher.book_id,
+            );
+            if (
+              bookPublisherIds.every((bookId) => allBookIds.includes(bookId))
+            ) {
+              // Delete publisher
+              await PgPublisher.destroy({
+                where: { id: [publisher.id] },
+              });
+            }
+          });
+        });
+      }),
+    );
+
+    const deleteBooks = Promise.all(
+      reviewToDelete.books.map(async (book: PgBook) => {
+        // Delete book
+        PgBook.destroy({
+          where: { id: [book.id] },
+        }).then(() => {
+          // Delete series (if necessary)
+          if (book.series) {
+            PgBook.findAll({
+              where: { series_id: book.series.id },
+            }).then((ret: PgBook[]) => {
+              // We check for 0 because we deleted the book (can't be 1)
+              if (ret.length === 0) {
+                // Delete series
+                PgSeries.destroy({
+                  where: { id: [book.series.id] },
+                });
+              }
+            });
+          }
+        });
+      }),
+    );
+
+    const deleteResult = await Promise.all([
+      deletePublishersAndAuthors,
+      deleteBooks,
+    ]).then(() => {
+      return PgReview.destroy({
+        where: { id: [id] },
+      });
+    });
+
+    return deleteResult;
   }
 
   static pgReviewToRet(review: PgReview): ReviewResponseDTO {
@@ -552,86 +434,14 @@ class ReviewService implements IReviewService {
     let result: ReviewResponseDTO;
 
     if (txn) {
-      const newReview = await PgReview.create(
-        {
-          body: review.body,
-          byline: review.byline,
-          featured: review.featured,
-          created_by_id: review.createdBy,
-          published_at: review.publishedAt
-            ? new Date(review.publishedAt)
-            : null,
-          ...(id ? { id } : {}),
-        },
-        { transaction: txn },
-      );
-
-      const tagsRet = await this.findOrCreateTags(newReview, review.tags, txn);
-
-      const booksRes: Promise<BookResponse>[] = [];
-      review.books.forEach((book) => {
-        booksRes.push(this.createBook(newReview, book, txn));
-      });
-
-      const booksRet: BookResponse[] = await Promise.all(booksRes);
-
-      return {
-        reviewId: newReview.id,
-        body: newReview.body,
-        byline: newReview.byline,
-        featured: newReview.featured,
-        createdBy: newReview.created_by_id,
-        books: booksRet,
-        tags: tagsRet,
-        updatedAt: newReview.updatedAt.getTime(),
-        publishedAt: newReview.published_at?.getTime()
-          ? newReview.published_at.getTime()
-          : null,
-        createdAt: newReview.createdAt.getTime(),
-      };
+      result = await this.createReviewHelper(review, txn, id);
+      return result;
     }
 
     try {
-      result = await this.db.transaction(async (t) => {
-        const newReview = await PgReview.create(
-          {
-            id,
-            body: review.body,
-            byline: review.byline,
-            featured: review.featured,
-            created_by_id: review.createdBy,
-            published_at: review.publishedAt
-              ? new Date(review.publishedAt)
-              : null,
-            ...(id ? { id } : {}),
-          },
-          { transaction: t },
-        );
-
-        const tagsRet = await this.findOrCreateTags(newReview, review.tags, t);
-
-        const booksRes: Promise<BookResponse>[] = [];
-        review.books.forEach((book) => {
-          booksRes.push(this.createBook(newReview, book, t));
-        });
-
-        const booksRet: BookResponse[] = await Promise.all(booksRes);
-
-        return {
-          reviewId: newReview.id,
-          body: newReview.body,
-          byline: newReview.byline,
-          featured: newReview.featured,
-          createdBy: newReview.created_by_id,
-          books: booksRet,
-          tags: tagsRet,
-          updatedAt: newReview.updatedAt.getTime(),
-          publishedAt: newReview.published_at?.getTime()
-            ? newReview.published_at.getTime()
-            : null,
-          createdAt: newReview.createdAt.getTime(),
-        };
-      });
+      result = await this.db.transaction(async (t) =>
+        this.createReviewHelper(review, t, id),
+      );
     } catch (error: unknown) {
       Logger.error(
         `Failed to create entity. Reason = ${getErrorMessage(error)}`,
@@ -642,14 +452,54 @@ class ReviewService implements IReviewService {
     return result;
   }
 
+  async createReviewHelper(
+    review: ReviewRequestDTO,
+    txn: Transaction,
+    id?: string,
+  ): Promise<ReviewResponseDTO> {
+    const newReview = await PgReview.create(
+      {
+        body: review.body,
+        byline: review.byline,
+        featured: review.featured,
+        created_by_id: review.createdBy,
+        published_at: review.publishedAt ? new Date(review.publishedAt) : null,
+        ...(id ? { id } : {}),
+      },
+      { transaction: txn },
+    );
+
+    const booksRes: Promise<BookResponse>[] = [];
+    review.books.forEach((book) => {
+      booksRes.push(this.createBook(newReview, book, txn));
+    });
+
+    const booksRet: BookResponse[] = await Promise.all(booksRes);
+
+    return {
+      reviewId: newReview.id,
+      body: newReview.body,
+      byline: newReview.byline,
+      featured: newReview.featured,
+      createdBy: newReview.created_by_id,
+      books: booksRet,
+      tags: [],
+      updatedAt: newReview.updatedAt.getTime(),
+      publishedAt: newReview.published_at?.getTime()
+        ? newReview.published_at.getTime()
+        : null,
+      createdAt: newReview.createdAt.getTime(),
+    };
+  }
+
   async updateReviews(id: string, entity: ReviewRequestDTO): Promise<void> {
     const t = await this.db.transaction();
     try {
       await this.deleteReview(id, t);
       await this.createReview(entity, id, t);
-      t.commit();
+      await t.commit();
     } catch (error: unknown) {
-      t.rollback();
+      await t.rollback();
       Logger.error(
         `Failed to update review. Reason = ${getErrorMessage(error)}`,
       );
