@@ -22,7 +22,7 @@ import {
   BookRequest,
   AuthorResponse,
   AuthorRequest,
-  GenreResponse,
+  Genre,
   TagRequest,
   PublisherRequest,
   PublisherResponse,
@@ -67,6 +67,35 @@ class ReviewService implements IReviewService {
     }
     return tagsRet;
   }
+
+  /* eslint-disable class-methods-use-this, no-await-in-loop */
+  async findOrCreateGenre(
+    book: PgBook,
+    genre: Genre,
+    t: Transaction,
+  ): Promise<PgGenre> {
+    const [genreRef, created] = await PgGenre.findOrCreate({
+      where: { name: genre.name },
+      transaction: t,
+    });
+    if (!created) return genreRef;
+    await book.$add("genres", genreRef, { transaction: t });
+    return genreRef;
+  }
+
+  async findOrCreateGenres(
+    book: PgBook,
+    genres: Genre[],
+    t: Transaction,
+  ): Promise<Genre[]> {
+    const genresRet: Genre[] = [];
+    for (let i = 0; i < genres.length; i += 1) {
+      const genre = await this.findOrCreateGenre(book, genres[i], t);
+      genresRet.push({ name: genre.name });
+    }
+    return genresRet;
+  }
+
 
   async findOrCreateSeries(
     seriesName: string | null | undefined,
@@ -171,7 +200,9 @@ class ReviewService implements IReviewService {
       });
     }
 
-    const genresRet: GenreResponse[] = [];
+    // const genresRet: Genre[] = [];
+    const bookGenres: Genre[] = [{ name: "Horror" }, { name: "Fantasy" }];
+    const genresRet = await this.findOrCreateGenres(newBook, bookGenres, t);
 
     await review.$add("books", newBook, { transaction: t });
     return {
@@ -335,7 +366,7 @@ class ReviewService implements IReviewService {
         },
       );
 
-      const genresRet: GenreResponse[] = book.genres.map((p: PgGenre) => {
+      const genresRet: Genre[] = book.genres.map((p: PgGenre) => {
         return {
           name: p.name,
         };

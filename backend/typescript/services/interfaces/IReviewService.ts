@@ -24,11 +24,7 @@ export interface PublisherResponse {
   publishYear: number;
 }
 
-// export interface GenreRequest {
-//   name: string;
-// }
-
-export interface GenreResponse {
+export interface Genre {
   name: string;
 }
 
@@ -55,7 +51,7 @@ export interface BookRequest {
   minAge: number;
   maxAge: number;
   authors: AuthorRequest[];
-  // genres: GenreRequest[];
+  genres: Genre[];
   publishers: PublisherRequest[];
   series: Series;
 }
@@ -72,7 +68,7 @@ export interface BookResponse {
   minAge: number;
   maxAge: number;
   authors: AuthorResponse[];
-  genres: GenreResponse[];
+  genres: Genre[];
   publishers: PublisherResponse[];
   series: Series;
 }
