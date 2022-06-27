@@ -5,7 +5,7 @@ import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
 import PgBookAuthor from "../../models/book_author.model";
 import PgBookPublisher from "../../models/book_publisher.model";
-import PgBookGenre from "../../models/book_genre.model";
+// import PgBookGenre from "../../models/book_genre.model";
 import PgReviewTag from "../../models/review_tag.model";
 import PgTag from "../../models/tag.model";
 import PgSeries from "../../models/series.model";
@@ -95,7 +95,6 @@ class ReviewService implements IReviewService {
     }
     return genresRet;
   }
-
 
   async findOrCreateSeries(
     seriesName: string | null | undefined,
