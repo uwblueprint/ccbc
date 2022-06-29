@@ -32,6 +32,14 @@ const PreviewReview = ({
 }: PreviewReviewProps): React.ReactElement => {
   const [currentBook, setCurrentBook] = useState<number>(0);
 
+  // sort books based on series order
+  review.books.sort((a, b) => {
+    const seriesOrderA = a.seriesOrder ? a.seriesOrder : 0;
+    const seriesOrderB = b.seriesOrder ? b.seriesOrder : 0;
+
+    return seriesOrderA - seriesOrderB;
+  });
+
   const handleLeftClick = () => {
     if (currentBook > 0) {
       setCurrentBook(currentBook - 1);
