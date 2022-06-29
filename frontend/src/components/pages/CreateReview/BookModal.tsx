@@ -140,7 +140,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       const bookFormat = book.formats[0];
       setFormat(bookFormat.format);
       setPrice(
-        !Number.isNaN(bookFormat.price)
+        !Number.isNaN(Number(bookFormat.price))
           ? Number(bookFormat.price).toFixed(2)
           : "0.00",
       );
@@ -149,7 +149,6 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setPublisher(bookPublisher.fullName);
       setPublicationYear(bookPublisher.publishYear.toString());
     };
-
     if (!isOpen) {
       clearBookData();
     } else if (currBook) {
@@ -162,7 +161,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     price === "" ||
     (!Number.isNaN(Number(price)) &&
       !/^[a-zA-Z]+$/.test(price) &&
-      Number(price) > kMinPrice &&
+      Number(price) >= kMinPrice &&
       Number(price) < kMaxPrice);
   /** Ensure that ISBN is valid or an empty field */
   const isEmptyOrValidISBN =
