@@ -243,6 +243,7 @@ class ReviewService implements IReviewService {
               // Delete author
               await PgAuthor.destroy({
                 where: { id: [author.id] },
+                transaction: txn,
               });
             }
           });
@@ -262,6 +263,7 @@ class ReviewService implements IReviewService {
               // Delete publisher
               await PgPublisher.destroy({
                 where: { id: [publisher.id] },
+                transaction: txn,
               });
             }
           });
@@ -274,6 +276,7 @@ class ReviewService implements IReviewService {
         // Delete book
         PgBook.destroy({
           where: { id: [book.id] },
+          transaction: txn,
         }).then(() => {
           // Delete series (if necessary)
           if (book.series) {
@@ -285,6 +288,7 @@ class ReviewService implements IReviewService {
                 // Delete series
                 PgSeries.destroy({
                   where: { id: [book.series.id] },
+                  transaction: txn,
                 });
               }
             });
@@ -299,6 +303,7 @@ class ReviewService implements IReviewService {
     ]).then(() => {
       return PgReview.destroy({
         where: { id: [id] },
+        transaction: txn,
       });
     });
 
