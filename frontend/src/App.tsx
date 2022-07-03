@@ -16,6 +16,7 @@ import Default from "./components/pages/Default";
 import DisplayReview from "./components/pages/DisplayReview/DisplayReview";
 import EditReviewPage from "./components/pages/EditReviewPage";
 import MagazineReview from "./components/pages/MagazineReview";
+import MockSearchPage from "./components/pages/MockSearch/MockSearchPage";
 import NotFound from "./components/pages/NotFound";
 import Profile from "./components/pages/Profile";
 import SearchBox from "./components/pages/SearchBox";
@@ -110,6 +111,11 @@ const App = (): React.ReactElement => {
                       path={Routes.CREATE_REVIEW_PAGE}
                       component={CreateReviewPage}
                       requiredRoles={[UserRole.Admin]}
+                    />
+                    <Route
+                      exact
+                      path={Routes.MOCK_SEARCH_PAGE}
+                      component={MockSearchPage}
                     />
                     <PrivateRoute
                       exact
