@@ -191,12 +191,11 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           tags: [],
         };
         const reviewId = id ? parseInt(id, 10) : undefined;
-        const status = id ? "info" : "success";
         try {
           await reviewAPIClient.handleReview(book, reviewId);
           if (publish) {
             newToast(
-              status,
+              "success",
               "Review published.",
               "Your review has been published.",
             );
