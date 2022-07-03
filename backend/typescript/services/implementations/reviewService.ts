@@ -199,9 +199,11 @@ class ReviewService implements IReviewService {
       });
     }
 
-    // const genresRet: Genre[] = [];
-    const bookGenres: Genre[] = [{ name: "Horror" }, { name: "Fantasy" }];
-    const genresRet = await this.findOrCreateGenres(newBook, bookGenres, t);
+    const genresRet: Genre[] = await this.findOrCreateGenres(
+      newBook,
+      book.genres,
+      t,
+    );
 
     await review.$add("books", newBook, { transaction: t });
     return {
@@ -300,6 +302,20 @@ class ReviewService implements IReviewService {
                       where: { id: [book.series.id] },
                     });
                   }
+                });
+              }
+              // Delete genres (if necessary)
+              if (book.genres) {
+                book.genres.map((genre: PgGenre) => {
+                  return PgBook.findAll({
+                    where: { name: genre.name },
+                  }).then((ret: PgBook[]) => {
+                    if (ret.length === 0) {
+                      PgGenre.destroy({
+                        where: { name: genre.name },
+                      });
+                    }
+                  });
                 });
               }
             });
@@ -470,11 +486,13 @@ class ReviewService implements IReviewService {
     return result;
   }
 
-  /* eslint-disable class-methods-use-this, no-await-in-loop */
-  /*
-    as per https://eslint.org/docs/rules/no-await-in-loop, it is recommended to use loops to execute dependent async tasks
-  */
-  async createReview(review: ReviewRequestDTO): Promise<ReviewResponseDTO> {
+  // if createReview is called without parameter txn, it runs in a try catch block
+  // otherwise, createReview should be called inside a try catch block with t as parameter
+  async createReview(
+    review: ReviewRequestDTO,
+    id?: string,
+    txn?: Transaction,
+  ): Promise<ReviewResponseDTO> {
     let result: ReviewResponseDTO;
 
     try {
@@ -705,6 +723,8 @@ class ReviewService implements IReviewService {
             }
           }),
         );
+
+        // TODO: Update genres
 
         // update authors
         await Promise.all(
