@@ -19,10 +19,13 @@ import React, { useEffect, useState } from "react";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { BookFormats, Genre } from "../../../constants/Enums";
 import { Author, Book, BookFormat, Publisher } from "../../../types/BookTypes";
+import { Option } from "../../../types/TagTypes";
+import AddMultiSelect from "./AddMultiSelect";
 import AddNumberInput from "./AddNumberInput";
 import AddSelect from "./AddSelect";
 import AddStringInput from "./AddStringInput";
 import AddStringInputList from "./AddStringInputList";
+import Tags from "./Tags";
 
 /**
  * Interface defining props for BookModal component
@@ -74,7 +77,8 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   const [price, setPrice] = useState<string>("");
   const [coverImage, setCoverImage] = useState<string>("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [genre, setGenre] = useState<string>("");
+  // const [genres, setGenres] = useState<string[]>([]);
+  // const [genreOptions, setGenreOptions] = useState<Option[]>([]);
   const [minAge, setMinAge] = useState<number>(0);
   const [maxAge, setMaxAge] = useState<number>(0);
 
@@ -111,7 +115,8 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setIllustrator([]);
       setTranslator([]);
       setFormat("");
-      setGenre("");
+      // setGenres([]);
+      // setGenreOptions([]);
       setMinAge(0);
       setMaxAge(0);
       setAuthors([]);
@@ -131,7 +136,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setIllustrator(book.illustrator);
       setTranslator(book.translator ? book.translator : []);
 
-      setGenre("");
+      // setGenres(book.genres ? book.genres : []);
       setMinAge(book.minAge);
       setMaxAge(book.maxAge);
       setAuthors(book.authors.map((author) => author.fullName));
@@ -225,6 +230,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       authors: authorObjs,
       publishers: publisherObj,
       seriesName,
+      // genres,
     };
 
     if (currBook) {
@@ -380,13 +386,11 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   inputFieldValue={coverImage}
                   setInputField={setCoverImage}
                 />
-                {/* <AddSelect
+                <AddMultiSelect
                   id="genre"
-                  label="Genre"
-                  required
-                  values={Object.values(Genre)}
-                  setSelectField={setGenre}
-                /> */}
+                  label="Genres"
+                  placeholder="Add genres here"
+                />
                 <FormControl
                   isRequired
                   width="100%"

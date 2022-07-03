@@ -39,5 +39,6 @@ export type Book = {
   maxAge: number;
   authors: Author[];
   publishers: Publisher[];
+  // genres: string[];
   seriesName: string | null;
 };
