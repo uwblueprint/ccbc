@@ -18,7 +18,7 @@ import { useHistory } from "react-router-dom";
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import AuthContext from "../../../contexts/AuthContext";
 import { Book } from "../../../types/BookTypes";
-import { ReviewResponse } from "../../../types/ReviewTypes";
+import { ReviewRequest, ReviewResponse } from "../../../types/ReviewTypes";
 import {
   mapBookResponseToBook,
   mapBookToBookRequest,
@@ -181,7 +181,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       // publish review
       if (authenticatedUser?.id) {
         setLoading(true);
-        const book = {
+        const reviewReq: ReviewRequest = {
           body: review,
           byline: reviewerByline,
           featured: featured === "1",
@@ -193,7 +193,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         const reviewId = id ? parseInt(id, 10) : undefined;
         const status = id ? "success" : "info";
         try {
-          await reviewAPIClient.handleReview(book, reviewId);
+          await reviewAPIClient.handleReview(reviewReq, reviewId);
           if (publish) {
             newToast(
               status,
