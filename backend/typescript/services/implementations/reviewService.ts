@@ -6,7 +6,6 @@ import PgBook from "../../models/book.model";
 import PgBookAuthor from "../../models/book_author.model";
 import PgBookPublisher from "../../models/book_publisher.model";
 // import PgBookGenre from "../../models/book_genre.model";
-import PgReviewTag from "../../models/review_tag.model";
 import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
@@ -29,7 +28,6 @@ import {
   User,
 } from "../interfaces/IReviewService";
 import Tag from "../../models/tag.model";
-import { textChangeRangeIsUnchanged } from "typescript";
 
 const Logger = logger(__filename);
 
@@ -307,9 +305,11 @@ class ReviewService implements IReviewService {
                 where: { id: [publisher.id] },
                 transaction: txn,
               });
-            });
-          }),
-        );
+            }
+          });
+        });
+      }),
+    );
 
     const deleteBooks = Promise.all(
       reviewToDelete.books.map(async (book: PgBook) => {
