@@ -12,6 +12,10 @@ type AddStringInputListProps = {
   maxWidth?: string;
   inputFields: string[];
   setInputFields: (s: string[]) => void;
+  regexPattern?: RegExp;
+  isFormat?: boolean;
+  updateFormat?: (n?: number) => void;
+  isIsbn?: boolean;
 };
 
 /**
@@ -28,6 +32,10 @@ const AddStringInputList = ({
   maxWidth,
   inputFields = [""],
   setInputFields,
+  regexPattern,
+  isFormat = false,
+  updateFormat,
+  isIsbn = false,
 }: AddStringInputListProps): React.ReactElement => {
   const [numEmptyFields, setNumEmptyFields] = useState<number>(0);
 
@@ -43,8 +51,10 @@ const AddStringInputList = ({
     } else if (!oldValEmpty && newValEmpty) {
       setNumEmptyFields(numEmptyFields + 1);
     }
-    list[index] = e.target.value;
-    setInputFields(list);
+    if (!regexPattern || regexPattern?.test(e.target.value)) {
+      list[index] = e.target.value;
+      setInputFields(list);
+    }
   };
 
   const handleRemoveField = (index: number) => {
@@ -73,16 +83,28 @@ const AddStringInputList = ({
           handleDelete={handleRemoveField}
           value={field}
           handleInputChange={handleInputChange}
+          isFormat={isFormat}
         />
       ))}
-      <Button
-        colorScheme="blue"
-        variant="link"
-        onClick={handleAddField}
-        disabled={numEmptyFields > 0}
-      >
-        + Add new {label.toLowerCase()}
-      </Button>
+      {!isFormat && (
+        <Button
+          colorScheme="blue"
+          variant="link"
+          onClick={handleAddField}
+          disabled={numEmptyFields > 0}
+        >
+          + Add new {label.toLowerCase()}
+        </Button>
+      )}
+      {updateFormat && inputFields.length > 1 && isIsbn && (
+        <Button
+          colorScheme="red"
+          variant="link"
+          onClick={() => updateFormat(inputFields.length - 1)}
+        >
+          x Remove new format
+        </Button>
+      )}
     </FormControl>
   );
 };
