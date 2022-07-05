@@ -128,6 +128,24 @@ interface IAuthService {
    * @throws Error if unable to set the password
    */
   setTemporaryUserPassword(email: string): Promise<string>;
+
+  /**
+   * Used to register a new account, it creates a user in the db and then sends an email with set up password to register
+   * @param firstName: first name of the user  to be registered
+   * @param lastName: last name of the user to be registered
+   * @param email the user's email associated with their account
+   * @param roleType: role of the user, one of the predefined roles in the Role type
+   * @param subscriptionExpiresOn the date of the subscription will expire on, null if admin
+   * @returns AuthDTO (token and UserDTO)
+   * @throws Error if unable to register the user and send the registartion email
+   */
+  sendRegistrationEmail(
+    firstName: string,
+    lastName: string,
+    email: string,
+    roleType: Role,
+    subscriptionExpiresOn: Date | null,
+  ): Promise<AuthDTO>;
 }
 
 export default IAuthService;

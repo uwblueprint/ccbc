@@ -2,36 +2,49 @@ import { Router } from "express";
 import AuthService from "../services/implementations/authService";
 import UserService from "../services/implementations/userService";
 import { sendErrorResponse } from "../utilities/errorResponse";
-import { Role } from "../types";
+import { AuthDTO, Role, UserDTO } from "../types";
 
 const givecloudRouter: Router = Router();
 
-givecloudRouter.post("/", async (req, res) => {
-  const { membership } = req.body;
-  const { supporter } = req.body;
-  const date = new Date();
+const authDtoToToUserDto = (authDTO: AuthDTO): UserDTO => {
+  const userDTO: UserDTO = (({
+    id,
+    firstName,
+    lastName,
+    email,
+    roleType,
+    subscriptionExpiresOn,
+  }) => ({ id, firstName, lastName, email, roleType, subscriptionExpiresOn }))(
+    authDTO,
+  );
+  return userDTO;
+};
 
-  const userService = new UserService();
-  const authService = new AuthService(userService);
+const userService = new UserService();
+const authService = new AuthService(userService);
 
+givecloudRouter.post("/user.subscription_paid", async (req, res) => {
   try {
+    const { membership, supporter } = req.body;
     const { email } = supporter;
+    const subscriptionExpiresOn = new Date();
     let roleType: Role = "Subscriber";
     if (membership.name === "Professional Creator Membership") {
       roleType = "Author";
     }
     if ((await userService.getUserByEmail(email)) == null) {
-      date.setDate(date.getDate() + membership.days_to_expire);
-      const user = await userService.createUser({
-        firstName: supporter.first_name,
-        lastName: supporter.last_name,
-        email: supporter.email,
+      subscriptionExpiresOn.setDate(
+        subscriptionExpiresOn.getDate() + membership.days_to_expire,
+      );
+      const authDTO = await authService.sendRegistrationEmail(
+        supporter.first_name,
+        supporter.last_name,
+        email,
         roleType,
-        subscriptionExpiresOn: date,
-        password: "",
-      });
-      await authService.sendEmailVerificationLink(email);
-      res.status(201).json(user);
+        subscriptionExpiresOn,
+      );
+
+      res.status(201).json(authDtoToToUserDto(authDTO));
     } else {
       res.status(400).json("user already exists");
     }
