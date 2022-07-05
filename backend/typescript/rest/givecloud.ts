@@ -46,7 +46,11 @@ givecloudRouter.post("/user.subscription_paid", async (req, res) => {
 
       res.status(201).json(authDtoToToUserDto(authDTO));
     } else {
-      res.status(400).json("user already exists");
+      const userDTO = userService.updateUserSubscriptionbyEmail(
+        email,
+        subscriptionExpiresOn,
+      );
+      res.status(201).json(userDTO);
     }
   } catch (e: unknown) {
     sendErrorResponse(e, res);

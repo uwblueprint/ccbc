@@ -377,6 +377,26 @@ class UserService implements IUserService {
       throw error;
     }
   }
+
+  async updateUserSubscriptionbyEmail(
+    userEmail: string,
+    newSubscriptionExpiresOn: Date,
+  ): Promise<UserDTO> {
+    try {
+      const userDTO: UserDTO = await User.update(
+        { subscriptionExpiresOn: newSubscriptionExpiresOn },
+        { where: { email: userEmail }, returning: true, plain: true },
+      );
+      return userDTO;
+    } catch (error) {
+      Logger.error(
+        `Failed to update user subscription. Reason = ${getErrorMessage(
+          error,
+        )}`,
+      );
+      throw error;
+    }
+  }
 }
 
 export default UserService;
