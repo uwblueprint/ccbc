@@ -145,10 +145,30 @@ const mockMultipleBookReview: Review = {
   createdAt: 14,
 };
 
+const mockMultipleBookReviews2: Review = {
+  reviewId: 12,
+  body: "body of review",
+  byline: "byline",
+  featured: true,
+  createdByUser: {
+    firstName: "jessie",
+    lastName: "peng",
+  },
+  books: [mockGenericBookData, mockLongTitleBookData],
+  updatedAt: 12,
+  publishedAt: 20171111333,
+  createdAt: 14,
+};
+
 const mockReviews: Review[] = [
   mockSingleBookReview,
   mockMultipleBookReview,
   mockSingleBookLongTitleReview,
+  mockSingleBookReview,
+  mockMultipleBookReview,
+  mockSingleBookLongTitleReview,
+  mockSingleBookReview,
+  mockMultipleBookReviews2,
 ];
 
 export default mockReviews;
