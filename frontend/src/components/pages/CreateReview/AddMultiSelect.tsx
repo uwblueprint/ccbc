@@ -1,20 +1,15 @@
 /* eslint-disable react/jsx-props-no-spreading, @typescript-eslint/no-explicit-any */
 
 import { CloseIcon } from "@chakra-ui/icons";
-import {
-  Container,
-  FormControl,
-  FormLabel,
-  IconButton,
-} from "@chakra-ui/react";
+import { FormControl, FormLabel, IconButton } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { components } from "react-select";
 import Creatable from "react-select/creatable";
 
-interface Option {
-  label: string;
-  value: string;
-}
+import { Option } from "../../../types/BookTypes";
+import ConfirmationModal from "../../common/ConfirmationModal";
+
+const EmptyOption = { value: "", label: "" };
 
 const customStyles = {
   option: (provided: any) => ({
@@ -41,39 +36,111 @@ interface AddMultiSelectProps {
   required?: boolean;
   placeholder?: string;
   maxWidth?: string;
-  values?: string[];
-  selectFields?: Option[];
-  setSelectField?: (s: Option[]) => void;
+  options: Option[];
+  setOptions: (s: Option[]) => void;
+  optionsSelected: Option[];
+  setOptionsSelected: (s: Option[]) => void;
 }
 
-const AddMultiSelect = (props: AddMultiSelectProps): React.ReactElement => {
-  const {
-    id,
-    label,
-    required,
-    maxWidth,
-    placeholder,
-    values,
-    selectFields,
-    setSelectField,
-  } = props;
+const AddMultiSelect = ({
+  id,
+  label,
+  required,
+  placeholder,
+  maxWidth,
+  options,
+  setOptions,
+  optionsSelected,
+  setOptionsSelected,
+}: AddMultiSelectProps): React.ReactElement => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [optionToDelete, setOptionToDelete] = useState<Option>(EmptyOption);
+
+  const onClose = () => setShowModal(false);
+
+  useEffect(() => {
+    setOptions(options);
+    setIsLoading(false);
+  }, []);
+
+  const createOption = (opt: string) => ({
+    label: opt,
+    value: opt.toLowerCase().replace(/\W/g, ""),
+  });
+
+  const handleCreate = (inputValue: string) => {
+    const newOption = createOption(inputValue);
+    setOptions([...options, newOption]);
+  };
+
+  const handleDelete = () => {
+    // Condition to ensure there is an option to be deleted
+    if (optionToDelete.value === "") {
+      return;
+    }
+
+    // Remove option from dropdown and update state
+    const newOptions = options.filter((x) => x.value !== optionToDelete.value);
+    setOptions(newOptions);
+    setShowModal(false);
+    setOptionToDelete(EmptyOption);
+  };
+
+  const confirmDelete = (e: any, opt: Option) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setShowModal(true);
+    setOptionToDelete(opt);
+  };
+
+  const CustomOption = (optionProps: any) => {
+    const { children, data } = optionProps;
+
+    return (
+      <components.Option {...optionProps}>
+        {children}
+        <IconButton
+          aria-label="Delete Button"
+          size="xs"
+          icon={<CloseIcon />}
+          onClick={(e: any) => confirmDelete(e, data)}
+        />
+      </components.Option>
+    );
+  };
 
   return (
-    <FormControl p={4} isRequired={required} width={maxWidth || "100%"}>
-      <FormLabel>Tags</FormLabel>
-      <Creatable
-        isMulti
-        placeholder={placeholder || "Select options..."}
-        closeMenuOnSelect={false}
-        // options={tagOptions}
-        // onCreateOption={handleCreate}
-        styles={customStyles}
-        // value={tagsSelected}
-        // onChange={handleSelected}
-        // components={{ Option: CustomOption }}
-        formatCreateLabel={(tagName: string) => `Add ${tagName}`}
+    <>
+      <ConfirmationModal
+        showModal={showModal}
+        onClose={onClose}
+        handleDelete={() => handleDelete}
+        itemToDelete={optionToDelete}
+        deleteType="Tag"
       />
-    </FormControl>
+      <FormControl
+        p={4}
+        id={id}
+        isRequired={required}
+        width={maxWidth || "100%"}
+      >
+        <FormLabel>{label}</FormLabel>
+        <Creatable
+          isMulti
+          isLoading={isLoading}
+          placeholder={placeholder || "Select some options..."}
+          closeMenuOnSelect={false}
+          options={options}
+          onCreateOption={handleCreate}
+          styles={customStyles}
+          value={optionsSelected}
+          onChange={setOptionsSelected}
+          components={{ Option: CustomOption }}
+          formatCreateLabel={(optionType: string) => `Add ${optionType}`}
+        />
+      </FormControl>
+    </>
   );
 };
 
