@@ -86,7 +86,9 @@ export const mapBookToBookRequest = (books: Book[]): BookRequest[] => {
     seriesOrder: book.seriesOrder,
     illustrator: book.illustrator,
     translator: book.translator,
-    formats: book.formats,
+    formats: book.formats.map((f) =>
+      Number.isNaN(Number(f.price)) ? { ...f, price: 0 } : f,
+    ),
     minAge: book.minAge,
     maxAge: book.maxAge,
     authors: book.authors,

@@ -73,7 +73,7 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
       lastName: req.body.lastName,
       email: req.body.email,
       roleType: "Admin", // TODO: pass in the role as a parameter to function for author and subscriber
-      active: true,
+      subscriptionExpiresOn: null,
       password: accessCode,
     });
 

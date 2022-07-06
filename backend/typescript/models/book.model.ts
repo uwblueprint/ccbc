@@ -18,6 +18,8 @@ import Tag from "./tag.model";
 import BookTag from "./book_tag.model";
 import { Format } from "../services/interfaces/IReviewService";
 import { Range } from "./interfaces/range";
+import Genre from "./genre.model";
+import BookGenre from "./book_genre.model";
 
 @Table({ tableName: "books" })
 export default class Book extends Model {
@@ -67,4 +69,7 @@ export default class Book extends Model {
 
   @BelongsToMany(() => Tag, () => BookTag)
   tags!: Tag[];
+
+  @BelongsToMany(() => Genre, () => BookGenre)
+  genres!: Genre[];
 }
