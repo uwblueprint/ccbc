@@ -42,6 +42,4 @@ export type TagDTO = {
   name: string;
 };
 
-export type GenreDTO = {
-  name: string;
-};
+

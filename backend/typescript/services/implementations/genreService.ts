@@ -1,8 +1,7 @@
-import Genre from "../../models/tag.model";
-import { IGenreService } from "../interfaces/IGenreService";
+import Genre from "../../models/genre.model";
+import { IGenreService, GenreDTO } from "../interfaces/IGenreService";
 import logger from "../../utilities/logger";
 import { getErrorMessage } from "../../utilities/errorResponse";
-import { GenreDTO } from "../../types";
 
 const Logger = logger(__filename);
 
