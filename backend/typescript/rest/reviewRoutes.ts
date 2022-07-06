@@ -16,9 +16,9 @@ const reviewService: IReviewService = new ReviewService();
 
 reviewRouter.post(
   "/",
-  reviewRequestDtoValidator,
   isAuthorizedByRole(new Set(["Admin"])),
   isAuthorizedByUserId("createdBy"),
+  reviewRequestDtoValidator,
   async (req, res) => {
     const contentType = req.headers["content-type"];
     try {
