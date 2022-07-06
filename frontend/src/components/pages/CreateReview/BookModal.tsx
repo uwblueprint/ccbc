@@ -24,6 +24,7 @@ import AddSelect from "./AddSelect";
 import AddSelectList from "./AddSelectList";
 import AddStringInput from "./AddStringInput";
 import AddStringInputList from "./AddStringInputList";
+import Tags from "./Tags";
 
 /**
  * Interface defining props for BookModal component
@@ -84,6 +85,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   const [seriesOrder, setSeriesOrder] = useState<number>(1);
   const [illustrators, setIllustrator] = useState<string[]>([]);
   const [translators, setTranslator] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
 
   /** Builds array of years starting from current year */
   const generateYearsArray = () => {
@@ -121,6 +123,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setBookformats([""]);
       setPrices([""]);
       setIsbns([""]);
+      setTags([]);
     };
 
     /** Sets the book data in the modal */
@@ -154,6 +157,8 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setPrices(pricesList);
       const isbnsList = book.formats.map((formatItem) => formatItem.isbn);
       setIsbns(isbnsList);
+      const tagsStr = book.tags.map((t) => t.name);
+      setTags(tagsStr)
     };
     if (!isOpen) {
       clearBookData();

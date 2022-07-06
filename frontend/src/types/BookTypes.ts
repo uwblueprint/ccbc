@@ -25,6 +25,13 @@ export type Publisher = {
 };
 
 /**
+ * Type for the tag
+ */
+ export type Tag = {
+  name: string;
+};
+
+/**
  * Type for a book
  */
 export type Book = {
@@ -40,4 +47,5 @@ export type Book = {
   authors: Author[];
   publishers: Publisher[];
   seriesName: string | null;
+  tags: Tag[];
 };

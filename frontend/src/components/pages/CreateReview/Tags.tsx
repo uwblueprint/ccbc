@@ -52,7 +52,7 @@ const Tags = (props: Props): React.ReactElement => {
       const options: Option[] = [];
       newTags.forEach((tag: TagResponse) => {
         options.push({
-          value: tag.id,
+          value: tag.name,
           label: tag.name,
         });
       });
