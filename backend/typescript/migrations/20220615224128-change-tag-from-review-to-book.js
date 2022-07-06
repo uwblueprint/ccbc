@@ -3,6 +3,8 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    const t = await sequelize.transaction();
+
     try {
       await queryInterface.dropTable("review_tag");
       await queryInterface.dropTable("tags");
@@ -12,12 +14,6 @@ module.exports = {
           name: {
             type: Sequelize.STRING,
             primaryKey: true,
-          },
-          createdAt: {
-            type: Sequelize.DATE
-          },
-          updatedAt: {
-            type: Sequelize.DATE
           },
         },
       );
@@ -48,15 +44,17 @@ module.exports = {
           },
         },
       );
-        return Promise.resolve();
-
-      } catch (e) {
-        return Promise.reject(e);
-        
-      }
+      await t.commit();
+      return Promise.resolve();
+    } catch (e) {
+      await t.rollback();
+      return Promise.reject(e);
+    }
   },
 
   async down(queryInterface, Sequelize) {
+    const t = await sequelize.transaction();
+
     try {
       await queryInterface.dropTable("book_tag");
       await queryInterface.dropTable("tags");
@@ -97,16 +95,12 @@ module.exports = {
               key: 'id'
             },
           },
-          createdAt: {
-            type: Sequelize.DATE
-          },
-          updatedAt: {
-            type: Sequelize.DATE
-          },
         },
       );
+      await t.commit();
       return Promise.resolve();
     } catch(e) {
+      await t.rollback();
       return Promise.reject(e);
     }
   },
