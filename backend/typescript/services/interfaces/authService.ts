@@ -1,4 +1,5 @@
 import * as firebaseAdmin from "firebase-admin";
+import User from "../../models/user.model";
 import { AuthDTO, Role, Token, UserDTO } from "../../types";
 
 interface IAuthService {
@@ -73,6 +74,13 @@ interface IAuthService {
    * @returns true if token valid and authorized, false otherwise
    */
   isAuthorizedByRole(accessToken: string, roles: Set<Role>): Promise<boolean>;
+
+  /**
+   * Gets user by the access token
+   * @param accessToken
+   * @returns User if user with acess token is found, null otherwise
+   */
+  getUserByAccessToken(accessToken: string): Promise<User | null>;
 
   /**
    * Determine if the provided access token is valid and issued to the requested user

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-
+import User from "../models/user.model";
 import AuthService from "../services/implementations/authService";
 import UserService from "../services/implementations/userService";
 import IAuthService from "../services/interfaces/authService";
@@ -20,6 +20,7 @@ export const getAccessToken = (req: Request): string | null => {
 };
 
 /* Determine if request is authorized based on accessToken validity and role of client */
+// pass a set of admin and any other role that will not need subscriptions in the future
 export const isAuthorizedByRole = (roles: Set<Role>) => {
   return async (
     req: Request,
@@ -33,6 +34,29 @@ export const isAuthorizedByRole = (roles: Set<Role>) => {
       return res
         .status(401)
         .json({ error: "You are not authorized to make this request." });
+    }
+    // user cannot be null, since this would be catched by isAuthorizedByRole
+    const user: User | null = await authService.getUserByAccessToken(
+      accessToken,
+    );
+    if (user == null) {
+      return res.status(404).json({ error: "No user was found." });
+    }
+    if (
+      !roles.has(user.role_type) &&
+      user.subscription_expires_on != null &&
+      user.role_type !== "Admin"
+    ) {
+      const currentDate = new Date();
+      currentDate.setUTCHours(0, 0, 0, 0);
+      const subscriptionExpireDate = new Date(user.subscription_expires_on);
+      subscriptionExpireDate.setUTCHours(0, 0, 0, 0);
+
+      if (currentDate.getTime() > subscriptionExpireDate.getTime()) {
+        return res
+          .status(401)
+          .json({ error: "You are not authorized to make this request." });
+      }
     }
     return next();
   };

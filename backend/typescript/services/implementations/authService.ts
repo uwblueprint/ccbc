@@ -8,6 +8,7 @@ import { AuthDTO, Role, Token, UserDTO } from "../../types";
 import FirebaseRestClient from "../../utilities/firebaseRestClient";
 import logger from "../../utilities/logger";
 import { getErrorMessage } from "../../utilities/errorResponse";
+import User from "../../models/user.model";
 
 const Logger = logger(__filename);
 
@@ -232,6 +233,23 @@ class AuthService implements IAuthService {
       return firebaseUser.emailVerified && roles.has(userRole);
     } catch (error) {
       return false;
+    }
+  }
+
+  async getUserByAccessToken(accessToken: string): Promise<User | null> {
+    try {
+      const decodedIdToken: firebaseAdmin.auth.DecodedIdToken =
+        await firebaseAdmin.auth().verifyIdToken(accessToken, true);
+      console.log(decodedIdToken);
+      console.log(decodedIdToken.uid);
+      const user = await this.userService.getUserbyAuthID(
+        decodedIdToken.user_id,
+      );
+      console.log(user);
+      return user;
+    } catch (error) {
+      Logger.error(`Failed to get user. Reason = ${getErrorMessage(error)}`);
+      throw error;
     }
   }
 
