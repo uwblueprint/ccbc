@@ -33,7 +33,6 @@ import AddSelect from "./AddSelect";
 import AddSelectList from "./AddSelectList";
 import AddStringInput from "./AddStringInput";
 import AddStringInputList from "./AddStringInputList";
-import Tags from "./Tags";
 
 /**
  * Interface defining props for BookModal component
