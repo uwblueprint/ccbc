@@ -139,7 +139,7 @@ interface IAuthService {
    * @returns AuthDTO (token and UserDTO)
    * @throws Error if unable to register the user and send the registartion email
    */
-  sendRegistrationEmail(
+  createUserAndSendRegistrationEmail(
     firstName: string,
     lastName: string,
     email: string,

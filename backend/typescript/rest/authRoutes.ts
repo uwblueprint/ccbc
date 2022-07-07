@@ -57,7 +57,7 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
   try {
     const { firstName, lastName, email } = req.body;
 
-    const authDTO = await authService.sendRegistrationEmail(
+    const authDTO = await authService.createUserAndSendRegistrationEmail(
       firstName,
       lastName,
       email,
