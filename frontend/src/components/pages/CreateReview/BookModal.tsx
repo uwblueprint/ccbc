@@ -30,6 +30,7 @@ import {
 import AddMultiSelect from "./AddMultiSelect";
 import AddNumberInput from "./AddNumberInput";
 import AddSelect from "./AddSelect";
+import AddSelectList from "./AddSelectList";
 import AddStringInput from "./AddStringInput";
 import AddStringInputList from "./AddStringInputList";
 import Tags from "./Tags";
@@ -55,7 +56,6 @@ interface BookModalProps {
 const kStartingYear = 1967;
 const kMinAge = 0;
 const kMaxAge = 150;
-const kMinPrice = 0;
 const kMaxPrice = Number.MAX_SAFE_INTEGER;
 const kMinBookNum = 1;
 const kMaxBookNum = 1000;
@@ -79,12 +79,13 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   const [authors, setAuthors] = useState<string[]>([]);
   const [publisher, setPublisher] = useState<string>("");
   const [publicationYear, setPublicationYear] = useState<string>("");
-  const [format, setFormat] = useState<string>("");
-  const [isbn, setIsbn] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
   const [coverImage, setCoverImage] = useState<string>("");
   const [minAge, setMinAge] = useState<number>(0);
   const [maxAge, setMaxAge] = useState<number>(0);
+
+  const [bookformats, setBookformats] = useState<string[]>([]);
+  const [prices, setPrices] = useState<string[]>([]);
+  const [isbns, setIsbns] = useState<string[]>([]);
 
   // optional book fields
   const [seriesName, setSeriesName] = useState<string>("");
@@ -125,16 +126,16 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setSeriesOrder(1);
       setIllustrator([]);
       setTranslator([]);
-      setFormat("");
       setGenres([]);
       setMinAge(0);
       setMaxAge(0);
       setAuthors([]);
       setPublisher("");
       setSeriesName("");
-      setIsbn("");
-      setPrice("");
       setPublicationYear("");
+      setBookformats([""]);
+      setPrices([""]);
+      setIsbns([""]);
     };
 
     /** Sets the book data in the modal */
@@ -151,19 +152,23 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setAuthors(book.authors.map((author) => author.fullName));
       setSeriesName(book.seriesName ? book.seriesName : "");
 
-      const bookFormat = book.formats[0];
-      setFormat(bookFormat.format);
-      setPrice(
-        !Number.isNaN(bookFormat.price)
-          ? Number(bookFormat.price).toFixed(2)
-          : "0.00",
-      );
-      setIsbn(bookFormat.isbn);
       const bookPublisher = book.publishers[0];
       setPublisher(bookPublisher.fullName);
       setPublicationYear(bookPublisher.publishYear.toString());
-    };
 
+      const bookformatsList = book.formats.map(
+        (formatItem) => formatItem.format,
+      );
+      setBookformats(bookformatsList);
+      const pricesList = book.formats.map((formatItem) =>
+        !Number.isNaN(formatItem.price)
+          ? Number(formatItem.price).toFixed(2)
+          : "0.00",
+      );
+      setPrices(pricesList);
+      const isbnsList = book.formats.map((formatItem) => formatItem.isbn);
+      setIsbns(isbnsList);
+    };
     if (!isOpen) {
       clearBookData();
     } else if (currBook) {
@@ -171,17 +176,14 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     }
   }, [isOpen, currBook, setCurrBook]);
 
-  /** Ensure that price is valid and within range */
-  const isValidPrice =
-    price === "" ||
-    (!Number.isNaN(Number(price)) &&
-      !/^[a-zA-Z]+$/.test(price) &&
-      Number(price) > kMinPrice &&
-      Number(price) < kMaxPrice);
-  /** Ensure that ISBN is valid or an empty field */
-  const isEmptyOrValidISBN =
-    isbn === "" || // necessary to ensure that empty form won't error
-    /^([0-9]|[-])*$/.test(isbn);
+  /** Ensures that all formats are filled in */
+  const hasRequiredFormats = bookformats.every(
+    (bookformatItem, index) =>
+      bookformatItem &&
+      prices[index] &&
+      isbns[index] &&
+      Number(prices[index]) < kMaxPrice,
+  );
 
   /** Check that all required modal fields are properly filled out */
   const hasRequired =
@@ -189,15 +191,12 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     authors.length > 0 &&
     publisher !== "" &&
     publicationYear !== "" &&
-    format !== "" &&
-    isbn !== "" &&
-    price !== "" &&
     coverImage !== "" &&
     // genre !== "" &&
     minAge >= 0 &&
     maxAge >= 0 &&
     maxAge >= minAge &&
-    isEmptyOrValidISBN;
+    hasRequiredFormats;
 
   /** Creates and saves a new book object, then closes the modal */
   const updateBookObj = () => {
@@ -225,13 +224,15 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       },
     ];
 
-    const formatList: BookFormat[] = [
-      {
-        format,
-        price: Number(price) || 0,
-        isbn,
-      },
-    ];
+    const formatObjs: BookFormat[] = [];
+
+    bookformats.forEach((bookformatObject, i) => {
+      formatObjs.push({
+        format: bookformatObject,
+        price: Number(prices[i]) || 0,
+        isbn: isbns[i],
+      });
+    });
 
     const newBook: Book = {
       title,
@@ -240,7 +241,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       seriesOrder,
       illustrator: illustrators,
       translator: translators,
-      formats: formatList,
+      formats: formatObjs,
       minAge,
       maxAge,
       authors: authorObjs,
@@ -255,6 +256,19 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       handleBooksAdded([...booksAdded, newBook]);
     }
     onClose();
+  };
+
+  /** Adds or deletes a format object with specified index */
+  const updateFormat = (index?: number) => {
+    if (index) {
+      setPrices(prices.filter((_, i) => i !== index));
+      setIsbns(isbns.filter((_, i) => i !== index));
+      setBookformats(bookformats.filter((_, i) => i !== index));
+    } else {
+      setBookformats([...bookformats, ""]);
+      setPrices([...prices, ""]);
+      setIsbns([...isbns, ""]);
+    }
   };
 
   return (
@@ -356,37 +370,39 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   isInline
                   alignItems="flex-start"
                 >
-                  <AddSelect
+                  <AddSelectList
                     id="formats"
                     label="Format"
                     required
                     maxWidth="100%"
-                    selectField={format}
+                    selectFields={bookformats}
                     values={Object.values(BookFormats)}
-                    setSelectField={setFormat}
+                    setSelectFields={setBookformats}
+                    updateFormat={updateFormat}
+                    hasRequiredFormats={hasRequiredFormats}
                   />
-                  <AddStringInput
+                  <AddStringInputList
                     id="isbn"
                     label="ISBN"
                     name="isbn"
                     required
-                    inputFieldValue={isbn}
-                    setInputField={setIsbn}
-                    isInvalid={!isEmptyOrValidISBN}
-                    errorMessage="Invalid ISBN format."
+                    inputFields={isbns}
+                    setInputFields={setIsbns}
                     regexPattern={/^([0-9]|[-])*$/}
+                    isFormat
+                    isIsbn
+                    updateFormat={updateFormat}
                   />
-                  <AddStringInput
+                  <AddStringInputList
                     id="price"
                     label="Price"
                     name="price"
                     required
                     placeholder="$"
-                    inputFieldValue={price}
-                    isInvalid={!isValidPrice}
-                    setInputField={setPrice}
-                    errorMessage="Invalid Price."
+                    inputFields={prices}
+                    setInputFields={setPrices}
                     regexPattern={/^[0-9]*(?:\.[0-9]{0,2})?$/}
+                    isFormat
                   />
                 </Stack>
               </Stack>

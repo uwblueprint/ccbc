@@ -1080,5 +1080,3 @@ paths:
           description: Not Found.
         '500':
           description: Invalid Request.
-
-        

@@ -145,6 +145,7 @@ const exportedTypeSuite: t.ITypeSuite = {
   BookResponse,
   TagRequest,
   TagResponse,
+  Genre,
   User,
   ReviewRequestDTO,
   ReviewResponseDTO,

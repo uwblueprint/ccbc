@@ -1,5 +1,6 @@
-import { GenreDTO } from "../../types";
-
+export type GenreDTO = {
+  name: string;
+};
 export interface IGenreService {
   /**
    * retrieve all existing tags
