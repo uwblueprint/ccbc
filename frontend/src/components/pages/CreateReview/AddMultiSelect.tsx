@@ -37,9 +37,9 @@ interface AddMultiSelectProps {
   placeholder?: string;
   maxWidth?: string;
   options: Option[];
-  setOptions: (s: Option[]) => void;
-  optionsSelected: Option[];
-  setOptionsSelected: (s: Option[]) => void;
+  setOptions: any;
+  optionsSelected: string[];
+  setOptionsSelected: any;
 }
 
 const AddMultiSelect = ({
@@ -56,11 +56,22 @@ const AddMultiSelect = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [optionToDelete, setOptionToDelete] = useState<Option>(EmptyOption);
+  const [optionSelectedObj, setOptionSelectedObj] = useState<Option[]>([]);
 
   const onClose = () => setShowModal(false);
 
   useEffect(() => {
     setOptions(options);
+
+    const optionObjs: Option[] = [];
+    optionsSelected.forEach((optSelected)=> {
+      optionObjs.push({
+        label: optSelected,
+        value: optSelected,
+      })
+    })
+    setOptionSelectedObj(optionObjs);
+
     setIsLoading(false);
   }, []);
 
@@ -110,6 +121,11 @@ const AddMultiSelect = ({
     );
   };
 
+  const handleOptionsSelected = () => {
+    setOptionsSelected(optionSelectedObj.map((opt) => opt.label));
+    setOptionSelectedObj(optionSelectedObj);
+  };
+
   return (
     <>
       <ConfirmationModal
@@ -134,8 +150,8 @@ const AddMultiSelect = ({
           options={options}
           onCreateOption={handleCreate}
           styles={customStyles}
-          value={optionsSelected}
-          onChange={setOptionsSelected}
+          value={optionSelectedObj}
+          onChange={handleOptionsSelected}
           components={{ Option: CustomOption }}
           formatCreateLabel={(optionType: string) => `Add ${optionType}`}
         />

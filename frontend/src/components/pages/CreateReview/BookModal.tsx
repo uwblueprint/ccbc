@@ -16,10 +16,17 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
+import genreAPIClient from "../../../APIClients/GenreAPIClient";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { BookFormats, Genre } from "../../../constants/Enums";
-import { Author, Book, BookFormat, Publisher } from "../../../types/BookTypes";
-import { Option } from "../../../types/TagTypes";
+import { BookFormats } from "../../../constants/Enums";
+import {
+  Author,
+  Book,
+  BookFormat,
+  Genre,
+  Option,
+  Publisher,
+} from "../../../types/BookTypes";
 import AddMultiSelect from "./AddMultiSelect";
 import AddNumberInput from "./AddNumberInput";
 import AddSelect from "./AddSelect";
@@ -76,9 +83,6 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   const [isbn, setIsbn] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [coverImage, setCoverImage] = useState<string>("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const [genres, setGenres] = useState<string[]>([]);
-  // const [genreOptions, setGenreOptions] = useState<Option[]>([]);
   const [minAge, setMinAge] = useState<number>(0);
   const [maxAge, setMaxAge] = useState<number>(0);
 
@@ -87,6 +91,8 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   const [seriesOrder, setSeriesOrder] = useState<number>(1);
   const [illustrators, setIllustrator] = useState<string[]>([]);
   const [translators, setTranslator] = useState<string[]>([]);
+  const [genres, setGenres] = useState<string[]>([]);
+  const [genreOptions, setGenreOptions] = useState<Option[]>([]);
 
   /** Builds array of years starting from current year */
   const generateYearsArray = () => {
@@ -104,6 +110,11 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
    * otherwise calls setBookData if currBook is not null
    */
   useEffect(() => {
+    // Grab all possible genres from DB
+    genreAPIClient.getGenreOptions().then((genreOpts) => {
+      setGenreOptions(genreOpts);
+    });
+
     /** Clears book data */
     const clearBookData = () => {
       setCurrBook(null);
@@ -115,8 +126,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setIllustrator([]);
       setTranslator([]);
       setFormat("");
-      // setGenres([]);
-      // setGenreOptions([]);
+      setGenres([]);
       setMinAge(0);
       setMaxAge(0);
       setAuthors([]);
@@ -135,8 +145,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setSeriesOrder(book.seriesOrder ? book.seriesOrder : 1);
       setIllustrator(book.illustrator);
       setTranslator(book.translator ? book.translator : []);
-
-      // setGenres(book.genres ? book.genres : []);
+      setGenres(book.genres.map((genre) => genre.name));
       setMinAge(book.minAge);
       setMaxAge(book.maxAge);
       setAuthors(book.authors.map((author) => author.fullName));
@@ -202,6 +211,13 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       });
     });
 
+    const genreObjs: Genre[] = [];
+    genres.forEach((genre) => {
+      genreObjs.push({
+        name: genre,
+      });
+    });
+
     const publisherObj: Publisher[] = [
       {
         fullName: publisher,
@@ -230,7 +246,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       authors: authorObjs,
       publishers: publisherObj,
       seriesName,
-      // genres,
+      genres: genreObjs,
     };
 
     if (currBook) {
@@ -390,6 +406,10 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   id="genre"
                   label="Genres"
                   placeholder="Add genres here"
+                  options={genreOptions}
+                  setOptions={setGenreOptions}
+                  optionsSelected={genres}
+                  setOptionsSelected={setGenres}
                 />
                 <FormControl
                   isRequired
