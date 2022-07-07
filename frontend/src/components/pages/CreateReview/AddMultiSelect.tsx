@@ -38,7 +38,7 @@ interface AddMultiSelectProps {
   maxWidth?: string;
   options: Option[];
   setOptions: any;
-  optionsSelected: string[];
+  optionsSelected: Option[];
   setOptionsSelected: any;
 }
 
@@ -53,27 +53,10 @@ const AddMultiSelect = ({
   optionsSelected,
   setOptionsSelected,
 }: AddMultiSelectProps): React.ReactElement => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [optionToDelete, setOptionToDelete] = useState<Option>(EmptyOption);
-  const [optionSelectedObj, setOptionSelectedObj] = useState<Option[]>([]);
 
   const onClose = () => setShowModal(false);
-
-  useEffect(() => {
-    setOptions(options);
-
-    const optionObjs: Option[] = [];
-    optionsSelected.forEach((optSelected)=> {
-      optionObjs.push({
-        label: optSelected,
-        value: optSelected,
-      })
-    })
-    setOptionSelectedObj(optionObjs);
-
-    setIsLoading(false);
-  }, []);
 
   const createOption = (opt: string) => ({
     label: opt,
@@ -121,10 +104,6 @@ const AddMultiSelect = ({
     );
   };
 
-  const handleOptionsSelected = () => {
-    setOptionsSelected(optionSelectedObj.map((opt) => opt.label));
-    setOptionSelectedObj(optionSelectedObj);
-  };
 
   return (
     <>
@@ -136,7 +115,6 @@ const AddMultiSelect = ({
         deleteType="Tag"
       />
       <FormControl
-        p={4}
         id={id}
         isRequired={required}
         width={maxWidth || "100%"}
@@ -144,14 +122,13 @@ const AddMultiSelect = ({
         <FormLabel>{label}</FormLabel>
         <Creatable
           isMulti
-          isLoading={isLoading}
           placeholder={placeholder || "Select some options..."}
           closeMenuOnSelect={false}
           options={options}
           onCreateOption={handleCreate}
           styles={customStyles}
-          value={optionSelectedObj}
-          onChange={handleOptionsSelected}
+          value={optionsSelected}
+          onChange={setOptionsSelected}
           components={{ Option: CustomOption }}
           formatCreateLabel={(optionType: string) => `Add ${optionType}`}
         />
