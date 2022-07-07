@@ -2,7 +2,7 @@
 
 import { CloseIcon } from "@chakra-ui/icons";
 import { FormControl, FormLabel, IconButton } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { components } from "react-select";
 import Creatable from "react-select/creatable";
 
@@ -104,7 +104,6 @@ const AddMultiSelect = ({
     );
   };
 
-
   return (
     <>
       <ConfirmationModal
@@ -114,11 +113,7 @@ const AddMultiSelect = ({
         itemToDelete={optionToDelete}
         deleteType="Tag"
       />
-      <FormControl
-        id={id}
-        isRequired={required}
-        width={maxWidth || "100%"}
-      >
+      <FormControl id={id} isRequired={required} width={maxWidth || "100%"}>
         <FormLabel>{label}</FormLabel>
         <Creatable
           isMulti

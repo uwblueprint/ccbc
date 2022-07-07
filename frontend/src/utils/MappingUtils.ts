@@ -69,6 +69,7 @@ export const mapBookResponseToBook = (books: BookResponse[]): Book[] => {
     authors: mapAuthorResponseToAuthor(response.authors),
     publishers: response.publishers,
     seriesName: response.series?.name || "",
+    genres: response.genres,
   }));
   return mappedBooks;
 };
@@ -96,6 +97,7 @@ export const mapBookToBookRequest = (books: Book[]): BookRequest[] => {
     series: {
       name: book.seriesName,
     },
+    genres: book.genres,
   }));
   return mappedBookRequests;
 };

@@ -30,6 +30,11 @@ const data = [
       },
     ],
     seriesName: "The Amazing Series",
+    genres: [
+      {
+        name: "Fantasy",
+      },
+    ],
   },
 ];
 

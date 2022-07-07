@@ -16,7 +16,7 @@ const getGenreOptions = async (): Promise<Option[]> => {
       });
     });
 
-    return data;
+    return options;
   } catch (error: unknown) {
     return error as Option[];
   }

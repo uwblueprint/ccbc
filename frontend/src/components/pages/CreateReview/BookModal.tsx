@@ -92,7 +92,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   const [seriesOrder, setSeriesOrder] = useState<number>(1);
   const [illustrators, setIllustrator] = useState<string[]>([]);
   const [translators, setTranslator] = useState<string[]>([]);
-  const [genres, setGenres] = useState<string[]>([]);
+  const [genres, setGenres] = useState<Option[]>([]);
   const [genreOptions, setGenreOptions] = useState<Option[]>([]);
 
   /** Builds array of years starting from current year */
@@ -146,7 +146,17 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setSeriesOrder(book.seriesOrder ? book.seriesOrder : 1);
       setIllustrator(book.illustrator);
       setTranslator(book.translator ? book.translator : []);
-      setGenres(book.genres.map((genre) => genre.name));
+
+      const genresOpts: Option[] = [];
+      book.genres.forEach((genre) => {
+        genresOpts.push({
+          label: genre.name,
+          value: genre.name,
+        });
+      });
+      setGenres(genresOpts);
+
+      // setGenres(book.genres.map((genre) => genre.name));
       setMinAge(book.minAge);
       setMaxAge(book.maxAge);
       setAuthors(book.authors.map((author) => author.fullName));
@@ -213,7 +223,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     const genreObjs: Genre[] = [];
     genres.forEach((genre) => {
       genreObjs.push({
-        name: genre,
+        name: genre.label,
       });
     });
 
