@@ -5,7 +5,7 @@ import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
 import PgBookAuthor from "../../models/book_author.model";
 import PgBookPublisher from "../../models/book_publisher.model";
-import PgReviewTag from "../../models/review_tag.model";
+// import PgReviewTag from "../../models/review_tag.model";
 import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
@@ -354,12 +354,12 @@ class ReviewService implements IReviewService {
       };
     });
 
-    const tags: TagResponse[] = review.tags.map((tag: Tag) => {
-      return {
-        id: tag.id,
-        name: tag.name,
-      };
-    });
+    // const tags: TagResponse[] = review.tags.map((tag: Tag) => {
+    //   return {
+    //     id: tag.id,
+    //     name: tag.name,
+    //   };
+    // });
 
     return {
       reviewId: review.id,
@@ -368,7 +368,7 @@ class ReviewService implements IReviewService {
       featured: review.featured,
       createdByUser: this.getUserDetails(review),
       books,
-      tags,
+      tags: [],
       updatedAt: review.updatedAt.getTime(),
       publishedAt: review.published_at?.getTime()
         ? review.published_at.getTime()
