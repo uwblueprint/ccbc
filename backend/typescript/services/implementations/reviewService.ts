@@ -5,7 +5,7 @@ import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
 import PgBookAuthor from "../../models/book_author.model";
 import PgBookPublisher from "../../models/book_publisher.model";
-// import PgBookGenre from "../../models/book_genre.model";
+import PgBookGenre from "../../models/book_genre.model";
 import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
@@ -80,11 +80,10 @@ class ReviewService implements IReviewService {
     genre: Genre,
     t: Transaction,
   ): Promise<PgGenre> {
-    const [genreRef, created] = await PgGenre.findOrCreate({
+    const genreRef = await PgGenre.findOrCreate({
       where: { name: genre.name },
       transaction: t,
-    });
-    if (!created) return genreRef;
+    }).then((res) => res[0]);
     await book.$add("genres", genreRef, { transaction: t });
     return genreRef;
   }
@@ -311,6 +310,31 @@ class ReviewService implements IReviewService {
       }),
     );
 
+    const deleteGenres = Promise.all(
+      reviewToDelete.books.map(async (book: PgBook) => {
+        book.genres.forEach((genre: PgGenre) => {
+          PgBookGenre.findAll({
+            where: { genre_name: genre.name },
+          }).then(async (ret: PgBookGenre[]) => {
+            const bookGenreNames = ret.map(
+              (bookGenre: PgBookGenre) => bookGenre.genre_name,
+            );
+            if (
+              bookGenreNames.every((genreName) =>
+                allBookIds.includes(genreName),
+              )
+            ) {
+              // Delete author
+              await PgGenre.destroy({
+                where: { name: [genre.name] },
+                transaction: txn,
+              });
+            }
+          });
+        });
+      }),
+    );
+
     const deleteBooks = Promise.all(
       reviewToDelete.books.map(async (book: PgBook) => {
         // Delete book
@@ -333,27 +357,13 @@ class ReviewService implements IReviewService {
               }
             });
           }
-          // Delete genres (if necessary)
-          if (book.genres) {
-            book.genres.map((genre: PgGenre) => {
-              return PgBook.findAll({
-                where: { name: genre.name },
-              }).then((ret: PgBook[]) => {
-                if (ret.length === 0) {
-                  PgGenre.destroy({
-                    where: { name: genre.name },
-                    transaction: txn,
-                  });
-                }
-              });
-            });
-          }
         });
       }),
     );
 
     const deleteResult = await Promise.all([
       deletePublishersAndAuthors,
+      deleteGenres,
       deleteBooks,
     ]).then(() => {
       return PgReview.destroy({
