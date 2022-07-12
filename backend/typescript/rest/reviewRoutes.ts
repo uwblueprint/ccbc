@@ -28,7 +28,6 @@ reviewRouter.post(
         featured: req.body.featured,
         createdBy: req.body.createdBy,
         books: req.body.books as BookRequest[],
-        tags: req.body.tags as TagRequest[],
         publishedAt: req.body.publishedAt,
       });
       await sendResponseByMimeType<ReviewResponseDTO>(

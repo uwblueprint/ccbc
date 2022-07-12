@@ -48,7 +48,9 @@ class ReviewService implements IReviewService {
       transaction: t,
     });
     if (!created) return tagRef;
-    await review.$add("tags", tagRef, { transaction: t });
+
+    // TODO implement Tags API changes
+    // await review.$add("tags", tagRef, { transaction: t });
     return tagRef;
   }
 
@@ -368,7 +370,6 @@ class ReviewService implements IReviewService {
       featured: review.featured,
       createdByUser: this.getUserDetails(review),
       books,
-      tags: [],
       updatedAt: review.updatedAt.getTime(),
       publishedAt: review.published_at?.getTime()
         ? review.published_at.getTime()
@@ -491,7 +492,6 @@ class ReviewService implements IReviewService {
       featured: newReview.featured,
       createdBy: newReview.created_by_id,
       books: booksRet,
-      tags: [],
       updatedAt: newReview.updatedAt.getTime(),
       publishedAt: newReview.published_at?.getTime()
         ? newReview.published_at.getTime()
