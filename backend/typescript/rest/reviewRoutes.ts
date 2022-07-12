@@ -4,7 +4,6 @@ import {
   IReviewService,
   BookRequest,
   ReviewResponseDTO,
-  TagRequest,
 } from "../services/interfaces/IReviewService";
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
