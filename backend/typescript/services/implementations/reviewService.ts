@@ -5,7 +5,8 @@ import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
 import PgBookAuthor from "../../models/book_author.model";
 import PgBookPublisher from "../../models/book_publisher.model";
-// import PgReviewTag from "../../models/review_tag.model";
+import PgBookTag from "../../models/book_tag.model";
+import PgTag from "../../models/tag.model";
 import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
@@ -19,13 +20,11 @@ import {
   BookRequest,
   AuthorResponse,
   AuthorRequest,
-  TagRequest,
   PublisherRequest,
   PublisherResponse,
-  TagResponse,
   User,
+  Tag,
 } from "../interfaces/IReviewService";
-import Tag from "../../models/tag.model";
 
 const Logger = logger(__filename);
 
@@ -39,33 +38,32 @@ class ReviewService implements IReviewService {
 
   /* eslint-disable class-methods-use-this */
   async findOrCreateTag(
-    review: PgReview,
-    tag: TagRequest,
+    book: PgBook,
+    tag: Tag,
     t: Transaction,
-  ): Promise<Tag> {
-    const [tagRef, created] = await Tag.findOrCreate({
+  ): Promise<PgTag> {
+    const [tagRef, created] = await PgTag.findOrCreate({
       where: { name: tag.name },
       transaction: t,
     });
     if (!created) return tagRef;
-    await review.$add("tags", tagRef, { transaction: t });
+    await book.$add("tags", tagRef, { transaction: t });
     return tagRef;
   }
 
   async findOrCreateTags(
-    review: PgReview,
-    tags: TagRequest[],
+    book: PgBook,
+    tags: Tag[],
     t: Transaction,
-  ): Promise<TagResponse[]> {
-    const tagsRespRes: Promise<Tag>[] = [];
+  ): Promise<Tag[]> {
+    const tagsRespRes: Promise<PgTag>[] = [];
     for (let i = 0; i < tags.length; i += 1) {
-      tagsRespRes.push(this.findOrCreateTag(review, tags[i], t));
+      tagsRespRes.push(this.findOrCreateTag(book, tags[i], t));
     }
 
-    const tagsRes: Tag[] = await Promise.all(tagsRespRes);
+    const tagsRes: PgTag[] = await Promise.all(tagsRespRes);
 
-    const tagsRet: TagResponse[] = tagsRes.map((tag) => ({
-      id: tag.id,
+    const tagsRet: Tag[] = tagsRes.map((tag) => ({
       name: tag.name,
     }));
 
@@ -153,6 +151,7 @@ class ReviewService implements IReviewService {
     book.authors.forEach((author) => {
       authorsRes.push(this.findOrCreateAuthor(newBook, author, t));
     });
+    const tagsRet = await this.findOrCreateTags(newBook, book.tags, t);
 
     const authors = await Promise.all(authorsRes);
     const authorsRet: AuthorResponse[] = authors.map((author) => ({
@@ -192,6 +191,7 @@ class ReviewService implements IReviewService {
         id: series?.id || null,
         name: series?.name || null,
       },
+      tags: tagsRet,
     };
   }
 
@@ -296,6 +296,24 @@ class ReviewService implements IReviewService {
               }
             });
           }
+          if (book.tags) {
+            // Delete tags (if necessary)
+            Promise.all(
+              book.tags.map((tag: PgTag) => {
+                return PgBookTag.findAll({
+                  where: { tag_name: tag.name },
+                }).then(async (tagRet: PgBookTag[]) => {
+                  if (tagRet.length === 0) {
+                    // Delete tags
+                    await PgTag.destroy({
+                      where: { name: [tag.name] },
+                      transaction: txn,
+                    });
+                  }
+                });
+              }),
+            );
+          }
         });
       }),
     );
@@ -334,6 +352,12 @@ class ReviewService implements IReviewService {
         },
       );
 
+      const TagsRet: Tag[] = book.tags.map((t: PgTag) => {
+        return {
+          name: t.name,
+        };
+      });
+
       return {
         id: book.id,
         title: book.title,
@@ -351,15 +375,9 @@ class ReviewService implements IReviewService {
           id: book.series?.id || null,
           name: book.series?.name || null,
         },
+        tags: TagsRet,
       };
     });
-
-    // const tags: TagResponse[] = review.tags.map((tag: Tag) => {
-    //   return {
-    //     id: tag.id,
-    //     name: tag.name,
-    //   };
-    // });
 
     return {
       reviewId: review.id,
@@ -368,7 +386,6 @@ class ReviewService implements IReviewService {
       featured: review.featured,
       createdByUser: this.getUserDetails(review),
       books,
-      tags: [],
       updatedAt: review.updatedAt.getTime(),
       publishedAt: review.published_at?.getTime()
         ? review.published_at.getTime()
@@ -491,7 +508,6 @@ class ReviewService implements IReviewService {
       featured: newReview.featured,
       createdBy: newReview.created_by_id,
       books: booksRet,
-      tags: [],
       updatedAt: newReview.updatedAt.getTime(),
       publishedAt: newReview.published_at?.getTime()
         ? newReview.published_at.getTime()

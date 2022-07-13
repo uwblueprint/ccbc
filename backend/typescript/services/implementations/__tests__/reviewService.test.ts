@@ -7,8 +7,6 @@ import {
   PublisherResponse,
   ReviewRequestDTO,
   ReviewResponseDTO,
-  TagRequest,
-  TagResponse,
 } from "../../interfaces/IReviewService";
 import ReviewService from "../reviewService";
 import testReviews from "../../interfaces/samples/reviewRequest";
@@ -25,12 +23,6 @@ function reviewsAreEqual(
   expect(reviewA.featured).toEqual(reviewB.featured);
   expect(reviewA.publishedAt).toEqual(reviewB.publishedAt);
   // expect(reviewA.createdBy).toEqual(reviewB.createdBy);
-
-  reviewA.tags.sort((a, b) => a.name.localeCompare(b.name));
-  reviewB.tags.sort((a, b) => a.name.localeCompare(b.name));
-  reviewA.tags.forEach((rATag: TagRequest | TagResponse, rATagIndex) => {
-    expect(rATag.name).toEqual(reviewB.tags[rATagIndex].name);
-  });
 
   reviewA.books.sort((a, b) => a.title.localeCompare(b.title));
   reviewB.books.sort((a, b) => a.title.localeCompare(b.title));
@@ -77,6 +69,12 @@ function reviewsAreEqual(
         expect(rAPublisher.fullName).toEqual(rBPublisher.fullName);
       },
     );
+
+    rABook.tags.sort();
+    reviewBBook.tags.sort();
+    rABook.tags.forEach((rATag, rATagIndex) => {
+      expect(rATag).toEqual(reviewBBook.tags[rATagIndex]);
+    });
   });
 }
 
@@ -127,11 +125,9 @@ describe("pg reviewService", () => {
     );
     getReviewsResult.forEach((result) => {
       result.books.sort((a, b) => a.title.localeCompare(b.title));
-      result.tags.sort((a, b) => a.name.localeCompare(b.name));
     });
     testResponseCopy.forEach((result) => {
       result.books.sort((a, b) => a.title.localeCompare(b.title));
-      result.tags.sort((a, b) => a.name.localeCompare(b.name));
     });
 
     getReviewsResult.forEach((result, i) => {
@@ -177,7 +173,6 @@ describe("pg reviewService", () => {
     );
     newResult.forEach((result) => {
       result.books.sort((a, b) => a.title.localeCompare(b.title));
-      result.tags.sort((a, b) => a.name.localeCompare(b.name));
     });
 
     // Ensure all other undeleted reviews are unchanged
@@ -187,10 +182,8 @@ describe("pg reviewService", () => {
         testResponseCopy.splice(i, 1);
       } else {
         response.books.sort((a, b) => a.title.localeCompare(b.title));
-        response.tags.sort((a, b) => a.name.localeCompare(b.name));
 
         newResult[i].books.sort((a, b) => a.title.localeCompare(b.title));
-        newResult[i].tags.sort((a, b) => a.name.localeCompare(b.name));
 
         reviewsAreEqual(newResult[i], response);
       }

@@ -27,12 +27,12 @@ tagRouter.get(
 );
 
 tagRouter.delete(
-  "/:id",
+  "/:name",
   isAuthorizedByRole(new Set(["Admin"])),
   async (req, res) => {
-    const { id } = req.params;
+    const { name } = req.params;
     try {
-      await tagService.deleteTag(id);
+      await tagService.deleteTag(name);
       res.status(204).send();
     } catch (e: unknown) {
       sendErrorResponse(e, res);

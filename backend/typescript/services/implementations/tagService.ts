@@ -13,7 +13,6 @@ class TagService implements ITagService {
       const tags: Tag[] = await Tag.findAll();
 
       return tags.map((tag) => ({
-        id: tag.id,
         name: tag.name,
       }));
     } catch (error: unknown) {
@@ -25,15 +24,17 @@ class TagService implements ITagService {
   }
 
   /* eslint-disable class-methods-use-this */
-  async deleteTag(id: string): Promise<string> {
+  async deleteTag(name: string): Promise<string> {
     try {
-      const tagToDelete = await Tag.findByPk(id, { raw: true });
-      const deleteResult: number | null = await Tag.destroy({ where: { id } });
+      const tagToDelete = await Tag.findByPk(name, { raw: true });
+      const deleteResult: number | null = await Tag.destroy({
+        where: { name },
+      });
 
       if (!tagToDelete || !deleteResult) {
-        throw Error(`Tag id ${id} not found`);
+        throw Error(`Tag name ${name} not found`);
       }
-      return id;
+      return name;
     } catch (error: unknown) {
       Logger.error(`Failed to delete tag: ${getErrorMessage(error)}`);
       throw error;
