@@ -139,7 +139,7 @@ const mockMultipleBookReview: Review = {
     firstName: "jessie",
     lastName: "peng",
   },
-  books: [hp1, hp2],
+  books: [hp1, hp2, hp1, hp2],
   updatedAt: 12,
   publishedAt: 20171111212,
   createdAt: 14,
