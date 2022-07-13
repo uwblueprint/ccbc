@@ -188,7 +188,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           createdBy: parseInt(authenticatedUser?.id, 10),
           publishedAt: publish ? new Date().getTime() : null,
           books: mapBookToBookRequest(books),
-          tags: [],
         };
         const reviewId = id ? parseInt(id, 10) : undefined;
         try {

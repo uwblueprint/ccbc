@@ -93,7 +93,6 @@ export interface ReviewRequestDTO {
   createdBy: number;
   publishedAt?: number | null;
   books: BookRequest[];
-  tags: TagRequest[];
 }
 
 export interface ReviewResponseDTO {
@@ -104,7 +103,6 @@ export interface ReviewResponseDTO {
   createdBy?: number | null;
   createdByUser?: User | null;
   books: BookResponse[];
-  tags: TagResponse[];
   updatedAt: number;
   publishedAt: number | null;
   createdAt: number;
