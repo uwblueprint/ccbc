@@ -42,11 +42,10 @@ class ReviewService implements IReviewService {
     tag: Tag,
     t: Transaction,
   ): Promise<PgTag> {
-    const [tagRef, created] = await PgTag.findOrCreate({
+    const [tagRef] = await PgTag.findOrCreate({
       where: { name: tag.name },
       transaction: t,
     });
-    if (!created) return tagRef;
     await book.$add("tags", tagRef, { transaction: t });
     return tagRef;
   }
@@ -296,7 +295,8 @@ class ReviewService implements IReviewService {
               }
             });
           }
-          if (book.tags) {
+        }).then(() => {
+          if (book.tags.length > 0) {
             // Delete tags (if necessary)
             Promise.all(
               book.tags.map((tag: PgTag) => {
