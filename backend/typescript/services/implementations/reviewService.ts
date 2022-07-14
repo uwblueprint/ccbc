@@ -260,8 +260,8 @@ class ReviewService implements IReviewService {
               transaction: txn,
             });
           }
-        })
-        
+        });
+
         // Delete publishers (if necessary)
         book.publishers.forEach(async (publisher: PgPublisher) => {
           const publishersOtherBooks = await PgBookPublisher.findAll({
