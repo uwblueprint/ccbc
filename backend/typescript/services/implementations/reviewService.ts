@@ -310,6 +310,8 @@ class ReviewService implements IReviewService {
       }),
     );
 
+    /* Removes genre's association with the book being deleted and
+     removes genre from db IF there are 0 associations to a book */
     const deleteGenres = Promise.all(
       reviewToDelete.books.map(async (book: PgBook) => {
         book.genres.forEach((genre: PgGenre) => {
@@ -324,7 +326,6 @@ class ReviewService implements IReviewService {
                 allBookIds.includes(genreName),
               )
             ) {
-              // Delete author
               await PgGenre.destroy({
                 where: { name: [genre.name] },
                 transaction: txn,
