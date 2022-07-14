@@ -234,6 +234,8 @@ class ReviewService implements IReviewService {
       throw new Error(`Review id ${id} not found`);
     }
 
+    const allBookIds = reviewToDelete.books.map((book: PgBook) => book.id);
+
     await Promise.all(
       reviewToDelete.books.map(async (book: PgBook) => {
         // Delete book
@@ -245,7 +247,7 @@ class ReviewService implements IReviewService {
         // Delete authors (if necessary)
         book.authors.forEach(async (author: PgAuthor) => {
           const authorsOtherBooks = await PgBookAuthor.findAll({
-            where: { author_id: author.id, book_id: { [Op.not]: book.id } },
+            where: { author_id: author.id, book_id: { [Op.notIn]: allBookIds } },
           });
           if (authorsOtherBooks.length === 0) {
             // Delete author
@@ -261,7 +263,7 @@ class ReviewService implements IReviewService {
           const publishersOtherBooks = await PgBookPublisher.findAll({
             where: {
               publisher_id: publisher.id,
-              book_id: { [Op.not]: book.id },
+              book_id: { [Op.notIn]: allBookIds },
             },
           });
           if (publishersOtherBooks.length === 0) {
@@ -276,7 +278,7 @@ class ReviewService implements IReviewService {
         // Delete series (if necessary)
         if (book.series) {
           const seriesOtherBooks = await PgBook.findAll({
-            where: { series_id: book.series.id, id: { [Op.not]: book.id } },
+            where: { series_id: book.series.id, id: { [Op.notIn]: allBookIds } },
           });
           if (seriesOtherBooks.length === 0) {
             // Delete series
