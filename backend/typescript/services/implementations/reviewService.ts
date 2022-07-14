@@ -424,12 +424,12 @@ class ReviewService implements IReviewService {
       };
     });
 
-    const tags: TagResponse[] = review.tags.map((tag: Tag) => {
-      return {
-        id: tag.id,
-        name: tag.name,
-      };
-    });
+    // const tags: TagResponse[] = review.tags.map((tag: Tag) => {
+    //   return {
+    //     id: tag.id,
+    //     name: tag.name,
+    //   };
+    // });
 
     return {
       reviewId: review.id,
@@ -438,7 +438,7 @@ class ReviewService implements IReviewService {
       featured: review.featured,
       createdByUser: this.getUserDetails(review),
       books,
-      tags,
+      tags: [],
       updatedAt: review.updatedAt.getTime(),
       publishedAt: review.published_at?.getTime()
         ? review.published_at.getTime()

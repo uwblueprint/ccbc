@@ -6,15 +6,19 @@ import {
   Model,
   Table,
   BelongsToMany,
+  PrimaryKey,
+  Unique,
 } from "sequelize-typescript";
-import Review from "./review.model";
-import ReviewTag from "./review_tag.model";
+import Book from "./book.model";
+import BookTag from "./book_tag.model";
 
 @Table({ tableName: "tags" })
 export default class Tag extends Model {
+  @PrimaryKey
+  @Unique
   @Column({ type: DataType.STRING })
   name!: string;
 
-  @BelongsToMany(() => Review, () => ReviewTag)
-  reviews!: Review[];
+  @BelongsToMany(() => Book, () => BookTag)
+  books!: Book[];
 }
