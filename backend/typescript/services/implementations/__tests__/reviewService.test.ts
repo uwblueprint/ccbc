@@ -182,7 +182,6 @@ describe("pg reviewService", () => {
         testResponseCopy.splice(i, 1);
       } else {
         response.books.sort((a, b) => a.title.localeCompare(b.title));
-
         newResult[i].books.sort((a, b) => a.title.localeCompare(b.title));
 
         reviewsAreEqual(newResult[i], response);
