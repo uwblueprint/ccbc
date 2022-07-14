@@ -244,6 +244,10 @@ class ReviewService implements IReviewService {
           transaction: txn,
         });
 
+        // TODO: can end up deleting the same author/publisher/series twice if
+        // there are books in the same review with the same author/publisher/series.
+        // fix this by grouping them into sets and iterating over those instead of the books
+
         // Delete authors (if necessary)
         book.authors.forEach(async (author: PgAuthor) => {
           const authorsOtherBooks = await PgBookAuthor.findAll({
