@@ -11,6 +11,7 @@ import PgTag from "../../models/tag.model";
 import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
+import PgGenre from "../../models/genre.model";
 import logger from "../../utilities/logger";
 import { sequelize } from "../../umzug";
 import {
@@ -21,6 +22,7 @@ import {
   BookRequest,
   AuthorResponse,
   AuthorRequest,
+  Genre,
   PublisherRequest,
   PublisherResponse,
   User,
@@ -68,6 +70,34 @@ class ReviewService implements IReviewService {
     }));
 
     return tagsRet;
+  }
+
+  /* eslint-disable class-methods-use-this, no-await-in-loop */
+  async findOrCreateGenre(
+    book: PgBook,
+    genre: Genre,
+    t: Transaction,
+  ): Promise<PgGenre> {
+    const [genreRef, created] = await PgGenre.findOrCreate({
+      where: { name: genre.name },
+      transaction: t,
+    });
+    if (!created) return genreRef;
+    await book.$add("genres", genreRef, { transaction: t });
+    return genreRef;
+  }
+
+  async findOrCreateGenres(
+    book: PgBook,
+    genres: Genre[],
+    t: Transaction,
+  ): Promise<Genre[]> {
+    const genresRet: Genre[] = [];
+    for (let i = 0; i < genres.length; i += 1) {
+      const genre = await this.findOrCreateGenre(book, genres[i], t);
+      genresRet.push({ name: genre.name });
+    }
+    return genresRet;
   }
 
   async findOrCreateSeries(
@@ -173,6 +203,12 @@ class ReviewService implements IReviewService {
       publishYear: publisher.publish_year,
     }));
 
+    const genresRet: Genre[] = await this.findOrCreateGenres(
+      newBook,
+      book.genres,
+      t,
+    );
+
     await review.$add("books", newBook, { transaction: t });
     return {
       id: newBook.id,
@@ -186,6 +222,7 @@ class ReviewService implements IReviewService {
       minAge: newBook.age_range[0].value,
       maxAge: newBook.age_range[1].value,
       authors: authorsRet,
+      genres: genresRet,
       publishers: publishersRet,
       series: {
         id: series?.id || null,
@@ -258,6 +295,21 @@ class ReviewService implements IReviewService {
             await PgAuthor.destroy({
               where: { id: [author.id] },
               transaction: txn,
+            });
+          }
+          // Delete genres (if necessary)
+          if (book.genres) {
+            book.genres.map((genre: PgGenre) => {
+              return PgBook.findAll({
+                where: { name: genre.name },
+              }).then((ret: PgBook[]) => {
+                if (ret.length === 0) {
+                  PgGenre.destroy({
+                    where: { name: genre.name },
+                    transaction: txn,
+                  });
+                }
+              });
             });
           }
         });
@@ -349,6 +401,12 @@ class ReviewService implements IReviewService {
       const TagsRet: Tag[] = book.tags.map((t: PgTag) => {
         return {
           name: t.name,
+        }
+      });
+
+      const genresRet: Genre[] = book.genres.map((p: PgGenre) => {
+        return {
+          name: p.name,
         };
       });
 
@@ -364,6 +422,7 @@ class ReviewService implements IReviewService {
         minAge: book.age_range[0].value,
         maxAge: book.age_range[1].value,
         authors: authorsRet,
+        genres: genresRet,
         publishers: publishersRet,
         series: {
           id: book.series?.id || null,

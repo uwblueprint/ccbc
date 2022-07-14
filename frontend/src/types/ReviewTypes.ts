@@ -1,4 +1,4 @@
-import { Book } from "./BookTypes";
+import { Book, Genre } from "./BookTypes";
 
 export type AuthorRequest = {
   fullName: string;
@@ -39,6 +39,7 @@ export type BookRequest = {
   minAge: number;
   maxAge: number;
   authors: AuthorRequest[];
+  genres: Genre[];
   publishers: Publisher[];
   series?: Series;
 };
@@ -55,6 +56,7 @@ export type BookResponse = {
   minAge: number;
   maxAge: number;
   authors: AuthorResponse[];
+  genres: Genre[];
   publishers: Publisher[];
   series: Series;
 };
