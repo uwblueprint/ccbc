@@ -259,10 +259,6 @@ paths:
 
         "401":
           description: Unauthorized Request.
-        "404":
-          description: Not Found.
-        "500":
-          description: Invalid Request.
     post:
       description: Create a new tag
       requestBody:
@@ -306,7 +302,7 @@ paths:
         '401':
           description: Unauthorized Request
         "500":
-          description: Invalid ID
+          description: Invalid name
 
   /entities:
     get:
