@@ -2,7 +2,7 @@ import { Router } from "express";
 import sendResponseByMimeType from "../utilities/responseUtil";
 import TagService from "../services/implementations/tagService";
 import { ITagService } from "../services/interfaces/ITagService";
-import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
+import { getErrorMessage } from "../utilities/errorResponse";
 import { isAuthorizedByRole } from "../middlewares/auth";
 
 const tagRouter: Router = Router();
@@ -22,20 +22,6 @@ tagRouter.get(
           error: getErrorMessage(e),
         },
       ]);
-    }
-  },
-);
-
-tagRouter.delete(
-  "/:name",
-  isAuthorizedByRole(new Set(["Admin"])),
-  async (req, res) => {
-    const { name } = req.params;
-    try {
-      await tagService.deleteTag(name);
-      res.status(204).send();
-    } catch (e: unknown) {
-      sendErrorResponse(e, res);
     }
   },
 );

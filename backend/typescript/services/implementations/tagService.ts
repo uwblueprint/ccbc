@@ -22,24 +22,6 @@ class TagService implements ITagService {
       throw error;
     }
   }
-
-  /* eslint-disable class-methods-use-this */
-  async deleteTag(name: string): Promise<string> {
-    try {
-      const tagToDelete = await Tag.findByPk(name, { raw: true });
-      const deleteResult: number | null = await Tag.destroy({
-        where: { name },
-      });
-
-      if (!tagToDelete || !deleteResult) {
-        throw Error(`Tag name ${name} not found`);
-      }
-      return name;
-    } catch (error: unknown) {
-      Logger.error(`Failed to delete tag: ${getErrorMessage(error)}`);
-      throw error;
-    }
-  }
 }
 
 export default TagService;

@@ -284,26 +284,6 @@ paths:
         "500":
           description: Invalid request
 
-  /tags/{name}:
-    delete:
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: name
-          required: true
-          schema:
-            type: string
-          description: The tag name
-      description: Delete a tag based on its name
-      responses:
-        '204':
-          description: Successfully deleted tag based on name
-        '401':
-          description: Unauthorized Request
-        "500":
-          description: Invalid name
-
   /entities:
     get:
       security:
