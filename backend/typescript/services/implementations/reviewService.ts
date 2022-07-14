@@ -260,27 +260,8 @@ class ReviewService implements IReviewService {
               transaction: txn,
             });
           }
-        }).then(() => {
-          if (book.tags.length > 0) {
-            // Delete tags (if necessary)
-            Promise.all(
-              book.tags.map((tag: PgTag) => {
-                return PgBookTag.findAll({
-                  where: { tag_name: tag.name },
-                }).then(async (tagRet: PgBookTag[]) => {
-                  if (tagRet.length === 0) {
-                    // Delete tags
-                    await PgTag.destroy({
-                      where: { name: [tag.name] },
-                      transaction: txn,
-                    });
-                  }
-                });
-              }),
-            );
-          }
-        });
-
+        })
+        
         // Delete publishers (if necessary)
         book.publishers.forEach(async (publisher: PgPublisher) => {
           const publishersOtherBooks = await PgBookPublisher.findAll({
@@ -313,6 +294,25 @@ class ReviewService implements IReviewService {
               transaction: txn,
             });
           }
+        }
+
+        // Delete tags (if necessary)
+        if (book.tags.length > 0) {
+          book.tags.forEach(async (tag: PgTag) => {
+            const tagsOtherBooks = await PgBookTag.findAll({
+              where: {
+                tag_name: tag.name,
+                book_id: { [Op.notIn]: allBookIds },
+              },
+            });
+            if (tagsOtherBooks.length === 0) {
+              // Delete tags
+              await PgTag.destroy({
+                where: { name: [tag.name] },
+                transaction: txn,
+              });
+            }
+          });
         }
       }),
     );
