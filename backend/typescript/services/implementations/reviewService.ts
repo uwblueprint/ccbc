@@ -224,7 +224,7 @@ class ReviewService implements IReviewService {
     }
   }
 
-  async deleteReviewHelper(id: string, txn: Transaction): Promise<Boolean> {
+  async deleteReviewHelper(id: string, txn: Transaction): Promise<boolean> {
     const reviewToDelete = await PgReview.findByPk(id, {
       transaction: txn,
       include: [{ all: true, nested: true }],
