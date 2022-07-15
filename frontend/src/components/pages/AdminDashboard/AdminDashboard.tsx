@@ -70,6 +70,10 @@ const AdminDashboard = (): React.ReactElement => {
     try {
       setIsLoading(true);
       await reviewAPIClient.deleteReviewById(deleteReviewId.toString());
+      const newData = [...data];
+      const deleteReviewIndex = getIndex(deleteReviewId);
+      newData.splice(deleteReviewIndex, 1);
+      setData(newData);
       newToast("success", "Review deleted", "Your review has been deleted");
     } catch (e) {
       newToast(
@@ -78,10 +82,6 @@ const AdminDashboard = (): React.ReactElement => {
         "Something went wrong, please refresh the page and try again.",
       );
     }
-    const newData = [...data];
-    const deleteReviewIndex = getIndex(deleteReviewId);
-    newData.splice(deleteReviewIndex, 1);
-    setData(newData);
     setIsLoading(false);
   };
 
