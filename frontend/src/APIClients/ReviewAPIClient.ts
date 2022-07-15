@@ -75,14 +75,10 @@ const handleReview = async (
   Delete review by id
 */
 const deleteReviewById = async (id: string): Promise<ReviewResponse> => {
-  try {
-    const { data } = await baseAPIClient.delete(`/reviews/${id.toString()}`, {
-      headers: { Authorization: getBearerToken() },
-    });
-    return data;
-  } catch (error) {
-    return error as ReviewResponse;
-  }
+  const { data } = await baseAPIClient.delete(`/reviews/${id.toString()}`, {
+    headers: { Authorization: getBearerToken() },
+  });
+  return data;
 };
 
 /**

@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
+import { Op } from "sequelize";
 import { Transaction } from "sequelize/types";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
@@ -259,7 +260,7 @@ class ReviewService implements IReviewService {
     }
   }
 
-  async deleteReviewHelper(id: string, txn: Transaction): Promise<number> {
+  async deleteReviewHelper(id: string, txn: Transaction): Promise<boolean> {
     const reviewToDelete = await PgReview.findByPk(id, {
       transaction: txn,
       include: [{ all: true, nested: true }],
@@ -270,112 +271,92 @@ class ReviewService implements IReviewService {
     }
 
     const allBookIds = reviewToDelete.books.map((book: PgBook) => book.id);
-    const deletePublishersAndAuthors = Promise.all(
-      reviewToDelete.books.map(async (book: PgBook) => {
-        // Delete authors (if necessary)
-        book.authors.forEach((author: PgAuthor) => {
-          PgBookAuthor.findAll({
-            where: { author_id: author.id },
-          }).then(async (ret: PgBookAuthor[]) => {
-            const bookAuthorIds = ret.map(
-              (bookAuthor: PgBookAuthor) => bookAuthor.book_id,
-            );
-            if (bookAuthorIds.every((bookId) => allBookIds.includes(bookId))) {
-              // Delete author
-              await PgAuthor.destroy({
-                where: { id: [author.id] },
-                transaction: txn,
-              });
-            }
-          });
-        });
 
-        // Delete publishers (if necessary)
-        book.publishers.forEach((publisher: PgPublisher) => {
-          PgBookPublisher.findAll({
-            where: { publisher_id: publisher.id },
-          }).then(async (ret: PgBookPublisher[]) => {
-            const bookPublisherIds = ret.map(
-              (bookPublisher: PgBookPublisher) => bookPublisher.book_id,
-            );
-            if (
-              bookPublisherIds.every((bookId) => allBookIds.includes(bookId))
-            ) {
-              // Delete publisher
-              await PgPublisher.destroy({
-                where: { id: [publisher.id] },
-                transaction: txn,
-              });
-            }
-          });
-        });
-      }),
-    );
-
-    /* Removes genre's association with the book being deleted and
-     removes genre from db IF there are 0 associations to a book */
-    const deleteGenres = Promise.all(
-      reviewToDelete.books.map(async (book: PgBook) => {
-        book.genres.forEach((genre: PgGenre) => {
-          PgBookGenre.findAll({
-            where: { genre_name: genre.name },
-          }).then(async (ret: PgBookGenre[]) => {
-            const bookGenreNames = ret.map(
-              (bookGenre: PgBookGenre) => bookGenre.genre_name,
-            );
-            if (
-              bookGenreNames.every((genreName) =>
-                allBookIds.includes(genreName),
-              )
-            ) {
-              await PgGenre.destroy({
-                where: { name: [genre.name] },
-                transaction: txn,
-              });
-            }
-          });
-        });
-      }),
-    );
-
-    const deleteBooks = Promise.all(
+    await Promise.all(
       reviewToDelete.books.map(async (book: PgBook) => {
         // Delete book
-        PgBook.destroy({
+        await PgBook.destroy({
           where: { id: [book.id] },
           transaction: txn,
-        }).then(() => {
-          // Delete series (if necessary)
-          if (book.series) {
-            PgBook.findAll({
-              where: { series_id: book.series.id },
-            }).then((ret: PgBook[]) => {
-              // We check for 0 because we deleted the book (can't be 1)
-              if (ret.length === 0) {
-                // Delete series
-                PgSeries.destroy({
-                  where: { id: [book.series.id] },
-                  transaction: txn,
-                });
-              }
+        });
+
+        // TODO: can end up deleting the same author/publisher/series twice if
+        // there are books in the same review with the same author/publisher/series.
+        // fix this by grouping them into sets and iterating over those instead of the books
+
+        // Delete authors (if necessary)
+        book.authors.forEach(async (author: PgAuthor) => {
+          const authorsOtherBooks = await PgBookAuthor.findAll({
+            where: {
+              author_id: author.id,
+              book_id: { [Op.notIn]: allBookIds },
+            },
+          });
+          if (authorsOtherBooks.length === 0) {
+            // Delete author
+            await PgAuthor.destroy({
+              where: { id: [author.id] },
+              transaction: txn,
             });
           }
         });
+
+        // Delete genres (if necessary)
+        book.genres.forEach(async (genre: PgGenre) => {
+          const genresOtherBooks = await PgBookGenre.findAll({
+            where: { genre_name: genre.name },
+          });
+          // Remove the genre if there are 0 associations to a book
+          if (genresOtherBooks.length === 0) {
+            await PgGenre.destroy({
+              where: { name: [genre.name] },
+              transaction: txn,
+            });
+          }
+        });
+
+        // Delete publishers (if necessary)
+        book.publishers.forEach(async (publisher: PgPublisher) => {
+          const publishersOtherBooks = await PgBookPublisher.findAll({
+            where: {
+              publisher_id: publisher.id,
+              book_id: { [Op.notIn]: allBookIds },
+            },
+          });
+          if (publishersOtherBooks.length === 0) {
+            // Delete publisher
+            await PgPublisher.destroy({
+              where: { id: [publisher.id] },
+              transaction: txn,
+            });
+          }
+        });
+
+        // Delete series (if necessary)
+        if (book.series) {
+          const seriesOtherBooks = await PgBook.findAll({
+            where: {
+              series_id: book.series.id,
+              id: { [Op.notIn]: allBookIds },
+            },
+          });
+          if (seriesOtherBooks.length === 0) {
+            // Delete series
+            await PgSeries.destroy({
+              where: { id: [book.series.id] },
+              transaction: txn,
+            });
+          }
+        }
       }),
     );
 
-    const deleteResult = await Promise.all([
-      deletePublishersAndAuthors,
-      deleteGenres,
-      deleteBooks,
-    ]).then(() => {
-      return PgReview.destroy({
-        where: { id: [id] },
-        transaction: txn,
-      });
+    await PgReview.destroy({
+      where: { id: [id] },
+      transaction: txn,
     });
 
-    return deleteResult;
+    return true;
   }
 
   static pgReviewToRet(review: PgReview): ReviewResponseDTO {
