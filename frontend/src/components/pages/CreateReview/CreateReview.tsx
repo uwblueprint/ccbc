@@ -168,6 +168,29 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   };
 
   /**
+   * Deletes a review with the given index
+   */
+  const deleteReview = async () => {
+    if (id) {
+      try {
+        setLoading(true);
+        await reviewAPIClient.deleteReviewById(id);
+        newToast("success", "Review deleted", "Your review has been deleted");
+        history.replace("/dashboard");
+      } catch (e) {
+        newToast(
+          "error",
+          "Error deleting review",
+          "Something went wrong, please refresh the page and try again.",
+        );
+      }
+      setLoading(false);
+    } else {
+      history.push("/dashboard");
+    }
+  };
+
+  /**
    * Function to be called when the review is published/saved as a draft.
    */
   const onSubmit = async (publish = false) => {
@@ -188,7 +211,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           createdBy: parseInt(authenticatedUser?.id, 10),
           publishedAt: publish ? new Date().getTime() : null,
           books: mapBookToBookRequest(books),
-          tags: [],
         };
         const reviewId = id ? parseInt(id, 10) : undefined;
         try {
@@ -313,7 +335,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       <DeleteReviewModal
         isOpen={showDeleteReviewModal}
         onClose={onDeleteReviewModalClose}
-        deleteReview={() => {}}
+        deleteReview={() => deleteReview()}
       />
       {/*  on leaving the page we need to have the save as draft window confirmation pop up, disabled for now 
       {
