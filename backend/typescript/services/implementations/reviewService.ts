@@ -298,18 +298,24 @@ class ReviewService implements IReviewService {
 
         // Delete tags (if necessary)
         if (book.tags.length > 0) {
-          const tagsToDel = []
-          for(const tag of book.tags) {
+          const tagsToDel: string[] = [];
+
+          // TODO make this cleaner
+          /* eslint-disable no-await-in-loop */
+          /* eslint-disable-next-line no-restricted-syntax */
+          for (const tag of book.tags) {
             const tagsOtherBooks = await PgBookTag.findAll({
-              where : {
+              where: {
                 tag_name: tag.name,
                 book_id: { [Op.notIn]: allBookIds },
-              }
+              },
             });
-            if (tagsOtherBooks.length == 0) {
+            if (tagsOtherBooks.length === 0) {
               tagsToDel.push(tag.name);
-            } 
+            }
           }
+          /* eslint-enable no-await-in-loop */
+
           await PgTag.destroy({
             where: { name: tagsToDel },
             transaction: txn,
