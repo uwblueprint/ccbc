@@ -51,10 +51,10 @@ export interface BookRequest {
   minAge: number;
   maxAge: number;
   authors: AuthorRequest[];
-  genres: Genre[];
+  genres?: Genre[] | null;
   publishers: PublisherRequest[];
   series: Series;
-  tags: Tag[];
+  tags?: Tag[] | null;
 }
 
 export interface Tag {
