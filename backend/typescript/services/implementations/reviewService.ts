@@ -339,21 +339,6 @@ class ReviewService implements IReviewService {
               transaction: txn,
             });
           }
-          // Delete genres (if necessary)
-          if (book.genres) {
-            book.genres.map((genre: PgGenre) => {
-              return PgBook.findAll({
-                where: { name: genre.name },
-              }).then((ret: PgBook[]) => {
-                if (ret.length === 0) {
-                  PgGenre.destroy({
-                    where: { name: genre.name },
-                    transaction: txn,
-                  });
-                }
-              });
-            });
-          }
         });
 
         // Delete series (if necessary)
