@@ -34,6 +34,10 @@ export const Genre = t.iface([], {
   name: "string",
 });
 
+export const Tag = t.iface([], {
+  name: "string",
+});
+
 export const Format = t.iface([], {
   format: "string",
   price: "number",
@@ -57,6 +61,7 @@ export const BookRequest = t.iface([], {
   minAge: "number",
   maxAge: "number",
   genres: t.array("Genre"),
+  tags: t.array("Tag"),
   authors: t.array("AuthorRequest"),
   publishers: t.array("PublisherRequest"),
   series: "Series",
@@ -74,19 +79,10 @@ export const BookResponse = t.iface([], {
   minAge: "number",
   maxAge: "number",
   genres: t.array("Genre"),
+  tags: t.array("Tag"),
   authors: t.array("AuthorResponse"),
   publishers: t.array("PublisherResponse"),
   series: "Series",
-});
-
-export const TagRequest = t.iface([], {
-  id: t.opt("number"),
-  name: "string",
-});
-
-export const TagResponse = t.iface([], {
-  id: "number",
-  name: "string",
 });
 
 export const User = t.iface([], {
@@ -102,7 +98,6 @@ export const ReviewRequestDTO = t.iface([], {
   createdBy: "number",
   publishedAt: t.opt(t.union("number", "null")),
   books: t.array("BookRequest"),
-  tags: t.array("TagRequest"),
 });
 
 export const ReviewResponseDTO = t.iface([], {
@@ -113,7 +108,6 @@ export const ReviewResponseDTO = t.iface([], {
   createdBy: t.opt(t.union("number", "null")),
   createdByUser: t.opt(t.union("User", "null")),
   books: t.array("BookResponse"),
-  tags: t.array("TagResponse"),
   updatedAt: "number",
   publishedAt: t.union("number", "null"),
   createdAt: "number",
@@ -143,9 +137,8 @@ const exportedTypeSuite: t.ITypeSuite = {
   Series,
   BookRequest,
   BookResponse,
-  TagRequest,
-  TagResponse,
   Genre,
+  Tag,
   User,
   ReviewRequestDTO,
   ReviewResponseDTO,

@@ -54,6 +54,11 @@ export interface BookRequest {
   genres: Genre[];
   publishers: PublisherRequest[];
   series: Series;
+  tags: Tag[];
+}
+
+export interface Tag {
+  name: string;
 }
 
 export interface BookResponse {
@@ -71,16 +76,7 @@ export interface BookResponse {
   genres: Genre[];
   publishers: PublisherResponse[];
   series: Series;
-}
-
-export interface TagRequest {
-  id?: number;
-  name: string;
-}
-
-export interface TagResponse {
-  id: number;
-  name: string;
+  tags: Tag[];
 }
 
 /**
@@ -99,7 +95,6 @@ export interface ReviewRequestDTO {
   createdBy: number;
   publishedAt?: number | null;
   books: BookRequest[];
-  tags: TagRequest[];
 }
 
 export interface ReviewResponseDTO {
@@ -110,7 +105,6 @@ export interface ReviewResponseDTO {
   createdBy?: number | null;
   createdByUser?: User | null;
   books: BookResponse[];
-  tags: TagResponse[];
   updatedAt: number;
   publishedAt: number | null;
   createdAt: number;

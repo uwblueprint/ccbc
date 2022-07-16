@@ -5,13 +5,10 @@ import {
   DataType,
   Model,
   Table,
-  BelongsToMany,
   HasMany,
   ForeignKey,
   BelongsTo,
 } from "sequelize-typescript";
-import Tag from "./tag.model";
-import ReviewTag from "./review_tag.model";
 import Book from "./book.model";
 import User from "./user.model";
 
@@ -32,9 +29,6 @@ export default class Review extends Model {
 
   @Column({ type: DataType.DATE })
   published_at?: Date;
-
-  @BelongsToMany(() => Tag, () => ReviewTag)
-  tags!: Tag[];
 
   @HasMany(() => Book)
   books!: Book[];

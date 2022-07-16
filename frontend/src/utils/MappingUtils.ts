@@ -120,7 +120,6 @@ export const mapReviewResponseToReview = (
       lastName: review.createdByUser.lastName,
     },
     books: mapBookResponseToBook(review.books),
-    tags: review.tags,
     updatedAt: review.updatedAt,
     publishedAt: review.publishedAt,
     createdAt: review.createdAt,

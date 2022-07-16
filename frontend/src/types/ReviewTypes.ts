@@ -72,7 +72,6 @@ export type ReviewRequest = {
   createdBy: number;
   publishedAt?: number | null;
   books: BookRequest[];
-  tags: Tag[];
 };
 
 export type ReviewResponse = {
@@ -86,7 +85,6 @@ export type ReviewResponse = {
     lastName: string;
   };
   books: BookResponse[];
-  tags: Tag[];
   updatedAt: number;
   publishedAt: number | null;
   createdAt: number;
@@ -102,7 +100,6 @@ export type Review = {
     lastName: string;
   };
   books: Book[];
-  tags: Tag[];
   updatedAt: number;
   publishedAt: number | null;
   createdAt: number;
