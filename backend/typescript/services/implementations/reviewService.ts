@@ -302,18 +302,29 @@ class ReviewService implements IReviewService {
         });
 
         // Delete genres (if necessary)
-        book.genres.forEach(async (genre: PgGenre) => {
-          const genresOtherBooks = await PgBookGenre.findAll({
-            where: { genre_name: genre.name },
-          });
-          // Remove the genre if there are 0 associations to a book
-          if (genresOtherBooks.length === 0) {
-            await PgGenre.destroy({
-              where: { name: [genre.name] },
-              transaction: txn,
+        if (book.genres.length > 0) {
+          const genresToDel: string[] = [];
+
+          /* eslint-disable no-await-in-loop */
+          /* eslint-disable-next-line no-restricted-syntax */
+          for (const genre of book.genres) {
+            const genresOtherBooks = await PgBookGenre.findAll({
+              where: {
+                genre_name: genre.name,
+                book_id: { [Op.notIn]: allBookIds },
+              },
             });
+            if (genresOtherBooks.length === 0) {
+              genresToDel.push(genre.name);
+            }
           }
-        });
+          /* eslint-enable no-await-in-loop */
+
+          await PgGenre.destroy({
+            where: { name: genresToDel },
+            transaction: txn,
+          });
+        }
 
         // Delete publishers (if necessary)
         book.publishers.forEach(async (publisher: PgPublisher) => {
