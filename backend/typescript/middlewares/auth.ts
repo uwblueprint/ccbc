@@ -85,3 +85,28 @@ export const isAuthorizedByEmail = (emailField: string) => {
     return next();
   };
 };
+
+/* Determine if the origin of the respose is a valid origin to based on the request headers.
+If invalid theywill not be able to use the endpoint
+allowedOrigins is the list of all the origins that are allowed to use an endpoint. 
+*/
+export const isValidOriginOfRequest = (allowedOrigins: string[]) => {
+  const whitelistedOrigins = Array.isArray(allowedOrigins)
+    ? allowedOrigins
+    : [allowedOrigins];
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> => {
+    const origin = req.headers.origin;
+    if (whitelistedOrigins.indexOf(origin) > -1) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    } else {
+      res.status(403).json({
+        msg: "This is a private Endpoint, Please contact the Admin",
+      });
+    }
+    return next();
+  };
+};
