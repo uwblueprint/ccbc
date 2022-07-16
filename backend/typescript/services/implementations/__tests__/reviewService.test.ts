@@ -69,6 +69,12 @@ function reviewsAreEqual(
         expect(rAPublisher.fullName).toEqual(rBPublisher.fullName);
       },
     );
+
+    rABook.tags.sort();
+    reviewBBook.tags.sort();
+    rABook.tags.forEach((rATag, rATagIndex) => {
+      expect(rATag).toEqual(reviewBBook.tags[rATagIndex]);
+    });
   });
 }
 

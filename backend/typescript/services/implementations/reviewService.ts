@@ -7,6 +7,8 @@ import PgBook from "../../models/book.model";
 import PgBookAuthor from "../../models/book_author.model";
 import PgBookPublisher from "../../models/book_publisher.model";
 import PgBookGenre from "../../models/book_genre.model";
+import PgBookTag from "../../models/book_tag.model";
+import PgTag from "../../models/tag.model";
 import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
@@ -21,14 +23,12 @@ import {
   BookRequest,
   AuthorResponse,
   AuthorRequest,
-  Genre,
-  TagRequest,
   PublisherRequest,
   PublisherResponse,
-  TagResponse,
   User,
+  Genre,
+  Tag,
 } from "../interfaces/IReviewService";
-import Tag from "../../models/tag.model";
 
 const Logger = logger(__filename);
 
@@ -42,35 +42,31 @@ class ReviewService implements IReviewService {
 
   /* eslint-disable class-methods-use-this */
   async findOrCreateTag(
-    review: PgReview,
-    tag: TagRequest,
+    book: PgBook,
+    tag: Tag,
     t: Transaction,
-  ): Promise<Tag> {
-    const [tagRef, created] = await Tag.findOrCreate({
+  ): Promise<PgTag> {
+    const [tagRef] = await PgTag.findOrCreate({
       where: { name: tag.name },
       transaction: t,
     });
-    if (!created) return tagRef;
-
-    // TODO implement Tags API changes
-    // await review.$add("tags", tagRef, { transaction: t });
+    await book.$add("tags", tagRef, { transaction: t });
     return tagRef;
   }
 
   async findOrCreateTags(
-    review: PgReview,
-    tags: TagRequest[],
+    book: PgBook,
+    tags: Tag[],
     t: Transaction,
-  ): Promise<TagResponse[]> {
-    const tagsRespRes: Promise<Tag>[] = [];
+  ): Promise<Tag[]> {
+    const tagsRespRes: Promise<PgTag>[] = [];
     for (let i = 0; i < tags.length; i += 1) {
-      tagsRespRes.push(this.findOrCreateTag(review, tags[i], t));
+      tagsRespRes.push(this.findOrCreateTag(book, tags[i], t));
     }
 
-    const tagsRes: Tag[] = await Promise.all(tagsRespRes);
+    const tagsRes: PgTag[] = await Promise.all(tagsRespRes);
 
-    const tagsRet: TagResponse[] = tagsRes.map((tag) => ({
-      id: tag.id,
+    const tagsRet: Tag[] = tagsRes.map((tag) => ({
       name: tag.name,
     }));
 
@@ -185,6 +181,7 @@ class ReviewService implements IReviewService {
     book.authors.forEach((author) => {
       authorsRes.push(this.findOrCreateAuthor(newBook, author, t));
     });
+    const tagsRet = await this.findOrCreateTags(newBook, book.tags, t);
 
     const authors = await Promise.all(authorsRes);
     const authorsRet: AuthorResponse[] = authors.map((author) => ({
@@ -231,6 +228,7 @@ class ReviewService implements IReviewService {
         id: series?.id || null,
         name: series?.name || null,
       },
+      tags: tagsRet,
     };
   }
 
@@ -359,6 +357,32 @@ class ReviewService implements IReviewService {
             });
           }
         }
+
+        // Delete tags (if necessary)
+        if (book.tags.length > 0) {
+          const tagsToDel: string[] = [];
+
+          // TODO make this cleaner
+          /* eslint-disable no-await-in-loop */
+          /* eslint-disable-next-line no-restricted-syntax */
+          for (const tag of book.tags) {
+            const tagsOtherBooks = await PgBookTag.findAll({
+              where: {
+                tag_name: tag.name,
+                book_id: { [Op.notIn]: allBookIds },
+              },
+            });
+            if (tagsOtherBooks.length === 0) {
+              tagsToDel.push(tag.name);
+            }
+          }
+          /* eslint-enable no-await-in-loop */
+
+          await PgTag.destroy({
+            where: { name: tagsToDel },
+            transaction: txn,
+          });
+        }
       }),
     );
 
@@ -397,6 +421,12 @@ class ReviewService implements IReviewService {
         };
       });
 
+      const TagsRet: Tag[] = book.tags.map((t: PgTag) => {
+        return {
+          name: t.name,
+        };
+      });
+
       return {
         id: book.id,
         title: book.title,
@@ -415,15 +445,9 @@ class ReviewService implements IReviewService {
           id: book.series?.id || null,
           name: book.series?.name || null,
         },
+        tags: TagsRet,
       };
     });
-
-    // const tags: TagResponse[] = review.tags.map((tag: Tag) => {
-    //   return {
-    //     id: tag.id,
-    //     name: tag.name,
-    //   };
-    // });
 
     return {
       reviewId: review.id,
