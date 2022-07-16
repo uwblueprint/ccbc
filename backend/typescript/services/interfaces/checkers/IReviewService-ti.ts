@@ -34,10 +34,6 @@ export const Genre = t.iface([], {
   name: "string",
 });
 
-export const Tag = t.iface([], {
-  name: "string",
-});
-
 export const Format = t.iface([], {
   format: "string",
   price: "number",
@@ -60,11 +56,15 @@ export const BookRequest = t.iface([], {
   formats: t.union(t.array("Format"), "null"),
   minAge: "number",
   maxAge: "number",
-  genres: t.array("Genre"),
-  tags: t.array("Tag"),
   authors: t.array("AuthorRequest"),
+  genres: t.opt(t.union(t.array("Genre"), "null")),
   publishers: t.array("PublisherRequest"),
   series: "Series",
+  tags: t.opt(t.union(t.array("Tag"), "null")),
+});
+
+export const Tag = t.iface([], {
+  name: "string",
 });
 
 export const BookResponse = t.iface([], {
@@ -78,11 +78,11 @@ export const BookResponse = t.iface([], {
   formats: t.union(t.array("Format"), "null"),
   minAge: "number",
   maxAge: "number",
-  genres: t.array("Genre"),
-  tags: t.array("Tag"),
   authors: t.array("AuthorResponse"),
+  genres: t.array("Genre"),
   publishers: t.array("PublisherResponse"),
   series: "Series",
+  tags: t.array("Tag"),
 });
 
 export const User = t.iface([], {
@@ -133,12 +133,12 @@ const exportedTypeSuite: t.ITypeSuite = {
   AuthorResponse,
   PublisherRequest,
   PublisherResponse,
+  Genre,
   Format,
   Series,
   BookRequest,
-  BookResponse,
-  Genre,
   Tag,
+  BookResponse,
   User,
   ReviewRequestDTO,
   ReviewResponseDTO,

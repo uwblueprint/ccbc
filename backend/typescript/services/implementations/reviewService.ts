@@ -181,7 +181,7 @@ class ReviewService implements IReviewService {
     book.authors.forEach((author) => {
       authorsRes.push(this.findOrCreateAuthor(newBook, author, t));
     });
-    const tagsRet = await this.findOrCreateTags(newBook, book.tags, t);
+    const tagsRet = await this.findOrCreateTags(newBook, book.tags || [], t);
 
     const authors = await Promise.all(authorsRes);
     const authorsRet: AuthorResponse[] = authors.map((author) => ({
@@ -205,7 +205,7 @@ class ReviewService implements IReviewService {
 
     const genresRet: Genre[] = await this.findOrCreateGenres(
       newBook,
-      book.genres,
+      book.genres || [],
       t,
     );
 
