@@ -3,7 +3,7 @@ import AuthService from "../services/implementations/authService";
 import UserService from "../services/implementations/userService";
 import { sendErrorResponse } from "../utilities/errorResponse";
 import { AuthDTO, Role, UserDTO } from "../types";
-import { isAuthorizedByRole } from "../middlewares/auth";
+import { isAuthorizedByRole, isValidOriginOfRequest } from "../middlewares/auth";
 
 const givecloudRouter: Router = Router();
 
@@ -25,8 +25,8 @@ const userService = new UserService();
 const authService = new AuthService(userService);
 givecloudRouter.use(isAuthorizedByRole(new Set(["Admin"])));
 
-givecloudRouter.post("/user.subscription_paid", async (req, res) => {
-  try {
+givecloudRouter.post("/user.subscription_paid", isValidOriginOfRequest(['givecloudExampleRoute']), async (req, res) => {
+
     const { membership, supporter } = req.body;
     const { email } = supporter;
     const subscriptionExpiresOn = new Date();
