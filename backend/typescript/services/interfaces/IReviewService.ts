@@ -49,6 +49,11 @@ export interface BookRequest {
   authors: AuthorRequest[];
   publishers: PublisherRequest[];
   series: Series;
+  tags: Tag[];
+}
+
+export interface Tag {
+  name: string;
 }
 
 export interface BookResponse {
@@ -65,16 +70,7 @@ export interface BookResponse {
   authors: AuthorResponse[];
   publishers: PublisherResponse[];
   series: Series;
-}
-
-export interface TagRequest {
-  id?: number;
-  name: string;
-}
-
-export interface TagResponse {
-  id: number;
-  name: string;
+  tags: Tag[];
 }
 
 /**
