@@ -111,6 +111,5 @@ export default [
         ],
       },
     ],
-    tags: [{ name: "tag1 Name" }, { name: "tag2 Name" }],
   },
 ] as ReviewRequestDTO[];

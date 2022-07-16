@@ -356,7 +356,7 @@ class AuthService implements IAuthService {
     return accessCode;
   }
 
-  async sendRegistrationEmail(
+  async createUserAndSendRegistrationEmail(
     firstName: string,
     lastName: string,
     email: string,

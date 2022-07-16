@@ -5,7 +5,6 @@ import {
   Icon,
   Image,
   Stack,
-  Tag,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -132,13 +131,13 @@ const PreviewReview = ({
                 </Stack>
               </Box>
               <HStack spacing={2}>
-                {review.tags.map((tag, index) => (
+                {/* {review.tags.map((tag, index) => (
                   <Box key={index}>
                     <Tag bgColor="#F6E1A8" size="sm" fontWeight={600}>
                       {tag.name}
                     </Tag>
                   </Box>
-                ))}
+                ))} */}
               </HStack>
             </Stack>
           </Box>
