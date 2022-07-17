@@ -213,10 +213,14 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       Number(prices[index]) < kMaxPrice,
   );
 
+  /** Ensures that all authors are none empty */
+  const hasAuthors = authors.every((author) => author);
+
   /** Check that all required modal fields are properly filled out */
   const hasRequired =
     title !== "" &&
     authors.length > 0 &&
+    hasAuthors &&
     publisher !== "" &&
     publicationYear !== "" &&
     coverImage !== "" &&

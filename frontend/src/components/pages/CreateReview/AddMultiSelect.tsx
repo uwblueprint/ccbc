@@ -36,10 +36,11 @@ interface AddMultiSelectProps {
   required?: boolean;
   placeholder?: string;
   maxWidth?: string;
-  options: Option[];
-  setOptions: any;
-  optionsSelected: Option[];
-  setOptionsSelected: any;
+  options: Option[]; // Gives list of all possible options to choose from (comes from DB)
+  setOptions: any; // Setting the list of options from the DB
+  optionsSelected: Option[]; // List of options that's been selected
+  setOptionsSelected: any; // Setting the list of options to be selected
+  allowDeleteOption?: boolean;
 }
 
 const AddMultiSelect = ({
@@ -52,6 +53,7 @@ const AddMultiSelect = ({
   setOptions,
   optionsSelected,
   setOptionsSelected,
+  allowDeleteOption,
 }: AddMultiSelectProps): React.ReactElement => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [optionToDelete, setOptionToDelete] = useState<Option>(EmptyOption);
@@ -94,12 +96,16 @@ const AddMultiSelect = ({
     return (
       <components.Option {...optionProps}>
         {children}
-        <IconButton
-          aria-label="Delete Button"
-          size="xs"
-          icon={<CloseIcon />}
-          onClick={(e: any) => confirmDelete(e, data)}
-        />
+        {allowDeleteOption ? (
+          <IconButton
+            aria-label="Delete Button"
+            size="xs"
+            icon={<CloseIcon />}
+            onClick={(e: any) => confirmDelete(e, data)}
+          />
+        ) : (
+          ""
+        )}
       </components.Option>
     );
   };

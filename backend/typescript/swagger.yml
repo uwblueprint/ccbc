@@ -1033,7 +1033,5 @@ paths:
                       type: string
         '401':
           description: Unauthorized Request.
-        '404':
-          description: Not Found.
         '500':
           description: Invalid Request.

@@ -6,6 +6,7 @@ import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
 import PgBookAuthor from "../../models/book_author.model";
 import PgBookPublisher from "../../models/book_publisher.model";
+import PgBookGenre from "../../models/book_genre.model";
 import PgBookTag from "../../models/book_tag.model";
 import PgTag from "../../models/tag.model";
 import PgSeries from "../../models/series.model";
@@ -22,10 +23,10 @@ import {
   BookRequest,
   AuthorResponse,
   AuthorRequest,
-  Genre,
   PublisherRequest,
   PublisherResponse,
   User,
+  Genre,
   Tag,
 } from "../interfaces/IReviewService";
 
@@ -78,11 +79,10 @@ class ReviewService implements IReviewService {
     genre: Genre,
     t: Transaction,
   ): Promise<PgGenre> {
-    const [genreRef, created] = await PgGenre.findOrCreate({
+    const genreRef = await PgGenre.findOrCreate({
       where: { name: genre.name },
       transaction: t,
-    });
-    if (!created) return genreRef;
+    }).then((res) => res[0]);
     await book.$add("genres", genreRef, { transaction: t });
     return genreRef;
   }
@@ -181,7 +181,7 @@ class ReviewService implements IReviewService {
     book.authors.forEach((author) => {
       authorsRes.push(this.findOrCreateAuthor(newBook, author, t));
     });
-    const tagsRet = await this.findOrCreateTags(newBook, book.tags, t);
+    const tagsRet = await this.findOrCreateTags(newBook, book.tags || [], t);
 
     const authors = await Promise.all(authorsRes);
     const authorsRet: AuthorResponse[] = authors.map((author) => ({
@@ -205,7 +205,7 @@ class ReviewService implements IReviewService {
 
     const genresRet: Genre[] = await this.findOrCreateGenres(
       newBook,
-      book.genres,
+      book.genres || [],
       t,
     );
 
@@ -297,22 +297,32 @@ class ReviewService implements IReviewService {
               transaction: txn,
             });
           }
-          // Delete genres (if necessary)
-          if (book.genres) {
-            book.genres.map((genre: PgGenre) => {
-              return PgBook.findAll({
-                where: { name: genre.name },
-              }).then((ret: PgBook[]) => {
-                if (ret.length === 0) {
-                  PgGenre.destroy({
-                    where: { name: genre.name },
-                    transaction: txn,
-                  });
-                }
-              });
-            });
-          }
         });
+
+        // Delete genres (if necessary)
+        if (book.genres.length > 0) {
+          const genresToDel: string[] = [];
+
+          /* eslint-disable no-await-in-loop */
+          /* eslint-disable-next-line no-restricted-syntax */
+          for (const genre of book.genres) {
+            const genresOtherBooks = await PgBookGenre.findAll({
+              where: {
+                genre_name: genre.name,
+                book_id: { [Op.notIn]: allBookIds },
+              },
+            });
+            if (genresOtherBooks.length === 0) {
+              genresToDel.push(genre.name);
+            }
+          }
+          /* eslint-enable no-await-in-loop */
+
+          await PgGenre.destroy({
+            where: { name: genresToDel },
+            transaction: txn,
+          });
+        }
 
         // Delete publishers (if necessary)
         book.publishers.forEach(async (publisher: PgPublisher) => {
@@ -350,7 +360,12 @@ class ReviewService implements IReviewService {
 
         // Delete tags (if necessary)
         if (book.tags.length > 0) {
-          book.tags.forEach(async (tag: PgTag) => {
+          const tagsToDel: string[] = [];
+
+          // TODO make this cleaner
+          /* eslint-disable no-await-in-loop */
+          /* eslint-disable-next-line no-restricted-syntax */
+          for (const tag of book.tags) {
             const tagsOtherBooks = await PgBookTag.findAll({
               where: {
                 tag_name: tag.name,
@@ -358,12 +373,14 @@ class ReviewService implements IReviewService {
               },
             });
             if (tagsOtherBooks.length === 0) {
-              // Delete tags
-              await PgTag.destroy({
-                where: { name: [tag.name] },
-                transaction: txn,
-              });
+              tagsToDel.push(tag.name);
             }
+          }
+          /* eslint-enable no-await-in-loop */
+
+          await PgTag.destroy({
+            where: { name: tagsToDel },
+            transaction: txn,
           });
         }
       }),
@@ -398,15 +415,15 @@ class ReviewService implements IReviewService {
         },
       );
 
-      const TagsRet: Tag[] = book.tags.map((t: PgTag) => {
-        return {
-          name: t.name,
-        }
-      });
-
       const genresRet: Genre[] = book.genres.map((p: PgGenre) => {
         return {
           name: p.name,
+        };
+      });
+
+      const TagsRet: Tag[] = book.tags.map((t: PgTag) => {
+        return {
+          name: t.name,
         };
       });
 
