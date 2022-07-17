@@ -17,6 +17,7 @@ const mockGenericBookData: Book = {
   ],
   publishers: [{ fullName: "Random House", publishYear: 1957 }],
   seriesName: null,
+  tags: [],
   genres: [],
 };
 const mockLongTitleBookData: Book = {
@@ -40,6 +41,7 @@ const mockLongTitleBookData: Book = {
   ],
   publishers: [{ fullName: "Random House", publishYear: 1957 }],
   seriesName: null,
+  tags: [],
   genres: [],
 };
 
@@ -73,6 +75,14 @@ const hp1: Book = {
   ],
   publishers: [{ fullName: "Random House", publishYear: 1957 }],
   seriesName: "Harry Potter",
+  tags: [
+    {
+      name: "Magic",
+    },
+    {
+      name: "Monster",
+    },
+  ],
   genres: [
     {
       name: "Fantasy",
@@ -105,6 +115,14 @@ const hp2: Book = {
   ],
   publishers: [{ fullName: "Random House", publishYear: 1957 }],
   seriesName: "Harry Potter",
+  tags: [
+    {
+      name: "Magic",
+    },
+    {
+      name: "Monster",
+    },
+  ],
   genres: [
     {
       name: "Fantasy",
