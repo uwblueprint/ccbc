@@ -29,7 +29,6 @@ import useToasts from "../../Toast";
 import BookModal from "./BookModal";
 import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
-import data from "./mockData";
 import PublishModal from "./PublishModal";
 import ReviewEditor from "./ReviewEditor";
 // import SaveDraftReviewModal from "./SaveDraftReviewModal";
@@ -306,8 +305,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           // history.push("/404");
           history.replace("/404");
         });
-    } else {
-      setBooks(data);
     }
   }, [history, id, setBooksFromBookResponse]);
 
