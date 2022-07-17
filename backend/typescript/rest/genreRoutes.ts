@@ -1,21 +1,21 @@
 import { Router } from "express";
 import sendResponseByMimeType from "../utilities/responseUtil";
-import TagService from "../services/implementations/tagService";
-import { ITagService } from "../services/interfaces/ITagService";
+import GenreService from "../services/implementations/genreService";
+import { IGenreService } from "../services/interfaces/IGenreService";
 import { getErrorMessage } from "../utilities/errorResponse";
 import { isAuthorizedByRole } from "../middlewares/auth";
 
-const tagRouter: Router = Router();
-const tagService: ITagService = new TagService();
+const genreRouter: Router = Router();
+const genreService: IGenreService = new GenreService();
 
-tagRouter.get(
+genreRouter.get(
   "/",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
     const contentType = req.headers["content-type"];
     try {
-      const tags = await tagService.getTags();
-      await sendResponseByMimeType(res, 200, contentType, tags);
+      const genres = await genreService.getGenres();
+      await sendResponseByMimeType(res, 200, contentType, genres);
     } catch (e: unknown) {
       await sendResponseByMimeType(res, 500, contentType, [
         {
@@ -26,4 +26,4 @@ tagRouter.get(
   },
 );
 
-export default tagRouter;
+export default genreRouter;

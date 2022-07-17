@@ -1,11 +1,12 @@
-import { TagDTO } from "../../types";
-
-export interface ITagService {
+export type GenreDTO = {
+  name: string;
+};
+export interface IGenreService {
   /**
    * retrieve all existing tags
    * @param
    * @returns returns array of Tags
    * @throws Error if retrieval fails
    */
-  getTags(): Promise<TagDTO[]>;
+  getGenres(): Promise<GenreDTO[]>;
 }

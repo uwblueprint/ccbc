@@ -91,22 +91,11 @@ components:
           type: number
         isbn:
           type: string
-    TagRequest:
+    Tag:
       type: object
       required:
         - name
       properties:
-        id:
-          type: number
-        name:
-          type: string
-    TagResponse:
-      type: object
-      required:
-        - id, name
-      properties:
-        id:
-          type: number
         name:
           type: string
     Series:
@@ -119,8 +108,8 @@ components:
           nullable: true
     BookRequest:
       type: object
-      required:
-        - title, coverImage, formats, minAge, maxAge, authors, publishers, series
+      required: 
+        - title, coverImage, formats, minAge, maxAge, authors, publishers, series, tags
       properties:
         id:
           type: number
@@ -157,11 +146,14 @@ components:
           items:
             $ref: "#/components/schemas/PublisherRequest"
         series:
-          $ref: "#/components/schemas/Series"
+            $ref: '#/components/schemas/Series'
+        tags:
+          type: array
+          item: string
     BookResponse:
       type: object
-      required:
-        - id, title, coverImage, titlePrefix, seriesOrder, illustrator, translator, formats, minAge, maxAge, authors, publishers, series
+      required: 
+        - id, title, coverImage, titlePrefix, seriesOrder, illustrator, translator, formats, minAge, maxAge, authors, publishers, series, tags
       properties:
         id:
           type: number
@@ -199,11 +191,15 @@ components:
           items:
             $ref: "#/components/schemas/PublisherResponse"
         series:
-          $ref: "#/components/schemas/Series"
+            $ref: '#/components/schemas/Series'
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tag"
     ReviewRequestDTO:
       type: object
       required:
-        - body, byline, featured, createdBy, publishedA, books, tags
+          - body, byline, featured, createdBy, publishedA, books
       properties:
         body:
           type: string
@@ -216,18 +212,14 @@ components:
         books:
           type: array
           items:
-            $ref: "#/components/schemas/BookRequest"
-        tags:
-          type: array
-          items:
-            $ref: "#/components/schemas/TagRequest"
-        publishedAt:
+            $ref: '#/components/schemas/BookRequest'
+        publishedAt: 
           type: number
           nullable: true
     ReviewResponseDTO:
       type: object
       required:
-        - reviewId, body, byline, featured, createdBy, publishedAt, books, tags, updatedAt, createdAt
+          - reviewId, body, byline, featured, createdBy, publishedAt, books, updatedAt, createdAt 
       properties:
         reviewId:
           type: number
@@ -244,11 +236,7 @@ components:
         books:
           type: array
           items:
-            $ref: "#/components/schemas/BookRequest"
-        tags:
-          type: array
-          items:
-            $ref: "#/components/schemas/TagRequest"
+            $ref: '#/components/schemas/BookRequest'
         updatedAt:
           type: number
         createdAt:
@@ -258,7 +246,7 @@ paths:
     get:
       security:
         - bearerAuth: []
-      description: Returns a list of existing tags
+      description: Returns a list of existing tag names
       responses:
         "200":
           description: Successfully returned a list of existing tags.
@@ -267,19 +255,10 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    name:
-                      type: string
+                  $ref: '#/components/schemas/BookRequest'
 
         "401":
           description: Unauthorized Request.
-        "404":
-          description: Not Found.
-        "500":
-          description: Invalid Request.
     post:
       description: Create a new tag
       requestBody:
@@ -298,34 +277,12 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
-                    type: string
                   name:
                     type: string
         "401":
           description: Unauthorized
         "500":
           description: Invalid request
-
-  /tags/{id}:
-    delete:
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: The tag ID
-      description: Delete a tag based on its ID
-      responses:
-        "204":
-          description: Successfully deleted tag based on ID
-        "401":
-          description: Unauthorized Request
-        "500":
-          description: Invalid ID
 
   /entities:
     get:
@@ -1054,4 +1011,27 @@ paths:
         "401":
           description: Unauthorized
         "500":
-          description: Invalid ID
+          description: Invalid ID    
+  /genres:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Genre
+      description: Returns the list of existing genres
+      responses:
+        '200':
+          description: Successfully returned a list of existing genres. 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+        '401':
+          description: Unauthorized Request.
+        '500':
+          description: Invalid Request.

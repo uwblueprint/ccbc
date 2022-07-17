@@ -24,6 +24,10 @@ export interface PublisherResponse {
   publishYear: number;
 }
 
+export interface Genre {
+  name: string;
+}
+
 export interface Format {
   format: string;
   price: number;
@@ -47,8 +51,14 @@ export interface BookRequest {
   minAge: number;
   maxAge: number;
   authors: AuthorRequest[];
+  genres?: Genre[] | null;
   publishers: PublisherRequest[];
   series: Series;
+  tags?: Tag[] | null;
+}
+
+export interface Tag {
+  name: string;
 }
 
 export interface BookResponse {
@@ -63,18 +73,10 @@ export interface BookResponse {
   minAge: number;
   maxAge: number;
   authors: AuthorResponse[];
+  genres: Genre[];
   publishers: PublisherResponse[];
   series: Series;
-}
-
-export interface TagRequest {
-  id?: number;
-  name: string;
-}
-
-export interface TagResponse {
-  id: number;
-  name: string;
+  tags: Tag[];
 }
 
 /**
