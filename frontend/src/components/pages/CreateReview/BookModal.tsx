@@ -16,9 +16,18 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
+import genreAPIClient from "../../../APIClients/GenreAPIClient";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { BookFormats, Genre } from "../../../constants/Enums";
-import { Author, Book, BookFormat, Publisher } from "../../../types/BookTypes";
+import { BookFormats } from "../../../constants/Enums";
+import {
+  Author,
+  Book,
+  BookFormat,
+  Genre,
+  Option,
+  Publisher,
+} from "../../../types/BookTypes";
+import AddMultiSelect from "./AddMultiSelect";
 import AddNumberInput from "./AddNumberInput";
 import AddSelect from "./AddSelect";
 import AddSelectList from "./AddSelectList";
@@ -70,8 +79,6 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   const [publisher, setPublisher] = useState<string>("");
   const [publicationYear, setPublicationYear] = useState<string>("");
   const [coverImage, setCoverImage] = useState<string>("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [genre, setGenre] = useState<string>("");
   const [minAge, setMinAge] = useState<number>(0);
   const [maxAge, setMaxAge] = useState<number>(0);
 
@@ -84,6 +91,8 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   const [seriesOrder, setSeriesOrder] = useState<number>(1);
   const [illustrators, setIllustrator] = useState<string[]>([]);
   const [translators, setTranslator] = useState<string[]>([]);
+  const [genres, setGenres] = useState<Option[]>([]);
+  const [genreOptions, setGenreOptions] = useState<Option[]>([]);
 
   /** Builds array of years starting from current year */
   const generateYearsArray = () => {
@@ -101,6 +110,11 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
    * otherwise calls setBookData if currBook is not null
    */
   useEffect(() => {
+    // Grab all possible genres from DB
+    genreAPIClient.getGenreOptions().then((genreOpts) => {
+      setGenreOptions(genreOpts);
+    });
+
     /** Clears book data */
     const clearBookData = () => {
       setCurrBook(null);
@@ -111,7 +125,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setSeriesOrder(1);
       setIllustrator([]);
       setTranslator([]);
-      setGenre("");
+      setGenres([]);
       setMinAge(0);
       setMaxAge(0);
       setAuthors([]);
@@ -132,7 +146,16 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setIllustrator(book.illustrator);
       setTranslator(book.translator ? book.translator : []);
 
-      setGenre("");
+      const genresOpts: Option[] = [];
+      book.genres.forEach((genre) => {
+        genresOpts.push({
+          label: genre.name,
+          value: genre.name,
+        });
+      });
+      setGenres(genresOpts);
+
+      // setGenres(book.genres.map((genre) => genre.name));
       setMinAge(book.minAge);
       setMaxAge(book.maxAge);
       setAuthors(book.authors.map((author) => author.fullName));
@@ -200,6 +223,13 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       });
     });
 
+    const genreObjs: Genre[] = [];
+    genres.forEach((genre) => {
+      genreObjs.push({
+        name: genre.label,
+      });
+    });
+
     const publisherObj: Publisher[] = [
       {
         fullName: publisher,
@@ -230,6 +260,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       authors: authorObjs,
       publishers: publisherObj,
       seriesName,
+      genres: genreObjs,
     };
 
     if (currBook) {
@@ -400,13 +431,15 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   inputFieldValue={coverImage}
                   setInputField={setCoverImage}
                 />
-                {/* <AddSelect
+                <AddMultiSelect
                   id="genre"
-                  label="Genre"
-                  required
-                  values={Object.values(Genre)}
-                  setSelectField={setGenre}
-                /> */}
+                  label="Genres"
+                  placeholder="Add genres here"
+                  options={genreOptions}
+                  setOptions={setGenreOptions}
+                  optionsSelected={genres}
+                  setOptionsSelected={setGenres}
+                />
                 <FormControl
                   isRequired
                   width="100%"
