@@ -1,4 +1,4 @@
-import { Book, Tag, Genre } from "./BookTypes";
+import { Book, Genre, Tag } from "./BookTypes";
 
 export type AuthorRequest = {
   fullName: string;

@@ -63,14 +63,8 @@ export const BookRequest = t.iface([], {
   tags: t.array("Tag"),
   genres: t.array("Genre"),
   authors: t.array("AuthorRequest"),
-  genres: t.opt(t.union(t.array("Genre"), "null")),
   publishers: t.array("PublisherRequest"),
   series: "Series",
-  tags: t.opt(t.union(t.array("Tag"), "null")),
-});
-
-export const Tag = t.iface([], {
-  name: "string",
 });
 
 export const BookResponse = t.iface([], {
@@ -87,7 +81,6 @@ export const BookResponse = t.iface([], {
   tags: t.array("Tag"),
   genres: t.array("Genre"),
   authors: t.array("AuthorResponse"),
-  genres: t.array("Genre"),
   publishers: t.array("PublisherResponse"),
   series: "Series",
 });
