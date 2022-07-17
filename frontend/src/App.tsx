@@ -10,14 +10,17 @@ import ForgotPassword from "./components/auth/ForgotPassword";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/auth/routes/PrivateRoute";
 import Signup from "./components/auth/Signup";
+import SubscriberSignup from "./components/auth/SubscriberSignup";
 import AdminDashboard from "./components/pages/AdminDashboard/AdminDashboard";
 import CreateReviewPage from "./components/pages/CreateReviewPage";
 import Default from "./components/pages/Default";
+import DisplayReview from "./components/pages/DisplayReview/DisplayReview";
 import EditReviewPage from "./components/pages/EditReviewPage";
 import MagazineReview from "./components/pages/MagazineReview";
+import MockSearchPage from "./components/pages/MockSearch/MockSearchPage";
 import NotFound from "./components/pages/NotFound";
-import PreviewReviewTest from "./components/pages/PreviewReviewTest";
 import Profile from "./components/pages/Profile";
+import SearchBox from "./components/pages/SearchBox";
 import Unauthorized from "./components/pages/UnauthorizedPage";
 import { AUTHENTICATED_USER_KEY } from "./constants/AuthConstants";
 import { UserRole } from "./constants/Enums";
@@ -110,6 +113,11 @@ const App = (): React.ReactElement => {
                       component={CreateReviewPage}
                       requiredRoles={[UserRole.Admin]}
                     />
+                    <Route
+                      exact
+                      path={Routes.MOCK_SEARCH_PAGE}
+                      component={MockSearchPage}
+                    />
                     <PrivateRoute
                       exact
                       path={Routes.EDIT_REVIEW_PAGE}
@@ -127,12 +135,26 @@ const App = (): React.ReactElement => {
                       component={Default}
                       requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
                     />
+                    <PrivateRoute
+                      exact
+                      path={Routes.DISPLAY_REVIEW_PAGE}
+                      component={DisplayReview}
+                      requiredRoles={[
+                        UserRole.Admin,
+                        UserRole.Subscriber,
+                        UserRole.Creator,
+                      ]}
+                    />
+                    <Route 
+                      exact
+                      path={Routes.SUBSCRIBER_SIGNUP_PAGE}
+                      component={SubscriberSignup}
+                    />
                     <Route
                       exact
-                      path={Routes.PREVIEW_REVIEW_TEST}
-                      component={PreviewReviewTest}
+                      path={Routes.SEARCH_BOX}
+                      component={SearchBox}
                     />
-                    {/** TODO: remove once there is a standardized way of handling errors */}
                     <Route
                       exact
                       path={Routes.NOT_FOUND_PAGE}

@@ -18,76 +18,67 @@ const getReviews = async (): Promise<ReviewResponse[]> => {
 
 /**
  * Publishes a created review
+ * Needs to be wrapped in a try catch
  * @param review - The review to publish
- * @returns The published review
+ * @returns The published review, otherwise throws an error
  */
 const publishCreatedReview = async (
   review: ReviewRequest,
-): Promise<ReviewResponse | null> => {
-  try {
-    const { data } = await baseAPIClient.post("/reviews", review, {
-      headers: {
-        Authorization: getBearerToken(),
-        "Content-Type": "application/json",
-      },
-    });
-    return data;
-  } catch (error: unknown) {
-    return null;
-  }
+): Promise<ReviewResponse> => {
+  const { data } = await baseAPIClient.post("/reviews", review, {
+    headers: {
+      Authorization: getBearerToken(),
+      "Content-Type": "application/json",
+    },
+  });
+  return data;
 };
 
 /**
  * Publishes an edited review
+ *  Needs to be wrapped in a try catch
  * @param id - The id of the review to publish
  * @param review - The review to publish
- * @returns true if publishing was successfull, otherwise false
+ * @returns nothing if successful, throws an error if not successful
  */
 const publishEditedReview = async (
   id: number,
   review: ReviewRequest,
-): Promise<boolean> => {
-  try {
-    await baseAPIClient.put(`/reviews/${id}`, review, {
-      headers: {
-        Authorization: getBearerToken(),
-        "Content-Type": "application/json",
-      },
-    });
-    return true;
-  } catch (error: unknown) {
-    return false;
-  }
+): Promise<void> => {
+  await baseAPIClient.put(`/reviews/${id}`, review, {
+    headers: {
+      Authorization: getBearerToken(),
+      "Content-Type": "application/json",
+    },
+  });
 };
 
 /**
  * Calls publishEditedReview if an id is passed otherwise calls publishCreatedReview
+ * Needs to be wrapped in a try catch
  * @param review  - Review to publish
  * @param id - Id of review
- * @returns - Created Review if it was created or a boolean describing if the review was edited successfully
+ * Throws an error if not successfull
  */
 const handleReview = async (
   review: ReviewRequest,
   id?: number,
-): Promise<ReviewResponse | null | boolean> => {
+): Promise<void | ReviewResponse> => {
   if (id) {
-    return publishEditedReview(id, review);
+    await publishEditedReview(id, review);
+  } else {
+    await publishCreatedReview(review);
   }
-  return publishCreatedReview(review);
 };
 
 /*
   Delete review by id
 */
 const deleteReviewById = async (id: string): Promise<ReviewResponse> => {
-  try {
-    const { data } = await baseAPIClient.delete(`/reviews/${id.toString()}`, {
-      headers: { Authorization: getBearerToken() },
-    });
-    return data;
-  } catch (error) {
-    return error as ReviewResponse;
-  }
+  const { data } = await baseAPIClient.delete(`/reviews/${id.toString()}`, {
+    headers: { Authorization: getBearerToken() },
+  });
+  return data;
 };
 
 /**

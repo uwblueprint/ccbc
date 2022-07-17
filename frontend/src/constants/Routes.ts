@@ -30,7 +30,13 @@ export const FORGOT_PASSWORD_PAGE = "/forgot-password";
 
 export const DEFAULT_PAGE = "/default"; // FOR TESTING ONLY
 
-// TODO: Remove once PreviewReviewModal is integrated
-export const PREVIEW_REVIEW_TEST = "/test/preview-review";
-
 export const NOT_FOUND_PAGE = "/404";
+
+export const DISPLAY_REVIEW_PAGE = "/reviews/:id";
+
+export const SUBSCRIBER_SIGNUP_PAGE = "/subscriber-signup";
+
+/** Test Routes to preview compoenents */
+export const PREVIEW_REVIEW_TEST = "/test/preview-review";
+export const MOCK_SEARCH_PAGE = "/test/mock-search-page";
+export const SEARCH_BOX = "/test/search-box";

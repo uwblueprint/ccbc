@@ -4,6 +4,8 @@ import {
   BookRequest,
   BookResponse,
   Format,
+  Review,
+  ReviewResponse,
 } from "../types/ReviewTypes";
 
 /**
@@ -53,7 +55,7 @@ export const mapFormatToBookFormat = (
  * @param books - a list of BookResponse objects returned by the review API
  * @returns  a list of Book objects
  */
-export const mapBookResponeToBook = (books: BookResponse[]): Book[] => {
+export const mapBookResponseToBook = (books: BookResponse[]): Book[] => {
   const mappedBooks: Book[] = books.map((response) => ({
     title: response.title,
     coverImage: response.coverImage,
@@ -67,6 +69,8 @@ export const mapBookResponeToBook = (books: BookResponse[]): Book[] => {
     authors: mapAuthorResponseToAuthor(response.authors),
     publishers: response.publishers,
     seriesName: response.series?.name || "",
+    tags: response.tags,
+    genres: response.genres,
   }));
   return mappedBooks;
 };
@@ -84,7 +88,9 @@ export const mapBookToBookRequest = (books: Book[]): BookRequest[] => {
     seriesOrder: book.seriesOrder,
     illustrator: book.illustrator,
     translator: book.translator,
-    formats: book.formats,
+    formats: book.formats.map((f) =>
+      Number.isNaN(Number(f.price)) ? { ...f, price: 0 } : f,
+    ),
     minAge: book.minAge,
     maxAge: book.maxAge,
     authors: book.authors,
@@ -92,6 +98,34 @@ export const mapBookToBookRequest = (books: Book[]): BookRequest[] => {
     series: {
       name: book.seriesName,
     },
+    tags: book.tags,
+    genres: book.genres,
   }));
   return mappedBookRequests;
+};
+
+/**
+ * This function maps a list of ReviewResponse objects to a list of Review objects
+ * @param reviews - a list of ReviewResponse objects
+ * @returns a list of Review objects
+ */
+export const mapReviewResponseToReview = (
+  reviews: ReviewResponse[],
+): Review[] => {
+  const mappedReviews: Review[] = reviews.map((review) => ({
+    reviewId: review.reviewId,
+    body: review.body,
+    byline: review.byline,
+    featured: review.featured,
+    createdByUser: {
+      firstName: review.createdByUser.firstName,
+      lastName: review.createdByUser.lastName,
+    },
+    books: mapBookResponseToBook(review.books),
+    updatedAt: review.updatedAt,
+    publishedAt: review.publishedAt,
+    createdAt: review.createdAt,
+  }));
+
+  return mappedReviews;
 };

@@ -11,7 +11,7 @@ export type UserDTO = {
   firstName: string;
   lastName: string;
   email: string;
-  active: boolean;
+  subscriptionExpiresOn: Date | null;
 };
 
 export type CreateUserDTO = Omit<UserDTO, "id"> & { password: string };
@@ -38,6 +38,5 @@ export type NodemailerConfig = {
 export type SignUpMethod = "PASSWORD" | "GOOGLE";
 
 export type TagDTO = {
-  id: string;
   name: string;
 };

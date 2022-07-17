@@ -4,14 +4,14 @@ const data = [
     coverImage:
       "https://images-na.ssl-images-amazon.com/images/I/51WCelNAo1L.jpg",
     titlePrefix: "The",
-    seriesOrder: "1",
+    seriesOrder: 1,
     illustrator: ["Spencer Fencer"],
     translator: ["Translator Alligator"],
     formats: [
       {
         format: "Soft cover",
         isbn: "1234567891011",
-        price: "13",
+        price: 13,
       },
     ],
     minAge: 4,
@@ -30,6 +30,19 @@ const data = [
       },
     ],
     seriesName: "The Amazing Series",
+    tags: [
+      {
+        name: "Magic",
+      },
+      {
+        name: "Monster",
+      },
+    ],
+    genres: [
+      {
+        name: "Fantasy",
+      },
+    ],
   },
 ];
 

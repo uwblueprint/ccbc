@@ -4,14 +4,13 @@ info:
   title: UW Blueprint Starter Code TypeScript API
   description: An API for the TypeScript Backend of Starter Code
 
-
-# Authentication 
+# Authentication
 components:
   securitySchemes:
-    bearerAuth:            # arbitrary name for the security scheme
+    bearerAuth: # arbitrary name for the security scheme
       type: http
       scheme: bearer
-      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
   schemas:
     PasswordLogin:
       type: object
@@ -29,7 +28,7 @@ components:
       properties:
         idToken:
           type: string
-    AuthorRequest: 
+    AuthorRequest:
       type: object
       required:
         - fullName
@@ -44,7 +43,7 @@ components:
         attribution:
           type: string
           nullable: true
-    AuthorResponse: 
+    AuthorResponse:
       type: object
       required:
         - id, fullName, displayName, attribution
@@ -64,7 +63,7 @@ components:
       required:
         - fullName, publishYear
       properties:
-        id: 
+        id:
           type: number
         fullName:
           type: string
@@ -75,7 +74,7 @@ components:
       required:
         - id, fullName, publishYear
       properties:
-        id: 
+        id:
           type: number
         fullName:
           type: string
@@ -89,25 +88,14 @@ components:
         format:
           type: string
         price:
+          type: number
+        isbn:
           type: string
-        isbn: 
-          type: string
-    TagRequest:
+    Tag:
       type: object
-      required: 
+      required:
         - name
       properties:
-        id:
-          type: number
-        name:
-          type: string
-    TagResponse:
-      type: object
-      required: 
-        - id, name
-      properties:
-        id:
-          type: number
         name:
           type: string
     Series:
@@ -121,9 +109,9 @@ components:
     BookRequest:
       type: object
       required: 
-        - title, coverImage, formats, minAge, maxAge, authors, publishers, series
+        - title, coverImage, formats, minAge, maxAge, authors, publishers, series, tags
       properties:
-        id: 
+        id:
           type: number
         title:
           type: string
@@ -133,38 +121,41 @@ components:
           type: string
           nullable: true
         seriesOrder:
-          type: string
+          type: number
           nullable: true
         illustrator:
           type: string
           nullable: true
-        translator: 
+        translator:
           type: string
           nullable: true
         formats:
           type: array
-          items: 
-            $ref: '#/components/schemas/Format'
-        minAge: 
+          items:
+            $ref: "#/components/schemas/Format"
+        minAge:
           type: number
-        maxAge: 
+        maxAge:
           type: number
-        authors: 
+        authors:
           type: array
           items:
-            $ref: '#/components/schemas/AuthorRequest'
+            $ref: "#/components/schemas/AuthorRequest"
         publishers:
           type: array
           items:
-            $ref: '#/components/schemas/PublisherRequest'
+            $ref: "#/components/schemas/PublisherRequest"
         series:
             $ref: '#/components/schemas/Series'
+        tags:
+          type: array
+          item: string
     BookResponse:
       type: object
       required: 
-        - id, title, coverImage, titlePrefix, seriesOrder, illustrator, translator, formats, minAge, maxAge, authors, publishers, series
+        - id, title, coverImage, titlePrefix, seriesOrder, illustrator, translator, formats, minAge, maxAge, authors, publishers, series, tags
       properties:
-        id: 
+        id:
           type: number
         title:
           type: string
@@ -174,39 +165,43 @@ components:
           type: string
           nullable: true
         seriesOrder:
-          type: string
+          type: number
           nullable: true
         illustrator:
           type: string
           nullable: true
-        translator: 
+        translator:
           type: string
           nullable: true
         formats:
           type: array
           nullable: true
-          items: 
-            $ref: '#/components/schemas/Format'
-        minAge: 
+          items:
+            $ref: "#/components/schemas/Format"
+        minAge:
           type: number
-        maxAge: 
+        maxAge:
           type: number
-        authors: 
+        authors:
           type: array
           items:
-            $ref: '#/components/schemas/AuthorResponse'
+            $ref: "#/components/schemas/AuthorResponse"
         publishers:
           type: array
           items:
-            $ref: '#/components/schemas/PublisherResponse'
+            $ref: "#/components/schemas/PublisherResponse"
         series:
             $ref: '#/components/schemas/Series'
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tag"
     ReviewRequestDTO:
       type: object
       required:
-          - body, byline, featured, createdBy, publishedA, books, tags 
+          - body, byline, featured, createdBy, publishedA, books
       properties:
-        body: 
+        body:
           type: string
         byline:
           type: string
@@ -218,21 +213,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BookRequest'
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/TagRequest'
         publishedAt: 
           type: number
           nullable: true
     ReviewResponseDTO:
       type: object
       required:
-          - reviewId, body, byline, featured, createdBy, publishedAt, books, tags, updatedAt, createdAt 
+          - reviewId, body, byline, featured, createdBy, publishedAt, books, updatedAt, createdAt 
       properties:
         reviewId:
           type: number
-        body: 
+        body:
           type: string
         byline:
           type: string
@@ -240,16 +231,12 @@ components:
           type: boolean
         createdBy:
           type: number
-        publishedAt: 
+        publishedAt:
           type: number
         books:
           type: array
           items:
             $ref: '#/components/schemas/BookRequest'
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/TagRequest'
         updatedAt:
           type: number
         createdAt:
@@ -259,28 +246,19 @@ paths:
     get:
       security:
         - bearerAuth: []
-      description: Returns a list of existing tags
+      description: Returns a list of existing tag names
       responses:
-        '200':
-          description: Successfully returned a list of existing tags. 
+        "200":
+          description: Successfully returned a list of existing tags.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    name:
-                      type: string
-        
-        '401':
+                  $ref: '#/components/schemas/BookRequest'
+
+        "401":
           description: Unauthorized Request.
-        '404':
-          description: Not Found.
-        '500':
-          description: Invalid Request.
     post:
       description: Create a new tag
       requestBody:
@@ -292,41 +270,19 @@ paths:
               name:
                 type: string
       responses:
-        '201':
+        "201":
           description: Successfully created a new entity
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  id:
-                    type: string
                   name:
                     type: string
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
-
-  /tags/{id}:
-    delete:
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: The tag ID
-      description: Delete a tag based on its ID
-      responses:
-        '204':
-          description: Successfully deleted tag based on ID
-        '401':
-          description: Unauthorized Request
-        '500':
-          description: Invalid ID
 
   /entities:
     get:
@@ -336,7 +292,7 @@ paths:
         - Entity
       description: Returns a list of entities
       responses:
-        '200':
+        "200":
           description: Successfully returned a list of entities
           content:
             application/json:
@@ -345,7 +301,7 @@ paths:
                 items:
                   type: object
                   required:
-                      - intField, stringField, boolField, enumField, stringArrayField
+                    - intField, stringField, boolField, enumField, stringArrayField
                   properties:
                     intField:
                       type: integer
@@ -362,9 +318,9 @@ paths:
                       type: boolean
                     fileName:
                       type: string
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
 
     post:
@@ -386,7 +342,7 @@ paths:
                   type: string
                   format: binary
       responses:
-        '201':
+        "201":
           description: Successfully created a new entity
           content:
             application/json:
@@ -410,11 +366,10 @@ paths:
                     type: boolean
                   fileName:
                     type: string
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
-
 
   /entities/{id}:
     get:
@@ -433,7 +388,7 @@ paths:
         - Entity
       description: Returns an entity based on its ID
       responses:
-        '200':
+        "200":
           description: Successfully returns entity based on ID
           content:
             application/json:
@@ -457,11 +412,10 @@ paths:
                     type: boolean
                   fileName:
                     type: string
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid ID
-
 
     put:
       security:
@@ -491,13 +445,12 @@ paths:
                   type: string
                   format: binary
       responses:
-        '200':
+        "200":
           description: Successfully edited entity based on ID
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
-
 
     delete:
       security:
@@ -515,11 +468,11 @@ paths:
         - Entity
       description: Delete an entity based on its ID
       responses:
-        '204':
+        "204":
           description: Successfully deleted entity based on ID
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid ID
 
   /entities/files/{fileName}:
@@ -537,7 +490,7 @@ paths:
         - Entity
       description: Returns a signed URL to the file associated with an entity
       responses:
-        '200':
+        "200":
           description: Successfully returns the signed URL of the file
           content:
             application/json:
@@ -548,9 +501,9 @@ paths:
                 properties:
                   fileURL:
                     type: string
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid fileName
 
   /auth/login:
@@ -564,16 +517,16 @@ paths:
           application/json:
             schema:
               oneOf:
-                - $ref: '#/components/schemas/PasswordLogin'
-                - $ref: '#/components/schemas/OAuthLogin'
+                - $ref: "#/components/schemas/PasswordLogin"
+                - $ref: "#/components/schemas/OAuthLogin"
       responses:
-        '200':
-          description:  Returns access token in response body and sets refreshToken as an httpOnly cookie
+        "200":
+          description: Returns access token in response body and sets refreshToken as an httpOnly cookie
           content:
             application/json:
               schema:
                 type: object
-                properties:   
+                properties:
                   accessToken:
                     type: string
                   id:
@@ -586,26 +539,26 @@ paths:
                     type: string
                   roleType:
                     type: string
-        '500':
+        "500":
           description: Invalid request
-  
+
   /auth/{uid}:
-      get:
-        parameters:
-          - in: path
-            name: uid
-            required: true
-            schema:
-              type: string
-            description: The firebase user id 
-        tags:
-          - Auth
-        description: Returns a firebase User record given the user id (uid)
-        responses:
-          '200':
-            description: Successfully returns the firebase user
-          '500':
-            description: Invalid uid
+    get:
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+          description: The firebase user id
+      tags:
+        - Auth
+      description: Returns a firebase User record given the user id (uid)
+      responses:
+        "200":
+          description: Successfully returns the firebase user
+        "500":
+          description: Invalid uid
 
   /auth/register:
     post:
@@ -630,13 +583,13 @@ paths:
                 lastName:
                   type: string
       responses:
-        '200':
-          description:  Returns access token in response body and sets refreshToken as an httpOnly cookie
+        "200":
+          description: Returns access token in response body and sets refreshToken as an httpOnly cookie
           content:
             application/json:
               schema:
                 type: object
-                properties:   
+                properties:
                   accessToken:
                     type: string
                   id:
@@ -649,32 +602,30 @@ paths:
                     type: string
                   roleType:
                     type: string
-        '500':
+        "500":
           description: Invalid request
 
-  
   /auth/forgotPassword:
-      post:
-        tags:
-          - Auth
-        description: Reset password if user forgets their password
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - email
-                properties:
-                  email:
-                    type: string
-        responses:
-          '200':
-            description: Successfully sent user a reset password email to change their password
-          '500':
-            description: Invalid request
-
+    post:
+      tags:
+        - Auth
+      description: Reset password if user forgets their password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+      responses:
+        "200":
+          description: Successfully sent user a reset password email to change their password
+        "500":
+          description: Invalid request
 
   /auth/refresh:
     post:
@@ -684,21 +635,20 @@ paths:
         - Auth
       description: Refresh auth credentials
       responses:
-        '200':
-          description:  Returns access token in response body and sets refreshToken as an httpOnly cookie
+        "200":
+          description: Returns access token in response body and sets refreshToken as an httpOnly cookie
           content:
             application/json:
               schema:
                 type: object
-                properties:   
+                properties:
                   accessToken:
                     type: string
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
-                  
-                
+
   /auth/logout/{id}:
     post:
       security:
@@ -716,13 +666,12 @@ paths:
         - Auth
       description: Logout as user
       responses:
-        '204':
+        "204":
           description: Revokes all of the specified user's refresh tokens
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
-
 
   /auth/resetPassword/{email}:
     post:
@@ -738,34 +687,32 @@ paths:
         - Auth
       description: Triggers password reset for user with specified email (reset link will be emailed)
       responses:
-        '204':
+        "204":
           description: Successfully sent password reset email
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
 
-
   /auth/verifyEmail/{uid}:
-      post:
-        security:
-          - bearerAuth: []
-        parameters:
-          - in: path
-            name: uid
-            required: true
-            schema:
-              type: string
-        tags:
-          - Auth
-        description: Verifies a user with the given uid
-        responses:
-          '200':
-            description: Successfully verified the user
-          '500':
-            description: Invalid request
+    post:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+      tags:
+        - Auth
+      description: Verifies a user with the given uid
+      responses:
+        "200":
+          description: Successfully verified the user
+        "500":
+          description: Invalid request
 
-            
   /users:
     get:
       security:
@@ -787,7 +734,7 @@ paths:
         - User
       description: Get all users, optionally filter by a userId or email query parameter to retrieve a single user
       responses:
-        '200':
+        "200":
           description: Successfully returned a list of users, or a user filtered by id or email
           content:
             application/json:
@@ -796,7 +743,7 @@ paths:
                 items:
                   type: object
                   required:
-                      - id, authId, firstName, lastName, email, roleType, active
+                    - id, authId, firstName, lastName, email, roleType, subscriptionExpiresOn
                   properties:
                     id:
                       type: string
@@ -811,16 +758,15 @@ paths:
                     roleType:
                       type: string
                       enum: ["Admin", "Subscriber", "Author"]
-                    active:
-                      type: boolean
-                    
-        '400':
-          description: Cannot query by both user and email
-        '401':
-          description: Unauthorized
-        '500':
-          description: Invalid request
+                    subscriptionExpiresOn:
+                      type: number
 
+        "400":
+          description: Cannot query by both user and email
+        "401":
+          description: Unauthorized
+        "500":
+          description: Invalid request
 
     post:
       security:
@@ -847,14 +793,14 @@ paths:
                 email:
                   type: string
       responses:
-        '201':
+        "201":
           description: Successfully created a new user
           content:
             application/json:
               schema:
                 type: object
                 required:
-                    - id, authId, firstName, lastName, email, roleType, active
+                  - id, authId, firstName, lastName, email, roleType, subscriptionExpiresOn
                 properties:
                   id:
                     type: string
@@ -869,14 +815,13 @@ paths:
                   roleType:
                     type: string
                     enum: ["Admin", "Subscriber", "Author"]
-                  active:
-                    type: boolean
-        '401':
+                  subscriptionExpiresOn:
+                    type: number
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
 
-          
     delete:
       security:
         - bearerAuth: []
@@ -897,16 +842,15 @@ paths:
         - User
       description: Deletes a user by userId or email, specified through a query parameter
       responses:
-        '204':
+        "204":
           description: Succesfully deleted user
-        '400':
+        "400":
           description: Cannot query by both userId and email, invalid userId or email, userId or email is not a string, userId or email not supplied
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
 
-                
   /users/{id}:
     put:
       security:
@@ -942,14 +886,14 @@ paths:
                 email:
                   type: string
       responses:
-        '200':
+        "200":
           description: Successfully updated user
           content:
             application/json:
               schema:
                 type: object
                 required:
-                    - id, authId, firstName, lastName, email, roleType, active
+                  - id, authId, firstName, lastName, email, roleType, subscriptionExpiresOn
                 properties:
                   id:
                     type: string
@@ -964,35 +908,34 @@ paths:
                   roleType:
                     type: string
                     enum: ["Admin", "Subscriber", "Author"]
-                  active:
-                    type: boolean
-        '401':
+                  subscriptionExpiresOn:
+                    type: number
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
-
 
   /reviews:
     post:
       summary: Create a review
-      tags: 
+      tags:
         - Review
       requestBody:
         required: true
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/ReviewRequestDTO'
+              $ref: "#/components/schemas/ReviewRequestDTO"
       responses:
-        '201':
+        "201":
           description: Successfully created a new review
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReviewResponseDTO'
-        '401':
+                $ref: "#/components/schemas/ReviewResponseDTO"
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
 
     get:
@@ -1002,17 +945,17 @@ paths:
         - Review
       description: Returns the list of all reviews
       responses:
-        '200':
+        "200":
           description: Successfully returned a list of reviews
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReviewResponseDTO'
-        '401':
+                $ref: "#/components/schemas/ReviewResponseDTO"
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
-  
+
   /reviews/{reviewId}:
     get:
       security:
@@ -1021,33 +964,33 @@ paths:
         - Review
       description: Returns the review with the specified id
       responses:
-        '200':
+        "200":
           description: Successfully returned the review
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReviewResponseDTO'
-        '401':
+                $ref: "#/components/schemas/ReviewResponseDTO"
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
 
     put:
       summary: Updates a review
-      tags: 
+      tags:
         - Review
       requestBody:
         required: true
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/ReviewRequestDTO'
+              $ref: "#/components/schemas/ReviewRequestDTO"
       responses:
-        '201':
+        "201":
           description: Successfully updated the review
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Invalid request
     delete:
       security:
@@ -1063,10 +1006,32 @@ paths:
         - Review
       description: Delete a Review based on its ID
       responses:
-        '204':
+        "204":
           description: Successfully deleted Review based on ID
-        '401':
+        "401":
           description: Unauthorized
+        "500":
+          description: Invalid ID    
+  /genres:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Genre
+      description: Returns the list of existing genres
+      responses:
+        '200':
+          description: Successfully returned a list of existing genres. 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+        '401':
+          description: Unauthorized Request.
         '500':
-          description: Invalid ID
-          
+          description: Invalid Request.

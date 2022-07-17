@@ -32,7 +32,7 @@ class UserService implements IUserService {
       lastName: user.last_name,
       email: firebaseUser.email ?? "",
       roleType: user.role_type,
-      active: user.active,
+      subscriptionExpiresOn: user.subscription_expires_on,
     };
   }
 
@@ -60,7 +60,7 @@ class UserService implements IUserService {
       lastName: user.last_name,
       email: firebaseUser.email ?? "",
       roleType: user.role_type,
-      active: user.active,
+      subscriptionExpiresOn: user.subscription_expires_on,
     };
   }
 
@@ -133,7 +133,7 @@ class UserService implements IUserService {
             lastName: user.last_name,
             email: firebaseUser.email ?? "",
             roleType: user.role_type,
-            active: user.active,
+            subscriptionExpiresOn: user.subscription_expires_on,
           };
         }),
       );
@@ -169,12 +169,12 @@ class UserService implements IUserService {
 
       try {
         newUser = await User.create({
-          first_name: user.firstName,
-          last_name: user.lastName,
+          first_name: "",
+          last_name: "",
           auth_id: firebaseUser.uid,
           email: firebaseUser.email,
           role_type: user.roleType,
-          active: user.active,
+          subscriptionExpiresOn: new Date(Date.now()),
         });
       } catch (postgresError) {
         try {
@@ -202,7 +202,7 @@ class UserService implements IUserService {
       lastName: newUser.last_name,
       email: firebaseUser.email ?? "",
       roleType: newUser.role_type,
-      active: user.active,
+      subscriptionExpiresOn: newUser.subscription_expires_on,
     };
   }
 
@@ -272,7 +272,7 @@ class UserService implements IUserService {
       lastName: user.lastName,
       email: updatedFirebaseUser.email ?? "",
       roleType: user.roleType,
-      active: user.active,
+      subscriptionExpiresOn: user.subscriptionExpiresOn,
     };
   }
 
@@ -304,7 +304,7 @@ class UserService implements IUserService {
             auth_id: deletedUser.auth_id,
             email: deletedUser.email,
             role_type: deletedUser.role_type,
-            active: deletedUser.active,
+            subscriptionExpiresOn: deletedUser.subscription_expires_on,
           });
         } catch (postgresError: unknown) {
           const errorMessage = [
@@ -358,7 +358,7 @@ class UserService implements IUserService {
             auth_id: deletedUser.auth_id,
             email: deletedUser.email,
             role_type: deletedUser.role_type,
-            active: deletedUser.active,
+            subscriptionExpiresOn: deletedUser.subscription_expires_on,
           });
         } catch (postgresError: unknown) {
           const errorMessage = [
