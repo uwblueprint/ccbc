@@ -13,7 +13,7 @@ type AddNumberInputProps = {
   mb?: number;
   minNum: number;
   maxNum: number;
-  numberInputFieldValue: number;
+  numberInputFieldValue: number | "";
   setNumberField: (n: number) => void;
 };
 

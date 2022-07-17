@@ -31,6 +31,60 @@ const seedBookAuthors = [
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
   },
+  {
+    author_id: 4,
+    book_id: 5,
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
+  {
+    author_id: 4,
+    book_id: 6,
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
+  {
+    author_id: 4,
+    book_id: 7,
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
+  {
+    author_id: 4,
+    book_id: 8,
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
+  {
+    author_id: 4,
+    book_id: 9,
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
+  {
+    author_id: 4,
+    book_id: 10,
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
+  {
+    author_id: 4,
+    book_id: 11,
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
+  {
+    author_id: 5,
+    book_id: 12,
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
+  {
+    author_id: 5,
+    book_id: 13,
+    createdAt: new Date(Date.now()),
+    updatedAt: new Date(Date.now()),
+  },
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {

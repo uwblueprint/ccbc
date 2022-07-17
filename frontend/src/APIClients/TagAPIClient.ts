@@ -1,36 +1,25 @@
-import { TagResponse } from "../types/TagTypes";
+import { Option, Tag } from "../types/BookTypes";
 import { getBearerToken } from "../utils/AuthUtils";
 import baseAPIClient from "./BaseAPIClient";
 
-const getTags = async (): Promise<TagResponse[]> => {
+const getTagOptions = async (): Promise<Option[]> => {
   try {
     const { data } = await baseAPIClient.get("/tags", {
       headers: { Authorization: getBearerToken() },
     });
 
-    // For testing comment out above and use below:
-    // const data = [
-    //   { id: "1", name: "pink" },
-    //   { id: "2", name: "reed" },
-    //   { id: "3", name: "red" },
-    //   { id: "4", name: "green" },
-    // ];
-
-    return data;
-  } catch (error) {
-    return error as TagResponse[];
-  }
-};
-
-const deleteTagById = async (id: string): Promise<TagResponse> => {
-  try {
-    const { data } = await baseAPIClient.delete(`/tags/${id.toString()}`, {
-      headers: { Authorization: getBearerToken() },
+    const options: Option[] = [];
+    data.forEach((genre: Tag) => {
+      options.push({
+        value: genre.name,
+        label: genre.name,
+      });
     });
-    return data;
-  } catch (error) {
-    return error as TagResponse;
+
+    return options;
+  } catch (error: unknown) {
+    return error as Option[];
   }
 };
 
-export default { getTags, deleteTagById };
+export default { getTagOptions };

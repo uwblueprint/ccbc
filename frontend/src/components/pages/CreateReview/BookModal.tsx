@@ -16,11 +16,23 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
+import genreAPIClient from "../../../APIClients/GenreAPIClient";
+import tagAPIClient from "../../../APIClients/TagAPIClient";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { BookFormats, Genre } from "../../../constants/Enums";
-import { Author, Book, BookFormat, Publisher } from "../../../types/BookTypes";
+import { BookFormats } from "../../../constants/Enums";
+import {
+  Author,
+  Book,
+  BookFormat,
+  Genre,
+  Option,
+  Publisher,
+  Tag,
+} from "../../../types/BookTypes";
+import AddMultiSelect from "./AddMultiSelect";
 import AddNumberInput from "./AddNumberInput";
 import AddSelect from "./AddSelect";
+import AddSelectList from "./AddSelectList";
 import AddStringInput from "./AddStringInput";
 import AddStringInputList from "./AddStringInputList";
 
@@ -45,8 +57,9 @@ interface BookModalProps {
 const kStartingYear = 1967;
 const kMinAge = 0;
 const kMaxAge = 150;
-const kMinPrice = 0;
-const kMaxPrice = 1000;
+const kMaxPrice = Number.MAX_SAFE_INTEGER;
+const kMinBookNum = 1;
+const kMaxBookNum = 1000;
 
 /**
  * Modal for user to input new book for review
@@ -67,20 +80,23 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   const [authors, setAuthors] = useState<string[]>([]);
   const [publisher, setPublisher] = useState<string>("");
   const [publicationYear, setPublicationYear] = useState<string>("");
-  const [format, setFormat] = useState<string>("");
-  const [isbn, setIsbn] = useState<string>("");
-  const [price, setPrice] = useState<number>(0);
   const [coverImage, setCoverImage] = useState<string>("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [genre, setGenre] = useState<string>("");
   const [minAge, setMinAge] = useState<number>(0);
   const [maxAge, setMaxAge] = useState<number>(0);
 
+  const [bookformats, setBookformats] = useState<string[]>([]);
+  const [prices, setPrices] = useState<string[]>([]);
+  const [isbns, setIsbns] = useState<string[]>([]);
+
   // optional book fields
   const [seriesName, setSeriesName] = useState<string>("");
-  const [seriesOrder, setSeriesOrder] = useState<string>("");
+  const [seriesOrder, setSeriesOrder] = useState<number>(1);
   const [illustrators, setIllustrator] = useState<string[]>([]);
   const [translators, setTranslator] = useState<string[]>([]);
+  const [tags, setTags] = useState<Option[]>([]);
+  const [tagOptions, setTagOptions] = useState<Option[]>([]);
+  const [genres, setGenres] = useState<Option[]>([]);
+  const [genreOptions, setGenreOptions] = useState<Option[]>([]);
 
   /** Builds array of years starting from current year */
   const generateYearsArray = () => {
@@ -98,6 +114,16 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
    * otherwise calls setBookData if currBook is not null
    */
   useEffect(() => {
+    // Grab all possible genres from DB
+    genreAPIClient.getGenreOptions().then((genreOpts) => {
+      setGenreOptions(genreOpts);
+    });
+
+    // Grab all possible tags from DB
+    tagAPIClient.getTagOptions().then((tagOpts) => {
+      setTagOptions(tagOpts);
+    });
+
     /** Clears book data */
     const clearBookData = () => {
       setCurrBook(null);
@@ -105,19 +131,20 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setTitle("");
       setCoverImage("");
       setPrefix("");
-      setSeriesOrder("");
+      setSeriesOrder(1);
       setIllustrator([]);
       setTranslator([]);
-      setFormat("");
-      setGenre("");
+      setGenres([]);
+      setTags([]);
       setMinAge(0);
       setMaxAge(0);
       setAuthors([]);
       setPublisher("");
       setSeriesName("");
-      setIsbn("");
-      setPrice(0);
       setPublicationYear("");
+      setBookformats([""]);
+      setPrices([""]);
+      setIsbns([""]);
     };
 
     /** Sets the book data in the modal */
@@ -125,25 +152,51 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setTitle(book.title);
       setCoverImage(book.coverImage);
       setPrefix(book.titlePrefix ? book.titlePrefix : "");
-      setSeriesOrder(book.seriesOrder ? book.seriesOrder : "");
+      setSeriesOrder(book.seriesOrder ? book.seriesOrder : 1);
       setIllustrator(book.illustrator);
       setTranslator(book.translator ? book.translator : []);
 
-      setGenre("");
+      const tagOpts: Option[] = [];
+      book.tags.forEach((tag) => {
+        tagOpts.push({
+          label: tag.name,
+          value: tag.name,
+        });
+      });
+      setTags(tagOpts);
+
+      const genresOpts: Option[] = [];
+      book.genres.forEach((genre) => {
+        genresOpts.push({
+          label: genre.name,
+          value: genre.name,
+        });
+      });
+      setGenres(genresOpts);
+
+      // setGenres(book.genres.map((genre) => genre.name));
       setMinAge(book.minAge);
       setMaxAge(book.maxAge);
       setAuthors(book.authors.map((author) => author.fullName));
       setSeriesName(book.seriesName ? book.seriesName : "");
 
-      const bookFormat = book.formats[0];
-      setFormat(bookFormat.format);
-      setPrice(parseInt(bookFormat.price, 10));
-      setIsbn(bookFormat.isbn);
       const bookPublisher = book.publishers[0];
       setPublisher(bookPublisher.fullName);
       setPublicationYear(bookPublisher.publishYear.toString());
-    };
 
+      const bookformatsList = book.formats.map(
+        (formatItem) => formatItem.format,
+      );
+      setBookformats(bookformatsList);
+      const pricesList = book.formats.map((formatItem) =>
+        !Number.isNaN(formatItem.price)
+          ? Number(formatItem.price).toFixed(2)
+          : "0.00",
+      );
+      setPrices(pricesList);
+      const isbnsList = book.formats.map((formatItem) => formatItem.isbn);
+      setIsbns(isbnsList);
+    };
     if (!isOpen) {
       clearBookData();
     } else if (currBook) {
@@ -151,29 +204,31 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     }
   }, [isOpen, currBook, setCurrBook]);
 
-  /** Ensure that ISBN is valid or an empty field */
-  const isEmptyOrValidISBN =
-    isbn === "" || // necessary to ensure that empty form won't error
-    (isbn.length === 13 &&
-      !Number.isNaN(Number(isbn)) &&
-      Number.isInteger(Number(isbn)));
+  /** Ensures that all formats are filled in */
+  const hasRequiredFormats = bookformats.every(
+    (bookformatItem, index) =>
+      bookformatItem &&
+      prices[index] &&
+      isbns[index] &&
+      Number(prices[index]) < kMaxPrice,
+  );
+
+  /** Ensures that all authors are none empty */
+  const hasAuthors = authors.every((author) => author);
 
   /** Check that all required modal fields are properly filled out */
   const hasRequired =
-    prefix !== "" &&
     title !== "" &&
     authors.length > 0 &&
+    hasAuthors &&
     publisher !== "" &&
     publicationYear !== "" &&
-    format !== "" &&
-    isbn !== "" &&
-    price > 0 &&
     coverImage !== "" &&
     // genre !== "" &&
-    minAge > 0 &&
-    maxAge > 0 &&
+    minAge >= 0 &&
+    maxAge >= 0 &&
     maxAge >= minAge &&
-    isEmptyOrValidISBN;
+    hasRequiredFormats;
 
   /** Creates and saves a new book object, then closes the modal */
   const updateBookObj = () => {
@@ -187,6 +242,20 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       });
     });
 
+    const genreObjs: Genre[] = [];
+    genres.forEach((genre) => {
+      genreObjs.push({
+        name: genre.label,
+      });
+    });
+
+    const TagObjs: Tag[] = [];
+    tags.forEach((tag) => {
+      TagObjs.push({
+        name: tag.label,
+      });
+    });
+
     const publisherObj: Publisher[] = [
       {
         fullName: publisher,
@@ -194,13 +263,15 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       },
     ];
 
-    const formatList: BookFormat[] = [
-      {
-        format,
-        price: price.toString(),
-        isbn,
-      },
-    ];
+    const formatObjs: BookFormat[] = [];
+
+    bookformats.forEach((bookformatObject, i) => {
+      formatObjs.push({
+        format: bookformatObject,
+        price: Number(prices[i]) || 0,
+        isbn: isbns[i],
+      });
+    });
 
     const newBook: Book = {
       title,
@@ -209,12 +280,14 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       seriesOrder,
       illustrator: illustrators,
       translator: translators,
-      formats: formatList,
+      formats: formatObjs,
       minAge,
       maxAge,
       authors: authorObjs,
       publishers: publisherObj,
       seriesName,
+      genres: genreObjs,
+      tags: TagObjs,
     };
 
     if (currBook) {
@@ -223,6 +296,19 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       handleBooksAdded([...booksAdded, newBook]);
     }
     onClose();
+  };
+
+  /** Adds or deletes a format object with specified index */
+  const updateFormat = (index?: number) => {
+    if (index) {
+      setPrices(prices.filter((_, i) => i !== index));
+      setIsbns(isbns.filter((_, i) => i !== index));
+      setBookformats(bookformats.filter((_, i) => i !== index));
+    } else {
+      setBookformats([...bookformats, ""]);
+      setPrices([...prices, ""]);
+      setIsbns([...isbns, ""]);
+    }
   };
 
   return (
@@ -239,8 +325,8 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     id="titlePrefix"
                     label="Prefix"
                     name="title-prefix"
-                    required
                     maxWidth="50%"
+                    required={false}
                     inputFieldValue={prefix}
                     setInputField={setPrefix}
                   />
@@ -262,15 +348,19 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     inputFieldValue={seriesName}
                     setInputField={setSeriesName}
                   />
-                  <AddStringInput
-                    id="seriesOrder"
-                    label="Book number"
-                    name="series-order"
-                    required={false}
-                    maxWidth="50%"
-                    inputFieldValue={seriesOrder}
-                    setInputField={setSeriesOrder}
-                  />
+                  <div>
+                    <FormLabel mb={2}>Book number</FormLabel>
+                    <AddNumberInput
+                      placeholder="Book number"
+                      mb={1}
+                      numberInputFieldValue={
+                        seriesOrder >= 1 ? seriesOrder : ""
+                      }
+                      setNumberField={setSeriesOrder}
+                      minNum={kMinBookNum}
+                      maxNum={kMaxBookNum}
+                    />
+                  </div>
                 </Stack>
                 <AddStringInputList
                   id="authors"
@@ -320,36 +410,40 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   isInline
                   alignItems="flex-start"
                 >
-                  <AddSelect
+                  <AddSelectList
                     id="formats"
                     label="Format"
                     required
                     maxWidth="100%"
-                    selectField={format}
+                    selectFields={bookformats}
                     values={Object.values(BookFormats)}
-                    setSelectField={setFormat}
+                    setSelectFields={setBookformats}
+                    updateFormat={updateFormat}
+                    hasRequiredFormats={hasRequiredFormats}
                   />
-                  <AddStringInput
+                  <AddStringInputList
                     id="isbn"
                     label="ISBN"
                     name="isbn"
                     required
-                    inputFieldValue={isbn}
-                    setInputField={setIsbn}
-                    isInvalid={!isEmptyOrValidISBN}
-                    errorMessage="Invalid ISBN format."
+                    inputFields={isbns}
+                    setInputFields={setIsbns}
+                    regexPattern={/^([0-9]|[-])*$/}
+                    isFormat
+                    isIsbn
+                    updateFormat={updateFormat}
                   />
-                  <FormControl id="price" isRequired width="45%">
-                    <FormLabel mb={2}>Price</FormLabel>
-                    <AddNumberInput
-                      mb={2}
-                      placeholder="$"
-                      numberInputFieldValue={price}
-                      setNumberField={setPrice}
-                      minNum={kMinPrice}
-                      maxNum={kMaxPrice}
-                    />
-                  </FormControl>
+                  <AddStringInputList
+                    id="price"
+                    label="Price"
+                    name="price"
+                    required
+                    placeholder="$"
+                    inputFields={prices}
+                    setInputFields={setPrices}
+                    regexPattern={/^[0-9]*(?:\.[0-9]{0,2})?$/}
+                    isFormat
+                  />
                 </Stack>
               </Stack>
             </GridItem>
@@ -364,13 +458,24 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   inputFieldValue={coverImage}
                   setInputField={setCoverImage}
                 />
-                {/* <AddSelect
+                <AddMultiSelect
                   id="genre"
-                  label="Genre"
-                  required
-                  values={Object.values(Genre)}
-                  setSelectField={setGenre}
-                /> */}
+                  label="Genres"
+                  placeholder="Add genres here"
+                  options={genreOptions}
+                  setOptions={setGenreOptions}
+                  optionsSelected={genres}
+                  setOptionsSelected={setGenres}
+                />
+                <AddMultiSelect
+                  id="tag"
+                  label="Tags"
+                  placeholder="Add tags here"
+                  options={tagOptions}
+                  setOptions={setTagOptions}
+                  optionsSelected={tags}
+                  setOptionsSelected={setTags}
+                />
                 <FormControl
                   isRequired
                   width="100%"
@@ -381,7 +486,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       placeholder="Min Age"
                       mb={0}
-                      numberInputFieldValue={minAge}
+                      numberInputFieldValue={minAge >= 0 ? minAge : ""}
                       setNumberField={setMinAge}
                       minNum={kMinAge}
                       maxNum={kMaxAge}
@@ -389,7 +494,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     <AddNumberInput
                       placeholder="Max Age"
                       mb={0}
-                      numberInputFieldValue={maxAge}
+                      numberInputFieldValue={maxAge >= 0 ? maxAge : ""}
                       setNumberField={setMaxAge}
                       minNum={minAge}
                       maxNum={kMaxAge}

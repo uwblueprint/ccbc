@@ -17,6 +17,7 @@ import React, { useState } from "react";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import { SIGNUP_ERROR } from "../../constants/ErrorMessages";
+import useToasts from "../Toast";
 
 export type InviteAdminModalProps = {
   // this describes the state of the modal
@@ -36,6 +37,7 @@ const InviteAdminModal = (props: InviteAdminModalProps): React.ReactElement => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const { isOpen, onClose } = props;
+  const newToast = useToasts();
 
   /**
    * handler function to be executed when the submit button is clicked
@@ -49,8 +51,20 @@ const InviteAdminModal = (props: InviteAdminModalProps): React.ReactElement => {
       if (!user) {
         setIsInvalid(true);
         setErrorMessage(SIGNUP_ERROR);
+        newToast("error", "Error inviting admin", SIGNUP_ERROR);
       } else {
         onClose();
+        // clear states
+        setEmail("");
+        setFirstName("");
+        setLastName("");
+        setIsInvalid(false);
+        setErrorMessage("");
+        newToast(
+          `success`,
+          `Invite sent`,
+          `Your admin invite has been sent to ${firstName} ${lastName}`,
+        );
       }
     }
   };

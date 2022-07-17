@@ -41,14 +41,14 @@ jest.mock("firebase-admin", () => {
       lastName: "lastName",
       email: "email",
       roleType: "Admin",
-      active: true,
+      subscriptionExpiresOn: null,
     }),
     deleteUser: jest.fn().mockReturnValue({
       firstName: "firstName",
       lastName: "lastName",
       email: "email",
       roleType: "Admin",
-      active: true,
+      subscriptionExpiresOn: null,
     }),
   });
   return { auth };
@@ -73,7 +73,7 @@ describe("pg userService", () => {
       lastName: "lastName",
       email: "email",
       roleType: "Admin",
-      active: true,
+      subscriptionExpiresOn: null,
       password: "randomPassword",
     });
 

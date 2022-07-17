@@ -8,11 +8,4 @@ export interface ITagService {
    * @throws Error if retrieval fails
    */
   getTags(): Promise<TagDTO[]>;
-
-  /**
-   * delete the tag with the given id
-   * @param tagId tag id
-   * @throws Error if deletion fails
-   */
-  deleteTag(id: string): Promise<string>;
 }

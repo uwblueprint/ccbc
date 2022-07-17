@@ -23,10 +23,23 @@ const customTheme = extendTheme({
       fontSize: "md",
       fontWeight: "bold",
     },
+    bookTitle: {
+      fontFamily: "DM Sans",
+      color: "#000000",
+      fontSize: "20px",
+      fontWeight: "medium",
+      lineHeight: "26px",
+    },
+    caption: {
+      fontFamily: "DM Sans",
+      color: "gray.500",
+      fontSize: "13px",
+    },
   },
   colors: {
     gray: {
       100: "##E2E8F0",
+      500: "#718096",
     },
     blue: {
       100: "#90CDF4",

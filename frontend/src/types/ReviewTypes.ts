@@ -1,3 +1,5 @@
+import { Book, Genre, Tag } from "./BookTypes";
+
 export type AuthorRequest = {
   fullName: string;
   displayName?: string | null;
@@ -17,7 +19,7 @@ export type Publisher = {
 
 export type Format = {
   format: string;
-  price: string;
+  price: number;
   isbn: string;
 };
 
@@ -30,13 +32,15 @@ export type BookRequest = {
   title: string;
   coverImage: string;
   titlePrefix?: string | null;
-  seriesOrder?: string | null;
+  seriesOrder?: number | null;
   illustrator?: string[] | null;
   translator?: string[] | null;
   formats: Format[] | null;
   minAge: number;
   maxAge: number;
   authors: AuthorRequest[];
+  tags: Tag[];
+  genres: Genre[];
   publishers: Publisher[];
   series?: Series;
 };
@@ -46,19 +50,17 @@ export type BookResponse = {
   title: string;
   coverImage: string;
   titlePrefix: string | null;
-  seriesOrder: string | null;
+  seriesOrder: number | null;
   illustrator: string[] | null;
   translator: string[] | null;
   formats: Format[] | null;
   minAge: number;
   maxAge: number;
   authors: AuthorResponse[];
+  tags: Tag[];
+  genres: Genre[];
   publishers: Publisher[];
   series: Series;
-};
-
-export type Tag = {
-  name: string;
 };
 
 export type ReviewRequest = {
@@ -68,7 +70,6 @@ export type ReviewRequest = {
   createdBy: number;
   publishedAt?: number | null;
   books: BookRequest[];
-  tags: Tag[];
 };
 
 export type ReviewResponse = {
@@ -82,7 +83,21 @@ export type ReviewResponse = {
     lastName: string;
   };
   books: BookResponse[];
-  tags: Tag[];
+  updatedAt: number;
+  publishedAt: number | null;
+  createdAt: number;
+};
+
+export type Review = {
+  reviewId: number; // this is necessary for deleting reviews
+  body: string;
+  byline: string;
+  featured: boolean;
+  createdByUser: {
+    firstName: string;
+    lastName: string;
+  };
+  books: Book[];
   updatedAt: number;
   publishedAt: number | null;
   createdAt: number;

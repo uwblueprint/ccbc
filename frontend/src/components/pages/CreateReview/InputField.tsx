@@ -18,6 +18,7 @@ type InputFieldProps = {
     e: React.ChangeEvent<HTMLInputElement>,
     id: number,
   ) => void;
+  isFormat?: boolean;
 };
 
 const InputField = ({
@@ -28,6 +29,7 @@ const InputField = ({
   handleDelete,
   value,
   handleInputChange,
+  isFormat,
 }: InputFieldProps): React.ReactElement => {
   return (
     <InputGroup>
@@ -39,7 +41,7 @@ const InputField = ({
         onChange={(e) => handleInputChange(e, id)}
         isRequired={required}
       />
-      {id !== 0 && (
+      {id !== 0 && !isFormat && (
         <InputRightElement>
           <IconButton
             aria-label="Remove field"

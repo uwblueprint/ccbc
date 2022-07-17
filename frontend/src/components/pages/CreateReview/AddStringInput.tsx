@@ -14,6 +14,7 @@ type AddStringInputProps = {
   setInputField: (s: string) => void;
   isInvalid?: boolean;
   errorMessage?: string;
+  regexPattern?: RegExp;
 };
 
 /**
@@ -33,9 +34,12 @@ const AddStringInput = ({
   setInputField,
   isInvalid,
   errorMessage,
+  regexPattern,
 }: AddStringInputProps): React.ReactElement => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputField(e.target.value);
+    if (!regexPattern || regexPattern?.test(e.target.value)) {
+      setInputField(e.target.value);
+    }
   };
 
   return (

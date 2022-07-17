@@ -3,6 +3,7 @@
 export enum UserRole {
   Admin = "Admin",
   Subscriber = "Subscriber",
+  Creator = "Creator",
 }
 
 export enum Genre {
@@ -34,6 +35,6 @@ export enum Genre {
 
 export enum BookFormats {
   Hardcover = "Hardcover",
-  Paperbound = "Paperbound",
-  eBook = "e-Book",
+  Paperback = "Paperback",
+  eBook = "eBook",
 }
