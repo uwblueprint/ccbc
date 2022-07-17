@@ -36,10 +36,10 @@ interface AddMultiSelectProps {
   required?: boolean;
   placeholder?: string;
   maxWidth?: string;
-  options: Option[];
-  setOptions: any;
-  optionsSelected: Option[];
-  setOptionsSelected: any;
+  options: Option[]; // Gives list of all possible options to choose from (comes from DB)
+  setOptions: any; // Setting the list of options from the DB 
+  optionsSelected: Option[]; // List of options that's been selected
+  setOptionsSelected: any; // Setting the list of options to be selected
 }
 
 const AddMultiSelect = ({
