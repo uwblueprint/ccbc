@@ -9,6 +9,7 @@ const CircleBadge = ({ count }: { count: number }): React.ReactElement => {
       position="absolute"
       top="-20px"
       right="-10px"
+      zIndex={10}
     >
       <Circle
         color="white"
