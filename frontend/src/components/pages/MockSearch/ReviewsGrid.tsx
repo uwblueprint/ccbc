@@ -22,8 +22,9 @@ const ReviewsGrid = (): React.ReactElement => {
     <Center mt="50px">
       <SimpleGrid
         minChildWidth={["140px", "140px", "240px"]}
-        w={["85%", "80%", "70%"]}
+        w={["85%", "80%", "80%"]}
         spacingY={[0, 4, 10]}
+        spacingX={[2, 5, 5]}
       >
         {mockReviews.map(
           (review, key) =>
