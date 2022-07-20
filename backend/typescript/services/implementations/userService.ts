@@ -109,6 +109,22 @@ class UserService implements IUserService {
     }
   }
 
+  async getUserbyAuthID(authID: string): Promise<User | null> {
+    let user: User | null;
+    try {
+      user = await User.findOne({
+        where: { auth_id: authID },
+      });
+      if (!user) {
+        throw new Error(`userId ${authID} not found.`);
+      }
+      return user;
+    } catch (error) {
+      Logger.error(`Failed to get user. Reason = ${getErrorMessage(error)}`);
+      throw error;
+    }
+  }
+
   async getUsers(): Promise<Array<UserDTO>> {
     let userDtos: Array<UserDTO> = [];
     try {
