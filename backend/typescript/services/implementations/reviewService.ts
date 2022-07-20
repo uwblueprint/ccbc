@@ -28,6 +28,7 @@ import {
   User,
   Genre,
   Tag,
+  RetrieveReviewResponseDTO,
 } from "../interfaces/IReviewService";
 
 const Logger = logger(__filename);
@@ -498,18 +499,38 @@ class ReviewService implements IReviewService {
     return result;
   }
 
-  async getReviews(): Promise<ReviewResponseDTO[]> {
-    let reviews: PgReview[];
-    let result: ReviewResponseDTO[];
+  getPaginationOffset(page: string, limit: number): number {
+    const offset = page ? parseInt(page, 10) * limit : 0;
+    return offset;
+  }
+
+  async getReviews(
+    page: string,
+    size: string,
+  ): Promise<RetrieveReviewResponseDTO> {
+    let result: RetrieveReviewResponseDTO;
 
     try {
       result = await this.db.transaction(async (t) => {
-        reviews = await PgReview.findAll({
+        const limit = size ? parseInt(size, 10) : 10;
+        const offset = this.getPaginationOffset(page, limit);
+
+        const { rows, count } = await PgReview.findAndCountAll({
           transaction: t,
           include: [{ all: true, nested: true }],
+          limit,
+          offset,
         });
 
-        return reviews.map((r) => ReviewService.pgReviewToRet(r));
+        const currentPage = page ? parseInt(page, 10) : 0;
+        const totalPages = Math.ceil(count / limit);
+
+        return {
+          totalReviews: count,
+          totalPages,
+          currentPage,
+          reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
+        };
       });
     } catch (error: unknown) {
       Logger.error(`Failed to get review. Reason = ${getErrorMessage(error)}`);

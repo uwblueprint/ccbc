@@ -4,6 +4,7 @@ import {
   IReviewService,
   BookRequest,
   ReviewResponseDTO,
+  RetrieveReviewResponseDTO,
 } from "../services/interfaces/IReviewService";
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
@@ -60,13 +61,16 @@ reviewRouter.get(
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
     const contentType = req.headers["content-type"];
+    const page: string = req.query.page as string;
+    const size: string = req.query.size as string;
+
     try {
-      const reviews = await reviewService.getReviews();
-      await sendResponseByMimeType<ReviewResponseDTO[]>(
+      const reviewsData = await reviewService.getReviews(page, size);
+      await sendResponseByMimeType<RetrieveReviewResponseDTO>(
         res,
         200,
         contentType,
-        reviews,
+        reviewsData,
       );
     } catch (e: unknown) {
       await sendResponseByMimeType(res, 500, contentType, [
