@@ -245,7 +245,6 @@ class AuthService implements IAuthService {
       const user = await this.userService.getUserbyAuthID(
         decodedIdToken.user_id,
       );
-      console.log(user);
       return user;
     } catch (error) {
       Logger.error(`Failed to get user. Reason = ${getErrorMessage(error)}`);
