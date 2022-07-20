@@ -74,6 +74,13 @@ export type ReviewRequest = {
   books: BookRequest[];
 };
 
+export type RetrieveReviewResponse = {
+  totalReviews: number;
+  totalPages: number;
+  currentPage: number;
+  reviews: ReviewResponse[];
+};
+
 export type ReviewResponse = {
   reviewId: number;
   body: string;

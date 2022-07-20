@@ -1,18 +1,22 @@
-import { ReviewRequest, ReviewResponse } from "../types/ReviewTypes";
+import {
+  RetrieveReviewResponse,
+  ReviewRequest,
+  ReviewResponse,
+} from "../types/ReviewTypes";
 import { getBearerToken } from "../utils/AuthUtils";
 import baseAPIClient from "./BaseAPIClient";
 
 /*
   Get all reviews
 */
-const getReviews = async (): Promise<ReviewResponse[]> => {
+const getReviews = async (): Promise<RetrieveReviewResponse> => {
   try {
     const { data } = await baseAPIClient.get("/reviews", {
       headers: { Authorization: getBearerToken() },
     });
     return data;
   } catch (error: unknown) {
-    return error as ReviewResponse[];
+    return error as RetrieveReviewResponse;
   }
 };
 
