@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
-import { Op } from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import { Transaction } from "sequelize/types";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
@@ -30,6 +30,7 @@ import {
   Tag,
   PaginatedReviewResponseDTO,
 } from "../interfaces/IReviewService";
+import { SearchResult } from "../../types";
 
 const Logger = logger(__filename);
 
@@ -39,6 +40,14 @@ class ReviewService implements IReviewService {
   constructor(db: Sequelize = sequelize) {
     this.db = db;
     if (db !== sequelize) sequelize.close(); // Using test db instead of main db
+  }
+
+  async refreshSearchView(): Promise<void> {
+    this.db.transaction(async (t) =>
+      this.db.query("REFRESH MATERIALIZED VIEW review_search;", {
+        transaction: t,
+      }),
+    );
   }
 
   /* eslint-disable class-methods-use-this */
@@ -257,6 +266,8 @@ class ReviewService implements IReviewService {
       );
       throw error;
     }
+
+    this.refreshSearchView();
   }
 
   async deleteReviewHelper(id: string, txn: Transaction): Promise<boolean> {
@@ -545,6 +556,44 @@ class ReviewService implements IReviewService {
     return result;
   }
 
+  async getReviewsWithSearch(searchTerm: string): Promise<ReviewResponseDTO[]> {
+    let reviews: PgReview[];
+    let result: ReviewResponseDTO[];
+
+    try {
+      result = await this.db.transaction(async (t) => {
+        const normalizedSearchTerm = searchTerm
+          .replace(/[^a-zA-Z0-9 ]/g, "")
+          .trim();
+        const searchResults = (await this.db.query(
+          "SELECT review_id FROM review_search WHERE doc @@ PHRASETO_TSQUERY('english', :search_input);",
+          {
+            transaction: t,
+            replacements: { search_input: normalizedSearchTerm },
+            type: QueryTypes.SELECT,
+          },
+        )) as SearchResult[];
+        const reviewIds = searchResults.map(({ review_id }) => {
+          return review_id;
+        });
+        reviews = await PgReview.findAll({
+          where: {
+            id: { [Op.in]: reviewIds },
+          },
+          transaction: t,
+          include: [{ all: true, nested: true }],
+        });
+
+        return reviews.map((r) => ReviewService.pgReviewToRet(r));
+      });
+    } catch (error: unknown) {
+      Logger.error(`Failed to get review. Reason = ${getErrorMessage(error)}`);
+      throw error;
+    }
+
+    return result;
+  }
+
   // if createReview is called without parameter txn, it runs in a try catch block
   // otherwise, createReview should be called inside a try catch block with t as parameter
   async createReview(
@@ -569,6 +618,8 @@ class ReviewService implements IReviewService {
       );
       throw error;
     }
+
+    this.refreshSearchView();
 
     return result;
   }
