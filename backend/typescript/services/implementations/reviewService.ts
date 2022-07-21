@@ -28,7 +28,7 @@ import {
   User,
   Genre,
   Tag,
-  RetrieveReviewResponseDTO,
+  PaginatedReviewResponseDTO,
 } from "../interfaces/IReviewService";
 
 const Logger = logger(__filename);
@@ -507,8 +507,8 @@ class ReviewService implements IReviewService {
   async getReviews(
     page: string,
     size: string,
-  ): Promise<RetrieveReviewResponseDTO> {
-    let result: RetrieveReviewResponseDTO;
+  ): Promise<PaginatedReviewResponseDTO> {
+    let result: PaginatedReviewResponseDTO;
 
     try {
       result = await this.db.transaction(async (t) => {

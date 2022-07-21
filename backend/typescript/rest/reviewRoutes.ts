@@ -4,7 +4,7 @@ import {
   IReviewService,
   BookRequest,
   ReviewResponseDTO,
-  RetrieveReviewResponseDTO,
+  PaginatedReviewResponseDTO,
 } from "../services/interfaces/IReviewService";
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
@@ -66,7 +66,7 @@ reviewRouter.get(
 
     try {
       const reviewsData = await reviewService.getReviews(page, size);
-      await sendResponseByMimeType<RetrieveReviewResponseDTO>(
+      await sendResponseByMimeType<PaginatedReviewResponseDTO>(
         res,
         200,
         contentType,
