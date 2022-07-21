@@ -620,7 +620,6 @@ class ReviewService implements IReviewService {
     }
 
     this.refreshSearchView();
-
     return result;
   }
 
@@ -669,6 +668,7 @@ class ReviewService implements IReviewService {
       await this.deleteReview(id, t);
       await this.createReview(entity, id, t);
       await t.commit();
+      this.refreshSearchView();
     } catch (error: unknown) {
       await t.rollback();
       Logger.error(
