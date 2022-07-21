@@ -1,5 +1,5 @@
 import {
-  RetrieveReviewResponse,
+  PaginatedReviewResponse,
   ReviewRequest,
   ReviewResponse,
 } from "../types/ReviewTypes";
@@ -9,14 +9,14 @@ import baseAPIClient from "./BaseAPIClient";
 /*
   Get all reviews
 */
-const getReviews = async (): Promise<RetrieveReviewResponse> => {
+const getReviews = async (): Promise<PaginatedReviewResponse> => {
   try {
     const { data } = await baseAPIClient.get("/reviews", {
       headers: { Authorization: getBearerToken() },
     });
     return data;
   } catch (error: unknown) {
-    return error as RetrieveReviewResponse;
+    return error as PaginatedReviewResponse;
   }
 };
 

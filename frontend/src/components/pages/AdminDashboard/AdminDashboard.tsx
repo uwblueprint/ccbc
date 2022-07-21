@@ -23,7 +23,7 @@ import { Link, useHistory } from "react-router-dom";
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
 import {
-  RetrieveReviewResponse,
+  PaginatedReviewResponse,
   Review,
   ReviewResponse,
 } from "../../../types/ReviewTypes";
@@ -60,7 +60,7 @@ const AdminDashboard = (): React.ReactElement => {
 
   useEffect(() => {
     setIsLoading(true);
-    reviewAPIClient.getReviews().then((resp: RetrieveReviewResponse) => {
+    reviewAPIClient.getReviews().then((resp: PaginatedReviewResponse) => {
       const { reviews } = resp;
       if (!reviews) {
         setData([]);
