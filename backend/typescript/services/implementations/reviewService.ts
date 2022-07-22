@@ -522,7 +522,10 @@ class ReviewService implements IReviewService {
           offset,
         });
 
+        // The currentPage is the page we requested in params or just page 0
         const currentPage = page ? parseInt(page, 10) : 0;
+
+        // There is only one page if we are not paginating them
         const totalPages = limit ? Math.ceil(count / limit) : 1;
 
         return {
