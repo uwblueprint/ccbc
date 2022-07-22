@@ -499,8 +499,8 @@ class ReviewService implements IReviewService {
     return result;
   }
 
-  getPaginationOffset(page: string, limit: number): number {
-    const offset = page ? parseInt(page, 10) * limit : 0;
+  getPaginationOffset(page: string, limit: number | undefined): number {
+    const offset = page && limit ? parseInt(page, 10) * limit : 0;
     return offset;
   }
 
@@ -512,7 +512,7 @@ class ReviewService implements IReviewService {
 
     try {
       result = await this.db.transaction(async (t) => {
-        const limit = size ? parseInt(size, 10) : 10;
+        const limit = size ? parseInt(size, 10) : undefined;
         const offset = this.getPaginationOffset(page, limit);
 
         const { rows, count } = await PgReview.findAndCountAll({
@@ -523,7 +523,7 @@ class ReviewService implements IReviewService {
         });
 
         const currentPage = page ? parseInt(page, 10) : 0;
-        const totalPages = Math.ceil(count / limit);
+        const totalPages = limit ? Math.ceil(count / limit) : 1;
 
         return {
           totalReviews: count,
