@@ -13,9 +13,11 @@ interface SearchBoxProps {
 }
 const SearchBox = ({ setSearchText }: SearchBoxProps): React.ReactElement => {
   const [searchText, setSearchTextState] = useState("");
+
+  const removeExtraSpace = (s: string) => s.trim().split(/ +/).join(" ");
   const onSubmitClick = async () => {
-    if (searchText) {
-      setSearchText(searchText);
+    if (searchText && removeExtraSpace(searchText)) {
+      setSearchText(removeExtraSpace(searchText));
     }
   };
   return (

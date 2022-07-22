@@ -34,6 +34,8 @@ export const NOT_FOUND_PAGE = "/404";
 
 export const DISPLAY_REVIEW_PAGE = "/reviews/:id";
 
+export const SEARCH_REVIEWS_PAGE = "/magazine/search_results";
+
 /** Test Routes to preview compoenents */
 export const PREVIEW_REVIEW_TEST = "/test/preview-review";
 export const MOCK_SEARCH_PAGE = "/test/mock-search-page";
