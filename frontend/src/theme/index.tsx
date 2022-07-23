@@ -16,6 +16,10 @@ const customTheme = extendTheme({
       fontFamily: "DM Sans",
       fontSize: "16px",
     },
+    mobileBody: {
+      fontFamily: "DM Sans",
+      fontSize: "13px",
+    },
     h4: {
       fontFamily: "DM Sans",
       color: "#fff",
@@ -30,10 +34,22 @@ const customTheme = extendTheme({
       fontWeight: "medium",
       lineHeight: "26px",
     },
+    mobileBookTitle: {
+      fontFamily: "DM Sans",
+      color: "#000000",
+      fontSize: "18px",
+      fontWeight: "medium",
+      lineHeight: "20px",
+    },
     caption: {
       fontFamily: "DM Sans",
       color: "gray.500",
       fontSize: "13px",
+    },
+    mobileCaption: {
+      fontFamily: "DM Sans",
+      color: "gray.500",
+      fontSize: "10px",
     },
   },
   colors: {
