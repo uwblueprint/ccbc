@@ -12,12 +12,15 @@ interface SearchBoxProps {
   setSearchText: (searchText: string) => void;
   searchQuery: string;
 }
-const SearchBox = ({ setSearchText, searchQuery }: SearchBoxProps): React.ReactElement => {
+const SearchBox = ({
+  setSearchText,
+  searchQuery,
+}: SearchBoxProps): React.ReactElement => {
   const [searchText, setSearchTextState] = useState(searchQuery);
 
   useEffect(() => {
     setSearchTextState(searchQuery);
-  }, [searchQuery])
+  }, [searchQuery]);
 
   const removeExtraSpace = (s: string) => s.trim().split(/ +/).join(" ");
   const onSubmitClick = async () => {
@@ -42,7 +45,6 @@ const SearchBox = ({ setSearchText, searchQuery }: SearchBoxProps): React.ReactE
             setSearchTextState(event.target.value);
           }}
           value={searchText}
-
         />
         <InputRightElement width="4.5rem">
           <Button

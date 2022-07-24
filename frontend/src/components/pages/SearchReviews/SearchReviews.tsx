@@ -1,4 +1,4 @@
-import { Box, Center, Text } from "@chakra-ui/react";
+import { Box, Center } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import LoadingSpinner from "../../common/LoadingSpinner";
@@ -12,7 +12,7 @@ const SearchReviews = (): React.ReactElement => {
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
   const [genresFilter, setGenresFilter] = useState<string[]>([]);
-  // todo set the state for age range as well!
+  const [ageRangeFilter, setAgeRangeFilter] = useState<number[]>([]); // ageRange[0] is min age, ageRange[1] is max age
 
   /** Fetches the search queries from url */
   useEffect(() => {
@@ -21,12 +21,20 @@ const SearchReviews = (): React.ReactElement => {
       ? params.get("search_query")
       : "";
     const genres = params.has("genres") ? params.get("genres")?.split(",") : [];
-    // todo do age range later
+    const strAgeRange = params.has("ageRange")
+      ? params.get("ageRange")?.split(",")
+      : [];
+    const intAgeRange = strAgeRange?.map((age) => {
+      return Number(age);
+    });
     if (searchQuery) {
       setSearchText(searchQuery);
     }
     if (genres) {
       setGenresFilter(genres);
+    }
+    if (intAgeRange) {
+      setAgeRangeFilter(intAgeRange);
     }
   }, []);
 
@@ -35,19 +43,22 @@ const SearchReviews = (): React.ReactElement => {
     setLoading(true);
     // todo add age range filter too
     let newSearchUrl = "/magazine/search_results";
-    newSearchUrl += searchText || genresFilter.length > 0 ? "?" : "";
+    newSearchUrl +=
+      searchText || genresFilter.length > 0 || ageRangeFilter.length > 0
+        ? "?"
+        : "";
     const newParams = [];
     if (searchText) newParams.push(`search_query=${searchText}`);
     if (genresFilter.length > 0)
       newParams.push(`genres=${genresFilter.join(",")}`);
+    if (ageRangeFilter.length > 0)
+      newParams.push(`ageRange=${ageRangeFilter.join(",")}`);
     newSearchUrl += newParams.join("&");
     window.history.replaceState(null, "New search result", newSearchUrl);
 
-    // call backend search filter here
+    // todo call backend search filtering endpoint to retrieve reviews
     setLoading(false);
-
-    // todo see display review for review api client
-  }, [searchText, genresFilter]);
+  }, [searchText, genresFilter, ageRangeFilter]);
 
   if (loading) {
     return <LoadingSpinner mt="21%" />;
@@ -56,8 +67,6 @@ const SearchReviews = (): React.ReactElement => {
     <Center>
       <Box w={["90%", "85%", "65%"]} paddingTop="10">
         <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
-        <Text>{searchText}</Text>
-        <Text>{genresFilter}</Text>
         <ReviewsGrid />
       </Box>
     </Center>
