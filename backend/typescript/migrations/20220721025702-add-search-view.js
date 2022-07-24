@@ -11,7 +11,7 @@ module.exports = {
             SELECT book_id, STRING_AGG(genre_name, ' ') AS genres
             FROM book_genre 
             GROUP BY book_id 
-          ), TAG_AGG as (
+          ), tag_agg AS (
             SELECT book_id, STRING_AGG(tag_name, ' ') AS tags
             FROM book_tag
             GROUP BY book_id
