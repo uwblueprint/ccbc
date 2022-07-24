@@ -56,7 +56,7 @@ const PreviewReviewModal = ({
     <>
       <Modal isOpen={isOpen} onClose={onClose} size="2xl" isCentered>
         <ModalOverlay />
-        <ModalContent fontFamily="DM Sans">
+        <ModalContent overflowY="auto" maxHeight="100vh" fontFamily="DM Sans">
           <ModalHeader backgroundColor="#FFF8F3" borderRadius={10}>
             <HStack spacing={150} fontSize={14}>
               <HStack>

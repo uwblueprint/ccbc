@@ -25,6 +25,13 @@ export type Publisher = {
 };
 
 /**
+ * Type for tag of a book
+ */
+ export type Tag = {
+  name: string;
+};
+
+/**
  * Type for genre of a book
  */
 export type Genre = {
@@ -54,6 +61,7 @@ export type Book = {
   maxAge: number;
   authors: Author[];
   publishers: Publisher[];
+  tags: Tag[];
   genres: Genre[];
   seriesName: string | null;
 };

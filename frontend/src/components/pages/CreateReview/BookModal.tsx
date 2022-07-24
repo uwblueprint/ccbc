@@ -17,6 +17,7 @@ import {
 import React, { useEffect, useState } from "react";
 
 import genreAPIClient from "../../../APIClients/GenreAPIClient";
+import tagAPIClient from "../../../APIClients/TagAPIClient";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { BookFormats } from "../../../constants/Enums";
 import {
@@ -26,6 +27,7 @@ import {
   Genre,
   Option,
   Publisher,
+  Tag,
 } from "../../../types/BookTypes";
 import AddMultiSelect from "./AddMultiSelect";
 import AddNumberInput from "./AddNumberInput";
@@ -91,6 +93,8 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
   const [seriesOrder, setSeriesOrder] = useState<number>(1);
   const [illustrators, setIllustrator] = useState<string[]>([]);
   const [translators, setTranslator] = useState<string[]>([]);
+  const [tags, setTags] = useState<Option[]>([]);
+  const [tagOptions, setTagOptions] = useState<Option[]>([]);
   const [genres, setGenres] = useState<Option[]>([]);
   const [genreOptions, setGenreOptions] = useState<Option[]>([]);
 
@@ -115,6 +119,11 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setGenreOptions(genreOpts);
     });
 
+    // Grab all possible tags from DB
+    tagAPIClient.getTagOptions().then((tagOpts) => {
+      setTagOptions(tagOpts);
+    });
+
     /** Clears book data */
     const clearBookData = () => {
       setCurrBook(null);
@@ -126,6 +135,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setIllustrator([]);
       setTranslator([]);
       setGenres([]);
+      setTags([]);
       setMinAge(0);
       setMaxAge(0);
       setAuthors([]);
@@ -145,6 +155,15 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setSeriesOrder(book.seriesOrder ? book.seriesOrder : 1);
       setIllustrator(book.illustrator);
       setTranslator(book.translator ? book.translator : []);
+
+      const tagOpts: Option[] = [];
+      book.tags.forEach((tag) => {
+        tagOpts.push({
+          label: tag.name,
+          value: tag.name,
+        });
+      });
+      setTags(tagOpts);
 
       const genresOpts: Option[] = [];
       book.genres.forEach((genre) => {
@@ -230,6 +249,13 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       });
     });
 
+    const TagObjs: Tag[] = [];
+    tags.forEach((tag) => {
+      TagObjs.push({
+        name: tag.label,
+      });
+    });
+
     const publisherObj: Publisher[] = [
       {
         fullName: publisher,
@@ -261,6 +287,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       publishers: publisherObj,
       seriesName,
       genres: genreObjs,
+      tags: TagObjs,
     };
 
     if (currBook) {
@@ -439,6 +466,15 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   setOptions={setGenreOptions}
                   optionsSelected={genres}
                   setOptionsSelected={setGenres}
+                />
+                <AddMultiSelect
+                  id="tag"
+                  label="Tags"
+                  placeholder="Add tags here"
+                  options={tagOptions}
+                  setOptions={setTagOptions}
+                  optionsSelected={tags}
+                  setOptionsSelected={setTags}
                 />
                 <FormControl
                   isRequired
