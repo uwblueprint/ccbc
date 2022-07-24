@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
+import background from "../../../assets/review-base-page-bg.png";
 import { Review, ReviewResponse } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import LoadingSpinner from "../../common/LoadingSpinner";
@@ -48,7 +49,16 @@ const DisplayReview = (): React.ReactElement => {
   }
   return currentReview ? (
     <>
-      <Box bgColor="#F6F6F6" h="100vh">
+      <Box
+        h="100%"
+        minHeight="100vh"
+        bgColor="#F6F6F6"
+        bgImage={[null, null, background]}
+        bgRepeat="no-repeat"
+        backgroundSize="cover"
+        backgroundAttachment="scroll"
+        bgPosition="0 -230px"
+      >
         <Box
           display="flex"
           flexDirection="row"

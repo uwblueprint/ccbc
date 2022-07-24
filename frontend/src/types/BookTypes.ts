@@ -27,7 +27,7 @@ export type Publisher = {
 /**
  * Type for tag of a book
  */
- export type Tag = {
+export type Tag = {
   name: string;
 };
 
