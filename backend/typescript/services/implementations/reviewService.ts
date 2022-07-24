@@ -520,6 +520,8 @@ class ReviewService implements IReviewService {
           include: [{ all: true, nested: true }],
           limit,
           offset,
+          distinct: true,
+          col: "id",
         });
 
         // The currentPage is the page we requested in params or just page 0
