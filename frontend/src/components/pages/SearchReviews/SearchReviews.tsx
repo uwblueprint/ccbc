@@ -2,6 +2,7 @@ import { Box, Center, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import LoadingSpinner from "../../common/LoadingSpinner";
+import ReviewsGrid from "../MockSearch/ReviewsGrid";
 import SearchBox from "../SearchBox";
 
 /**
@@ -53,10 +54,11 @@ const SearchReviews = (): React.ReactElement => {
   }
   return (
     <Center>
-      <Box w="65%" paddingTop="10">
-        <SearchBox setSearchText={setSearchText} />
+      <Box w={["90%", "85%", "65%"]} paddingTop="10">
+        <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
         <Text>{searchText}</Text>
         <Text>{genresFilter}</Text>
+        <ReviewsGrid />
       </Box>
     </Center>
   );
