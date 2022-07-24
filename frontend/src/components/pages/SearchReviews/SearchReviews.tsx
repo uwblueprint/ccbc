@@ -1,9 +1,11 @@
 import { Box, Center } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
+import { Review } from "../../../types/ReviewTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
-import ReviewsGrid from "../MockSearch/ReviewsGrid";
 import SearchBox from "../SearchBox";
+import mockReviews from "./mockReviews";
+import ReviewsGrid from "./ReviewsGrid";
 
 /**
  * The component for the page where the user searches and filters reviews.
@@ -13,6 +15,7 @@ const SearchReviews = (): React.ReactElement => {
   const [searchText, setSearchText] = useState<string>("");
   const [genresFilter, setGenresFilter] = useState<string[]>([]);
   const [ageRangeFilter, setAgeRangeFilter] = useState<number[]>([]); // ageRange[0] is min age, ageRange[1] is max age
+  const [displayedReviews, setDisplayedReviews] = useState<Review[]>([]);
 
   /** Fetches the search queries from url */
   useEffect(() => {
@@ -57,6 +60,8 @@ const SearchReviews = (): React.ReactElement => {
     window.history.replaceState(null, "New search result", newSearchUrl);
 
     // todo call backend search filtering endpoint to retrieve reviews
+    setDisplayedReviews(mockReviews);
+
     setLoading(false);
   }, [searchText, genresFilter, ageRangeFilter]);
 
@@ -67,7 +72,7 @@ const SearchReviews = (): React.ReactElement => {
     <Center>
       <Box w={["90%", "85%", "65%"]} paddingTop="10">
         <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
-        <ReviewsGrid />
+        <ReviewsGrid displayedReviews={displayedReviews} />
       </Box>
     </Center>
   );

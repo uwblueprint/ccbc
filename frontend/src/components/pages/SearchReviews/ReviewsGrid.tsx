@@ -2,10 +2,16 @@ import { Center, SimpleGrid } from "@chakra-ui/react";
 import React from "react";
 
 import { Author, Book } from "../../../types/BookTypes";
-import mockReviews from "./mockReviews";
+import { Review } from "../../../types/ReviewTypes";
 import ReviewThumbnail from "./ReviewThumbnail";
 
-const ReviewsGrid = (): React.ReactElement => {
+interface ReviewsGridProps {
+  displayedReviews: Review[];
+}
+
+const ReviewsGrid = ({
+  displayedReviews,
+}: ReviewsGridProps): React.ReactElement => {
   const getAllAuthors = (books: Book[]): Author[] => {
     const allAuthors: Author[] = [];
     books.forEach((book) => {
@@ -26,7 +32,7 @@ const ReviewsGrid = (): React.ReactElement => {
         spacingY={[0, 4, 10]}
         spacingX={[2, 5, 5]}
       >
-        {mockReviews.map(
+        {displayedReviews.map(
           (review, key) =>
             review.publishedAt &&
             review.books[0].title && (
