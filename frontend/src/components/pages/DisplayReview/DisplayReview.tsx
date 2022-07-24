@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
-import background from "../../../assets/review-base-page-bg.jpg";
+import background from "../../../assets/review-base-page-bg.png";
 import { Review, ReviewResponse } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import LoadingSpinner from "../../common/LoadingSpinner";
@@ -57,7 +57,7 @@ const DisplayReview = (): React.ReactElement => {
         bgRepeat="no-repeat"
         backgroundSize="cover"
         backgroundAttachment="scroll"
-        bgPosition="0 -50px"
+        bgPosition="0 -230px"
       >
         <Box
           display="flex"
