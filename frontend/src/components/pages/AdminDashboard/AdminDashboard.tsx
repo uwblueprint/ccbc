@@ -22,7 +22,11 @@ import { Link, useHistory } from "react-router-dom";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
-import { Review, ReviewResponse } from "../../../types/ReviewTypes";
+import {
+  PaginatedReviewResponse,
+  Review,
+  ReviewResponse,
+} from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import PreviewReviewModal from "../../PreviewReview/PreviewReviewModal";
@@ -56,8 +60,13 @@ const AdminDashboard = (): React.ReactElement => {
 
   useEffect(() => {
     setIsLoading(true);
-    reviewAPIClient.getReviews().then((allReviews: ReviewResponse[]) => {
-      setData(mapReviewResponseToReview(allReviews));
+    reviewAPIClient.getReviews().then((resp: PaginatedReviewResponse) => {
+      const { reviews } = resp;
+      if (!reviews) {
+        setData([]);
+      } else {
+        setData(mapReviewResponseToReview(reviews as ReviewResponse[]));
+      }
       setIsLoading(false);
     });
   }, []);

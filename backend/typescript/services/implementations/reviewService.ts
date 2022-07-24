@@ -28,6 +28,7 @@ import {
   User,
   Genre,
   Tag,
+  PaginatedReviewResponseDTO,
 } from "../interfaces/IReviewService";
 
 const Logger = logger(__filename);
@@ -498,18 +499,43 @@ class ReviewService implements IReviewService {
     return result;
   }
 
-  async getReviews(): Promise<ReviewResponseDTO[]> {
-    let reviews: PgReview[];
-    let result: ReviewResponseDTO[];
+  getPaginationOffset(page: string, limit: number | undefined): number {
+    const offset = page && limit ? parseInt(page, 10) * limit : 0;
+    return offset;
+  }
+
+  async getReviews(
+    page: string,
+    size: string,
+  ): Promise<PaginatedReviewResponseDTO> {
+    let result: PaginatedReviewResponseDTO;
 
     try {
       result = await this.db.transaction(async (t) => {
-        reviews = await PgReview.findAll({
+        const limit = size ? parseInt(size, 10) : undefined;
+        const offset = this.getPaginationOffset(page, limit);
+
+        const { rows, count } = await PgReview.findAndCountAll({
           transaction: t,
           include: [{ all: true, nested: true }],
+          limit,
+          offset,
+          distinct: true,
+          col: "id",
         });
 
-        return reviews.map((r) => ReviewService.pgReviewToRet(r));
+        // The currentPage is the page we requested in params or just page 0
+        const currentPage = page ? parseInt(page, 10) : 0;
+
+        // There is only one page if we are not paginating them
+        const totalPages = limit ? Math.ceil(count / limit) : 1;
+
+        return {
+          totalReviews: count,
+          totalPages,
+          currentPage,
+          reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
+        };
       });
     } catch (error: unknown) {
       Logger.error(`Failed to get review. Reason = ${getErrorMessage(error)}`);

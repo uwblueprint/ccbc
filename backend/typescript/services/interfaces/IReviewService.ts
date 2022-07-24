@@ -97,6 +97,13 @@ export interface ReviewRequestDTO {
   books: BookRequest[];
 }
 
+export interface PaginatedReviewResponseDTO {
+  totalReviews: number;
+  totalPages: number;
+  currentPage: number;
+  reviews: ReviewResponseDTO[];
+}
+
 export interface ReviewResponseDTO {
   reviewId: number;
   body: string;
@@ -129,11 +136,12 @@ export interface IReviewService {
 
   /**
    * retrieve all Reviews
-   * @param
-   * @returns returns array of Reviews
+   * @param page number of pages
+   * @param size number of records in a page
+   * @returns returns array of Reviews + metadata of pages
    * @throws Error if retrieval fails
    */
-  getReviews(): Promise<ReviewResponseDTO[]>;
+  getReviews(page: string, size: string): Promise<PaginatedReviewResponseDTO>;
 
   /**
    * update the Review with the given id with fields in the DTO, return updated Review
