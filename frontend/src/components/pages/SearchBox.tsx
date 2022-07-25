@@ -26,6 +26,8 @@ const SearchBox = ({
   const onSubmitClick = async () => {
     if (searchText && removeExtraSpace(searchText)) {
       setSearchText(removeExtraSpace(searchText));
+    } else {
+      setSearchText("");
     }
   };
   return (
