@@ -16,7 +16,8 @@ const userService = new UserService();
 const emailService: IEmailService = new EmailService(nodemailerConfig);
 const authService: IAuthService = new AuthService(userService, emailService);
 
-const validationBodyRules = [
+givecloudRouter.post(
+  "/user.subscription_paid",
   body("supporter.membership.name", "membership name is required").exists(),
   body(
     "supporter.membership.days_to_expire",
@@ -25,11 +26,6 @@ const validationBodyRules = [
   body("supporter.email", "suppoerter email is required").exists(),
   body("supporter.first_name", "supporter first_name is required").exists(),
   body("supporter.last_name", "supporter last_name is required").exists(),
-];
-
-givecloudRouter.post(
-  "/user.subscription_paid",
-  validationBodyRules,
   async (req, res) => {
     try {
       const errors = validationResult(req);
