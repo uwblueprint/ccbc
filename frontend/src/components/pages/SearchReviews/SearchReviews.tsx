@@ -9,6 +9,10 @@ import ReviewsGrid from "./ReviewsGrid";
 
 /**
  * The component for the page where the user searches and filters reviews.
+ * Url Parameters that can be passed in:
+ * search_query: current search command i.e "Potter"
+ * genres: the genres filter(s) applied to search, seperated by commas i.e "Horror" or "Romance,Thriller,Comedy"
+ * ageRange: the age range filter applied to search, in the format of "minAge,maxAge" i.e "5,10"
  */
 const SearchReviews = (): React.ReactElement => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -41,23 +45,36 @@ const SearchReviews = (): React.ReactElement => {
     }
   }, []);
 
+  /** Creates new url based on search text and filters */
+  const generateSearchUrl = (
+    search: string,
+    genres: string[],
+    ageRange: number[],
+  ) => {
+    const searchUrl = new URL(
+      `${window.location.origin}/magazine/search_results/`,
+    );
+    if (search) searchUrl.searchParams.append("search_query", search);
+    if (genres && genres.length > 0)
+      searchUrl.searchParams.append("genres", genres.join(","));
+    if (ageRange && ageRange.length > 0)
+      searchUrl.searchParams.append("ageRange", ageRange.join(","));
+    return searchUrl;
+  };
+
   /** Changes url to when search filters are changed and fetches search results  */
   useEffect(() => {
     setLoading(true);
-    // todo add age range filter too
-    let newSearchUrl = "/magazine/search_results";
-    newSearchUrl +=
-      searchText || genresFilter.length > 0 || ageRangeFilter.length > 0
-        ? "?"
-        : "";
-    const newParams = [];
-    if (searchText) newParams.push(`search_query=${searchText}`);
-    if (genresFilter.length > 0)
-      newParams.push(`genres=${genresFilter.join(",")}`);
-    if (ageRangeFilter.length > 0)
-      newParams.push(`ageRange=${ageRangeFilter.join(",")}`);
-    newSearchUrl += newParams.join("&");
-    window.history.replaceState(null, "New search result", newSearchUrl);
+    const newSearchUrl = generateSearchUrl(
+      searchText,
+      genresFilter,
+      ageRangeFilter,
+    );
+    window.history.replaceState(
+      null,
+      "New search result",
+      newSearchUrl.toString(),
+    );
 
     // todo call backend search filtering endpoint to retrieve reviews
     setDisplayedReviews(mockReviews);
@@ -70,7 +87,7 @@ const SearchReviews = (): React.ReactElement => {
   }
   return (
     <Center>
-      <Box w={["90%", "85%", "65%"]} paddingTop="10">
+      <Box w={["90%", "85%", "65%"]} py="10">
         <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
         <ReviewsGrid displayedReviews={displayedReviews} />
       </Box>

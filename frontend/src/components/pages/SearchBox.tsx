@@ -45,6 +45,7 @@ const SearchBox = ({
             setSearchTextState(event.target.value);
           }}
           value={searchText}
+          onKeyDown={(e) => e.key === "Enter" && onSubmitClick()}
         />
         <InputRightElement width="4.5rem">
           <Button
@@ -58,6 +59,7 @@ const SearchBox = ({
             borderRadius="0 8px 8px 0"
             _hover={{ bg: "#110A23", borderColor: "#110A23" }}
             _active={{ bg: "#110A23", borderColor: "#110A23" }}
+            type="submit"
           >
             Search
           </Button>
