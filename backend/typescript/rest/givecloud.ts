@@ -16,9 +16,6 @@ const userService = new UserService();
 const emailService: IEmailService = new EmailService(nodemailerConfig);
 const authService: IAuthService = new AuthService(userService, emailService);
 
-// const validationBodyRules: (req) => {
-//   return null;
-//   };
 
 givecloudRouter.post(
   "/user.subscription_paid",
