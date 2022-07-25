@@ -9,10 +9,11 @@ import ReviewsGrid from "./ReviewsGrid";
 
 /**
  * The component for the page where the user searches and filters reviews.
+ *
  * Url Parameters that can be passed in:
- * search_query: current search command i.e "Potter"
- * genres: the genres filter(s) applied to search, seperated by commas i.e "Horror" or "Romance,Thriller,Comedy"
- * ageRange: the age range filter applied to search, in the format of "minAge,maxAge" i.e "5,10"
+ *    search_query: current search command i.e "Potter"
+ *    genres: the genres filter(s) applied to search, seperated by commas i.e "Horror" or "Romance,Thriller,Comedy"
+ *    ageRange: the age range filter applied to search, in the format of "minAge,maxAge" i.e "5,10"
  */
 const SearchReviews = (): React.ReactElement => {
   const [loading, setLoading] = useState<boolean>(false);
