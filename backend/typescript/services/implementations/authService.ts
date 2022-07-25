@@ -373,7 +373,7 @@ class AuthService implements IAuthService {
       ],
     });
 
-    let createdUser = null;
+    let createdUser: UserDTO | null = null;
     try {
       createdUser = await this.userService.createUser({
         firstName,

@@ -13,7 +13,7 @@ import IAuthService from "../services/interfaces/authService";
 import IEmailService from "../services/interfaces/emailService";
 import IUserService from "../services/interfaces/userService";
 import { sendErrorResponse } from "../utilities/errorResponse";
-import { authDtoToToUserDto } from "../utilities/authUtils";
+import authDtoToToUserDto from "../utilities/authUtils";
 
 const authRouter: Router = Router();
 const userService: IUserService = new UserService();
