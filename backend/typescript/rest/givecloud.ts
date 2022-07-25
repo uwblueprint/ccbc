@@ -16,7 +16,6 @@ const userService = new UserService();
 const emailService: IEmailService = new EmailService(nodemailerConfig);
 const authService: IAuthService = new AuthService(userService, emailService);
 
-
 givecloudRouter.post(
   "/user.subscription_paid",
   body("supporter.membership.name", "membership name is required").exists(),
