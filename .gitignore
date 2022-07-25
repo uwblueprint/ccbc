@@ -6,6 +6,5 @@
 **/*.log
 **/firebaseServiceAccount.json
 **/.DS_Store
-.vscode
 **/*.cache
 **/*.egg-info

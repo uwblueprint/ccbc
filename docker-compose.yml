@@ -23,6 +23,7 @@ services:
       - /app/node_modules
     ports:
       - 5000:5000
+      - 9229:9229
     dns:
       - 8.8.8.8
     depends_on:
