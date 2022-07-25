@@ -16,6 +16,10 @@ const userService = new UserService();
 const emailService: IEmailService = new EmailService(nodemailerConfig);
 const authService: IAuthService = new AuthService(userService, emailService);
 
+// const validationBodyRules: (req) => {
+//   return null;
+//   };
+
 givecloudRouter.post(
   "/user.subscription_paid",
   body("supporter.membership.name", "membership name is required").exists(),
@@ -30,7 +34,7 @@ givecloudRouter.post(
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        res.status(400).json({ errors: errors.array() });
       }
       const { supporter } = req.body;
       const { email, membership } = supporter;
