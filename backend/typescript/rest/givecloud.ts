@@ -26,35 +26,37 @@ givecloudRouter.post(
   body("supporter.email", "suppoerter email is required").exists(),
   body("supporter.first_name", "supporter first_name is required").exists(),
   body("supporter.last_name", "supporter last_name is required").exists(),
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const errors = validationResult(req);
-      if (!errors.isEmpty()) {
+      if (errors.isEmpty()) {
         res.status(400).json({ errors: errors.array() });
-      }
-      const { supporter } = req.body;
-      const { email, membership } = supporter;
-      const subscriptionExpiresOn = new Date();
-      let roleType: Role = "Subscriber";
-      if (membership.name === "Professional Creator Membership") {
-        roleType = "Author";
-      }
-      try {
-        await userService.getUserByEmail(email);
-        res.status(200).json("remove and implement renew logic here");
-      } catch {
-        subscriptionExpiresOn.setDate(
-          subscriptionExpiresOn.getDate() + membership.days_to_expire,
-        );
-        const authDTO = await authService.createUserAndSendRegistrationEmail(
-          supporter.first_name,
-          supporter.last_name,
-          email,
-          roleType,
-          subscriptionExpiresOn,
-        );
+        const { supporter } = req.body;
+        const { email, membership } = supporter;
+        const subscriptionExpiresOn = new Date();
+        let roleType: Role = "Subscriber";
+        if (membership.name === "Professional Creator Membership") {
+          roleType = "Author";
+        }
+        try {
+          await userService.getUserByEmail(email);
+          res.status(200).json("remove and implement renew logic here");
+        } catch {
+          subscriptionExpiresOn.setDate(
+            subscriptionExpiresOn.getDate() + membership.days_to_expire,
+          );
+          const authDTO = await authService.createUserAndSendRegistrationEmail(
+            supporter.first_name,
+            supporter.last_name,
+            email,
+            roleType,
+            subscriptionExpiresOn,
+          );
 
-        res.status(200).json(authDtoToToUserDto(authDTO));
+          res.status(200).json(authDtoToToUserDto(authDTO));
+        }
+      } else {
+        res.status(400).json({ errors: errors.array() });
       }
     } catch (e: unknown) {
       sendErrorResponse(e, res);
