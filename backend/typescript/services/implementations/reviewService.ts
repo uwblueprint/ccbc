@@ -31,7 +31,6 @@ import {
   PaginatedReviewResponseDTO,
 } from "../interfaces/IReviewService";
 import { SearchResult } from "../../types";
-import { find } from "lodash";
 
 const Logger = logger(__filename);
 
