@@ -18,7 +18,14 @@ const authService: IAuthService = new AuthService(userService, emailService);
 
 givecloudRouter.post(
   "/user.subscription_paid",
-  body("supporter.groups", "supporter.groups is required").exists(),
+  body(
+    "supporter.groups[0].name",
+    "supporter.groups.name is required",
+  ).exists(),
+  body(
+    "supporter.groups[0].days_left",
+    "supporter.groups.days_left is required",
+  ).exists(),
   body("supporter.email", "supporter email is required").exists(),
   body("supporter.first_name", "supporter first_name is required").exists(),
   body("supporter.last_name", "supporter last_name is required").exists(),
