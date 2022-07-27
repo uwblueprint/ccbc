@@ -26,7 +26,7 @@ givecloudRouter.post(
   body("supporter.email", "suppoerter email is required").exists(),
   body("supporter.first_name", "supporter first_name is required").exists(),
   body("supporter.last_name", "supporter last_name is required").exists(),
-  async (req, res, next) => {
+  async (req, res) => {
     try {
       const errors = validationResult(req);
       if (errors.isEmpty()) {
