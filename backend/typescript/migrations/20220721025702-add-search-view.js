@@ -20,9 +20,9 @@ module.exports = {
             r.id AS review_id,
             TO_TSVECTOR(
               'english', 
-              r.body || ' '
-              || STRING_AGG(book_agg.title, ' ') || ' '
-              || STRING_AGG(book_agg.authors, ' ') || ' '
+              COALESCE(r.body, ' ') || ' '
+              || COALESCE(STRING_AGG(book_agg.title, ' '), '') || ' '
+              || COALESCE(STRING_AGG(book_agg.authors, ' '), '') || ' '
               || COALESCE(STRING_AGG(book_agg.genres, ' '), '') || ' '
               || COALESCE(STRING_AGG(book_agg.tags, ' '), '') || ' '
             ) AS doc
