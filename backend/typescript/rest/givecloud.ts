@@ -30,7 +30,6 @@ givecloudRouter.post(
     try {
       const errors = validationResult(req);
       if (errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
         const { supporter } = req.body;
         const { email, membership } = supporter;
         const subscriptionExpiresOn = new Date();
