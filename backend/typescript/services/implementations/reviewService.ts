@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
-import { Op, QueryTypes } from "sequelize";
+import { FindAndCountOptions, Op, QueryTypes } from "sequelize";
 import { Transaction } from "sequelize/types";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
@@ -31,6 +31,7 @@ import {
   PaginatedReviewResponseDTO,
 } from "../interfaces/IReviewService";
 import { SearchResult } from "../../types";
+import { find } from "lodash";
 
 const Logger = logger(__filename);
 
@@ -515,50 +516,8 @@ class ReviewService implements IReviewService {
     return offset;
   }
 
-  async getReviews(
-    page: string,
-    size: string,
-  ): Promise<PaginatedReviewResponseDTO> {
-    let result: PaginatedReviewResponseDTO;
-
-    try {
-      result = await this.db.transaction(async (t) => {
-        const limit = size ? parseInt(size, 10) : undefined;
-        const offset = this.getPaginationOffset(page, limit);
-
-        const { rows, count } = await PgReview.findAndCountAll({
-          transaction: t,
-          include: [{ all: true, nested: true }],
-          limit,
-          offset,
-          distinct: true,
-          col: "id",
-        });
-
-        // The currentPage is the page we requested in params or just page 0
-        const currentPage = page ? parseInt(page, 10) : 0;
-
-        // There is only one page if we are not paginating them
-        const totalPages = limit ? Math.ceil(count / limit) : 1;
-
-        return {
-          totalReviews: count,
-          totalPages,
-          currentPage,
-          reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
-        };
-      });
-    } catch (error: unknown) {
-      Logger.error(`Failed to get review. Reason = ${getErrorMessage(error)}`);
-      throw error;
-    }
-
-    return result;
-  }
-
-  async getReviewsWithSearch(searchTerm: string): Promise<ReviewResponseDTO[]> {
-    let reviews: PgReview[];
-    let result: ReviewResponseDTO[];
+  async getReviewsIdsFromSearch(searchTerm: string): Promise<number[]> {
+    let result: number[];
 
     try {
       result = await this.db.transaction(async (t) => {
@@ -573,18 +532,65 @@ class ReviewService implements IReviewService {
             type: QueryTypes.SELECT,
           },
         )) as SearchResult[];
-        const reviewIds = searchResults.map(({ review_id }) => {
+        return searchResults.map(({ review_id }) => {
           return review_id;
         });
-        reviews = await PgReview.findAll({
-          where: {
-            id: { [Op.in]: reviewIds },
-          },
+      });
+    } catch (error: unknown) {
+      Logger.error(
+        `Failed to get review ids from search. Reason = ${getErrorMessage(
+          error,
+        )}`,
+      );
+      throw error;
+    }
+
+    return result;
+  }
+
+  async getReviews(
+    page: string,
+    size: string,
+    searchTerm?: string,
+  ): Promise<PaginatedReviewResponseDTO> {
+    let result: PaginatedReviewResponseDTO;
+
+    try {
+      result = await this.db.transaction(async (t) => {
+        const limit = size ? parseInt(size, 10) : undefined;
+        const offset = this.getPaginationOffset(page, limit);
+        let reviewIds: number[];
+
+        const findConditions: FindAndCountOptions = {
           transaction: t,
           include: [{ all: true, nested: true }],
-        });
+          limit,
+          offset,
+          distinct: true,
+          col: "id",
+        };
 
-        return reviews.map((r) => ReviewService.pgReviewToRet(r));
+        if (searchTerm) {
+          reviewIds = await this.getReviewsIdsFromSearch(searchTerm);
+          findConditions.where = {
+            id: { [Op.in]: reviewIds },
+          };
+        }
+
+        const { rows, count } = await PgReview.findAndCountAll(findConditions);
+
+        // The currentPage is the page we requested in params or just page 0
+        const currentPage = page ? parseInt(page, 10) : 0;
+
+        // There is only one page if we are not paginating them
+        const totalPages = limit ? Math.ceil(count / limit) : 1;
+
+        return {
+          totalReviews: count,
+          totalPages,
+          currentPage,
+          reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
+        };
       });
     } catch (error: unknown) {
       Logger.error(`Failed to get review. Reason = ${getErrorMessage(error)}`);

@@ -138,19 +138,15 @@ export interface IReviewService {
    * retrieve all Reviews
    * @param page number of pages
    * @param size number of records in a page
+   * @param searchTerm term to search for
    * @returns returns array of Reviews + metadata of pages
    * @throws Error if retrieval fails
    */
-  getReviews(page: string, size: string): Promise<PaginatedReviewResponseDTO>;
-
-  /**
-   * retrieve all Reviews that have a search term
-   * @param
-   * @param id review id
-   * @returns returns array of Reviews
-   * @throws Error if retrieval fails
-   */
-  getReviewsWithSearch(searchTerm: string): Promise<ReviewResponseDTO[]>;
+  getReviews(
+    page: string,
+    size: string,
+    searchTerm?: string,
+  ): Promise<PaginatedReviewResponseDTO>;
 
   /**
    * update the Review with the given id with fields in the DTO, return updated Review
