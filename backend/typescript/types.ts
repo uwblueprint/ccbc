@@ -40,3 +40,7 @@ export type SignUpMethod = "PASSWORD" | "GOOGLE";
 export type TagDTO = {
   name: string;
 };
+
+export type SearchResult = {
+  review_id: number;
+};
