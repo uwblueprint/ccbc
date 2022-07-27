@@ -18,12 +18,8 @@ const authService: IAuthService = new AuthService(userService, emailService);
 
 givecloudRouter.post(
   "/user.subscription_paid",
-  body("supporter.membership.name", "membership name is required").exists(),
-  body(
-    "supporter.membership.days_to_expire",
-    "membership_expiry_date is required",
-  ).exists(),
-  body("supporter.email", "suppoerter email is required").exists(),
+  body("supporter.groups", "supporter.groups is required").exists(),
+  body("supporter.email", "supporter email is required").exists(),
   body("supporter.first_name", "supporter first_name is required").exists(),
   body("supporter.last_name", "supporter last_name is required").exists(),
   async (req, res) => {
@@ -31,10 +27,10 @@ givecloudRouter.post(
       const errors = validationResult(req);
       if (errors.isEmpty()) {
         const { supporter } = req.body;
-        const { email, membership } = supporter;
+        const { email, groups } = supporter;
         const subscriptionExpiresOn = new Date();
         let roleType: Role = "Subscriber";
-        if (membership.name === "Professional Creator Membership") {
+        if (groups[0].name === "Professional Creator Membership") {
           roleType = "Author";
         }
         try {
@@ -42,7 +38,7 @@ givecloudRouter.post(
           res.status(200).json("remove and implement renew logic here");
         } catch {
           subscriptionExpiresOn.setDate(
-            subscriptionExpiresOn.getDate() + membership.days_to_expire,
+            subscriptionExpiresOn.getDate() + groups[0].days_left,
           );
           const authDTO = await authService.createUserAndSendRegistrationEmail(
             supporter.first_name,
