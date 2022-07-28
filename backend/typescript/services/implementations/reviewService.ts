@@ -507,6 +507,11 @@ class ReviewService implements IReviewService {
   async getReviews(
     page: string,
     size: string,
+    genres?: string[],
+    minAge?: number,
+    maxAge?: number,
+    featured?: string,
+    author?: string,
   ): Promise<PaginatedReviewResponseDTO> {
     let result: PaginatedReviewResponseDTO;
 
@@ -515,9 +520,26 @@ class ReviewService implements IReviewService {
         const limit = size ? parseInt(size, 10) : undefined;
         const offset = this.getPaginationOffset(page, limit);
 
+        const reviewOpts = featured ? { featured } : {};
+
         const { rows, count } = await PgReview.findAndCountAll({
           transaction: t,
+          where: reviewOpts,
           include: [{ all: true, nested: true }],
+          // include: {
+          //   model: PgBook,
+          //   required: true,
+          // },
+          // include: [
+          //   {
+          //     model: PgBook,
+          //     where: {
+          //       genres: {
+          //         [Op.in]: genres,
+          //       },
+          //     },
+          //   },
+          // ],
           limit,
           offset,
           distinct: true,
