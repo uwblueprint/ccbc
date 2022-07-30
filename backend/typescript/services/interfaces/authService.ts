@@ -1,5 +1,4 @@
 import * as firebaseAdmin from "firebase-admin";
-import User from "../../models/user.model";
 import { AuthDTO, Role, Token, UserDTO } from "../../types";
 
 interface IAuthService {
@@ -78,9 +77,9 @@ interface IAuthService {
   /**
    * Gets user by the access token
    * @param accessToken
-   * @returns User if user with acess token is found, null otherwise
+   * @returns UserDTO if user with acess token is found, null otherwise
    */
-  getUserByAccessToken(accessToken: string): Promise<User | null>;
+  getUserByAccessToken(accessToken: string): Promise<UserDTO | null>;
 
   /**
    * Determine if the provided access token is valid and issued to the requested user
@@ -136,6 +135,12 @@ interface IAuthService {
    * @throws Error if unable to set the password
    */
   setTemporaryUserPassword(email: string): Promise<string>;
+
+  /**
+   * @param user: UserDTO for the user attempting to login
+   * @param roles: set of roles that do not require a subscription
+   */
+  isSubscriptionValid(user: UserDTO, roles: Set<Role>): Promise<boolean>;
 }
 
 export default IAuthService;

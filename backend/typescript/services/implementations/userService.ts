@@ -109,7 +109,7 @@ class UserService implements IUserService {
     }
   }
 
-  async getUserbyAuthID(authID: string): Promise<User | null> {
+  async getUserbyAuthID(authID: string): Promise<UserDTO | null> {
     let user: User | null;
     try {
       user = await User.findOne({
@@ -118,7 +118,14 @@ class UserService implements IUserService {
       if (!user) {
         throw new Error(`userId ${authID} not found.`);
       }
-      return user;
+      return {
+        id: user.auth_id,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        email: user.email,
+        roleType: user.role_type,
+        subscriptionExpiresOn: user.subscription_expires_on,
+      };
     } catch (error) {
       Logger.error(`Failed to get user. Reason = ${getErrorMessage(error)}`);
       throw error;
