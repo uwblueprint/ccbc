@@ -1,4 +1,3 @@
-import User from "../../models/user.model";
 import {
   CreateUserDTO,
   Role,
@@ -51,10 +50,10 @@ interface IUserService {
   /**
    * Get user associated with authID
    * @param authID
-   * @returns the User with the associated authID
+   * @returns the UserDTO with the associated authID
    * @throws Error if user retrieval fails
    */
-  getUserbyAuthID(authID: string): Promise<User | null>;
+  getUserbyAuthID(authID: string): Promise<UserDTO | null>;
 
   /**
    * Get all user information (possibly paginated in the future)

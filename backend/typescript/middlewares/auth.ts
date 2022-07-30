@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import User from "../models/user.model";
 import AuthService from "../services/implementations/authService";
 import UserService from "../services/implementations/userService";
 import IAuthService from "../services/interfaces/authService";
-import { Role } from "../types";
+import IUserService from "../services/interfaces/userService";
+import { Role, UserDTO } from "../types";
 
-const authService: IAuthService = new AuthService(new UserService());
+const userService: IUserService = new UserService();
+const authService: IAuthService = new AuthService(userService);
 
 export const getAccessToken = (req: Request): string | null => {
   const authHeaderParts = req.headers.authorization?.split(" ");
@@ -36,27 +37,16 @@ export const isAuthorizedByRole = (roles: Set<Role>) => {
         .json({ error: "You are not authorized to make this request." });
     }
     // user cannot be null, since this would be catched by isAuthorizedByRole
-    const user: User | null = await authService.getUserByAccessToken(
+    const user: UserDTO | null = await authService.getUserByAccessToken(
       accessToken,
     );
     if (user == null) {
       return res.status(404).json({ error: "No user was found." });
     }
-    if (
-      !roles.has(user.role_type) &&
-      user.subscription_expires_on != null &&
-      user.role_type !== "Admin"
-    ) {
-      const currentDate = new Date();
-      currentDate.setUTCHours(0, 0, 0, 0);
-      const subscriptionExpireDate = new Date(user.subscription_expires_on);
-      subscriptionExpireDate.setUTCHours(0, 0, 0, 0);
-
-      if (currentDate.getTime() > subscriptionExpireDate.getTime()) {
-        return res
-          .status(401)
-          .json({ error: "You are not authorized to make this request." });
-      }
+    if (!(await authService.isSubscriptionValid(user, roles))) {
+      return res
+        .status(401)
+        .json({ error: "You are not authorized to make this request." });
     }
     return next();
   };
@@ -106,6 +96,33 @@ export const isAuthorizedByEmail = (emailField: string) => {
         .status(401)
         .json({ error: "You are not authorized to make this request." });
     }
+    return next();
+  };
+};
+
+/* Determine if request for a user-specific resource is authorized based on subscription date and role
+ * validity if the user has an active subscription or does no require one
+ * Note: emailField is the name of the request parameter containing the requested email */
+export const isAuthorizedBysubscription = (
+  emailField: string,
+  roles: Set<Role>,
+) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> => {
+    try {
+      const user: UserDTO | null = await userService.getUserByEmail(emailField);
+      if (!authService.isSubscriptionValid(user, roles)) {
+        return res
+          .status(401)
+          .json({ error: "You are not authorized to make this request." });
+      }
+    } catch {
+      return res.status(404).json({ error: "No user was found." });
+    }
+
     return next();
   };
 };

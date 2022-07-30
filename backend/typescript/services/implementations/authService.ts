@@ -236,7 +236,7 @@ class AuthService implements IAuthService {
     }
   }
 
-  async getUserByAccessToken(accessToken: string): Promise<User | null> {
+  async getUserByAccessToken(accessToken: string): Promise<UserDTO | null> {
     try {
       const decodedIdToken: firebaseAdmin.auth.DecodedIdToken =
         await firebaseAdmin.auth().verifyIdToken(accessToken, true);
@@ -371,6 +371,28 @@ class AuthService implements IAuthService {
     });
 
     return accessCode;
+  }
+
+  /**
+   * Used on login screen to verify the user's subscription
+   * @param userDTO, user trying to login
+   * @param roles, set of roels that don't require a subscription
+   * @returns a boolean verifying if the subscription for the user is valid, true if valid false otherwise.
+   */
+  async isSubscriptionValid(user: UserDTO, roles: Set<Role>): Promise<boolean> {
+    if (!roles.has(user.roleType)) {
+      const currentDate = new Date();
+      currentDate.setUTCHours(0, 0, 0, 0);
+      const subscriptionExpireDate = user.subscriptionExpiresOn;
+      subscriptionExpireDate?.setUTCHours(0, 0, 0, 0);
+      if (
+        subscriptionExpireDate == null ||
+        currentDate.getTime() > subscriptionExpireDate.getTime()
+      ) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 
