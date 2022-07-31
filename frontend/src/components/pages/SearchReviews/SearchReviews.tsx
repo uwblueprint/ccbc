@@ -88,14 +88,13 @@ const SearchReviews = (): React.ReactElement => {
     return <LoadingSpinner mt="21%" />;
   }
   return (
-    <Center bgImage={[null, null, background]}
+    <Center
+      bgImage={[null, null, background]}
       bgRepeat="no-repeat"
       backgroundSize="cover"
-      backgroundAttachment="scroll">
-      <Box
-        w={["90%", "85%", "65%"]}
-        py="10"
-      >
+      backgroundAttachment="scroll"
+    >
+      <Box w={["90%", "85%", "65%"]} py="10">
         <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
         <ReviewsGrid displayedReviews={displayedReviews} />
       </Box>
