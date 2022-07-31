@@ -190,7 +190,7 @@ class UserService implements IUserService {
           auth_id: firebaseUser.uid,
           email: firebaseUser.email,
           role_type: user.roleType,
-          subscriptionExpiresOn: user.subscriptionExpiresOn,
+          subscription_expires_on: user.subscriptionExpiresOn,
         });
       } catch (postgresError) {
         try {
@@ -320,7 +320,7 @@ class UserService implements IUserService {
             auth_id: deletedUser.auth_id,
             email: deletedUser.email,
             role_type: deletedUser.role_type,
-            subscriptionExpiresOn: deletedUser.subscription_expires_on,
+            subscription_expires_on: deletedUser.subscription_expires_on,
           });
         } catch (postgresError: unknown) {
           const errorMessage = [
@@ -374,7 +374,7 @@ class UserService implements IUserService {
             auth_id: deletedUser.auth_id,
             email: deletedUser.email,
             role_type: deletedUser.role_type,
-            subscriptionExpiresOn: deletedUser.subscription_expires_on,
+            subscription_expires_on: deletedUser.subscription_expires_on,
           });
         } catch (postgresError: unknown) {
           const errorMessage = [
