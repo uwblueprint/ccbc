@@ -1,6 +1,7 @@
 import { Box, Center } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
+import background from "../../../assets/SearchResultsBackground.png";
 import { Review } from "../../../types/ReviewTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import SearchBox from "../SearchBox";
@@ -87,8 +88,14 @@ const SearchReviews = (): React.ReactElement => {
     return <LoadingSpinner mt="21%" />;
   }
   return (
-    <Center>
-      <Box w={["90%", "85%", "65%"]} py="10">
+    <Center bgImage={[null, null, background]}
+      bgRepeat="no-repeat"
+      backgroundSize="cover"
+      backgroundAttachment="scroll">
+      <Box
+        w={["90%", "85%", "65%"]}
+        py="10"
+      >
         <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
         <ReviewsGrid displayedReviews={displayedReviews} />
       </Box>
