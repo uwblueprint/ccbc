@@ -105,7 +105,7 @@ interface IUserService {
    * Updated users subscriptionExpiresOn field aka renewing/extending a preexisting user's subscription
    * @param userEmail user's email
    * @param newSubscriptionExpiresOn the new expiry date for the subscription
-   * @throws Error if it could updating the user's subscriptionExpiresOn fails
+   * @throws Error if it could updating the user's subscriptionExpiresOn
    */
   updateUserSubscriptionbyEmail(
     userEmail: string,
