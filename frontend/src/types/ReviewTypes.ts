@@ -1,4 +1,4 @@
-import { Book } from "./BookTypes";
+import { Book, Genre, Tag } from "./BookTypes";
 
 export type AuthorRequest = {
   fullName: string;
@@ -39,6 +39,8 @@ export type BookRequest = {
   minAge: number;
   maxAge: number;
   authors: AuthorRequest[];
+  tags: Tag[];
+  genres: Genre[];
   publishers: Publisher[];
   series?: Series;
 };
@@ -55,12 +57,10 @@ export type BookResponse = {
   minAge: number;
   maxAge: number;
   authors: AuthorResponse[];
+  tags: Tag[];
+  genres: Genre[];
   publishers: Publisher[];
   series: Series;
-};
-
-export type Tag = {
-  name: string;
 };
 
 export type ReviewRequest = {
@@ -70,6 +70,13 @@ export type ReviewRequest = {
   createdBy: number;
   publishedAt?: number | null;
   books: BookRequest[];
+};
+
+export type PaginatedReviewResponse = {
+  totalReviews: number;
+  totalPages: number;
+  currentPage: number;
+  reviews: ReviewResponse[];
 };
 
 export type ReviewResponse = {

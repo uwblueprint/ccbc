@@ -6,10 +6,13 @@ import PgReview from "../../models/review.model";
 import PgBook from "../../models/book.model";
 import PgBookAuthor from "../../models/book_author.model";
 import PgBookPublisher from "../../models/book_publisher.model";
-// import PgReviewTag from "../../models/review_tag.model";
+import PgBookGenre from "../../models/book_genre.model";
+import PgBookTag from "../../models/book_tag.model";
+import PgTag from "../../models/tag.model";
 import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
+import PgGenre from "../../models/genre.model";
 import logger from "../../utilities/logger";
 import { sequelize } from "../../umzug";
 import {
@@ -20,13 +23,13 @@ import {
   BookRequest,
   AuthorResponse,
   AuthorRequest,
-  TagRequest,
   PublisherRequest,
   PublisherResponse,
-  TagResponse,
   User,
+  Genre,
+  Tag,
+  PaginatedReviewResponseDTO,
 } from "../interfaces/IReviewService";
-import Tag from "../../models/tag.model";
 
 const Logger = logger(__filename);
 
@@ -40,39 +43,62 @@ class ReviewService implements IReviewService {
 
   /* eslint-disable class-methods-use-this */
   async findOrCreateTag(
-    review: PgReview,
-    tag: TagRequest,
+    book: PgBook,
+    tag: Tag,
     t: Transaction,
-  ): Promise<Tag> {
-    const [tagRef, created] = await Tag.findOrCreate({
+  ): Promise<PgTag> {
+    const [tagRef] = await PgTag.findOrCreate({
       where: { name: tag.name },
       transaction: t,
     });
-    if (!created) return tagRef;
-
-    // TODO implement Tags API changes
-    // await review.$add("tags", tagRef, { transaction: t });
+    await book.$add("tags", tagRef, { transaction: t });
     return tagRef;
   }
 
   async findOrCreateTags(
-    review: PgReview,
-    tags: TagRequest[],
+    book: PgBook,
+    tags: Tag[],
     t: Transaction,
-  ): Promise<TagResponse[]> {
-    const tagsRespRes: Promise<Tag>[] = [];
+  ): Promise<Tag[]> {
+    const tagsRespRes: Promise<PgTag>[] = [];
     for (let i = 0; i < tags.length; i += 1) {
-      tagsRespRes.push(this.findOrCreateTag(review, tags[i], t));
+      tagsRespRes.push(this.findOrCreateTag(book, tags[i], t));
     }
 
-    const tagsRes: Tag[] = await Promise.all(tagsRespRes);
+    const tagsRes: PgTag[] = await Promise.all(tagsRespRes);
 
-    const tagsRet: TagResponse[] = tagsRes.map((tag) => ({
-      id: tag.id,
+    const tagsRet: Tag[] = tagsRes.map((tag) => ({
       name: tag.name,
     }));
 
     return tagsRet;
+  }
+
+  /* eslint-disable class-methods-use-this, no-await-in-loop */
+  async findOrCreateGenre(
+    book: PgBook,
+    genre: Genre,
+    t: Transaction,
+  ): Promise<PgGenre> {
+    const genreRef = await PgGenre.findOrCreate({
+      where: { name: genre.name },
+      transaction: t,
+    }).then((res) => res[0]);
+    await book.$add("genres", genreRef, { transaction: t });
+    return genreRef;
+  }
+
+  async findOrCreateGenres(
+    book: PgBook,
+    genres: Genre[],
+    t: Transaction,
+  ): Promise<Genre[]> {
+    const genresRet: Genre[] = [];
+    for (let i = 0; i < genres.length; i += 1) {
+      const genre = await this.findOrCreateGenre(book, genres[i], t);
+      genresRet.push({ name: genre.name });
+    }
+    return genresRet;
   }
 
   async findOrCreateSeries(
@@ -156,6 +182,7 @@ class ReviewService implements IReviewService {
     book.authors.forEach((author) => {
       authorsRes.push(this.findOrCreateAuthor(newBook, author, t));
     });
+    const tagsRet = await this.findOrCreateTags(newBook, book.tags || [], t);
 
     const authors = await Promise.all(authorsRes);
     const authorsRet: AuthorResponse[] = authors.map((author) => ({
@@ -177,6 +204,12 @@ class ReviewService implements IReviewService {
       publishYear: publisher.publish_year,
     }));
 
+    const genresRet: Genre[] = await this.findOrCreateGenres(
+      newBook,
+      book.genres || [],
+      t,
+    );
+
     await review.$add("books", newBook, { transaction: t });
     return {
       id: newBook.id,
@@ -190,11 +223,13 @@ class ReviewService implements IReviewService {
       minAge: newBook.age_range[0].value,
       maxAge: newBook.age_range[1].value,
       authors: authorsRet,
+      genres: genresRet,
       publishers: publishersRet,
       series: {
         id: series?.id || null,
         name: series?.name || null,
       },
+      tags: tagsRet,
     };
   }
 
@@ -265,6 +300,31 @@ class ReviewService implements IReviewService {
           }
         });
 
+        // Delete genres (if necessary)
+        if (book.genres.length > 0) {
+          const genresToDel: string[] = [];
+
+          /* eslint-disable no-await-in-loop */
+          /* eslint-disable-next-line no-restricted-syntax */
+          for (const genre of book.genres) {
+            const genresOtherBooks = await PgBookGenre.findAll({
+              where: {
+                genre_name: genre.name,
+                book_id: { [Op.notIn]: allBookIds },
+              },
+            });
+            if (genresOtherBooks.length === 0) {
+              genresToDel.push(genre.name);
+            }
+          }
+          /* eslint-enable no-await-in-loop */
+
+          await PgGenre.destroy({
+            where: { name: genresToDel },
+            transaction: txn,
+          });
+        }
+
         // Delete publishers (if necessary)
         book.publishers.forEach(async (publisher: PgPublisher) => {
           const publishersOtherBooks = await PgBookPublisher.findAll({
@@ -298,6 +358,32 @@ class ReviewService implements IReviewService {
             });
           }
         }
+
+        // Delete tags (if necessary)
+        if (book.tags.length > 0) {
+          const tagsToDel: string[] = [];
+
+          // TODO make this cleaner
+          /* eslint-disable no-await-in-loop */
+          /* eslint-disable-next-line no-restricted-syntax */
+          for (const tag of book.tags) {
+            const tagsOtherBooks = await PgBookTag.findAll({
+              where: {
+                tag_name: tag.name,
+                book_id: { [Op.notIn]: allBookIds },
+              },
+            });
+            if (tagsOtherBooks.length === 0) {
+              tagsToDel.push(tag.name);
+            }
+          }
+          /* eslint-enable no-await-in-loop */
+
+          await PgTag.destroy({
+            where: { name: tagsToDel },
+            transaction: txn,
+          });
+        }
       }),
     );
 
@@ -330,6 +416,18 @@ class ReviewService implements IReviewService {
         },
       );
 
+      const genresRet: Genre[] = book.genres.map((p: PgGenre) => {
+        return {
+          name: p.name,
+        };
+      });
+
+      const TagsRet: Tag[] = book.tags.map((t: PgTag) => {
+        return {
+          name: t.name,
+        };
+      });
+
       return {
         id: book.id,
         title: book.title,
@@ -342,20 +440,15 @@ class ReviewService implements IReviewService {
         minAge: book.age_range[0].value,
         maxAge: book.age_range[1].value,
         authors: authorsRet,
+        genres: genresRet,
         publishers: publishersRet,
         series: {
           id: book.series?.id || null,
           name: book.series?.name || null,
         },
+        tags: TagsRet,
       };
     });
-
-    // const tags: TagResponse[] = review.tags.map((tag: Tag) => {
-    //   return {
-    //     id: tag.id,
-    //     name: tag.name,
-    //   };
-    // });
 
     return {
       reviewId: review.id,
@@ -406,18 +499,43 @@ class ReviewService implements IReviewService {
     return result;
   }
 
-  async getReviews(): Promise<ReviewResponseDTO[]> {
-    let reviews: PgReview[];
-    let result: ReviewResponseDTO[];
+  getPaginationOffset(page: string, limit: number | undefined): number {
+    const offset = page && limit ? parseInt(page, 10) * limit : 0;
+    return offset;
+  }
+
+  async getReviews(
+    page: string,
+    size: string,
+  ): Promise<PaginatedReviewResponseDTO> {
+    let result: PaginatedReviewResponseDTO;
 
     try {
       result = await this.db.transaction(async (t) => {
-        reviews = await PgReview.findAll({
+        const limit = size ? parseInt(size, 10) : undefined;
+        const offset = this.getPaginationOffset(page, limit);
+
+        const { rows, count } = await PgReview.findAndCountAll({
           transaction: t,
           include: [{ all: true, nested: true }],
+          limit,
+          offset,
+          distinct: true,
+          col: "id",
         });
 
-        return reviews.map((r) => ReviewService.pgReviewToRet(r));
+        // The currentPage is the page we requested in params or just page 0
+        const currentPage = page ? parseInt(page, 10) : 0;
+
+        // There is only one page if we are not paginating them
+        const totalPages = limit ? Math.ceil(count / limit) : 1;
+
+        return {
+          totalReviews: count,
+          totalPages,
+          currentPage,
+          reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
+        };
       });
     } catch (error: unknown) {
       Logger.error(`Failed to get review. Reason = ${getErrorMessage(error)}`);

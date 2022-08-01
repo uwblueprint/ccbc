@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 
+import background from "../../assets/review-book-orange-blob.png";
 import { Review } from "../../types/ReviewTypes";
 
 /**
@@ -67,7 +68,14 @@ const PreviewReview = ({
             }}
             onClick={handleLeftClick}
           />
-          <Box paddingRight={16}>
+          <Box
+            pr={16}
+            pl={16}
+            bgImage={isPageView ? [null, null, background] : [null]}
+            bgRepeat="no-repeat"
+            backgroundSize="contain"
+            alignItems="center"
+          >
             <Image
               borderRadius={5}
               maxHeight={isPageView ? 80 : 60}

@@ -24,6 +24,10 @@ export interface PublisherResponse {
   publishYear: number;
 }
 
+export interface Genre {
+  name: string;
+}
+
 export interface Format {
   format: string;
   price: number;
@@ -47,8 +51,14 @@ export interface BookRequest {
   minAge: number;
   maxAge: number;
   authors: AuthorRequest[];
+  genres?: Genre[] | null;
   publishers: PublisherRequest[];
   series: Series;
+  tags?: Tag[] | null;
+}
+
+export interface Tag {
+  name: string;
 }
 
 export interface BookResponse {
@@ -63,18 +73,10 @@ export interface BookResponse {
   minAge: number;
   maxAge: number;
   authors: AuthorResponse[];
+  genres: Genre[];
   publishers: PublisherResponse[];
   series: Series;
-}
-
-export interface TagRequest {
-  id?: number;
-  name: string;
-}
-
-export interface TagResponse {
-  id: number;
-  name: string;
+  tags: Tag[];
 }
 
 /**
@@ -93,6 +95,13 @@ export interface ReviewRequestDTO {
   createdBy: number;
   publishedAt?: number | null;
   books: BookRequest[];
+}
+
+export interface PaginatedReviewResponseDTO {
+  totalReviews: number;
+  totalPages: number;
+  currentPage: number;
+  reviews: ReviewResponseDTO[];
 }
 
 export interface ReviewResponseDTO {
@@ -127,11 +136,12 @@ export interface IReviewService {
 
   /**
    * retrieve all Reviews
-   * @param
-   * @returns returns array of Reviews
+   * @param page number of pages
+   * @param size number of records in a page
+   * @returns returns array of Reviews + metadata of pages
    * @throws Error if retrieval fails
    */
-  getReviews(): Promise<ReviewResponseDTO[]>;
+  getReviews(page: string, size: string): Promise<PaginatedReviewResponseDTO>;
 
   /**
    * update the Review with the given id with fields in the DTO, return updated Review

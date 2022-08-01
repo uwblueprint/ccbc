@@ -16,10 +16,10 @@ import Default from "./components/pages/Default";
 import DisplayReview from "./components/pages/DisplayReview/DisplayReview";
 import EditReviewPage from "./components/pages/EditReviewPage";
 import MagazineReview from "./components/pages/MagazineReview";
-import MockSearchPage from "./components/pages/MockSearch/MockSearchPage";
 import NotFound from "./components/pages/NotFound";
 import Profile from "./components/pages/Profile";
 import SearchBox from "./components/pages/SearchBox";
+import SearchReviews from "./components/pages/SearchReviews/SearchReviews";
 import Unauthorized from "./components/pages/UnauthorizedPage";
 import { AUTHENTICATED_USER_KEY } from "./constants/AuthConstants";
 import { UserRole } from "./constants/Enums";
@@ -112,11 +112,6 @@ const App = (): React.ReactElement => {
                       component={CreateReviewPage}
                       requiredRoles={[UserRole.Admin]}
                     />
-                    <Route
-                      exact
-                      path={Routes.MOCK_SEARCH_PAGE}
-                      component={MockSearchPage}
-                    />
                     <PrivateRoute
                       exact
                       path={Routes.EDIT_REVIEW_PAGE}
@@ -138,6 +133,16 @@ const App = (): React.ReactElement => {
                       exact
                       path={Routes.DISPLAY_REVIEW_PAGE}
                       component={DisplayReview}
+                      requiredRoles={[
+                        UserRole.Admin,
+                        UserRole.Subscriber,
+                        UserRole.Creator,
+                      ]}
+                    />
+                    <PrivateRoute
+                      exact
+                      path={Routes.SEARCH_REVIEWS_PAGE}
+                      component={SearchReviews}
                       requiredRoles={[
                         UserRole.Admin,
                         UserRole.Subscriber,

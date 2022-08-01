@@ -17,6 +17,8 @@ const mockGenericBookData: Book = {
   ],
   publishers: [{ fullName: "Random House", publishYear: 1957 }],
   seriesName: null,
+  tags: [],
+  genres: [],
 };
 const mockLongTitleBookData: Book = {
   title:
@@ -39,6 +41,8 @@ const mockLongTitleBookData: Book = {
   ],
   publishers: [{ fullName: "Random House", publishYear: 1957 }],
   seriesName: null,
+  tags: [],
+  genres: [],
 };
 
 const hp1: Book = {
@@ -71,6 +75,19 @@ const hp1: Book = {
   ],
   publishers: [{ fullName: "Random House", publishYear: 1957 }],
   seriesName: "Harry Potter",
+  tags: [
+    {
+      name: "Magic",
+    },
+    {
+      name: "Monster",
+    },
+  ],
+  genres: [
+    {
+      name: "Fantasy",
+    },
+  ],
 };
 
 const hp2: Book = {
@@ -98,6 +115,19 @@ const hp2: Book = {
   ],
   publishers: [{ fullName: "Random House", publishYear: 1957 }],
   seriesName: "Harry Potter",
+  tags: [
+    {
+      name: "Magic",
+    },
+    {
+      name: "Monster",
+    },
+  ],
+  genres: [
+    {
+      name: "Fantasy",
+    },
+  ],
 };
 
 const mockSingleBookReview: Review = {
@@ -139,9 +169,24 @@ const mockMultipleBookReview: Review = {
     firstName: "jessie",
     lastName: "peng",
   },
-  books: [hp1, hp2],
+  books: [hp1, hp2, hp1, hp2],
   updatedAt: 12,
   publishedAt: 20171111212,
+  createdAt: 14,
+};
+
+const mockMultipleBookReviews2: Review = {
+  reviewId: 12,
+  body: "body of review",
+  byline: "byline",
+  featured: true,
+  createdByUser: {
+    firstName: "jessie",
+    lastName: "peng",
+  },
+  books: [mockGenericBookData, mockLongTitleBookData],
+  updatedAt: 12,
+  publishedAt: 20171111333,
   createdAt: 14,
 };
 
@@ -149,6 +194,11 @@ const mockReviews: Review[] = [
   mockSingleBookReview,
   mockMultipleBookReview,
   mockSingleBookLongTitleReview,
+  mockSingleBookReview,
+  mockMultipleBookReview,
+  mockSingleBookLongTitleReview,
+  mockSingleBookReview,
+  mockMultipleBookReviews2,
 ];
 
 export default mockReviews;

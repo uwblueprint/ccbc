@@ -11,6 +11,7 @@ import entityRouter from "./rest/entityRoutes";
 import reviewRouter from "./rest/reviewRoutes";
 import userRouter from "./rest/userRoutes";
 import tagRouter from "./rest/tagRoutes";
+import genreRouter from "./rest/genreRoutes";
 import givecloudRouter from "./rest/givecloud";
 
 const clientHost = new RegExp(
@@ -42,6 +43,7 @@ app.use("/reviews", reviewRouter);
 app.use("/users", userRouter);
 app.use("/tags", tagRouter);
 app.use("/givecloud", givecloudRouter);
+app.use("/genres", genreRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const eraseDatabaseOnSync = false;

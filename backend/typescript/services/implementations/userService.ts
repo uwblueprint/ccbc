@@ -109,6 +109,22 @@ class UserService implements IUserService {
     }
   }
 
+  async getUserbyAuthID(authID: string): Promise<User | null> {
+    let user: User | null;
+    try {
+      user = await User.findOne({
+        where: { auth_id: authID },
+      });
+      if (!user) {
+        throw new Error(`userId ${authID} not found.`);
+      }
+      return user;
+    } catch (error) {
+      Logger.error(`Failed to get user. Reason = ${getErrorMessage(error)}`);
+      throw error;
+    }
+  }
+
   async getUsers(): Promise<Array<UserDTO>> {
     let userDtos: Array<UserDTO> = [];
     try {
@@ -174,7 +190,7 @@ class UserService implements IUserService {
           auth_id: firebaseUser.uid,
           email: firebaseUser.email,
           role_type: user.roleType,
-          subscriptionExpiresOn: user.subscriptionExpiresOn,
+          subscription_expires_on: user.subscriptionExpiresOn,
         });
       } catch (postgresError) {
         try {
@@ -304,7 +320,7 @@ class UserService implements IUserService {
             auth_id: deletedUser.auth_id,
             email: deletedUser.email,
             role_type: deletedUser.role_type,
-            subscriptionExpiresOn: deletedUser.subscription_expires_on,
+            subscription_expires_on: deletedUser.subscription_expires_on,
           });
         } catch (postgresError: unknown) {
           const errorMessage = [
@@ -358,7 +374,7 @@ class UserService implements IUserService {
             auth_id: deletedUser.auth_id,
             email: deletedUser.email,
             role_type: deletedUser.role_type,
-            subscriptionExpiresOn: deletedUser.subscription_expires_on,
+            subscription_expires_on: deletedUser.subscription_expires_on,
           });
         } catch (postgresError: unknown) {
           const errorMessage = [

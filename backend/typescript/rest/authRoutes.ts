@@ -13,6 +13,7 @@ import IAuthService from "../services/interfaces/authService";
 import IEmailService from "../services/interfaces/emailService";
 import IUserService from "../services/interfaces/userService";
 import { sendErrorResponse } from "../utilities/errorResponse";
+import authDtoToToUserDto from "../utilities/authUtils";
 
 const authRouter: Router = Router();
 const userService: IUserService = new UserService();
@@ -64,16 +65,8 @@ authRouter.post("/register", registerRequestValidator, async (req, res) => {
       "Admin",
       null,
     );
-    const { refreshToken, ...rest } = authDTO;
 
-    res
-      .cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: process.env.NODE_ENV === "production",
-      })
-      .status(200)
-      .json(rest);
+    res.status(200).json(authDtoToToUserDto(authDTO));
   } catch (error: unknown) {
     sendErrorResponse(error, res);
   }
