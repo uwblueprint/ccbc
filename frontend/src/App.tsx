@@ -15,6 +15,7 @@ import CreateReviewPage from "./components/pages/CreateReviewPage";
 import Default from "./components/pages/Default";
 import DisplayReview from "./components/pages/DisplayReview/DisplayReview";
 import EditReviewPage from "./components/pages/EditReviewPage";
+import FilterBox from "./components/pages/FilterBox";
 import MagazineReview from "./components/pages/MagazineReview";
 import MockSearchPage from "./components/pages/MockSearch/MockSearchPage";
 import NotFound from "./components/pages/NotFound";
@@ -148,6 +149,11 @@ const App = (): React.ReactElement => {
                       exact
                       path={Routes.SEARCH_BOX}
                       component={SearchBox}
+                    />
+                    <Route
+                      exact
+                      path={Routes.FILTER_BOX}
+                      component={FilterBox}
                     />
                     <Route
                       exact

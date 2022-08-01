@@ -38,3 +38,4 @@ export const DISPLAY_REVIEW_PAGE = "/reviews/:id";
 export const PREVIEW_REVIEW_TEST = "/test/preview-review";
 export const MOCK_SEARCH_PAGE = "/test/mock-search-page";
 export const SEARCH_BOX = "/test/search-box";
+export const FILTER_BOX = "/test/filter";

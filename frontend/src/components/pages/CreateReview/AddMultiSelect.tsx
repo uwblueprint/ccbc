@@ -41,6 +41,8 @@ interface AddMultiSelectProps {
   optionsSelected: Option[]; // List of options that's been selected
   setOptionsSelected: any; // Setting the list of options to be selected
   allowDeleteOption?: boolean;
+  allowAddOption?: boolean;
+  allowMultiSelectOption?: boolean;
 }
 
 const AddMultiSelect = ({
@@ -54,6 +56,8 @@ const AddMultiSelect = ({
   optionsSelected,
   setOptionsSelected,
   allowDeleteOption,
+  allowAddOption,
+  allowMultiSelectOption,
 }: AddMultiSelectProps): React.ReactElement => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [optionToDelete, setOptionToDelete] = useState<Option>(EmptyOption);
@@ -122,9 +126,10 @@ const AddMultiSelect = ({
       <FormControl id={id} isRequired={required} width={maxWidth || "100%"}>
         <FormLabel>{label}</FormLabel>
         <Creatable
-          isMulti
+          isMulti={allowMultiSelectOption}
+          isClearable 
           placeholder={placeholder || "Select some options..."}
-          closeMenuOnSelect={false}
+          closeMenuOnSelect={!allowMultiSelectOption}
           options={options}
           onCreateOption={handleCreate}
           styles={customStyles}
@@ -132,6 +137,7 @@ const AddMultiSelect = ({
           onChange={setOptionsSelected}
           components={{ Option: CustomOption }}
           formatCreateLabel={(optionType: string) => `Add ${optionType}`}
+          isSearchable={allowAddOption}
         />
       </FormControl>
     </>
