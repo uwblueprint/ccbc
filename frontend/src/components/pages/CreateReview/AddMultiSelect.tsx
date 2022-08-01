@@ -127,7 +127,7 @@ const AddMultiSelect = ({
         <FormLabel>{label}</FormLabel>
         <Creatable
           isMulti={allowMultiSelectOption}
-          isClearable 
+          isClearable
           placeholder={placeholder || "Select some options..."}
           closeMenuOnSelect={!allowMultiSelectOption}
           options={options}

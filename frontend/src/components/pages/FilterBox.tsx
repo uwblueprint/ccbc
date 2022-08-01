@@ -4,10 +4,9 @@ import React, { useState } from "react";
 import { Option } from "../../types/BookTypes";
 import AddMultiSelect from "./CreateReview/AddMultiSelect";
 
-
 interface FilterBoxProps {
   genreOptions: Option[]; // dropdown of genres to choose from
-  ageOptions: Option[];   // dropdown of ages to choose from
+  ageOptions: Option[]; // dropdown of ages to choose from
   setGenreFilter: (genreFilter: Option[]) => void;
   setAgeFilter: (ageFilter: Option[]) => void;
 }
@@ -41,10 +40,10 @@ const FilterBox = ({
             id="Audience"
             label=""
             placeholder="Audience"
-            options={ageOptions} 
-            setOptions={null} 
-            optionsSelected={age} 
-            setOptionsSelected={setAge} 
+            options={ageOptions}
+            setOptions={null}
+            optionsSelected={age}
+            setOptionsSelected={setAge}
             allowMultiSelectOption={false}
             allowAddOption={false}
           />
@@ -52,21 +51,15 @@ const FilterBox = ({
             id="genre"
             label=""
             placeholder="Genres"
-            options={genreOptions} 
-            setOptions={null} 
+            options={genreOptions}
+            setOptions={null}
             optionsSelected={genres}
             setOptionsSelected={setGenres}
             allowMultiSelectOption
             allowAddOption={false}
           />
-      <Button
-        onClick={clickApply}>
-        Apply
-      </Button>
-      <Button
-        onClick={clear}>
-        Clear
-      </Button>
+          <Button onClick={clickApply}>Apply</Button>
+          <Button onClick={clear}>Clear</Button>
         </Stack>
       </GridItem>
     </Grid>
