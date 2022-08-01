@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request,Response,NextFunction } from "express";
 import { body, validationResult } from "express-validator";
 import AuthService from "../services/implementations/authService";
 import UserService from "../services/implementations/userService";
@@ -16,6 +16,15 @@ const userService = new UserService();
 const emailService: IEmailService = new EmailService(nodemailerConfig);
 const authService: IAuthService = new AuthService(userService, emailService);
 
+
+const isAuthroized = (req:Request,res:Response, next: NextFunction) => {
+  if(process.env['GIVECLOUD_TOKEN'] !== req.get('GIVECLOUD_TOKEN')){
+    return res.status(403).json({ error: 'No correct credentials sent!' });
+  }
+  next()
+};
+
+
 givecloudRouter.post(
   "/user.subscription_paid",
   body(
@@ -29,7 +38,8 @@ givecloudRouter.post(
   body("supporter.email", "supporter email is required").exists(),
   body("supporter.first_name", "supporter first_name is required").exists(),
   body("supporter.last_name", "supporter last_name is required").exists(),
-  async (req, res) => {
+  (req:Request,res:Response,next:NextFunction) => isAuthroized(req,res,next),
+  async (req:Request, res:Response) => {
     try {
       const errors = validationResult(req);
       if (errors.isEmpty()) {
