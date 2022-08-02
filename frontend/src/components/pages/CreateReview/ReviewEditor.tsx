@@ -26,7 +26,7 @@ const ReviewEditor = (props: ReviewEditorProps): React.ReactElement => {
     toolbar: [
       ["bold", "italic", "underline", "strike"],
       [{ header: [1, 2, 3, false] }],
-      ["link", "blockquote", "image", { list: "bullet" }, { list: "ordered" }],
+      ["link", "blockquote", { list: "bullet" }, { list: "ordered" }],
     ],
   };
 
