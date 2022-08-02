@@ -60,12 +60,17 @@ reviewRouter.get(
   "/",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
+    const searchTerm = req.query.search;
     const contentType = req.headers["content-type"];
     const page: string = req.query.page as string;
     const size: string = req.query.size as string;
 
     try {
-      const reviewsData = await reviewService.getReviews(page, size);
+      const reviewsData = await reviewService.getReviews(
+        page,
+        size,
+        searchTerm ? (searchTerm as string) : undefined,
+      );
       await sendResponseByMimeType<PaginatedReviewResponseDTO>(
         res,
         200,

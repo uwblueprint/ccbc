@@ -146,7 +146,7 @@ components:
           items:
             $ref: "#/components/schemas/PublisherRequest"
         series:
-            $ref: '#/components/schemas/Series'
+          $ref: "#/components/schemas/Series"
         tags:
           type: array
           item: string
@@ -191,7 +191,7 @@ components:
           items:
             $ref: "#/components/schemas/PublisherResponse"
         series:
-            $ref: '#/components/schemas/Series'
+          $ref: "#/components/schemas/Series"
         tags:
           type: array
           items:
@@ -212,7 +212,7 @@ components:
         books:
           type: array
           items:
-            $ref: '#/components/schemas/BookRequest'
+            $ref: "#/components/schemas/BookRequest"
         publishedAt:
           type: number
           nullable: true
@@ -236,7 +236,7 @@ components:
         books:
           type: array
           items:
-            $ref: '#/components/schemas/BookRequest'
+            $ref: "#/components/schemas/BookRequest"
         updatedAt:
           type: number
         createdAt:
@@ -255,7 +255,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/BookRequest'
+                  $ref: "#/components/schemas/BookRequest"
 
         "401":
           description: Unauthorized Request.
@@ -944,6 +944,13 @@ paths:
       tags:
         - Review
       description: Returns the list of all reviews
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          required: false
+          description: The search term to use when getting reviews
       responses:
         "200":
           description: Successfully returned a list of reviews
