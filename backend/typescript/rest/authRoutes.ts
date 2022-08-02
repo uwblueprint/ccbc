@@ -1,6 +1,5 @@
 import { Router } from "express";
 
-import password from "secure-random-password";
 import { isAuthorizedByEmail, isAuthorizedByUserId } from "../middlewares/auth";
 import {
   loginRequestValidator,
@@ -14,6 +13,7 @@ import IAuthService from "../services/interfaces/authService";
 import IEmailService from "../services/interfaces/emailService";
 import IUserService from "../services/interfaces/userService";
 import { sendErrorResponse } from "../utilities/errorResponse";
+import authDtoToToUserDto from "../utilities/authUtils";
 
 const authRouter: Router = Router();
 const userService: IUserService = new UserService();
@@ -55,50 +55,19 @@ authRouter.get("/:uid", async (req, res) => {
 
 /* Register a user, returns access token and user info in response body and sets refreshToken as an httpOnly cookie */
 authRouter.post("/register", registerRequestValidator, async (req, res) => {
-  const accessCode = password.randomPassword({
-    length: 8, // length of the password
-    characters: [
-      // acceptable characters in the password
-      password.lower,
-      password.upper,
-      password.digits,
-    ],
-  });
-
-  let createdUser = null;
-
   try {
-    createdUser = await userService.createUser({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      roleType: "Admin", // TODO: pass in the role as a parameter to function for author and subscriber
-      subscriptionExpiresOn: null,
-      password: accessCode,
-    });
+    const { firstName, lastName, email } = req.body;
 
-    // try to sign in the user and return the expiring token
-    const authDTO = await authService.generateToken(req.body.email, accessCode);
+    const authDTO = await authService.createUserAndSendRegistrationEmail(
+      firstName,
+      lastName,
+      email,
+      "Admin",
+      null,
+    );
 
-    const { refreshToken, ...rest } = authDTO;
-
-    // Send email with login details and ask to change password
-    // once they change the password, user should be verified
-    await authService.sendPasswordSetupLink(createdUser, accessCode, true);
-
-    res
-      .cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: process.env.NODE_ENV === "production",
-      })
-      .status(200)
-      .json(rest);
+    res.status(200).json(authDtoToToUserDto(authDTO));
   } catch (error: unknown) {
-    if (createdUser != null) {
-      // rollback created user if we could not log them in
-      await userService.deleteUserByEmail(createdUser.email);
-    }
     sendErrorResponse(error, res);
   }
 });

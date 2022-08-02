@@ -1042,3 +1042,29 @@ paths:
           description: Unauthorized Request.
         "500":
           description: Invalid Request.
+
+  /givecloud/user.subscription_paid:
+    post:
+      parameters: sample request body  https://www.notion.so/uwblueprintexecs/Givecloud-example-response-eda0ed0f4e5f4087bddcd179df141687
+      tags:
+        - User
+      description: Consume response from givecloud and register's a user's account if user is a new member, otherwise update user's subscriptionExpiresOn field
+      responses:
+        "200":
+          description: Successfully registered a user or renewed subscription.
+          content:
+            application/json:
+              type: object
+              schema:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                roleType:
+                  type: Role
+                subscriptionExpiresOn:
+                  type: date
+        "400":
+          description: Invalid Request.
