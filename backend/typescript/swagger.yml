@@ -108,7 +108,7 @@ components:
           nullable: true
     BookRequest:
       type: object
-      required: 
+      required:
         - title, coverImage, formats, minAge, maxAge, authors, publishers, series, tags
       properties:
         id:
@@ -146,13 +146,13 @@ components:
           items:
             $ref: "#/components/schemas/PublisherRequest"
         series:
-            $ref: '#/components/schemas/Series'
+          $ref: "#/components/schemas/Series"
         tags:
           type: array
           item: string
     BookResponse:
       type: object
-      required: 
+      required:
         - id, title, coverImage, titlePrefix, seriesOrder, illustrator, translator, formats, minAge, maxAge, authors, publishers, series, tags
       properties:
         id:
@@ -191,7 +191,7 @@ components:
           items:
             $ref: "#/components/schemas/PublisherResponse"
         series:
-            $ref: '#/components/schemas/Series'
+          $ref: "#/components/schemas/Series"
         tags:
           type: array
           items:
@@ -199,7 +199,7 @@ components:
     ReviewRequestDTO:
       type: object
       required:
-          - body, byline, featured, createdBy, publishedA, books
+        - body, byline, featured, createdBy, publishedA, books
       properties:
         body:
           type: string
@@ -212,14 +212,14 @@ components:
         books:
           type: array
           items:
-            $ref: '#/components/schemas/BookRequest'
-        publishedAt: 
+            $ref: "#/components/schemas/BookRequest"
+        publishedAt:
           type: number
           nullable: true
     ReviewResponseDTO:
       type: object
       required:
-          - reviewId, body, byline, featured, createdBy, publishedAt, books, updatedAt, createdAt 
+        - reviewId, body, byline, featured, createdBy, publishedAt, books, updatedAt, createdAt
       properties:
         reviewId:
           type: number
@@ -236,7 +236,7 @@ components:
         books:
           type: array
           items:
-            $ref: '#/components/schemas/BookRequest'
+            $ref: "#/components/schemas/BookRequest"
         updatedAt:
           type: number
         createdAt:
@@ -255,7 +255,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/BookRequest'
+                  $ref: "#/components/schemas/BookRequest"
 
         "401":
           description: Unauthorized Request.
@@ -944,6 +944,13 @@ paths:
       tags:
         - Review
       description: Returns the list of all reviews
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          required: false
+          description: The search term to use when getting reviews
       responses:
         "200":
           description: Successfully returned a list of reviews
@@ -1011,7 +1018,7 @@ paths:
         "401":
           description: Unauthorized
         "500":
-          description: Invalid ID    
+          description: Invalid ID
   /genres:
     get:
       security:
@@ -1020,8 +1027,8 @@ paths:
         - Genre
       description: Returns the list of existing genres
       responses:
-        '200':
-          description: Successfully returned a list of existing genres. 
+        "200":
+          description: Successfully returned a list of existing genres.
           content:
             application/json:
               schema:
@@ -1031,7 +1038,7 @@ paths:
                   properties:
                     name:
                       type: string
-        '401':
+        "401":
           description: Unauthorized Request.
-        '500':
+        "500":
           description: Invalid Request.
