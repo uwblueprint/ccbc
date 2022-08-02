@@ -180,12 +180,10 @@ const PreviewReview = ({
           ))}
         </HStack>
         <VStack align="flex-start" width={isPageView ? "50%" : "80%"}>
-          <HStack fontSize="12px">
-            <Text fontWeight={600}>Reviewed By:</Text>
-            <Text
-              fontWeight={400}
-            >{`${review.createdByUser.firstName} ${review.createdByUser.lastName}`}</Text>
-          </HStack>
+          <Text fontWeight={400} fontSize="12px">
+            <strong>Reviewed By: </strong>
+            {review.byline}
+          </Text>
           <div
             style={{ fontSize: "14px" }}
             // eslint-disable-next-line react/no-danger
