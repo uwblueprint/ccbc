@@ -240,8 +240,6 @@ class AuthService implements IAuthService {
     try {
       const decodedIdToken: firebaseAdmin.auth.DecodedIdToken =
         await firebaseAdmin.auth().verifyIdToken(accessToken, true);
-      console.log(decodedIdToken);
-      console.log(decodedIdToken.uid);
       const user = await this.userService.getUserbyAuthID(
         decodedIdToken.user_id,
       );
