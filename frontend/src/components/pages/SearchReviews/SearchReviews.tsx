@@ -94,7 +94,7 @@ const SearchReviews = (): React.ReactElement => {
       backgroundSize="cover"
       backgroundAttachment="scroll"
     >
-      <Box w={["90%", "85%", "65%"]} py="10">
+      <Box w={["90%", "85%", "70%"]} py="10">
         <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
         <ReviewsGrid displayedReviews={displayedReviews} />
       </Box>

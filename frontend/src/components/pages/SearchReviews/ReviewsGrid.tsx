@@ -27,7 +27,7 @@ const ReviewsGrid = ({
   return (
     <Center mt="50px">
       <SimpleGrid
-        minChildWidth={["140px", "140px", "240px"]}
+        minChildWidth={["140px", "140px", "180px"]}
         w="100%"
         spacingY={[0, 4, 10]}
         spacingX={[2, 5, 5]}
