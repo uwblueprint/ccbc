@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import { body, validationResult } from "express-validator";
 import AuthService from "../services/implementations/authService";
 import UserService from "../services/implementations/userService";
@@ -9,6 +9,7 @@ import IEmailService from "../services/interfaces/emailService";
 import IAuthService from "../services/interfaces/authService";
 import nodemailerConfig from "../nodemailer.config";
 import authDtoToToUserDto from "../utilities/authUtils";
+import isGiveCloudEnabled from "../middlewares/givecloud";
 
 const givecloudRouter: Router = Router();
 
@@ -18,6 +19,7 @@ const authService: IAuthService = new AuthService(userService, emailService);
 
 givecloudRouter.post(
   "/user.subscription_paid",
+  isGiveCloudEnabled(),
   body(
     "supporter.groups[0].name",
     "supporter.groups.name is required",
@@ -29,7 +31,7 @@ givecloudRouter.post(
   body("supporter.email", "supporter email is required").exists(),
   body("supporter.first_name", "supporter first_name is required").exists(),
   body("supporter.last_name", "supporter last_name is required").exists(),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     try {
       const errors = validationResult(req);
       if (errors.isEmpty()) {
