@@ -9,7 +9,7 @@ import IEmailService from "../services/interfaces/emailService";
 import IAuthService from "../services/interfaces/authService";
 import nodemailerConfig from "../nodemailer.config";
 import authDtoToToUserDto from "../utilities/authUtils";
-import  isGiveCloudEnabled  from "../middlewares/validators/givecloudValidators";
+import isGiveCloudEnabled from "../middlewares/givecloud";
 
 const givecloudRouter: Router = Router();
 

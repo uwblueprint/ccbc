@@ -17,4 +17,4 @@ const isGiveCloudEnabled = () => {
   };
 };
 
-export default isGiveCloudEnabled
+export default isGiveCloudEnabled;
