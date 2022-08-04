@@ -1,5 +1,6 @@
 import { Box, Image, Text } from "@chakra-ui/react";
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 import { Author } from "../../../types/BookTypes";
 import CircleBadge from "../../common/CircleBadge";
@@ -10,10 +11,20 @@ interface ReviewThumbnailProps {
   authors: Author[];
   publishDate: Date;
   additionalBooks?: number;
+  id: number;
 }
 
 const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
-  const { title, coverImage, authors, publishDate, additionalBooks } = props;
+  const {
+    id,
+    title,
+    coverImage,
+    authors,
+    publishDate,
+    additionalBooks,
+  } = props;
+
+  const history = useHistory();
 
   return (
     <Box
@@ -21,7 +32,11 @@ const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
       w={["140px", "140px", "220px"]}
       h={["300px", "300px", "410px"]}
     >
-      <Box position="relative">
+      <Box
+        position="relative"
+        onClick={() => history.push(`/reviews/${id}`)}
+        cursor="pointer"
+      >
         <Image
           h={["180px", "180px", "282px"]}
           w={["140px", "140px", "220px"]}
@@ -34,6 +49,8 @@ const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
         textStyle={["mobileBookTitle", "mobileBookTitle", "bookTitle"]}
         noOfLines={2}
         mt="4%"
+        onClick={() => history.push(`/reviews/${id}`)}
+        cursor="pointer"
       >
         {title}
       </Text>
