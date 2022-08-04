@@ -31,7 +31,7 @@ const SearchBox = ({
     }
   };
   return (
-    <div style={{ textAlign: "center", padding: "10px 20px" }}>
+    <div style={{ textAlign: "center" }}>
       <InputGroup borderColor="#110A23">
         <InputLeftElement pointerEvents="none" color="#110A23">
           <Search2Icon />
