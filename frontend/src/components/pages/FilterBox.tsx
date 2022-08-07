@@ -32,30 +32,49 @@ const FilterBox = ({
     setAgeFilter([]);
   };
   return (
-    <SimpleGrid minChildWidth="140px" spacingX="10px">
-      <AddMultiSelect
-        id="Audience"
-        label=""
-        placeholder="Audience"
-        options={ageOptions}
-        setOptions={null}
-        optionsSelected={age}
-        setOptionsSelected={setAge}
-        allowMultiSelectOption={false}
-        allowAddOption={false}
-      />
-      <AddMultiSelect
-        id="genre"
-        label=""
-        placeholder="Genres"
-        options={genreOptions}
-        setOptions={null}
-        optionsSelected={genres}
-        setOptionsSelected={setGenres}
-        allowMultiSelectOption
-        allowAddOption={false}
-      />
-      <Stack direction="row" align="center" width="100%" h="120%" spacing={1}>
+    <SimpleGrid columns={[1, 4, 4]} spacingX="10px">
+      <Stack
+        direction="row"
+        align="center"
+        w="100%"
+        h="100%"
+        spacing={3}
+        padding={0}
+      >
+        <AddMultiSelect
+          id="Audience"
+          label=""
+          maxWidth="140px"
+          placeholder="Audience"
+          options={ageOptions}
+          setOptions={null}
+          optionsSelected={age}
+          setOptionsSelected={setAge}
+          allowMultiSelectOption={false}
+          allowAddOption={false}
+        />
+        <AddMultiSelect
+          id="genre"
+          label=""
+          maxWidth="284px"
+          placeholder="Genres"
+          options={genreOptions}
+          setOptions={null}
+          optionsSelected={genres}
+          setOptionsSelected={setGenres}
+          allowMultiSelectOption
+          allowAddOption={false}
+        />
+      </Stack>
+
+      <Stack
+        direction="row"
+        align="center"
+        width="100%"
+        h="120%"
+        spacing={1}
+        padding={0}
+      >
         <Button onClick={clickApply}>Apply</Button>
         <Button onClick={clear}>Clear</Button>
       </Stack>
@@ -64,3 +83,7 @@ const FilterBox = ({
 };
 
 export default FilterBox;
+
+/*
+
+      */
