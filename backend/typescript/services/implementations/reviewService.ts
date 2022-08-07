@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
-import { Op } from "sequelize";
+import { IncludeThroughOptions, Op, OrderItem } from "sequelize";
 import { Transaction } from "sequelize/types";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
@@ -13,6 +13,7 @@ import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
 import PgGenre from "../../models/genre.model";
+import PgUser from "../../models/user.model";
 import logger from "../../utilities/logger";
 import { sequelize } from "../../umzug";
 import {
@@ -513,56 +514,94 @@ class ReviewService implements IReviewService {
     featured?: string,
     author?: string,
   ): Promise<PaginatedReviewResponseDTO> {
-    let result: PaginatedReviewResponseDTO;
+    // let result: PaginatedReviewResponseDTO;
 
-    try {
-      result = await this.db.transaction(async (t) => {
-        const limit = size ? parseInt(size, 10) : undefined;
-        const offset = this.getPaginationOffset(page, limit);
+    const result = await this.db.transaction(async (t) => {
+      const limit = size ? parseInt(size, 10) : undefined;
+      const offset = this.getPaginationOffset(page, limit);
 
-        const reviewOpts = featured ? { featured } : {};
+      const reviewOpts = featured ? { featured } : {};
 
-        const { rows, count } = await PgReview.findAndCountAll({
-          transaction: t,
-          where: reviewOpts,
-          include: [{ all: true, nested: true }],
-          // include: {
-          //   model: PgBook,
-          //   required: true,
-          // },
-          // include: [
-          //   {
-          //     model: PgBook,
-          //     where: {
-          //       genres: {
-          //         [Op.in]: genres,
-          //       },
-          //     },
-          //   },
-          // ],
-          limit,
-          offset,
-          distinct: true,
-          col: "id",
-        });
-
-        // The currentPage is the page we requested in params or just page 0
-        const currentPage = page ? parseInt(page, 10) : 0;
-
-        // There is only one page if we are not paginating them
-        const totalPages = limit ? Math.ceil(count / limit) : 1;
-
-        return {
-          totalReviews: count,
-          totalPages,
-          currentPage,
-          reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
-        };
+      const rows = await PgReview.findAll({
+        transaction: t,
+        where: Sequelize.where(Sequelize.col(`books.id`), Op.ne, null),
+        include: [
+          {
+            model: PgUser,
+          },
+          {
+            model: PgBook,
+            as: "books",
+            include: [
+              {
+                model: PgGenre,
+                as: "genres",
+                through: PgBookGenre as IncludeThroughOptions,
+                where: {
+                  name: {
+                    [Op.in]: ["Dystopian"],
+                  },
+                },
+                required: true,
+              },
+              {
+                model: PgAuthor,
+                through: PgBookAuthor as IncludeThroughOptions,
+                include: [
+                  {
+                    all: true,
+                  },
+                ],
+              },
+              {
+                model: PgPublisher,
+                through: PgBookPublisher as IncludeThroughOptions,
+                include: [
+                  {
+                    all: true,
+                  },
+                ],
+              },
+              {
+                model: PgTag,
+                through: PgBookTag as IncludeThroughOptions,
+                include: [
+                  {
+                    all: true,
+                  },
+                ],
+              },
+              {
+                model: PgSeries,
+                include: [
+                  {
+                    all: true,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        // order: [[Sequelize.literal("numbooks"), "DESC"]],
+        // limit,
+        // offset,
+        // distinct: true,
+        // col: "id",
       });
-    } catch (error: unknown) {
-      Logger.error(`Failed to get review. Reason = ${getErrorMessage(error)}`);
-      throw error;
-    }
+
+      // The currentPage is the page we requested in params or just page 0
+      // const currentPage = page ? parseInt(page, 10) : 0;
+
+      // There is only one page if we are not paginating them
+      // const totalPages = limit ? Math.ceil(count / limit) : 1;
+
+      return {
+        totalReviews: 10,
+        totalPages: 1,
+        currentPage: 0,
+        reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
+      };
+    });
 
     return result;
   }
