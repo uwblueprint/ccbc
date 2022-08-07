@@ -1,4 +1,4 @@
-import { Button, Grid, GridItem, Stack } from "@chakra-ui/react";
+import { Button, SimpleGrid, Stack } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 import { Option } from "../../types/BookTypes";
@@ -31,38 +31,36 @@ const FilterBox = ({
     setGenreFilter([]);
     setAgeFilter([]);
   };
-
   return (
-    <Grid templateColumns="repeat(2, 1fr)" gap={4} borderColor="110A23">
-      <GridItem>
-        <Stack direction="row" width="100%" spacing={4}>
-          <AddMultiSelect
-            id="Audience"
-            label=""
-            placeholder="Audience"
-            options={ageOptions}
-            setOptions={null}
-            optionsSelected={age}
-            setOptionsSelected={setAge}
-            allowMultiSelectOption={false}
-            allowAddOption={false}
-          />
-          <AddMultiSelect
-            id="genre"
-            label=""
-            placeholder="Genres"
-            options={genreOptions}
-            setOptions={null}
-            optionsSelected={genres}
-            setOptionsSelected={setGenres}
-            allowMultiSelectOption
-            allowAddOption={false}
-          />
-          <Button onClick={clickApply}>Apply</Button>
-          <Button onClick={clear}>Clear</Button>
-        </Stack>
-      </GridItem>
-    </Grid>
+    <SimpleGrid minChildWidth="140px" spacingX="10px">
+      <AddMultiSelect
+        id="Audience"
+        label=""
+        placeholder="Audience"
+        options={ageOptions}
+        setOptions={null}
+        optionsSelected={age}
+        setOptionsSelected={setAge}
+        allowMultiSelectOption={false}
+        allowAddOption={false}
+      />
+      <AddMultiSelect
+        id="genre"
+        label=""
+        placeholder="Genres"
+        options={genreOptions}
+        setOptions={null}
+        optionsSelected={genres}
+        setOptionsSelected={setGenres}
+        allowMultiSelectOption
+        allowAddOption={false}
+      />
+      <Stack direction="row" align="center" width="100%" h="120%" spacing={1}>
+        <Button onClick={clickApply}>Apply</Button>
+        <Button onClick={clear}>Clear</Button>
+      </Stack>
+    </SimpleGrid>
   );
 };
+
 export default FilterBox;
