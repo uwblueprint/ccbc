@@ -44,7 +44,7 @@ const FilterBox = ({
         <AddMultiSelect
           id="Audience"
           label=""
-          maxWidth="140px"
+          maxWidth="160px"
           placeholder="Audience"
           options={ageOptions}
           setOptions={null}
