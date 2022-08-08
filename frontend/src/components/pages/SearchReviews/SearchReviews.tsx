@@ -87,9 +87,6 @@ const SearchReviews = (): React.ReactElement => {
       });
   }, [searchText, genresFilter, ageRangeFilter]);
 
-  if (loading) {
-    return <LoadingSpinner mt="21%" />;
-  }
   return (
     <Box
       bgImage={[null, null, background]}
@@ -102,7 +99,11 @@ const SearchReviews = (): React.ReactElement => {
       <Center>
         <Box w={["90%", "85%", "70%"]} py="10">
           <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
-          <ReviewsGrid displayedReviews={displayedReviews} />
+          {loading ? (
+            <LoadingSpinner mt="21%" />
+          ) : (
+            <ReviewsGrid displayedReviews={displayedReviews} />
+          )}
         </Box>
       </Center>
     </Box>
