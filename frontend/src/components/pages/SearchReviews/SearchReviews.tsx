@@ -1,8 +1,8 @@
 import { Box, Center } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
-import background from "../../../assets/SearchResultsBackground.png";
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
+import background from "../../../assets/SearchResultsBackground.png";
 import { PaginatedReviewResponse, Review } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import LoadingSpinner from "../../common/LoadingSpinner";
@@ -79,31 +79,33 @@ const SearchReviews = (): React.ReactElement => {
       newSearchUrl.toString(),
     );
 
-    // todo call backend search filtering endpoint to retrieve reviews
     reviewAPIClient
       .getReviews(searchText, 25, 0)
       .then((reviewResponse: PaginatedReviewResponse) => {
         setDisplayedReviews(mapReviewResponseToReview(reviewResponse.reviews));
         setLoading(false);
       });
-    // setDisplayedReviews(mockReviews); // todo remove this line
   }, [searchText, genresFilter, ageRangeFilter]);
 
   if (loading) {
     return <LoadingSpinner mt="21%" />;
   }
   return (
-    <Center
+    <Box
       bgImage={[null, null, background]}
       bgRepeat="no-repeat"
       backgroundSize="cover"
       backgroundAttachment="scroll"
+      h="100%"
+      minH="100vh"
     >
-      <Box w={["90%", "85%", "70%"]} py="10">
-        <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
-        <ReviewsGrid displayedReviews={displayedReviews} />
-      </Box>
-    </Center>
+      <Center>
+        <Box w={["90%", "85%", "70%"]} py="10">
+          <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
+          <ReviewsGrid displayedReviews={displayedReviews} />
+        </Box>
+      </Center>
+    </Box>
   );
 };
 
