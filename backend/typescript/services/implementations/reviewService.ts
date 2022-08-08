@@ -521,14 +521,18 @@ class ReviewService implements IReviewService {
         const limit = size ? parseInt(size, 10) : undefined;
         const offset = this.getPaginationOffset(page, limit);
 
-        const featureFilterOpt = featured ? { featured } : {};
+        // Possible filter query parameters
+        const featureOpt = featured ? { featured } : {};
+        const minAgeOpt = minAge || 0;
+        const maxAgeOpt = maxAge || 100;
 
+        // TO DO: add findAndCountAll and make sure it works **
         const rows = await PgReview.findAll({
           transaction: t,
           where: {
             [Op.and]: [
               Sequelize.where(Sequelize.col(`books.id`), Op.ne, null),
-              featureFilterOpt,
+              featureOpt,
             ],
           },
           include: [
@@ -538,6 +542,13 @@ class ReviewService implements IReviewService {
             {
               model: PgBook,
               as: "books",
+              where: {
+                ...((minAge || maxAge) && {
+                  age_range: {
+                    [Op.overlap]: [minAgeOpt, maxAgeOpt],
+                  },
+                }),
+              },
               include: [
                 {
                   model: PgGenre,
@@ -591,7 +602,6 @@ class ReviewService implements IReviewService {
               ],
             },
           ],
-          // order: [[Sequelize.literal("numbooks"), "DESC"]],
           // limit,
           // offset,
           // distinct: true,
