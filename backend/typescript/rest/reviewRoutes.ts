@@ -61,13 +61,19 @@ reviewRouter.get(
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
     const contentType = req.headers["content-type"];
-    const { page, size, genres, minAge, maxAge, featured, author } = req.query;
+    const page: string = req.query.page as string;
+    const size: string = req.query.size as string;
+    const genres: string[] = (req.query.genres as string)
+      ? (req.query.genres as string).split(",")
+      : [];
+
+    const { minAge, maxAge, featured, author } = req.query;
 
     try {
       const reviewsData = await reviewService.getReviews(
-        page as string,
-        size as string,
-        genres as string[],
+        page,
+        size,
+        genres,
         parseInt(minAge as string, 10) ?? undefined,
         parseInt(maxAge as string, 10) ?? undefined,
         featured as string,

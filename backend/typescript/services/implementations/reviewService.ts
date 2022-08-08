@@ -514,94 +514,107 @@ class ReviewService implements IReviewService {
     featured?: string,
     author?: string,
   ): Promise<PaginatedReviewResponseDTO> {
-    // let result: PaginatedReviewResponseDTO;
+    let result: PaginatedReviewResponseDTO;
 
-    const result = await this.db.transaction(async (t) => {
-      const limit = size ? parseInt(size, 10) : undefined;
-      const offset = this.getPaginationOffset(page, limit);
+    try {
+      result = await this.db.transaction(async (t) => {
+        const limit = size ? parseInt(size, 10) : undefined;
+        const offset = this.getPaginationOffset(page, limit);
 
-      const reviewOpts = featured ? { featured } : {};
+        const featureFilterOpt = featured ? { featured } : {};
 
-      const rows = await PgReview.findAll({
-        transaction: t,
-        where: Sequelize.where(Sequelize.col(`books.id`), Op.ne, null),
-        include: [
-          {
-            model: PgUser,
-          },
-          {
-            model: PgBook,
-            as: "books",
-            include: [
-              {
-                model: PgGenre,
-                as: "genres",
-                through: PgBookGenre as IncludeThroughOptions,
-                where: {
-                  name: {
-                    [Op.in]: ["Dystopian"],
-                  },
-                },
-                required: true,
-              },
-              {
-                model: PgAuthor,
-                through: PgBookAuthor as IncludeThroughOptions,
-                include: [
-                  {
-                    all: true,
-                  },
-                ],
-              },
-              {
-                model: PgPublisher,
-                through: PgBookPublisher as IncludeThroughOptions,
-                include: [
-                  {
-                    all: true,
-                  },
-                ],
-              },
-              {
-                model: PgTag,
-                through: PgBookTag as IncludeThroughOptions,
-                include: [
-                  {
-                    all: true,
-                  },
-                ],
-              },
-              {
-                model: PgSeries,
-                include: [
-                  {
-                    all: true,
-                  },
-                ],
-              },
+        const rows = await PgReview.findAll({
+          transaction: t,
+          where: {
+            [Op.and]: [
+              Sequelize.where(Sequelize.col(`books.id`), Op.ne, null),
+              featureFilterOpt,
             ],
           },
-        ],
-        // order: [[Sequelize.literal("numbooks"), "DESC"]],
-        // limit,
-        // offset,
-        // distinct: true,
-        // col: "id",
+          include: [
+            {
+              model: PgUser,
+            },
+            {
+              model: PgBook,
+              as: "books",
+              include: [
+                {
+                  model: PgGenre,
+                  as: "genres",
+                  through: PgBookGenre as IncludeThroughOptions,
+                  required: true,
+                  where: {
+                    ...(genres &&
+                      genres.length && {
+                        name: {
+                          [Op.in]: genres,
+                        },
+                      }),
+                  },
+                },
+                {
+                  model: PgAuthor,
+                  through: PgBookAuthor as IncludeThroughOptions,
+                  include: [
+                    {
+                      all: true,
+                    },
+                  ],
+                },
+                {
+                  model: PgPublisher,
+                  through: PgBookPublisher as IncludeThroughOptions,
+                  include: [
+                    {
+                      all: true,
+                    },
+                  ],
+                },
+                {
+                  model: PgTag,
+                  through: PgBookTag as IncludeThroughOptions,
+                  include: [
+                    {
+                      all: true,
+                    },
+                  ],
+                },
+                {
+                  model: PgSeries,
+                  include: [
+                    {
+                      all: true,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          // order: [[Sequelize.literal("numbooks"), "DESC"]],
+          // limit,
+          // offset,
+          // distinct: true,
+          // col: "id",
+        });
+
+        // The currentPage is the page we requested in params or just page 0
+        // const currentPage = page ? parseInt(page, 10) : 0;
+
+        // There is only one page if we are not paginating them
+        // const totalPages = limit ? Math.ceil(count / limit) : 1;
+
+        return {
+          totalReviews: 10,
+          totalPages: 1,
+          currentPage: 0,
+          reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
+        };
       });
-
-      // The currentPage is the page we requested in params or just page 0
-      // const currentPage = page ? parseInt(page, 10) : 0;
-
-      // There is only one page if we are not paginating them
-      // const totalPages = limit ? Math.ceil(count / limit) : 1;
-
-      return {
-        totalReviews: 10,
-        totalPages: 1,
-        currentPage: 0,
-        reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
-      };
-    });
+    } catch (error: unknown) {
+      Logger.error(`Failed to get review. Reason = ${getErrorMessage(error)}`);
+      throw error;
+    }
 
     return result;
   }
