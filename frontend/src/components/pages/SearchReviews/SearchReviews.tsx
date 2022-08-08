@@ -2,10 +2,11 @@ import { Box, Center } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import background from "../../../assets/SearchResultsBackground.png";
-import { Review } from "../../../types/ReviewTypes";
+import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
+import { PaginatedReviewResponse, Review } from "../../../types/ReviewTypes";
+import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import SearchBox from "../SearchBox";
-import mockReviews from "./mockReviews";
 import ReviewsGrid from "./ReviewsGrid";
 
 /**
@@ -79,9 +80,13 @@ const SearchReviews = (): React.ReactElement => {
     );
 
     // todo call backend search filtering endpoint to retrieve reviews
-    setDisplayedReviews(mockReviews);
-
-    setLoading(false);
+    reviewAPIClient
+      .getReviews(searchText, 25, 0)
+      .then((reviewResponse: PaginatedReviewResponse) => {
+        setDisplayedReviews(mapReviewResponseToReview(reviewResponse.reviews));
+        setLoading(false);
+      });
+    // setDisplayedReviews(mockReviews); // todo remove this line
   }, [searchText, genresFilter, ageRangeFilter]);
 
   if (loading) {

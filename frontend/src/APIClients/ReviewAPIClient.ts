@@ -6,13 +6,26 @@ import {
 import { getBearerToken } from "../utils/AuthUtils";
 import baseAPIClient from "./BaseAPIClient";
 
-/*
-  Get all reviews
-*/
-const getReviews = async (): Promise<PaginatedReviewResponse> => {
+/**
+ * Get all reviews with (optional) parameters
+ * @param search? - the query string
+ * @param size? - the number of returned reviews
+ * @param page? - the current page of reviews to be fetched
+ */
+const getReviews = async (
+  search?: string,
+  size?: number,
+  page?: number,
+): Promise<PaginatedReviewResponse> => {
+  const params = new URLSearchParams();
+  if (search) params.append("search", search);
+  if (size || size === 0) params.append("size", String(size));
+  if (page || page === 0) params.append("page", String(page));
+
   try {
     const { data } = await baseAPIClient.get("/reviews", {
       headers: { Authorization: getBearerToken() },
+      params,
     });
     return data;
   } catch (error: unknown) {

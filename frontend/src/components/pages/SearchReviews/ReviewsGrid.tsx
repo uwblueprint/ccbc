@@ -24,6 +24,15 @@ const ReviewsGrid = ({
     return uniqueAuthors;
   };
 
+  // sort books based on series order
+  displayedReviews.forEach((review) =>
+    review.books.sort((a, b) => {
+      const seriesOrderA = a.seriesOrder ? a.seriesOrder : 0;
+      const seriesOrderB = b.seriesOrder ? b.seriesOrder : 0;
+      return seriesOrderA - seriesOrderB;
+    }),
+  );
+
   return (
     <Center mt="50px">
       <SimpleGrid
