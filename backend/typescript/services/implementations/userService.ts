@@ -399,29 +399,26 @@ class UserService implements IUserService {
     newSubscriptionExpiresOn: Date,
   ): Promise<UserDTO> {
     try {
-      //return and plain as true sends back [number, User[]] where number is the number of affected rows
+      // return and plain as true sends back [number, User[]] where number is the number of affected rows
       const updateResult = await User.update(
-        { subscriptionExpiresOn: newSubscriptionExpiresOn },
-        { where: { email: userEmail }, returning: true},
+        { subscription_expires_on: newSubscriptionExpiresOn },
+        { where: { email: userEmail }, returning: true },
       );
 
-      console.log(updateResult)
-  
-        // check number of rows affected
-        if (updateResult[0] < 1) {
-          throw new Error(`email ${userEmail} not found.`);
-        }
-      
-      const user:User = updateResult[1][0]  
+      // check number of rows affected
+      if (updateResult[0] < 1) {
+        throw new Error(`email ${userEmail} not found.`);
+      }
+
+      const user: User = updateResult[1][0];
       return {
         id: user.auth_id,
         firstName: user.first_name,
         lastName: user.last_name,
-        email : user.email,
+        email: user.email,
         roleType: user.role_type,
-        subscriptionExpiresOn: user.subscription_expires_on
-      }
-
+        subscriptionExpiresOn: user.subscription_expires_on,
+      };
     } catch (error) {
       Logger.error(
         `Failed to update user subscription. Reason = ${getErrorMessage(

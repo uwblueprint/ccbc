@@ -46,7 +46,8 @@ givecloudRouter.post(
           );
           await userService.getUserByEmail(email);
           const userDTO = await userService.updateUserSubscriptionbyEmail(
-            email,subscriptionExpiresOn
+            email,
+            subscriptionExpiresOn,
           );
           res.status(201).json(userDTO);
         } catch {
