@@ -527,7 +527,7 @@ class ReviewService implements IReviewService {
         const maxAgeOpt = maxAge || 100;
 
         // TO DO: add findAndCountAll and make sure it works **
-        const { rows, count } = await PgReview.findAndCountAll({
+        const rows = await PgReview.findAll({
           transaction: t,
           where: {
             [Op.and]: [
@@ -541,7 +541,6 @@ class ReviewService implements IReviewService {
             },
             {
               model: PgBook,
-              attributes: [],
               where: {
                 ...((minAge || maxAge) && {
                   age_range: {
@@ -603,7 +602,8 @@ class ReviewService implements IReviewService {
           ],
           limit,
           offset,
-          distinct: true,
+          subQuery: false,
+          // distinct: true,
           // col: "Review.id",
         });
 
@@ -611,10 +611,10 @@ class ReviewService implements IReviewService {
         const currentPage = page ? parseInt(page, 10) : 0;
 
         // There is only one page if we are not paginating them
-        const totalPages = limit ? Math.ceil(count / limit) : 1;
+        const totalPages = limit ? Math.ceil(10 / limit) : 1;
 
         return {
-          totalReviews: count,
+          totalReviews: 10,
           totalPages,
           currentPage,
           reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
