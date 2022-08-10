@@ -563,6 +563,10 @@ class ReviewService implements IReviewService {
         const findConditions: FindAndCountOptions = {
           transaction: t,
           include: [{ all: true, nested: true }],
+          order: [
+            ["published_at", "DESC"],
+            ["updatedAt", "DESC"],
+          ],
           limit,
           offset,
           distinct: true,
