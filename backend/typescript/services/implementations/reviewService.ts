@@ -527,7 +527,7 @@ class ReviewService implements IReviewService {
         const maxAgeOpt = maxAge || 100;
 
         // TO DO: add findAndCountAll and make sure it works **
-        const rows = await PgReview.findAll({
+        const { rows, count } = await PgReview.findAndCountAll({
           transaction: t,
           where: {
             [Op.and]: [
@@ -603,18 +603,18 @@ class ReviewService implements IReviewService {
           limit,
           offset,
           subQuery: false,
-          // distinct: true,
-          // col: "Review.id",
+          distinct: true,
+          col: "id",
         });
 
         // The currentPage is the page we requested in params or just page 0
         const currentPage = page ? parseInt(page, 10) : 0;
 
         // There is only one page if we are not paginating them
-        const totalPages = limit ? Math.ceil(10 / limit) : 1;
+        const totalPages = limit ? Math.ceil(count / limit) : 1;
 
         return {
-          totalReviews: 10,
+          totalReviews: count,
           totalPages,
           currentPage,
           reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
