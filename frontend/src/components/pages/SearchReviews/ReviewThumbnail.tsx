@@ -2,6 +2,7 @@ import { Box, Image, Text } from "@chakra-ui/react";
 import React from "react";
 import { useHistory } from "react-router-dom";
 
+import { DISPLAY_REVIEW_PAGE } from "../../../constants/Routes";
 import { Author } from "../../../types/BookTypes";
 import CircleBadge from "../../common/CircleBadge";
 
@@ -26,6 +27,10 @@ const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
 
   const history = useHistory();
 
+  const redirectReviewUrl = () => {
+    return DISPLAY_REVIEW_PAGE.replace(":id", String(id));
+  };
+
   return (
     <Box
       flexDir="column"
@@ -49,7 +54,7 @@ const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
         textStyle={["mobileBookTitle", "mobileBookTitle", "bookTitle"]}
         noOfLines={2}
         mt="4%"
-        onClick={() => history.push(`/reviews/${id}`)}
+        onClick={() => history.push(redirectReviewUrl())}
         cursor="pointer"
       >
         {title}
