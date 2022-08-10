@@ -53,6 +53,7 @@ export default class Book extends Model {
   formats!: Format[];
 
   @Column({ type: DataType.RANGE(DataType.INTEGER) })
+  // note: sequelize stores 3-6 inclusive as [3-7)
   age_range!: Range[];
 
   @BelongsTo(() => Series)
