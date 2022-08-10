@@ -48,6 +48,7 @@ const ReviewsGrid = ({
               <Center>
                 <ReviewThumbnail
                   key={key}
+                  id={review.reviewId}
                   title={
                     review.books.length > 0 && review.books[0].seriesName
                       ? review.books[0].seriesName
