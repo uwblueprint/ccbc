@@ -1,4 +1,4 @@
-import { Box, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Spacer, Tag, Text } from "@chakra-ui/react";
 import React from "react";
 import { useHistory } from "react-router-dom";
 
@@ -13,6 +13,7 @@ interface ReviewThumbnailProps {
   publishDate: Date;
   additionalBooks?: number;
   id: number;
+  genre?: string;
 }
 
 const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
@@ -23,6 +24,7 @@ const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
     authors,
     publishDate,
     additionalBooks,
+    genre,
   } = props;
 
   const history = useHistory();
@@ -66,9 +68,17 @@ const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
       >
         {authors.map((elem) => elem.displayName).join(", ")}
       </Text>
-      <Text textStyle={["mobileCaption", "mobileCaption", "caption"]} mt="2%">
-        {publishDate.toLocaleDateString("sv")}
-      </Text>
+      <Flex>
+        <Text textStyle={["mobileCaption", "mobileCaption", "caption"]} mt="2%">
+          {publishDate.toLocaleDateString("sv")}
+        </Text>
+        <Spacer />
+        {genre && (
+          <Tag size="sm" variant="solid" bgColor="#90CDF4" color="black">
+            {genre}
+          </Tag>
+        )}
+      </Flex>
     </Box>
   );
 };
