@@ -74,7 +74,7 @@ const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
         </Text>
         <Spacer />
         {genre && (
-          <Tag size="sm" variant="solid" bgColor="#F7E1A8" color="black">
+          <Tag size="sm" variant="solid" bgColor="#90CDF4" color="black">
             {genre}
           </Tag>
         )}
