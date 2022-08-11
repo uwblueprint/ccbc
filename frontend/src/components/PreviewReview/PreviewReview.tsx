@@ -34,6 +34,7 @@ const PreviewReview = ({
   isPageView = false,
 }: PreviewReviewProps): React.ReactElement => {
   const [currentBook, setCurrentBook] = useState<number>(0);
+  const multipleBooks = review.books.length > 1;
 
   // sort books based on series order
   review.books.sort((a, b) => {
@@ -63,14 +64,16 @@ const PreviewReview = ({
           mb="-12px"
           spacing={isPageView ? 20 : 0}
         >
-          <ChevronLeftIcon
-            boxSize="2em"
-            style={{
-              cursor: `${currentBook !== 0 ? "pointer" : "auto"}`,
-              color: `${currentBook !== 0 ? "black" : "lightgray"}`,
-            }}
-            onClick={handleLeftClick}
-          />
+          {multipleBooks && (
+            <ChevronLeftIcon
+              boxSize="2em"
+              style={{
+                cursor: `${currentBook !== 0 ? "pointer" : "auto"}`,
+                color: `${currentBook !== 0 ? "black" : "lightgray"}`,
+              }}
+              onClick={handleLeftClick}
+            />
+          )}
           <Box
             pr={16}
             pl={16}
@@ -173,36 +176,42 @@ const PreviewReview = ({
               </Box>
             </Stack>
           </Box>
-          <ChevronRightIcon
-            boxSize="2em"
-            style={{
-              cursor: `${
-                currentBook !== review.books.length - 1 ? "pointer" : "auto"
-              }`,
-              color: `${
-                currentBook !== review.books.length - 1 ? "black" : "lightgray"
-              }`,
-            }}
-            onClick={handleRightClick}
-          />
+          {multipleBooks && (
+            <ChevronRightIcon
+              boxSize="2em"
+              style={{
+                cursor: `${
+                  currentBook !== review.books.length - 1 ? "pointer" : "auto"
+                }`,
+                color: `${
+                  currentBook !== review.books.length - 1
+                    ? "black"
+                    : "lightgray"
+                }`,
+              }}
+              onClick={handleRightClick}
+            />
+          )}
         </HStack>
-        <HStack>
-          {Array.from(Array(review.books.length).keys()).map((_, index) => (
-            <Icon
-              key={index}
-              viewBox="0 0 200 200"
-              onClick={() => setCurrentBook(index)}
-              style={{ cursor: "pointer" }}
-            >
-              <path
-                fill={`${index === currentBook ? "black" : "none"}`}
-                stroke="black"
-                strokeWidth="12"
-                d="M 100, 100 m -75, 0 a 75,75 0 1,0 150,0 a 75,75 0 1,0 -150,0"
-              />
-            </Icon>
-          ))}
-        </HStack>
+        {multipleBooks && (
+          <HStack>
+            {Array.from(Array(review.books.length).keys()).map((_, index) => (
+              <Icon
+                key={index}
+                viewBox="0 0 200 200"
+                onClick={() => setCurrentBook(index)}
+                style={{ cursor: "pointer" }}
+              >
+                <path
+                  fill={`${index === currentBook ? "black" : "none"}`}
+                  stroke="black"
+                  strokeWidth="12"
+                  d="M 100, 100 m -75, 0 a 75,75 0 1,0 150,0 a 75,75 0 1,0 -150,0"
+                />
+              </Icon>
+            ))}
+          </HStack>
+        )}
         <VStack align="flex-start" width={isPageView ? "50%" : "80%"}>
           <Text fontWeight={400} fontSize="12px">
             <strong>Reviewed By: </strong>
