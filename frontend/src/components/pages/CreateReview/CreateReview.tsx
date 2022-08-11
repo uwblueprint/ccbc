@@ -268,7 +268,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       books,
       tags: [],
       updatedAt: 0,
-      publishedAt: 0,
+      publishedAt: null,
       createdAt: 0,
     };
     return previewModalReviewObject;
