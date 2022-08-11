@@ -109,7 +109,7 @@ const PreviewReview = ({
               <Box fontSize={12} paddingBottom={3}>
                 <Stack spacing={1}>
                   <HStack>
-                    <Text fontWeight={600}>Written By:</Text>
+                    <Text fontWeight={600}>Written by:</Text>
                     <Text fontWeight={400}>
                       {review.books[currentBook].authors
                         .map(({ fullName }) => fullName)
@@ -118,7 +118,7 @@ const PreviewReview = ({
                   </HStack>
                   {review.books[currentBook].illustrator.length > 0 && (
                     <HStack>
-                      <Text fontWeight={600}>Illustrated By:</Text>
+                      <Text fontWeight={600}>Illustrated by:</Text>
                       <Text fontWeight={400}>
                         {review.books[currentBook].illustrator?.join(", ")}
                       </Text>
@@ -205,7 +205,7 @@ const PreviewReview = ({
         </HStack>
         <VStack align="flex-start" width={isPageView ? "50%" : "80%"}>
           <Text fontWeight={400} fontSize="12px">
-            <strong>Reviewed By: </strong>
+            <strong>Reviewed by: </strong>
             {review.byline}
           </Text>
           <div
