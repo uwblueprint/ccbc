@@ -24,7 +24,7 @@ const mockLongTitleBookData: Book = {
   title:
     "A really really long book title that keeps on going and going and going like is there a cap on this????",
   coverImage:
-    "https://www.comingsoon.net/assets/uploads/2021/10/Spy-x-Family-Anime-Teaser-1-1087x1536.jpg",
+    "https://upload.wikimedia.org/wikipedia/en/thumb/5/51/Spy_Family_vol_1.jpg/220px-Spy_Family_vol_1.jpg",
   titlePrefix: null,
   seriesOrder: null,
   illustrator: ["Mangaka"],
@@ -199,6 +199,9 @@ const mockReviews: Review[] = [
   mockSingleBookLongTitleReview,
   mockSingleBookReview,
   mockMultipleBookReviews2,
+  mockSingleBookReview,
+  mockMultipleBookReview,
+  mockSingleBookLongTitleReview,
 ];
 
 export default mockReviews;

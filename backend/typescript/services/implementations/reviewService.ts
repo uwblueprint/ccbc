@@ -1,5 +1,11 @@
 import { Sequelize } from "sequelize-typescript";
-import { IncludeThroughOptions, Op, OrderItem } from "sequelize";
+import {
+  IncludeThroughOptions,
+  Op,
+  FindAndCountOptions,
+  FindOptions,
+  QueryTypes,
+} from "sequelize";
 import { Transaction } from "sequelize/types";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
@@ -31,6 +37,7 @@ import {
   Tag,
   PaginatedReviewResponseDTO,
 } from "../interfaces/IReviewService";
+import { SearchResult } from "../../types";
 
 const Logger = logger(__filename);
 
@@ -40,6 +47,14 @@ class ReviewService implements IReviewService {
   constructor(db: Sequelize = sequelize) {
     this.db = db;
     if (db !== sequelize) sequelize.close(); // Using test db instead of main db
+  }
+
+  async refreshSearchView(): Promise<void> {
+    this.db.transaction(async (t) =>
+      this.db.query("REFRESH MATERIALIZED VIEW review_search;", {
+        transaction: t,
+      }),
+    );
   }
 
   /* eslint-disable class-methods-use-this */
@@ -258,6 +273,8 @@ class ReviewService implements IReviewService {
       );
       throw error;
     }
+
+    this.refreshSearchView();
   }
 
   async deleteReviewHelper(id: string, txn: Transaction): Promise<boolean> {
@@ -505,6 +522,38 @@ class ReviewService implements IReviewService {
     return offset;
   }
 
+  async getReviewsIdsFromSearch(searchTerm: string): Promise<number[]> {
+    let result: number[];
+
+    try {
+      result = await this.db.transaction(async (t) => {
+        const normalizedSearchTerm = searchTerm
+          .replace(/[^a-zA-Z0-9 ]/g, "")
+          .trim();
+        const searchResults = (await this.db.query(
+          "SELECT review_id FROM review_search WHERE doc @@ PHRASETO_TSQUERY('english', :search_input);",
+          {
+            transaction: t,
+            replacements: { search_input: normalizedSearchTerm },
+            type: QueryTypes.SELECT,
+          },
+        )) as SearchResult[];
+        return searchResults.map(({ review_id }) => {
+          return review_id;
+        });
+      });
+    } catch (error: unknown) {
+      Logger.error(
+        `Failed to get review ids from search. Reason = ${getErrorMessage(
+          error,
+        )}`,
+      );
+      throw error;
+    }
+
+    return result;
+  }
+
   async getReviews(
     page: string,
     size: string,
@@ -513,6 +562,7 @@ class ReviewService implements IReviewService {
     maxAge?: number,
     featured?: string,
     author?: string,
+    searchTerm?: string,
   ): Promise<PaginatedReviewResponseDTO> {
     let result: PaginatedReviewResponseDTO;
 
@@ -520,11 +570,25 @@ class ReviewService implements IReviewService {
       result = await this.db.transaction(async (t) => {
         const limit = size ? parseInt(size, 10) : undefined;
         const offset = this.getPaginationOffset(page, limit);
+        let reviewIds: number[] = [];
 
         // Possible filter query parameters
         const featureOpt = featured ? { featured } : {};
         const minAgeOpt = minAge || 0;
         const maxAgeOpt = maxAge || 100;
+
+        // Search Parameters
+        if (searchTerm) {
+          reviewIds = await this.getReviewsIdsFromSearch(searchTerm);
+        }
+        const searchOpts =
+          reviewIds.length > 0
+            ? {
+                id: {
+                  [Op.in]: reviewIds,
+                },
+              }
+            : {};
 
         /* TO DO: 
           Ideally we want to change this to use findAndCountAll however
@@ -537,6 +601,7 @@ class ReviewService implements IReviewService {
             [Op.and]: [
               Sequelize.where(Sequelize.col(`books.id`), Op.ne, null),
               featureOpt,
+              searchOpts,
             ],
           },
           include: [
@@ -607,6 +672,10 @@ class ReviewService implements IReviewService {
           limit,
           offset,
           subQuery: false,
+          order: [
+            ["published_at", "DESC"],
+            ["updatedAt", "DESC"],
+          ],
         });
 
         // The currentPage is the page we requested in params or just page 0
@@ -655,6 +724,7 @@ class ReviewService implements IReviewService {
       throw error;
     }
 
+    this.refreshSearchView();
     return result;
   }
 
@@ -703,6 +773,7 @@ class ReviewService implements IReviewService {
       await this.deleteReview(id, t);
       await this.createReview(entity, id, t);
       await t.commit();
+      this.refreshSearchView();
     } catch (error: unknown) {
       await t.rollback();
       Logger.error(

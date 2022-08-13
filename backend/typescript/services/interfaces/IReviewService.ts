@@ -138,6 +138,7 @@ export interface IReviewService {
    * retrieve all Reviews
    * @param page number of pages
    * @param size number of records in a page
+   * @param searchTerm term to search for
    * @returns returns array of Reviews + metadata of pages
    * @throws Error if retrieval fails
    */
@@ -149,6 +150,7 @@ export interface IReviewService {
     maxAge?: number,
     featured?: string,
     author?: string,
+    searchTerm?: string,
   ): Promise<PaginatedReviewResponseDTO>;
 
   /**

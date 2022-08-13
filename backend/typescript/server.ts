@@ -12,6 +12,7 @@ import reviewRouter from "./rest/reviewRoutes";
 import userRouter from "./rest/userRoutes";
 import tagRouter from "./rest/tagRoutes";
 import genreRouter from "./rest/genreRoutes";
+import givecloudRouter from "./rest/givecloud";
 
 const clientHost = new RegExp(
   "https://ccbc-95e66(--([A-Za-z0-9-])+-[A-Za-z0-9]+)?.web.app",
@@ -41,6 +42,7 @@ app.use("/entities", entityRouter);
 app.use("/reviews", reviewRouter);
 app.use("/users", userRouter);
 app.use("/tags", tagRouter);
+app.use("/givecloud", givecloudRouter);
 app.use("/genres", genreRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

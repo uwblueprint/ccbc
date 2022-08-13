@@ -5,11 +5,15 @@ import {
   Icon,
   Image,
   Stack,
+  Tag,
   Text,
   VStack,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 
+import background from "../../assets/review-book-orange-blob.png";
 import { Review } from "../../types/ReviewTypes";
 
 /**
@@ -67,7 +71,14 @@ const PreviewReview = ({
             }}
             onClick={handleLeftClick}
           />
-          <Box paddingRight={16}>
+          <Box
+            pr={16}
+            pl={16}
+            bgImage={isPageView ? [null, null, background] : [null]}
+            bgRepeat="no-repeat"
+            backgroundSize="contain"
+            alignItems="center"
+          >
             <Image
               borderRadius={5}
               maxHeight={isPageView ? 80 : 60}
@@ -98,7 +109,7 @@ const PreviewReview = ({
               <Box fontSize={12} paddingBottom={3}>
                 <Stack spacing={1}>
                   <HStack>
-                    <Text fontWeight={600}>Written By:</Text>
+                    <Text fontWeight={600}>Written by:</Text>
                     <Text fontWeight={400}>
                       {review.books[currentBook].authors
                         .map(({ fullName }) => fullName)
@@ -107,7 +118,7 @@ const PreviewReview = ({
                   </HStack>
                   {review.books[currentBook].illustrator.length > 0 && (
                     <HStack>
-                      <Text fontWeight={600}>Illustrated By:</Text>
+                      <Text fontWeight={600}>Illustrated by:</Text>
                       <Text fontWeight={400}>
                         {review.books[currentBook].illustrator?.join(", ")}
                       </Text>
@@ -128,17 +139,38 @@ const PreviewReview = ({
                     </>
                   ))}
                   <Text>{`Ages ${review.books[currentBook].minAge}-${review.books[currentBook].maxAge}`}</Text>
+                  {review.books[currentBook].genres.length +
+                    review.books[currentBook].tags.length >
+                    0 && (
+                    <Wrap spacing={1} paddingTop={3}>
+                      {review.books[currentBook].genres.map((genre) => (
+                        <WrapItem key={`genre-${genre.name}`}>
+                          <Tag
+                            size="sm"
+                            variant="solid"
+                            bgColor="#90CDF4"
+                            color="black"
+                          >
+                            {genre.name}
+                          </Tag>
+                        </WrapItem>
+                      ))}
+                      {review.books[currentBook].tags.map((tag) => (
+                        <WrapItem key={`tag-${tag.name}`}>
+                          <Tag
+                            size="sm"
+                            variant="solid"
+                            bgColor="#F7E1A8"
+                            color="black"
+                          >
+                            {tag.name}
+                          </Tag>
+                        </WrapItem>
+                      ))}
+                    </Wrap>
+                  )}
                 </Stack>
               </Box>
-              <HStack spacing={2}>
-                {/* {review.tags.map((tag, index) => (
-                  <Box key={index}>
-                    <Tag bgColor="#F6E1A8" size="sm" fontWeight={600}>
-                      {tag.name}
-                    </Tag>
-                  </Box>
-                ))} */}
-              </HStack>
             </Stack>
           </Box>
           <ChevronRightIcon
@@ -172,12 +204,10 @@ const PreviewReview = ({
           ))}
         </HStack>
         <VStack align="flex-start" width={isPageView ? "50%" : "80%"}>
-          <HStack fontSize="12px">
-            <Text fontWeight={600}>Reviewed By:</Text>
-            <Text
-              fontWeight={400}
-            >{`${review.createdByUser.firstName} ${review.createdByUser.lastName}`}</Text>
-          </HStack>
+          <Text fontWeight={400} fontSize="12px">
+            <strong>Reviewed by: </strong>
+            {review.byline}
+          </Text>
           <div
             style={{ fontSize: "14px" }}
             // eslint-disable-next-line react/no-danger
