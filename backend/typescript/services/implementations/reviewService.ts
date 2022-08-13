@@ -581,7 +581,7 @@ class ReviewService implements IReviewService {
         if (searchTerm) {
           reviewIds = await this.getReviewsIdsFromSearch(searchTerm);
         }
-        const searchOpts =
+        const searchOpt =
           reviewIds.length > 0
             ? {
                 id: {
@@ -601,7 +601,7 @@ class ReviewService implements IReviewService {
             [Op.and]: [
               Sequelize.where(Sequelize.col(`books.id`), Op.ne, null),
               featureOpt,
-              searchOpts,
+              searchOpt,
             ],
           },
           include: [
