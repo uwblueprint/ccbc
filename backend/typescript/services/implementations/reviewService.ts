@@ -526,8 +526,12 @@ class ReviewService implements IReviewService {
         const minAgeOpt = minAge || 0;
         const maxAgeOpt = maxAge || 100;
 
-        // TO DO: add findAndCountAll and make sure it works **
-        const { rows, count } = await PgReview.findAndCountAll({
+        /* TO DO: 
+          Ideally we want to change this to use findAndCountAll however
+          we currently cannot do both filtering + pagination without breaking 
+          the other. Needs to be fixed to obtain totalReviews, totalPages
+        */
+        const rows = await PgReview.findAll({
           transaction: t,
           where: {
             [Op.and]: [
@@ -603,19 +607,17 @@ class ReviewService implements IReviewService {
           limit,
           offset,
           subQuery: false,
-          distinct: true,
-          col: "id",
         });
 
         // The currentPage is the page we requested in params or just page 0
         const currentPage = page ? parseInt(page, 10) : 0;
 
         // There is only one page if we are not paginating them
-        const totalPages = limit ? Math.ceil(count / limit) : 1;
+        // const totalPages = limit ? Math.ceil(count / limit) : 1;
 
         return {
-          totalReviews: count,
-          totalPages,
+          totalReviews: -1,
+          totalPages: -1,
           currentPage,
           reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
         };
