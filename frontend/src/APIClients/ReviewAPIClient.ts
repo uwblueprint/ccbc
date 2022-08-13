@@ -6,7 +6,6 @@ import {
 import { getBearerToken } from "../utils/AuthUtils";
 import baseAPIClient from "./BaseAPIClient";
 
-
 /**
  * Get all reviews with (optional) parameters
  * @param search? - the query string
