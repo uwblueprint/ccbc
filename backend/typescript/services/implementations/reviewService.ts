@@ -561,7 +561,6 @@ class ReviewService implements IReviewService {
     minAge?: number,
     maxAge?: number,
     featured?: string,
-    author?: string,
     searchTerm?: string,
   ): Promise<PaginatedReviewResponseDTO> {
     let result: PaginatedReviewResponseDTO;
