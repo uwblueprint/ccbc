@@ -240,8 +240,6 @@ class AuthService implements IAuthService {
     try {
       const decodedIdToken: firebaseAdmin.auth.DecodedIdToken =
         await firebaseAdmin.auth().verifyIdToken(accessToken, true);
-      console.log(decodedIdToken);
-      console.log(decodedIdToken.uid);
       const user = await this.userService.getUserbyAuthID(
         decodedIdToken.user_id,
       );
@@ -393,6 +391,54 @@ class AuthService implements IAuthService {
       }
     }
     return true;
+  }
+
+  async createUserAndSendRegistrationEmail(
+    firstName: string,
+    lastName: string,
+    email: string,
+    roleType: Role,
+    subscriptionExpiresOn: Date | null,
+  ): Promise<AuthDTO> {
+    const accessCode = randomPasswordGenerator.randomPassword({
+      length: 8, // length of the password
+      characters: [
+        // acceptable characters in the password
+        randomPasswordGenerator.lower,
+        randomPasswordGenerator.upper,
+        randomPasswordGenerator.digits,
+      ],
+    });
+
+    let createdUser: UserDTO | null = null;
+    try {
+      createdUser = await this.userService.createUser({
+        firstName,
+        lastName,
+        email,
+        roleType,
+        subscriptionExpiresOn,
+        password: accessCode,
+      });
+
+      // try to sign in the user and return the expiring token
+      const authDTO = await this.generateToken(email, accessCode);
+
+      // Send email with login details and ask to change password
+      // once they change the password, user should be verified
+      await this.sendPasswordSetupLink(createdUser, accessCode, true);
+
+      return authDTO;
+    } catch (error) {
+      if (createdUser != null) {
+        // rollback created user if we could not log them in
+        await this.userService.deleteUserByEmail(createdUser.email);
+      }
+      Logger.error(
+        `Failed to register user Reason = ${getErrorMessage(error)}`,
+      );
+      throw error;
+    }
   }
 }
 

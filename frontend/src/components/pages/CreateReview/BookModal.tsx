@@ -466,6 +466,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   setOptions={setGenreOptions}
                   optionsSelected={genres}
                   setOptionsSelected={setGenres}
+                  allowMultiSelectOption
                 />
                 <AddMultiSelect
                   id="tag"
@@ -475,6 +476,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   setOptions={setTagOptions}
                   optionsSelected={tags}
                   setOptionsSelected={setTags}
+                  allowMultiSelectOption
                 />
                 <FormControl
                   isRequired

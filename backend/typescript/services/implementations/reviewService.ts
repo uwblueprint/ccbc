@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
-import { Op } from "sequelize";
+import { FindAndCountOptions, Op, QueryTypes } from "sequelize";
 import { Transaction } from "sequelize/types";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
@@ -30,6 +30,7 @@ import {
   Tag,
   PaginatedReviewResponseDTO,
 } from "../interfaces/IReviewService";
+import { SearchResult } from "../../types";
 
 const Logger = logger(__filename);
 
@@ -39,6 +40,14 @@ class ReviewService implements IReviewService {
   constructor(db: Sequelize = sequelize) {
     this.db = db;
     if (db !== sequelize) sequelize.close(); // Using test db instead of main db
+  }
+
+  async refreshSearchView(): Promise<void> {
+    this.db.transaction(async (t) =>
+      this.db.query("REFRESH MATERIALIZED VIEW review_search;", {
+        transaction: t,
+      }),
+    );
   }
 
   /* eslint-disable class-methods-use-this */
@@ -257,6 +266,8 @@ class ReviewService implements IReviewService {
       );
       throw error;
     }
+
+    this.refreshSearchView();
   }
 
   async deleteReviewHelper(id: string, txn: Transaction): Promise<boolean> {
@@ -504,9 +515,42 @@ class ReviewService implements IReviewService {
     return offset;
   }
 
+  async getReviewsIdsFromSearch(searchTerm: string): Promise<number[]> {
+    let result: number[];
+
+    try {
+      result = await this.db.transaction(async (t) => {
+        const normalizedSearchTerm = searchTerm
+          .replace(/[^a-zA-Z0-9 ]/g, "")
+          .trim();
+        const searchResults = (await this.db.query(
+          "SELECT review_id FROM review_search WHERE doc @@ PHRASETO_TSQUERY('english', :search_input);",
+          {
+            transaction: t,
+            replacements: { search_input: normalizedSearchTerm },
+            type: QueryTypes.SELECT,
+          },
+        )) as SearchResult[];
+        return searchResults.map(({ review_id }) => {
+          return review_id;
+        });
+      });
+    } catch (error: unknown) {
+      Logger.error(
+        `Failed to get review ids from search. Reason = ${getErrorMessage(
+          error,
+        )}`,
+      );
+      throw error;
+    }
+
+    return result;
+  }
+
   async getReviews(
     page: string,
     size: string,
+    searchTerm?: string,
   ): Promise<PaginatedReviewResponseDTO> {
     let result: PaginatedReviewResponseDTO;
 
@@ -514,15 +558,29 @@ class ReviewService implements IReviewService {
       result = await this.db.transaction(async (t) => {
         const limit = size ? parseInt(size, 10) : undefined;
         const offset = this.getPaginationOffset(page, limit);
+        let reviewIds: number[];
 
-        const { rows, count } = await PgReview.findAndCountAll({
+        const findConditions: FindAndCountOptions = {
           transaction: t,
           include: [{ all: true, nested: true }],
+          order: [
+            ["published_at", "DESC"],
+            ["updatedAt", "DESC"],
+          ],
           limit,
           offset,
           distinct: true,
           col: "id",
-        });
+        };
+
+        if (searchTerm) {
+          reviewIds = await this.getReviewsIdsFromSearch(searchTerm);
+          findConditions.where = {
+            id: { [Op.in]: reviewIds },
+          };
+        }
+
+        const { rows, count } = await PgReview.findAndCountAll(findConditions);
 
         // The currentPage is the page we requested in params or just page 0
         const currentPage = page ? parseInt(page, 10) : 0;
@@ -570,6 +628,7 @@ class ReviewService implements IReviewService {
       throw error;
     }
 
+    this.refreshSearchView();
     return result;
   }
 
@@ -618,6 +677,7 @@ class ReviewService implements IReviewService {
       await this.deleteReview(id, t);
       await this.createReview(entity, id, t);
       await t.commit();
+      this.refreshSearchView();
     } catch (error: unknown) {
       await t.rollback();
       Logger.error(

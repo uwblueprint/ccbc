@@ -79,6 +79,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [reviewerByline, setReviewerByline] = useState("");
   const [reviewerFirstName, setReviewerFirstName] = useState<string>("");
   const [reviewerLastName, setReviewerLastName] = useState<string>("");
+  const [publishedAt, setPublishedAt] = useState<number | null>(null);
 
   const cannotPublish =
     review === "" ||
@@ -268,7 +269,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       books,
       tags: [],
       updatedAt: 0,
-      publishedAt: 0,
+      publishedAt,
       createdAt: 0,
     };
     return previewModalReviewObject;
@@ -300,6 +301,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           setReviewerFirstName(reviewResponse.createdByUser.firstName);
           setReviewerLastName(reviewResponse.createdByUser.lastName);
           setBooksFromBookResponse(reviewResponse);
+          setPublishedAt(reviewResponse.publishedAt);
         })
         .catch(() => {
           // history.push("/404");
