@@ -20,8 +20,8 @@ const login = async (
     );
     localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
     return data;
-  } catch (error) {
-    return null;
+  } catch (error: any) {
+    return error.json.error
   }
 };
 

@@ -1,7 +1,11 @@
 import { Router } from "express";
 
 import password from "secure-random-password";
-import { isAuthorizedByEmail, isAuthorizedByUserId } from "../middlewares/auth";
+import {
+  isAuthorizedByEmail,
+  isAuthorizedBysubscription,
+  isAuthorizedByUserId,
+} from "../middlewares/auth";
 import {
   loginRequestValidator,
   registerRequestValidator,
@@ -21,27 +25,32 @@ const emailService: IEmailService = new EmailService(nodemailerConfig);
 const authService: IAuthService = new AuthService(userService, emailService);
 
 /* Returns access token and user info in response body and sets refreshToken as an httpOnly cookie */
-authRouter.post("/login", loginRequestValidator, async (req, res) => {
-  try {
-    const authDTO = req.body.idToken
-      ? // OAuth
-        await authService.generateTokenOAuth(req.body.idToken)
-      : await authService.generateToken(req.body.email, req.body.password);
+authRouter.post(
+  "/login",
+  loginRequestValidator,
+  isAuthorizedBysubscription,
+  async (req, res) => {
+    try {
+      const authDTO = req.body.idToken
+        ? // OAuth
+          await authService.generateTokenOAuth(req.body.idToken)
+        : await authService.generateToken(req.body.email, req.body.password);
 
-    const { refreshToken, ...rest } = authDTO;
+      const { refreshToken, ...rest } = authDTO;
 
-    res
-      .cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: process.env.NODE_ENV === "production",
-      })
-      .status(200)
-      .json(rest);
-  } catch (error: unknown) {
-    sendErrorResponse(error, res);
-  }
-});
+      res
+        .cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          sameSite: "none",
+          secure: process.env.NODE_ENV === "production",
+        })
+        .status(200)
+        .json(rest);
+    } catch (error: unknown) {
+      sendErrorResponse(error, res);
+    }
+  },
+);
 
 /* returns a firebase user given a user id */
 authRouter.get("/:uid", async (req, res) => {
