@@ -11,16 +11,25 @@ import baseAPIClient from "./BaseAPIClient";
  * @param search? - the query string
  * @param size? - the number of returned reviews
  * @param page? - the current page of reviews to be fetched
+ * @param minAge? - the minimum age for book audience (inclusive)
+ * @param maxAge? - the  maximum age for book audience (inclusive)
+ * @param featured? - whether the reviews are featured or not
  */
 const getReviews = async (
   search?: string,
   size?: number,
   page?: number,
+  minAge?: number,
+  maxAge?: number,
+  featured?: boolean,
 ): Promise<PaginatedReviewResponse> => {
   const params = new URLSearchParams();
   if (search) params.append("search", search);
   if (size || size === 0) params.append("size", String(size));
   if (page || page === 0) params.append("page", String(page));
+  if (minAge || minAge === 0) params.append("minAge", String(minAge));
+  if (maxAge || maxAge === 0) params.append("maxAge", String(maxAge));
+  if (featured) params.append("featured", "featured");
 
   try {
     const { data } = await baseAPIClient.get("/reviews", {

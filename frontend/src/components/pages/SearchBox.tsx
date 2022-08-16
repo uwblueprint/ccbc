@@ -7,15 +7,19 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 interface SearchBoxProps {
   setSearchText: (searchText: string) => void;
   searchQuery: string;
+  homePage?: boolean;
 }
 const SearchBox = ({
   setSearchText,
   searchQuery,
+  homePage = false,
 }: SearchBoxProps): React.ReactElement => {
+  const history = useHistory();
   const [searchText, setSearchTextState] = useState(searchQuery);
 
   useEffect(() => {
@@ -24,10 +28,17 @@ const SearchBox = ({
 
   const removeExtraSpace = (s: string) => s.trim().split(/ +/).join(" ");
   const onSubmitClick = async () => {
+    let newSearchText = "";
     if (searchText && removeExtraSpace(searchText)) {
-      setSearchText(removeExtraSpace(searchText));
-    } else {
-      setSearchText("");
+      newSearchText = removeExtraSpace(searchText);
+    }
+    setSearchText(newSearchText);
+    if (homePage) {
+      if (newSearchText) {
+        history.push(`/magazine/search_results/?search_query=${newSearchText}`);
+      } else {
+        history.push(`/magazine/search_results/`);
+      }
     }
   };
   return (

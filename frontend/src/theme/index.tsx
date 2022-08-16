@@ -12,6 +12,11 @@ const customTheme = extendTheme({
       fontFamily: "DM Sans",
       fontSize: "2vw",
     },
+    h2: {
+      fontFamily: "DM Sans",
+      fontSize: "20px",
+      fontWeight: "bold",
+    },
     body: {
       fontFamily: "DM Sans",
       fontSize: "16px",
@@ -50,6 +55,10 @@ const customTheme = extendTheme({
       fontFamily: "DM Sans",
       color: "gray.500",
       fontSize: "10px",
+    },
+    reviewsCategoryTitle: {
+      fontFamily: "DM Sans",
+      fontSize: "25px",
     },
   },
   colors: {
