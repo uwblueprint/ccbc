@@ -60,6 +60,10 @@ const customTheme = extendTheme({
       fontFamily: "DM Sans",
       fontSize: "25px",
     },
+    mobileReviewsCategoryTitle: {
+      fontFamily: "DM Sans",
+      fontSize: "18px",
+    },
   },
   colors: {
     gray: {

@@ -103,7 +103,9 @@ const SearchReviews = (): React.ReactElement => {
           {loading ? (
             <LoadingSpinner mt="21%" />
           ) : (
-            <ReviewsGrid displayedReviews={displayedReviews} />
+            <Box mt="50px">
+              <ReviewsGrid displayedReviews={displayedReviews} />
+            </Box>
           )}
         </Box>
       </Center>

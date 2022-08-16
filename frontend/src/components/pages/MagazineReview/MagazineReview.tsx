@@ -1,4 +1,11 @@
-import { Box, Center, Spinner, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Spinner,
+  Text,
+  useBreakpointValue,
+  VStack,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
@@ -15,6 +22,16 @@ const MagazineReview = (): React.ReactElement => {
   const [nineToTwelveReviews, setNineToTwelveReviews] = useState<Review[]>([]);
   const [featuredReviews, setFeaturedReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const displayBlurb = useBreakpointValue(
+    {
+      base: false,
+      lg: true,
+      md: true,
+      sm: false,
+    },
+    "lg",
+  );
 
   // get featured reviews on magazine home page
   useEffect(() => {
@@ -58,20 +75,26 @@ const MagazineReview = (): React.ReactElement => {
         bgRepeat="no-repeat"
         backgroundSize="cover"
         backgroundAttachment="scroll"
-        bgPosition="0 -80px"
+        bgPosition="0 -120px"
       >
         <VStack>
-          <Box mt="10" w={["80%", "80%", "30%"]} mb="6">
-            <VStack textAlign="center">
-              <Text textStyle="h2">Welcome to the CCBC Magazine Review</Text>
-              <Text textStyle="body">
-                Scroll and skim through a wide selection of book reviews
-                approved by the Canadian Children’s Book Centre
-              </Text>
-            </VStack>
-          </Box>
-          <Box w={["90%", "85%", "70%"]}>
-            <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
+          {displayBlurb && (
+            <Box mt="10" w={["80%", "80%", "30%"]}>
+              <VStack textAlign="center">
+                <Text textStyle="h2">Welcome to the CCBC Magazine Review</Text>
+                <Text textStyle="body">
+                  Scroll and skim through a wide selection of book reviews
+                  approved by the Canadian Children’s Book Centre
+                </Text>
+              </VStack>
+            </Box>
+          )}
+          <Box w={["90%", "85%", "70%"]} pt="6">
+            <SearchBox
+              setSearchText={setSearchText}
+              searchQuery={searchText}
+              homePage
+            />
             {loading ? (
               <Center mt="20">
                 <Spinner />

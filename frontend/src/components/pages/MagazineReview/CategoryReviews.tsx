@@ -35,9 +35,17 @@ const CategoryReviews = ({
   );
 
   return (
-    <>
+    <Box>
       <HStack justifyContent="space-between">
-        <Text textStyle="reviewsCategoryTitle">{name}</Text>
+        <Text
+          textStyle={[
+            "mobileReviewsCategoryTitle",
+            "reviewsCategoryTitle",
+            "reviewsCategoryTitle",
+          ]}
+        >
+          {name}
+        </Text>
         <Box
           display="flex"
           flexDirection="row"
@@ -48,7 +56,7 @@ const CategoryReviews = ({
           style={{ cursor: "pointer" }}
         >
           <Text
-            fontSize="15px"
+            fontSize={["13px", "15px", "15px"]}
             fontWeight="medium"
             color="#3182CE"
             _hover={{ textDecoration: "underline" }}
@@ -65,8 +73,10 @@ const CategoryReviews = ({
           />
         </Box>
       </HStack>
-      <ReviewsGrid displayedReviews={reviews.slice(0, displayReviews)} />
-    </>
+      <Box mt="20px">
+        <ReviewsGrid displayedReviews={reviews.slice(0, displayReviews)} />
+      </Box>
+    </Box>
   );
 };
 
