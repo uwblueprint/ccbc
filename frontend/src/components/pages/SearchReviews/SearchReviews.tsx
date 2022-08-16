@@ -44,7 +44,7 @@ const SearchReviews = (): React.ReactElement => {
     if (ageFilter && minAge >= 0 && maxAge >= 0) {
       setAgeRangeFilter([minAge, maxAge]);
     }
-  });
+  }, []);
 
   /** Creates new url based on search text and filters */
   const generateSearchUrl = (
@@ -80,7 +80,6 @@ const SearchReviews = (): React.ReactElement => {
       newSearchUrl.toString(),
     );
 
-    console.log(searchText)
     reviewAPIClient
       .getReviews(searchText, 25, 0)
       .then((reviewResponse: PaginatedReviewResponse) => {
