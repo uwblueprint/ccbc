@@ -5,6 +5,7 @@ import {
   FindAndCountOptions,
   FindOptions,
   QueryTypes,
+  LogicType,
 } from "sequelize";
 import { Transaction } from "sequelize/types";
 import { getErrorMessage } from "../../utilities/errorResponse";
@@ -37,7 +38,8 @@ import {
   Tag,
   PaginatedReviewResponseDTO,
 } from "../interfaces/IReviewService";
-import { SearchResult } from "../../types";
+import { ReviewIds } from "../../types";
+import { set } from "lodash";
 
 const Logger = logger(__filename);
 
@@ -522,6 +524,55 @@ class ReviewService implements IReviewService {
     return offset;
   }
 
+  async getReviewIdsFromFilter(
+    genres?: string[],
+    minAge?: number,
+    maxAge?: number,
+  ): Promise<number[]> {
+    let result: number[];
+
+    // Filter Queries to Add
+    const minAgeOpt = minAge || 0;
+    const maxAgeOpt = maxAge || 100;
+    const replacements: (number | string[])[] = [minAgeOpt, maxAgeOpt];
+
+    let genreFilterQuery = "";
+    if (genres && genres.length > 0) {
+      genreFilterQuery = "AND genre_name IN (?)";
+      replacements.push(genres);
+    }
+
+    try {
+      result = await this.db.transaction(async (t) => {
+        const reviewIds = (await this.db.query(
+          // estlint-disable-next-line no-multi-str
+          `SELECT DISTINCT review_id \
+           FROM books INNER JOIN book_genre \
+           ON books.id = book_genre.book_id \
+           WHERE age_range && \
+           int4range(?, ?) ${genreFilterQuery}`,
+          {
+            replacements,
+            transaction: t,
+            type: QueryTypes.SELECT,
+          },
+        )) as ReviewIds[];
+        return reviewIds.map(({ review_id }) => {
+          return review_id;
+        });
+      });
+    } catch (error: unknown) {
+      Logger.error(
+        `Failed to get review ids from search. Reason = ${getErrorMessage(
+          error,
+        )}`,
+      );
+      throw error;
+    }
+
+    return result;
+  }
+
   async getReviewsIdsFromSearch(searchTerm: string): Promise<number[]> {
     let result: number[];
 
@@ -537,7 +588,7 @@ class ReviewService implements IReviewService {
             replacements: { search_input: normalizedSearchTerm },
             type: QueryTypes.SELECT,
           },
-        )) as SearchResult[];
+        )) as ReviewIds[];
         return searchResults.map(({ review_id }) => {
           return review_id;
         });
@@ -569,18 +620,38 @@ class ReviewService implements IReviewService {
       result = await this.db.transaction(async (t) => {
         const limit = size ? parseInt(size, 10) : undefined;
         const offset = this.getPaginationOffset(page, limit);
-        let reviewIds: number[] = [];
 
-        // Possible filter query parameters
+        // Review Filter Parameters
         const featureOpt = featured ? { featured } : {};
-        const minAgeOpt = minAge || 0;
-        const maxAgeOpt = maxAge || 100;
+        // TO DO: ADD DRAFT TO FILTER
+
+        // Book Filter Parameters
+        let filteredIds: number[] = [];
+        if ((genres && genres.length > 0) || minAge || maxAge) {
+          filteredIds = await this.getReviewIdsFromFilter(
+            genres,
+            minAge,
+            maxAge,
+          );
+        }
 
         // Search Parameters
+        let searchedIds: number[] = [];
         if (searchTerm) {
-          reviewIds = await this.getReviewsIdsFromSearch(searchTerm);
+          searchedIds = await this.getReviewsIdsFromSearch(searchTerm);
         }
-        const searchOpt =
+
+        // If there's search AND filter, we want to get the intersection of the two review_id lists
+        let reviewIds: number[] = [];
+        if (searchedIds.length > 0 && filteredIds.length > 0) {
+          reviewIds = filteredIds.filter((id) => searchedIds.includes(id));
+        } else if (searchedIds.length > 0) {
+          reviewIds = searchedIds;
+        } else if (filteredIds.length > 0) {
+          reviewIds = filteredIds;
+        }
+
+        const searchAndFilterOpt =
           reviewIds.length > 0
             ? {
                 id: {
@@ -589,103 +660,31 @@ class ReviewService implements IReviewService {
               }
             : {};
 
-        /* TO DO: 
-          Ideally we want to change this to use findAndCountAll however
-          we currently cannot do both filtering + pagination without breaking 
-          the other. Needs to be fixed to obtain totalReviews, totalPages
-        */
-        const rows = await PgReview.findAll({
+        const { rows, count } = await PgReview.findAndCountAll({
           transaction: t,
           where: {
-            [Op.and]: [
-              Sequelize.where(Sequelize.col(`books.id`), Op.ne, null),
-              featureOpt,
-              searchOpt,
-            ],
+            [Op.and]: [searchAndFilterOpt, featureOpt],
           },
-          include: [
-            {
-              model: PgUser,
-            },
-            {
-              model: PgBook,
-              where: {
-                ...((minAge || maxAge) && {
-                  age_range: {
-                    [Op.overlap]: [minAgeOpt, maxAgeOpt],
-                  },
-                }),
-              },
-              include: [
-                {
-                  model: PgGenre,
-                  through: PgBookGenre as IncludeThroughOptions,
-                  required: true,
-                  where: {
-                    ...(genres &&
-                      genres.length && {
-                        name: {
-                          [Op.in]: genres,
-                        },
-                      }),
-                  },
-                },
-                {
-                  model: PgAuthor,
-                  through: PgBookAuthor as IncludeThroughOptions,
-                  include: [
-                    {
-                      all: true,
-                    },
-                  ],
-                },
-                {
-                  model: PgPublisher,
-                  through: PgBookPublisher as IncludeThroughOptions,
-                  include: [
-                    {
-                      all: true,
-                    },
-                  ],
-                },
-                {
-                  model: PgTag,
-                  through: PgBookTag as IncludeThroughOptions,
-                  include: [
-                    {
-                      all: true,
-                    },
-                  ],
-                },
-                {
-                  model: PgSeries,
-                  include: [
-                    {
-                      all: true,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-          limit,
-          offset,
-          subQuery: false,
+          include: [{ all: true, nested: true }],
           order: [
             ["published_at", "DESC"],
             ["updatedAt", "DESC"],
           ],
+          limit,
+          offset,
+          distinct: true,
+          col: "id",
         });
 
         // The currentPage is the page we requested in params or just page 0
         const currentPage = page ? parseInt(page, 10) : 0;
 
         // There is only one page if we are not paginating them
-        // const totalPages = limit ? Math.ceil(count / limit) : 1;
+        const totalPages = limit ? Math.ceil(count / limit) : 1;
 
         return {
-          totalReviews: -1,
-          totalPages: -1,
+          totalReviews: count,
+          totalPages,
           currentPage,
           reviews: rows.map((r: PgReview) => ReviewService.pgReviewToRet(r)),
         };
