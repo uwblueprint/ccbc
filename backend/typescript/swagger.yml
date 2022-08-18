@@ -987,6 +987,12 @@ paths:
             type: string
           required: true
           description: Number of records to retrieve by page 
+        - in: query
+          name: draft
+          schema:
+            type: string
+          required: false
+          description: Filter Option - Draft (true or false)
       responses:
         "200":
           description: Successfully returned a list of reviews
