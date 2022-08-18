@@ -1,12 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
-import {
-  IncludeThroughOptions,
-  Op,
-  FindAndCountOptions,
-  FindOptions,
-  QueryTypes,
-  LogicType,
-} from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import { Transaction } from "sequelize/types";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
@@ -39,7 +32,6 @@ import {
   PaginatedReviewResponseDTO,
 } from "../interfaces/IReviewService";
 import { ReviewIds } from "../../types";
-import { set } from "lodash";
 
 const Logger = logger(__filename);
 
