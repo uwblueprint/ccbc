@@ -516,6 +516,7 @@ class ReviewService implements IReviewService {
     return offset;
   }
 
+  // Grab the review ids that satisfies the filter conditions specified in query
   async getReviewIdsFromFilter(
     genres?: string[],
     minAge?: number,
