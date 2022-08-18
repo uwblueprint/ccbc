@@ -151,6 +151,7 @@ export interface IReviewService {
     featured?: string,
     author?: string,
     searchTerm?: string,
+    draft?: string,
   ): Promise<PaginatedReviewResponseDTO>;
 
   /**

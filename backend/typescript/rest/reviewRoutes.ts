@@ -68,7 +68,7 @@ reviewRouter.get(
       ? (req.query.genres as string).split(",")
       : [];
 
-    const { minAge, maxAge, featured } = req.query;
+    const { minAge, maxAge, featured, draft } = req.query;
 
     try {
       const reviewsData = await reviewService.getReviews(
@@ -79,6 +79,7 @@ reviewRouter.get(
         parseInt(maxAge as string, 10) ?? undefined,
         featured as string,
         searchTerm ? (searchTerm as string) : undefined,
+        draft as string,
       );
       await sendResponseByMimeType<PaginatedReviewResponseDTO>(
         res,

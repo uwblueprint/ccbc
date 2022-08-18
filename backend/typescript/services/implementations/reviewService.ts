@@ -613,6 +613,7 @@ class ReviewService implements IReviewService {
     maxAge?: number,
     featured?: string,
     searchTerm?: string,
+    draft?: string,
   ): Promise<PaginatedReviewResponseDTO> {
     let result: PaginatedReviewResponseDTO;
 
@@ -623,7 +624,18 @@ class ReviewService implements IReviewService {
 
         // Review Filter Parameters
         const featureOpt = featured ? { featured } : {};
-        // TO DO: ADD DRAFT TO FILTER
+        const draftOpt = draft
+          ? {
+              published_at:
+                draft === "true"
+                  ? {
+                      [Op.eq]: null, // We only want drafts
+                    }
+                  : {
+                      [Op.ne]: null, // We only want published reviews
+                    },
+            }
+          : {};
 
         // Book Filter Parameters
         let filteredIds: number[] = [];
@@ -663,7 +675,7 @@ class ReviewService implements IReviewService {
         const { rows, count } = await PgReview.findAndCountAll({
           transaction: t,
           where: {
-            [Op.and]: [searchAndFilterOpt, featureOpt],
+            [Op.and]: [searchAndFilterOpt, featureOpt, draftOpt],
           },
           include: [{ all: true, nested: true }],
           order: [
