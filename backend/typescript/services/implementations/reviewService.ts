@@ -230,7 +230,7 @@ class ReviewService implements IReviewService {
       translator: newBook.translator || null,
       formats: newBook.formats,
       minAge: newBook.age_range[0].value,
-      maxAge: newBook.age_range[1].value,
+      maxAge: newBook.age_range[1].value - 1, // note: sequelize stores 3-6 inclusive as [3-7)
       authors: authorsRet,
       genres: genresRet,
       publishers: publishersRet,
@@ -449,7 +449,7 @@ class ReviewService implements IReviewService {
         translator: book.translator || null,
         formats: book.formats || null,
         minAge: book.age_range[0].value,
-        maxAge: book.age_range[1].value,
+        maxAge: book.age_range[1].value - 1, // note: sequelize stores 3-6 inclusive as [3-7)
         authors: authorsRet,
         genres: genresRet,
         publishers: publishersRet,
