@@ -631,7 +631,7 @@ class ReviewService implements IReviewService {
           : {};
 
         // Book Filter Parameters
-        let filteredIds: number[] = [];
+        let filteredIds: number[] | null = null;
         if ((genres && genres.length > 0) || minAge || maxAge) {
           filteredIds = await this.getReviewIdsFromFilter(
             genres,
@@ -641,18 +641,38 @@ class ReviewService implements IReviewService {
         }
 
         // Search Parameters
-        let searchedIds: number[] = [];
+        let searchedIds: number[] | null = null;
         if (searchTerm) {
           searchedIds = await this.getReviewsIdsFromSearch(searchTerm);
         }
 
+        // If it returned an empty list for search or filter we have no match so we return empty list of reviews
+        if (
+          (searchedIds && searchedIds.length === 0) ||
+          (filteredIds && filteredIds.length === 0)
+        ) {
+          return {
+            totalReviews: 0,
+            totalPages: 0,
+            currentPage: 0,
+            reviews: [],
+          };
+        }
+
         // If there's search AND filter, we want to get the intersection of the two review_id lists
         let reviewIds: number[] = [];
-        if (searchedIds.length > 0 && filteredIds.length > 0) {
-          reviewIds = filteredIds.filter((id) => searchedIds.includes(id));
-        } else if (searchedIds.length > 0) {
+        if (
+          searchedIds &&
+          searchedIds.length > 0 &&
+          filteredIds &&
+          filteredIds.length > 0
+        ) {
+          reviewIds = filteredIds.filter(
+            (id) => searchedIds && searchedIds.includes(id),
+          );
+        } else if (searchedIds && searchedIds.length > 0) {
           reviewIds = searchedIds;
-        } else if (filteredIds.length > 0) {
+        } else if (filteredIds && filteredIds.length > 0) {
           reviewIds = filteredIds;
         }
 
