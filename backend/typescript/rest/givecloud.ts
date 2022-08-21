@@ -49,7 +49,7 @@ givecloudRouter.post(
             email,
             subscriptionExpiresOn,
           );
-          res.status(201).json(userDTO);
+          res.status(200).json(userDTO);
         } catch {
           const authDTO = await authService.createUserAndSendRegistrationEmail(
             supporter.first_name,
@@ -59,7 +59,7 @@ givecloudRouter.post(
             subscriptionExpiresOn,
           );
 
-          res.status(200).json(authDtoToToUserDto(authDTO));
+          res.status(201).json(authDtoToToUserDto(authDTO));
         }
       } else {
         res.status(400).json({ errors: errors.array() });

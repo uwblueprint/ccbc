@@ -412,7 +412,7 @@ class UserService implements IUserService {
 
       const user: User = updateResult[1][0];
       return {
-        id: user.auth_id,
+        id: user.id,
         firstName: user.first_name,
         lastName: user.last_name,
         email: user.email,
