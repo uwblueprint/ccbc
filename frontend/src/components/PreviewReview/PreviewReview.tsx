@@ -116,14 +116,15 @@ const PreviewReview = ({
                         .join(", ")}
                     </Text>
                   </HStack>
-                  {review.books[currentBook].illustrator.length > 0 && (
-                    <HStack>
-                      <Text fontWeight={600}>Illustrated by:</Text>
-                      <Text fontWeight={400}>
-                        {review.books[currentBook].illustrator?.join(", ")}
-                      </Text>
-                    </HStack>
-                  )}
+                  {review.books[currentBook].illustrator.length > 0 &&
+                    review.books[currentBook].illustrator[0].length > 0 && (
+                      <HStack>
+                        <Text fontWeight={600}>Illustrated by:</Text>
+                        <Text fontWeight={400}>
+                          {review.books[currentBook].illustrator?.join(", ")}
+                        </Text>
+                      </HStack>
+                    )}
                 </Stack>
               </Box>
               <Box fontSize={12} paddingBottom={1}>
