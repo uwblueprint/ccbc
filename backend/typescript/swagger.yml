@@ -951,6 +951,48 @@ paths:
             type: string
           required: false
           description: The search term to use when getting reviews
+        - in: query
+          name: genres
+          schema:
+            type: string[]
+          required: false
+          description: Filter Option - Genres
+        - in: query
+          name: minAge
+          schema:
+            type: number
+          required: false
+          description: Filter Option - Min Age
+        - in: query
+          name: maxAge
+          schema:
+            type: number
+          required: false
+          description: Filter Option - Max Age
+        - in: query
+          name: featured
+          schema:
+            type: string
+          required: false
+          description: Filter Option - Featured
+        - in: query
+          name: page
+          schema:
+            type: string
+          required: true
+          description: Number of pages
+        - in: query
+          name: size
+          schema:
+            type: string
+          required: true
+          description: Number of records to retrieve by page 
+        - in: query
+          name: draft
+          schema:
+            type: string
+          required: false
+          description: Filter Option - Draft (true or false)
       responses:
         "200":
           description: Successfully returned a list of reviews
