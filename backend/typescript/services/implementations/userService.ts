@@ -393,6 +393,41 @@ class UserService implements IUserService {
       throw error;
     }
   }
+
+  async updateUserSubscriptionbyEmail(
+    userEmail: string,
+    newSubscriptionExpiresOn: Date,
+  ): Promise<UserDTO> {
+    try {
+      // return and plain as true sends back [number, User[]] where number is the number of affected rows
+      const updateResult = await User.update(
+        { subscription_expires_on: newSubscriptionExpiresOn },
+        { where: { email: userEmail }, returning: true },
+      );
+
+      // check number of rows affected
+      if (updateResult[0] < 1) {
+        throw new Error(`email ${userEmail} not found.`);
+      }
+
+      const user: User = updateResult[1][0];
+      return {
+        id: user.id,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        email: user.email,
+        roleType: user.role_type,
+        subscriptionExpiresOn: user.subscription_expires_on,
+      };
+    } catch (error) {
+      Logger.error(
+        `Failed to update user subscription. Reason = ${getErrorMessage(
+          error,
+        )}`,
+      );
+      throw error;
+    }
+  }
 }
 
 export default UserService;
