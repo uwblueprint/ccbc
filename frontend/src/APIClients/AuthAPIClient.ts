@@ -11,17 +11,23 @@ import baseAPIClient from "./BaseAPIClient";
 const login = async (
   email: string,
   password: string,
-): Promise<AuthenticatedUser> => {
+): Promise<AuthenticatedUser | any> => {
   try {
-    const { data } = await baseAPIClient.post(
+    const response = await baseAPIClient.post(
       "/auth/login",
       { email, password },
       { withCredentials: true },
     );
+    console.log(response)
+    const {data} = response;
     localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
-    return data;
-  } catch (error: any) {
-    return error.json.error
+    return response;
+  } catch (error) {
+    if(error instanceof Error){
+      console.log(error.stack)
+    }
+    console.log("hi2")
+    return null
   }
 };
 

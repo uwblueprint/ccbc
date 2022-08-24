@@ -102,8 +102,7 @@ export const isAuthorizedByEmail = (emailField: string) => {
 
 /* Determine if request for a user-specific resource is authorized based on subscription date and role
  * validity if the user has an active subscription or does no require one */
-export const isAuthorizedBysubscription = () => {
-  return async (
+export const isAuthorizedBySubscription = async (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -112,7 +111,7 @@ export const isAuthorizedBysubscription = () => {
       const user: UserDTO | null = await userService.getUserByEmail(
         req.body.email,
       );
-      if (!authService.isSubscriptionValid(user, new Set(["Admin"]))) {
+      if (!await authService.isSubscriptionValid(user, new Set(["Admin"]))) {
         return res
           .status(401)
           .json({ error: "Your subscription has expired." });
@@ -122,4 +121,3 @@ export const isAuthorizedBysubscription = () => {
     }
     return next();
   };
-};

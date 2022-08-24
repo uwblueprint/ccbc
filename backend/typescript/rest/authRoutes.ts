@@ -3,7 +3,7 @@ import { Router } from "express";
 import password from "secure-random-password";
 import {
   isAuthorizedByEmail,
-  isAuthorizedBysubscription,
+  isAuthorizedBySubscription,
   isAuthorizedByUserId,
 } from "../middlewares/auth";
 import {
@@ -29,7 +29,7 @@ const authService: IAuthService = new AuthService(userService, emailService);
 authRouter.post(
   "/login",
   loginRequestValidator,
-  isAuthorizedBysubscription,
+  isAuthorizedBySubscription,
   async (req, res) => {
     try {
       const authDTO = req.body.idToken

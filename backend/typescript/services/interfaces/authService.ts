@@ -142,7 +142,8 @@ interface IAuthService {
    */
   isSubscriptionValid(user: UserDTO, roles: Set<Role>): Promise<boolean>;
 
-   * Used to register a new account, it creates a user in the db and then sends an email with set up password to register
+  /** 
+  * Used to register a new account, it creates a user in the db and then sends an email with set up password to register
    * @param firstName: first name of the user  to be registered
    * @param lastName: last name of the user to be registered
    * @param email the user's email associated with their account
