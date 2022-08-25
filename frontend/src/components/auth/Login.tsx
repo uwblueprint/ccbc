@@ -30,13 +30,35 @@ const Login = (): React.ReactElement => {
   const [isInvalid, setInvalid] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const subscriptionErrorMessage = "Your subscription has expired.";
 
   const onLogInClick = async () => {
-    const user: AuthenticatedUser = await authAPIClient.login(email, password);
-    if (!user) {
+    try {
+      const user: AuthenticatedUser = await authAPIClient.login(
+        email,
+        password,
+      );
+      setAuthenticatedUser(user);
+    } // eslint-disable-next-line
+    catch (error: any) {
       setInvalid(true);
+      let testString = "";
+      for (
+        let index = 0;
+        index < String(error.response.data.error).length;
+        index += 1
+      ) {
+        testString += String(error.response.data.error).charAt(
+          index,
+        ); // eslint-disable-line prefer-template
+      }
+      if (testString === subscriptionErrorMessage) {
+        setErrorMessage(subscriptionErrorMessage);
+      } else {
+        setErrorMessage("The username or password you entered is incorrect.");
+      }
     }
-    setAuthenticatedUser(user);
   };
 
   if (authenticatedUser) {
@@ -93,7 +115,7 @@ const Login = (): React.ReactElement => {
                   setInvalid(false);
                 }}
                 placeholder="Password"
-                errorMessage="The username or password you entered is incorrect."
+                errorMessage={errorMessage}
               />
               <Link
                 href={`${Routes.FORGOT_PASSWORD_PAGE}`}

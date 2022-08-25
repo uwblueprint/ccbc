@@ -1,11 +1,6 @@
 import { Router } from "express";
 
-import password from "secure-random-password";
-import {
-  isAuthorizedByEmail,
-  isAuthorizedBySubscription,
-  isAuthorizedByUserId,
-} from "../middlewares/auth";
+import { isAuthorizedByEmail, isAuthorizedByUserId } from "../middlewares/auth";
 import {
   loginRequestValidator,
   registerRequestValidator,
@@ -19,6 +14,7 @@ import IEmailService from "../services/interfaces/emailService";
 import IUserService from "../services/interfaces/userService";
 import { sendErrorResponse } from "../utilities/errorResponse";
 import authDtoToToUserDto from "../utilities/authUtils";
+import { UserDTO } from "../types";
 
 const authRouter: Router = Router();
 const userService: IUserService = new UserService();
@@ -26,32 +22,35 @@ const emailService: IEmailService = new EmailService(nodemailerConfig);
 const authService: IAuthService = new AuthService(userService, emailService);
 
 /* Returns access token and user info in response body and sets refreshToken as an httpOnly cookie */
-authRouter.post(
-  "/login",
-  loginRequestValidator,
-  isAuthorizedBySubscription,
-  async (req, res) => {
-    try {
-      const authDTO = req.body.idToken
-        ? // OAuth
-          await authService.generateTokenOAuth(req.body.idToken)
-        : await authService.generateToken(req.body.email, req.body.password);
+authRouter.post("/login", loginRequestValidator, async (req, res) => {
+  try {
+    const authDTO = req.body.idToken
+      ? // OAuth
+        await authService.generateTokenOAuth(req.body.idToken)
+      : await authService.generateToken(req.body.email, req.body.password);
 
-      const { refreshToken, ...rest } = authDTO;
+    const { refreshToken, ...rest } = authDTO;
 
-      res
-        .cookie("refreshToken", refreshToken, {
-          httpOnly: true,
-          sameSite: "none",
-          secure: process.env.NODE_ENV === "production",
-        })
-        .status(200)
-        .json(rest);
-    } catch (error: unknown) {
-      sendErrorResponse(error, res);
+    const user: UserDTO | null = await userService.getUserByEmail(
+      req.body.email,
+    );
+
+    if (!(await authService.isSubscriptionValid(user, new Set(["Admin"])))) {
+      throw new Error("Your subscription has expired.");
     }
-  },
-);
+
+    res
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: process.env.NODE_ENV === "production",
+      })
+      .status(200)
+      .json(rest);
+  } catch (error: unknown) {
+    sendErrorResponse(error, res);
+  }
+});
 
 /* returns a firebase user given a user id */
 authRouter.get("/:uid", async (req, res) => {

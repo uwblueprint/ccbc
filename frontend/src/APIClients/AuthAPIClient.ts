@@ -11,24 +11,14 @@ import baseAPIClient from "./BaseAPIClient";
 const login = async (
   email: string,
   password: string,
-): Promise<AuthenticatedUser | any> => {
-  try {
-    const response = await baseAPIClient.post(
-      "/auth/login",
-      { email, password },
-      { withCredentials: true },
-    );
-    console.log(response)
-    const {data} = response;
-    localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
-    return response;
-  } catch (error) {
-    if(error instanceof Error){
-      console.log(error.stack)
-    }
-    console.log("hi2")
-    return null
-  }
+): Promise<AuthenticatedUser> => {
+  const { data } = await baseAPIClient.post(
+    "/auth/login",
+    { email, password },
+    { withCredentials: true },
+  );
+  localStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data));
+  return data;
 };
 
 const loginWithGoogle = async (idToken: string): Promise<AuthenticatedUser> => {
