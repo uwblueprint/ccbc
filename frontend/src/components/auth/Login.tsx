@@ -40,7 +40,8 @@ const Login = (): React.ReactElement => {
         password,
       );
       setAuthenticatedUser(user);
-    } catch (error: any) { // eslint-disable @typescript-eslint/no-explicit-any 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       setInvalid(true);
       let testString = "";
       for (
