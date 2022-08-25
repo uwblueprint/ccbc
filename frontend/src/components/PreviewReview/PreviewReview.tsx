@@ -136,7 +136,7 @@ const PreviewReview = ({
                   ))}
                   {review.books[currentBook].formats.map((format) => (
                     <>
-                      <Text>{`${format.format}, ${format.isbn}`}</Text>
+                      <Text>{`${format.format}, ${format.isbn}, $${format.price}`}</Text>
                     </>
                   ))}
                   <Text>{`Ages ${review.books[currentBook].minAge}-${review.books[currentBook].maxAge}`}</Text>
