@@ -40,8 +40,7 @@ const Login = (): React.ReactElement => {
         password,
       );
       setAuthenticatedUser(user);
-    } // eslint-disable-next-line
-    catch (error: any) {
+    } catch (error: any) { // eslint-disable @typescript-eslint/no-explicit-any 
       setInvalid(true);
       let testString = "";
       for (
@@ -49,9 +48,7 @@ const Login = (): React.ReactElement => {
         index < String(error.response.data.error).length;
         index += 1
       ) {
-        testString += String(error.response.data.error).charAt(
-          index,
-        ); // eslint-disable-line prefer-template
+        testString += String(error.response.data.error).charAt(index); // eslint-disable-line prefer-template
       }
       if (testString === subscriptionErrorMessage) {
         setErrorMessage(subscriptionErrorMessage);
