@@ -343,7 +343,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           onClose={onDeleteDraftReviewModalClose}
           deleteReview={() => {}}
           saveReview={() => onSubmit(save = true)}
-          bookTitle="Your subscription has expired."
+          bookTitle="idk"
         />
       }
       */}
