@@ -8,7 +8,6 @@ import { AuthDTO, Role, Token, UserDTO } from "../../types";
 import FirebaseRestClient from "../../utilities/firebaseRestClient";
 import logger from "../../utilities/logger";
 import { getErrorMessage } from "../../utilities/errorResponse";
-import User from "../../models/user.model";
 
 const Logger = logger(__filename);
 
