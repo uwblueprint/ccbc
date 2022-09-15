@@ -130,7 +130,9 @@ const InviteAdminModal = (props: InviteAdminModalProps): React.ReactElement => {
                   />
                 </Box>
                 {isInvalid ? (
-                  <FormHelperText color="crimson">{errorMessage}</FormHelperText>
+                  <FormHelperText color="crimson">
+                    {errorMessage}
+                  </FormHelperText>
                 ) : null}
               </FormControl>
             </ModalBody>
