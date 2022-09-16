@@ -7,7 +7,7 @@ module.exports = {
 
     try {
       await queryInterface.dropTable("review_tag", { transaction: t });
-      await queryInterface.dropTable("tags", { transaction: t });
+      await queryInterface.dropTable("tags", { transaction: t, cascade: true });
       await queryInterface.createTable(
         "tags",
         {

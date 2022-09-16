@@ -7,11 +7,13 @@ module.exports = {
         "book_tag_book_id_fkey",
         { transaction: t },
       );
-      await queryInterface.removeConstraint(
-        "book_tag",
-        "book_tag_tag_name_fkey",
-        { transaction: t },
-      );
+      try {
+        await queryInterface.removeConstraint(
+          "book_tag",
+          "book_tag_tag_name_fkey",
+          { transaction: t },
+        );
+      } catch {}
       await queryInterface.removeConstraint(
         "book_genre",
         "book_genre_book_id_fkey",
@@ -22,7 +24,6 @@ module.exports = {
         "book_genre_genre_name_fkey",
         { transaction: t },
       );
-
       // Add new constraints with cascade
       await queryInterface.addConstraint("book_tag", {
         fields: ["book_id"],
@@ -48,7 +49,6 @@ module.exports = {
         onUpdate: "CASCADE",
         transaction: t,
       });
-
       await queryInterface.addConstraint("book_genre", {
         fields: ["book_id"],
         type: "foreign key",
@@ -121,7 +121,6 @@ module.exports = {
         },
         transaction: t,
       });
-
       await queryInterface.addConstraint("book_genre", {
         fields: ["book_id"],
         type: "foreign key",
