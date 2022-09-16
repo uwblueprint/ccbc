@@ -2,7 +2,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.sequelize.transaction((t) => {
       return Promise.all([
-        queryInterface.describeTable("users").then(tableDefinition => {
+        queryInterface.describeTable("users").then((tableDefinition) => {
           if (tableDefinition.subscription_expires_on) {
             return Promise.resolve();
           }
@@ -15,11 +15,13 @@ module.exports = {
             { transaction: t },
           );
         }),
-        queryInterface.describeTable("users").then(tableDefinition => {
+        queryInterface.describeTable("users").then((tableDefinition) => {
           if (!tableDefinition.active) {
             return Promise.resolve();
           }
-          return queryInterface.removeColumn("users", "active", { transaction: t });
+          return queryInterface.removeColumn("users", "active", {
+            transaction: t,
+          });
         }),
       ]);
     });
