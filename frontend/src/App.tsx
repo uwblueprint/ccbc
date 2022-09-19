@@ -83,7 +83,15 @@ const App = (): React.ReactElement => {
                       path={Routes.FORGOT_PASSWORD_PAGE}
                       component={ForgotPassword}
                     />
-                    <Route exact path={Routes.SIGNUP_PAGE} component={Signup} />
+                    <Route
+                      exact
+                      path={Routes.SIGNUP_PAGE}
+                      component={
+                        process.env.NODE_ENV === "development"
+                          ? Signup
+                          : Unauthorized
+                      }
+                    />
                     <Route
                       exact
                       path={Routes.UNAUTHORIZED_PAGE}
