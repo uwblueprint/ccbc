@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
-import { FindAndCountOptions, Op, QueryTypes } from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import { Transaction } from "sequelize/types";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import PgReview from "../../models/review.model";
@@ -13,6 +13,7 @@ import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
 import PgGenre from "../../models/genre.model";
+import PgUser from "../../models/user.model";
 import logger from "../../utilities/logger";
 import { sequelize } from "../../umzug";
 import {
@@ -30,7 +31,7 @@ import {
   Tag,
   PaginatedReviewResponseDTO,
 } from "../interfaces/IReviewService";
-import { SearchResult } from "../../types";
+import { ReviewIds } from "../../types";
 
 const Logger = logger(__filename);
 
@@ -230,7 +231,7 @@ class ReviewService implements IReviewService {
       translator: newBook.translator || null,
       formats: newBook.formats,
       minAge: newBook.age_range[0].value,
-      maxAge: newBook.age_range[1].value,
+      maxAge: newBook.age_range[1].value - 1, // note: sequelize stores 3-6 inclusive as [3-7)
       authors: authorsRet,
       genres: genresRet,
       publishers: publishersRet,
@@ -449,7 +450,7 @@ class ReviewService implements IReviewService {
         translator: book.translator || null,
         formats: book.formats || null,
         minAge: book.age_range[0].value,
-        maxAge: book.age_range[1].value,
+        maxAge: book.age_range[1].value - 1, // note: sequelize stores 3-6 inclusive as [3-7)
         authors: authorsRet,
         genres: genresRet,
         publishers: publishersRet,
@@ -515,6 +516,56 @@ class ReviewService implements IReviewService {
     return offset;
   }
 
+  // Grab the review ids that satisfies the filter conditions specified in query
+  async getReviewIdsFromFilter(
+    genres?: string[],
+    minAge?: number,
+    maxAge?: number,
+  ): Promise<number[]> {
+    let result: number[];
+
+    // Filter Queries to Add
+    const minAgeOpt = minAge || 0;
+    const maxAgeOpt = maxAge || 100;
+    const replacements: (number | string[])[] = [minAgeOpt, maxAgeOpt];
+
+    let genreFilterQuery = "";
+    if (genres && genres.length > 0) {
+      genreFilterQuery = "AND genre_name IN (?)";
+      replacements.push(genres);
+    }
+
+    try {
+      result = await this.db.transaction(async (t) => {
+        const reviewIds = (await this.db.query(
+          // estlint-disable-next-line no-multi-str
+          `SELECT DISTINCT review_id \
+           FROM books INNER JOIN book_genre \
+           ON books.id = book_genre.book_id \
+           WHERE age_range && \
+           int4range(?, ?) ${genreFilterQuery}`,
+          {
+            replacements,
+            transaction: t,
+            type: QueryTypes.SELECT,
+          },
+        )) as ReviewIds[];
+        return reviewIds.map(({ review_id }) => {
+          return review_id;
+        });
+      });
+    } catch (error: unknown) {
+      Logger.error(
+        `Failed to get review ids from search. Reason = ${getErrorMessage(
+          error,
+        )}`,
+      );
+      throw error;
+    }
+
+    return result;
+  }
+
   async getReviewsIdsFromSearch(searchTerm: string): Promise<number[]> {
     let result: number[];
 
@@ -530,7 +581,7 @@ class ReviewService implements IReviewService {
             replacements: { search_input: normalizedSearchTerm },
             type: QueryTypes.SELECT,
           },
-        )) as SearchResult[];
+        )) as ReviewIds[];
         return searchResults.map(({ review_id }) => {
           return review_id;
         });
@@ -550,7 +601,12 @@ class ReviewService implements IReviewService {
   async getReviews(
     page: string,
     size: string,
+    genres?: string[],
+    minAge?: number,
+    maxAge?: number,
+    featured?: string,
     searchTerm?: string,
+    draft?: string,
   ): Promise<PaginatedReviewResponseDTO> {
     let result: PaginatedReviewResponseDTO;
 
@@ -558,10 +614,82 @@ class ReviewService implements IReviewService {
       result = await this.db.transaction(async (t) => {
         const limit = size ? parseInt(size, 10) : undefined;
         const offset = this.getPaginationOffset(page, limit);
-        let reviewIds: number[];
 
-        const findConditions: FindAndCountOptions = {
+        // Review Filter Parameters
+        const featureOpt = featured ? { featured } : {};
+        const draftOpt = draft
+          ? {
+              published_at:
+                draft === "true"
+                  ? {
+                      [Op.eq]: null, // We only want drafts
+                    }
+                  : {
+                      [Op.ne]: null, // We only want published reviews
+                    },
+            }
+          : {};
+
+        // Book Filter Parameters
+        let filteredIds: number[] | null = null;
+        if ((genres && genres.length > 0) || minAge || maxAge) {
+          filteredIds = await this.getReviewIdsFromFilter(
+            genres,
+            minAge,
+            maxAge,
+          );
+        }
+
+        // Search Parameters
+        let searchedIds: number[] | null = null;
+        if (searchTerm) {
+          searchedIds = await this.getReviewsIdsFromSearch(searchTerm);
+        }
+
+        // If it returned an empty list for search or filter we have no match so we return empty list of reviews
+        if (
+          (searchedIds && searchedIds.length === 0) ||
+          (filteredIds && filteredIds.length === 0)
+        ) {
+          return {
+            totalReviews: 0,
+            totalPages: 0,
+            currentPage: 0,
+            reviews: [],
+          };
+        }
+
+        // If there's search AND filter, we want to get the intersection of the two review_id lists
+        let reviewIds: number[] = [];
+        if (
+          searchedIds &&
+          searchedIds.length > 0 &&
+          filteredIds &&
+          filteredIds.length > 0
+        ) {
+          reviewIds = filteredIds.filter(
+            (id) => searchedIds && searchedIds.includes(id),
+          );
+        } else if (searchedIds && searchedIds.length > 0) {
+          reviewIds = searchedIds;
+        } else if (filteredIds && filteredIds.length > 0) {
+          reviewIds = filteredIds;
+        }
+
+        const searchAndFilterOpt =
+          reviewIds.length > 0
+            ? {
+                id: {
+                  [Op.in]: reviewIds,
+                },
+              }
+            : {};
+
+        const { rows, count } = await PgReview.findAndCountAll({
           transaction: t,
+          where: {
+            [Op.and]: [searchAndFilterOpt, featureOpt, draftOpt],
+          },
           include: [{ all: true, nested: true }],
           order: [
             ["published_at", "DESC"],
@@ -571,16 +699,7 @@ class ReviewService implements IReviewService {
           offset,
           distinct: true,
           col: "id",
-        };
-
-        if (searchTerm) {
-          reviewIds = await this.getReviewsIdsFromSearch(searchTerm);
-          findConditions.where = {
-            id: { [Op.in]: reviewIds },
-          };
-        }
-
-        const { rows, count } = await PgReview.findAndCountAll(findConditions);
+        });
 
         // The currentPage is the page we requested in params or just page 0
         const currentPage = page ? parseInt(page, 10) : 0;

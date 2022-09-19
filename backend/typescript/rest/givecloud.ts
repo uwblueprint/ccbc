@@ -3,7 +3,7 @@ import { body, validationResult } from "express-validator";
 import AuthService from "../services/implementations/authService";
 import UserService from "../services/implementations/userService";
 import { sendErrorResponse } from "../utilities/errorResponse";
-import { Role } from "../types";
+import { Role, UserDTO } from "../types";
 import EmailService from "../services/implementations/emailService";
 import IEmailService from "../services/interfaces/emailService";
 import IAuthService from "../services/interfaces/authService";
@@ -43,12 +43,16 @@ givecloudRouter.post(
           roleType = "Author";
         }
         try {
-          await userService.getUserByEmail(email);
-          res.status(200).json("remove and implement renew logic here");
-        } catch {
           subscriptionExpiresOn.setDate(
             subscriptionExpiresOn.getDate() + groups[0].days_left,
           );
+          await userService.getUserByEmail(email);
+          const userDTO = await userService.updateUserSubscriptionbyEmail(
+            email,
+            subscriptionExpiresOn,
+          );
+          res.status(200).json(userDTO);
+        } catch {
           const authDTO = await authService.createUserAndSendRegistrationEmail(
             supporter.first_name,
             supporter.last_name,
@@ -57,7 +61,7 @@ givecloudRouter.post(
             subscriptionExpiresOn,
           );
 
-          res.status(200).json(authDtoToToUserDto(authDTO));
+          res.status(201).json(authDtoToToUserDto(authDTO));
         }
       } else {
         res.status(400).json({ errors: errors.array() });

@@ -145,7 +145,13 @@ export interface IReviewService {
   getReviews(
     page: string,
     size: string,
+    genres?: string[],
+    minAge?: number,
+    maxAge?: number,
+    featured?: string,
+    author?: string,
     searchTerm?: string,
+    draft?: string,
   ): Promise<PaginatedReviewResponseDTO>;
 
   /**

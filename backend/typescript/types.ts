@@ -41,6 +41,6 @@ export type TagDTO = {
   name: string;
 };
 
-export type SearchResult = {
+export type ReviewIds = {
   review_id: number;
 };
