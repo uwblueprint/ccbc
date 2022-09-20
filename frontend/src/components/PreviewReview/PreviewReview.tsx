@@ -64,7 +64,7 @@ const PreviewReview = ({
           mb="-12px"
           spacing={isPageView ? 20 : 0}
         >
-          {!multiplebooks ? null : (
+          {multiplebooks ? (
             <ChevronLeftIcon
               boxSize="2em"
               style={{
@@ -73,7 +73,7 @@ const PreviewReview = ({
               }}
               onClick={handleLeftClick}
             />
-          )}
+          ) : null}
 
           <Box
             pr={16}
@@ -178,7 +178,7 @@ const PreviewReview = ({
               </Box>
             </Stack>
           </Box>
-          {!multiplebooks ? null : (
+          {multiplebooks ? (
             <ChevronRightIcon
               boxSize="2em"
               style={{
@@ -193,12 +193,11 @@ const PreviewReview = ({
               }}
               onClick={handleRightClick}
             />
-          )}
+          ) : null}
         </HStack>
         <HStack>
-          {!multiplebooks
-            ? null
-            : Array.from(Array(review.books.length).keys()).map((_, index) => (
+          {multiplebooks
+            ? Array.from(Array(review.books.length).keys()).map((_, index) => (
                 <Icon
                   key={index}
                   viewBox="0 0 200 200"
@@ -212,7 +211,8 @@ const PreviewReview = ({
                     d="M 100, 100 m -75, 0 a 75,75 0 1,0 150,0 a 75,75 0 1,0 -150,0"
                   />
                 </Icon>
-              ))}
+              ))
+            : null}
         </HStack>
         <VStack align="flex-start" width={isPageView ? "50%" : "80%"}>
           <Text fontWeight={400} fontSize="12px">
