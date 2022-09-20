@@ -1,12 +1,6 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.sequelize.transaction(async (t) => {
-      // Remove previous constraints
-      await queryInterface.removeConstraint(
-        "book_tag",
-        "book_tag_book_id_fkey",
-        { transaction: t },
-      );
+    const removeTagNameTransaction = queryInterface.sequelize.transaction(async (t) => {
       try {
         await queryInterface.removeConstraint(
           "book_tag",
@@ -16,6 +10,15 @@ module.exports = {
       } catch (e) {
         console.warn(e);
       }
+    })
+    
+    const everythingElseTransaction = queryInterface.sequelize.transaction(async (t) => {
+      // Remove previous constraints
+      await queryInterface.removeConstraint(
+        "book_tag",
+        "book_tag_book_id_fkey",
+        { transaction: t },
+      );
       await queryInterface.removeConstraint(
         "book_genre",
         "book_genre_book_id_fkey",
@@ -76,6 +79,11 @@ module.exports = {
         transaction: t,
       });
     });
+
+    return Promise.all([
+      removeTagNameTransaction,
+      everythingElseTransaction
+    ])
   },
 
   async down(queryInterface, Sequelize) {
