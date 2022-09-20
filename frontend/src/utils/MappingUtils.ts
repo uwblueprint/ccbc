@@ -112,6 +112,10 @@ export const mapBookToBookRequest = (books: Book[]): BookRequest[] => {
 export const mapReviewResponseToReview = (
   reviews: ReviewResponse[],
 ): Review[] => {
+  if (!reviews) {
+    return [];
+  }
+
   const mappedReviews: Review[] = reviews.map((review) => ({
     reviewId: review.reviewId,
     body: review.body,

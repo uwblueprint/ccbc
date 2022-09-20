@@ -616,7 +616,7 @@ class ReviewService implements IReviewService {
         const offset = this.getPaginationOffset(page, limit);
 
         // Review Filter Parameters
-        const featureOpt = featured ? { featured } : {};
+        const featureOpt = featured ? { featured: true } : {};
         const draftOpt = draft
           ? {
               published_at:
