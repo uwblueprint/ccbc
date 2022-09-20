@@ -1,15 +1,22 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.sequelize.transaction(async (t) => {
+    const removeTagNameTransaction = queryInterface.sequelize.transaction(async (t) => {
+      try {
+        await queryInterface.removeConstraint(
+          "book_tag",
+          "book_tag_tag_name_fkey",
+          { transaction: t },
+        );
+      } catch (e) {
+        console.warn(e);
+      }
+    })
+    
+    const everythingElseTransaction = queryInterface.sequelize.transaction(async (t) => {
       // Remove previous constraints
       await queryInterface.removeConstraint(
         "book_tag",
         "book_tag_book_id_fkey",
-        { transaction: t },
-      );
-      await queryInterface.removeConstraint(
-        "book_tag",
-        "book_tag_tag_name_fkey",
         { transaction: t },
       );
       await queryInterface.removeConstraint(
@@ -22,7 +29,6 @@ module.exports = {
         "book_genre_genre_name_fkey",
         { transaction: t },
       );
-
       // Add new constraints with cascade
       await queryInterface.addConstraint("book_tag", {
         fields: ["book_id"],
@@ -48,7 +54,6 @@ module.exports = {
         onUpdate: "CASCADE",
         transaction: t,
       });
-
       await queryInterface.addConstraint("book_genre", {
         fields: ["book_id"],
         type: "foreign key",
@@ -74,6 +79,11 @@ module.exports = {
         transaction: t,
       });
     });
+
+    return Promise.all([
+      removeTagNameTransaction,
+      everythingElseTransaction
+    ])
   },
 
   async down(queryInterface, Sequelize) {
@@ -121,7 +131,6 @@ module.exports = {
         },
         transaction: t,
       });
-
       await queryInterface.addConstraint("book_genre", {
         fields: ["book_id"],
         type: "foreign key",
