@@ -2,22 +2,20 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.sequelize.transaction(async (t) => {
       // Remove previous constraints
+      await queryInterface.removeConstraint(
+        "book_tag",
+        "book_tag_book_id_fkey",
+        { transaction: t },
+      );
       try {
         await queryInterface.removeConstraint(
           "book_tag",
-          "book_tag_book_id_fkey",
+          "book_tag_tag_name_fkey",
           { transaction: t },
         );
       } catch (e) {
         console.warn(e);
       }
-
-      await queryInterface.removeConstraint(
-        "book_tag",
-        "book_tag_tag_name_fkey",
-        { transaction: t },
-      );
-
       await queryInterface.removeConstraint(
         "book_genre",
         "book_genre_book_id_fkey",
