@@ -16,7 +16,7 @@ import Default from "./components/pages/Default";
 import DisplayReview from "./components/pages/DisplayReview/DisplayReview";
 import EditReviewPage from "./components/pages/EditReviewPage";
 import FilterBox from "./components/pages/FilterBox";
-import MagazineReview from "./components/pages/MagazineReview";
+import MagazineReview from "./components/pages/MagazineReview/MagazineReview";
 import NotFound from "./components/pages/NotFound";
 import Profile from "./components/pages/Profile";
 import SearchBox from "./components/pages/SearchBox";
@@ -83,7 +83,15 @@ const App = (): React.ReactElement => {
                       path={Routes.FORGOT_PASSWORD_PAGE}
                       component={ForgotPassword}
                     />
-                    <Route exact path={Routes.SIGNUP_PAGE} component={Signup} />
+                    <Route
+                      exact
+                      path={Routes.SIGNUP_PAGE}
+                      component={
+                        process.env.NODE_ENV === "development"
+                          ? Signup
+                          : Unauthorized
+                      }
+                    />
                     <Route
                       exact
                       path={Routes.UNAUTHORIZED_PAGE}

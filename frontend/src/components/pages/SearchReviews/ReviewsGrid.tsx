@@ -57,12 +57,12 @@ const ReviewsGrid = ({
   );
 
   return (
-    <Center mt="50px">
+    <Center>
       <SimpleGrid
         minChildWidth={["140px", "140px", "180px"]}
         w="100%"
         spacingY={[0, 4, 10]}
-        spacingX={[2, 5, 5]}
+        spacingX={[2, 2, 4]}
       >
         {displayedReviews.map(
           (review, key) =>
