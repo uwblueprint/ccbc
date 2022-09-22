@@ -31,20 +31,18 @@ const SearchReviews = (): React.ReactElement => {
       ? params.get("search_query")
       : "";
     const genres = params.has("genres") ? params.get("genres")?.split(",") : [];
-    const strAgeRange = params.has("ageRange")
-      ? params.get("ageRange")?.split(",")
-      : [];
-    const intAgeRange = strAgeRange?.map((age) => {
-      return Number(age);
-    });
+    const ageFilter = params.has("minAge") || params.has("maxAge");
+    const minAge = params.has("minAge") ? Number(params.get("minAge")) : 0;
+    const maxAge = params.has("maxAge") ? Number(params.get("maxAge")) : 0;
+
     if (searchQuery) {
       setSearchText(searchQuery);
     }
     if (genres) {
       setGenresFilter(genres);
     }
-    if (intAgeRange) {
-      setAgeRangeFilter(intAgeRange);
+    if (ageFilter && minAge >= 0 && maxAge >= 0) {
+      setAgeRangeFilter([minAge, maxAge]);
     }
   }, []);
 
@@ -60,8 +58,11 @@ const SearchReviews = (): React.ReactElement => {
     if (search) searchUrl.searchParams.append("search_query", search);
     if (genres && genres.length > 0)
       searchUrl.searchParams.append("genres", genres.join(","));
-    if (ageRange && ageRange.length > 0)
-      searchUrl.searchParams.append("ageRange", ageRange.join(","));
+    if (ageRange && ageRange.length > 0) {
+      searchUrl.searchParams.append("minAge", String(ageRange[0]));
+      searchUrl.searchParams.append("maxAge", String(ageRange[1]));
+    }
+
     return searchUrl;
   };
 
@@ -102,7 +103,9 @@ const SearchReviews = (): React.ReactElement => {
           {loading ? (
             <LoadingSpinner mt="21%" />
           ) : (
-            <ReviewsGrid displayedReviews={displayedReviews} />
+            <Box mt="50px">
+              <ReviewsGrid displayedReviews={displayedReviews} />
+            </Box>
           )}
         </Box>
       </Center>

@@ -16,7 +16,7 @@ import Default from "./components/pages/Default";
 import DisplayReview from "./components/pages/DisplayReview/DisplayReview";
 import EditReviewPage from "./components/pages/EditReviewPage";
 import FilterBox from "./components/pages/FilterBox";
-import MagazineReview from "./components/pages/MagazineReview";
+import MagazineReview from "./components/pages/MagazineReview/MagazineReview";
 import NotFound from "./components/pages/NotFound";
 import Profile from "./components/pages/Profile";
 import SearchBox from "./components/pages/SearchBox";
