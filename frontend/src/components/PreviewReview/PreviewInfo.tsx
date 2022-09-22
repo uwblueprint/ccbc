@@ -7,19 +7,19 @@ import {
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
-import React from 'react';
+import React from "react";
 
 import { Review } from "../../types/ReviewTypes";
 
 interface PreviewInfoProps {
   /** The review to be previewed */
   review: Review;
-  currentBook: number
+  currentBook: number;
 }
 
 const PreviewInfo = ({
   review,
-  currentBook
+  currentBook,
 }: PreviewInfoProps): React.ReactElement => {
   return (
     <Box>
@@ -73,38 +73,38 @@ const PreviewInfo = ({
             {review.books[currentBook].genres.length +
               review.books[currentBook].tags.length >
               0 && (
-                <Wrap spacing={1} paddingTop={3}>
-                  {review.books[currentBook].genres.map((genre) => (
-                    <WrapItem key={`genre-${genre.name}`}>
-                      <Tag
-                        size="sm"
-                        variant="solid"
-                        bgColor="#90CDF4"
-                        color="black"
-                      >
-                        {genre.name}
-                      </Tag>
-                    </WrapItem>
-                  ))}
-                  {review.books[currentBook].tags.map((tag) => (
-                    <WrapItem key={`tag-${tag.name}`}>
-                      <Tag
-                        size="sm"
-                        variant="solid"
-                        bgColor="#F7E1A8"
-                        color="black"
-                      >
-                        {tag.name}
-                      </Tag>
-                    </WrapItem>
-                  ))}
-                </Wrap>
-              )}
+              <Wrap spacing={1} paddingTop={3}>
+                {review.books[currentBook].genres.map((genre) => (
+                  <WrapItem key={`genre-${genre.name}`}>
+                    <Tag
+                      size="sm"
+                      variant="solid"
+                      bgColor="#90CDF4"
+                      color="black"
+                    >
+                      {genre.name}
+                    </Tag>
+                  </WrapItem>
+                ))}
+                {review.books[currentBook].tags.map((tag) => (
+                  <WrapItem key={`tag-${tag.name}`}>
+                    <Tag
+                      size="sm"
+                      variant="solid"
+                      bgColor="#F7E1A8"
+                      color="black"
+                    >
+                      {tag.name}
+                    </Tag>
+                  </WrapItem>
+                ))}
+              </Wrap>
+            )}
           </Stack>
         </Box>
       </Stack>
     </Box>
-  )
-}
+  );
+};
 
-export default PreviewInfo
+export default PreviewInfo;

@@ -107,7 +107,9 @@ const PreviewReview = ({
               boxShadow="lg"
             />
           </Box>
-          {!isMobile && <PreviewInfo review={review} currentBook={currentBook} />}
+          {!isMobile && (
+            <PreviewInfo review={review} currentBook={currentBook} />
+          )}
           {multiplebooks ? (
             <ChevronRightIcon
               boxSize="2em"
