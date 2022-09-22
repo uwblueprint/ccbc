@@ -9,7 +9,11 @@ import {
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
 import reviewRequestDtoValidator from "../middlewares/validators/reviewValidators";
-import { getAccessToken, isAuthorizedByUserId, isAuthorizedByRole } from "../middlewares/auth";
+import {
+  getAccessToken,
+  isAuthorizedByUserId,
+  isAuthorizedByRole,
+} from "../middlewares/auth";
 import AuthService from "../services/implementations/authService";
 import IAuthService from "../services/interfaces/authService";
 import UserService from "../services/implementations/userService";
@@ -56,7 +60,11 @@ reviewRouter.get(
       if (review.publishedAt == null) {
         const accessToken = getAccessToken(req);
         const isAdmin =
-          accessToken && (await authService.isAuthorizedByRole(accessToken, new Set(["Admin"])));
+          accessToken &&
+          (await authService.isAuthorizedByRole(
+            accessToken,
+            new Set(["Admin"]),
+          ));
         if (isAdmin) {
           res.status(200).json(review);
         } else {
@@ -90,8 +98,9 @@ reviewRouter.get(
     try {
       const accessToken = getAccessToken(req);
       const isAdmin =
-        accessToken && (await authService.isAuthorizedByRole(accessToken, new Set(["Admin"])));
-      let draft = req.query.draft;
+        accessToken &&
+        (await authService.isAuthorizedByRole(accessToken, new Set(["Admin"])));
+      let { draft } = req.query;
       if (!isAdmin) {
         draft = "false";
       }
