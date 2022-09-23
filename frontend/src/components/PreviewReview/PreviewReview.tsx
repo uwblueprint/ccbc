@@ -11,10 +11,11 @@ import {
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import background from "../../assets/review-book-orange-blob.png";
 import { Review } from "../../types/ReviewTypes";
+import PreviewInfo from "./PreviewInfo";
 
 /**
  * The model defining the props for the Preview Review component
@@ -33,8 +34,19 @@ const PreviewReview = ({
   review,
   isPageView = false,
 }: PreviewReviewProps): React.ReactElement => {
-  const [currentBook, setCurrentBook] = useState<number>(0);
   const multiplebooks = review.books.length > 1;
+
+  const [currentBook, setCurrentBook] = useState<number>(0);
+  const [isMobile, setMobile] = useState(window.innerWidth < 1024);
+
+  const updateMedia = () => {
+    setMobile(window.innerWidth < 1024);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", updateMedia);
+    return () => window.removeEventListener("resize", updateMedia);
+  });
 
   // sort books based on series order
   review.books.sort((a, b) => {
@@ -74,7 +86,6 @@ const PreviewReview = ({
               onClick={handleLeftClick}
             />
           ) : null}
-
           <Box
             pr={16}
             pl={16}
@@ -96,88 +107,9 @@ const PreviewReview = ({
               boxShadow="lg"
             />
           </Box>
-          <Box>
-            <Stack>
-              <Box paddingBottom={3}>
-                <Stack spacing={1}>
-                  <Text fontSize={24} fontWeight={800}>
-                    {review.books[currentBook].title}
-                  </Text>
-                  {review.books[currentBook].seriesName && (
-                    <Text fontSize={12} as="i">
-                      {review.books[currentBook].seriesName}
-                    </Text>
-                  )}
-                </Stack>
-              </Box>
-              <Box fontSize={12} paddingBottom={3}>
-                <Stack spacing={1}>
-                  <HStack>
-                    <Text fontWeight={600}>Written by:</Text>
-                    <Text fontWeight={400}>
-                      {review.books[currentBook].authors
-                        .map(({ fullName }) => fullName)
-                        .join(", ")}
-                    </Text>
-                  </HStack>
-                  {review.books[currentBook].illustrator.length > 0 &&
-                    review.books[currentBook].illustrator[0].length > 0 && (
-                      <HStack>
-                        <Text fontWeight={600}>Illustrated by:</Text>
-                        <Text fontWeight={400}>
-                          {review.books[currentBook].illustrator?.join(", ")}
-                        </Text>
-                      </HStack>
-                    )}
-                </Stack>
-              </Box>
-              <Box fontSize={12} paddingBottom={1}>
-                <Stack spacing={1}>
-                  {review.books[currentBook].publishers.map((publisher) => (
-                    <>
-                      <Text>{`${publisher.fullName}, ${publisher.publishYear}`}</Text>
-                    </>
-                  ))}
-                  {review.books[currentBook].formats.map((format) => (
-                    <>
-                      <Text>{`${format.format}, ${format.isbn}, $${format.price}`}</Text>
-                    </>
-                  ))}
-                  <Text>{`Ages ${review.books[currentBook].minAge}-${review.books[currentBook].maxAge}`}</Text>
-                  {review.books[currentBook].genres.length +
-                    review.books[currentBook].tags.length >
-                    0 && (
-                    <Wrap spacing={1} paddingTop={3}>
-                      {review.books[currentBook].genres.map((genre) => (
-                        <WrapItem key={`genre-${genre.name}`}>
-                          <Tag
-                            size="sm"
-                            variant="solid"
-                            bgColor="#90CDF4"
-                            color="black"
-                          >
-                            {genre.name}
-                          </Tag>
-                        </WrapItem>
-                      ))}
-                      {review.books[currentBook].tags.map((tag) => (
-                        <WrapItem key={`tag-${tag.name}`}>
-                          <Tag
-                            size="sm"
-                            variant="solid"
-                            bgColor="#F7E1A8"
-                            color="black"
-                          >
-                            {tag.name}
-                          </Tag>
-                        </WrapItem>
-                      ))}
-                    </Wrap>
-                  )}
-                </Stack>
-              </Box>
-            </Stack>
-          </Box>
+          {!isMobile && (
+            <PreviewInfo review={review} currentBook={currentBook} />
+          )}
           {multiplebooks ? (
             <ChevronRightIcon
               boxSize="2em"
@@ -214,6 +146,7 @@ const PreviewReview = ({
               ))
             : null}
         </HStack>
+        {isMobile && <PreviewInfo review={review} currentBook={currentBook} />}
         <VStack align="flex-start" width={isPageView ? "50%" : "80%"}>
           <Text fontWeight={400} fontSize="12px">
             <strong>Reviewed by: </strong>
