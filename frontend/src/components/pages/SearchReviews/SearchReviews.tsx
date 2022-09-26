@@ -18,7 +18,7 @@ import ReviewsGrid from "./ReviewsGrid";
  *    ageRange: the age range filter applied to search, in the format of "minAge,maxAge" i.e "5,10"
  */
 const SearchReviews = (): React.ReactElement => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>("");
   const [genresFilter, setGenresFilter] = useState<string[]>([]);
   const [ageRangeFilter, setAgeRangeFilter] = useState<number[]>([]); // ageRange[0] is min age, ageRange[1] is max age
@@ -44,6 +44,7 @@ const SearchReviews = (): React.ReactElement => {
     if (ageFilter && minAge >= 0 && maxAge >= 0) {
       setAgeRangeFilter([minAge, maxAge]);
     }
+    setLoading(false);
   }, []);
 
   /** Creates new url based on search text and filters */
@@ -68,6 +69,7 @@ const SearchReviews = (): React.ReactElement => {
 
   /** Changes url to when search filters are changed and fetches search results  */
   useEffect(() => {
+    if (loading) return;
     setLoading(true);
     const newSearchUrl = generateSearchUrl(
       searchText,
