@@ -1,4 +1,4 @@
-import { Box, Center } from "@chakra-ui/react";
+import { Box, Center, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
@@ -6,6 +6,7 @@ import background from "../../../assets/SearchResultsBackground.png";
 import { PaginatedReviewResponse, Review } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import LoadingSpinner from "../../common/LoadingSpinner";
+import FilterBox from "../FilterBox";
 import SearchBox from "../SearchBox";
 import ReviewsGrid from "./ReviewsGrid";
 
@@ -98,8 +99,19 @@ const SearchReviews = (): React.ReactElement => {
       minH="100vh"
     >
       <Center>
-        <Box w={["90%", "85%", "70%"]} py="10">
-          <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
+        <Box w={["90%", "85%", "70%"]} pt="10">
+          <Box zIndex={100}>
+            <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
+            <FilterBox
+              genreOptions={[{label: "Horror", value: 'horror'}, {label: "Fantasy", value: 'fantasy'}]}
+              ageOptions={[{label: "Ages 0-3", value: '0,3'}, {label: "Ages 4-8", value: '4,8'}]}
+              setGenreFilter={() => null}
+              setAgeFilter={() => null}
+              searchStyle
+            />
+          </Box>
+          <Text>{displayedReviews.length} results found</Text>
+
           {loading ? (
             <LoadingSpinner mt="21%" />
           ) : (

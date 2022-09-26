@@ -1,4 +1,14 @@
-import { Button, SimpleGrid, Stack } from "@chakra-ui/react";
+import { SmallCloseIcon } from "@chakra-ui/icons";
+import {
+  Button,
+  HStack,
+  SimpleGrid,
+  Stack,
+  Tag,
+  TagLabel,
+  TagRightIcon,
+  Text,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
 
 import { Option } from "../../types/BookTypes";
@@ -9,6 +19,7 @@ interface FilterBoxProps {
   ageOptions: Option[]; // dropdown of ages to choose from
   setGenreFilter: (genreFilter: Option[]) => void;
   setAgeFilter: (ageFilter: Option[]) => void;
+  searchStyle?: boolean;
 }
 
 const FilterBox = ({
@@ -16,6 +27,7 @@ const FilterBox = ({
   ageOptions,
   setGenreFilter,
   setAgeFilter,
+  searchStyle,
 }: FilterBoxProps): React.ReactElement => {
   const [genres, setGenres] = useState<Option[]>([]); // save the genres choosen
   const [age, setAge] = useState<Option[]>([]); // save the ages choosen
@@ -31,54 +43,132 @@ const FilterBox = ({
     setGenreFilter([]);
     setAgeFilter([]);
   };
-  return (
-    <SimpleGrid columns={[1, 4, 4]} spacingX="10px">
-      <Stack
-        direction="row"
-        align="center"
-        w="100%"
-        h="100%"
-        spacing={3}
-        padding={0}
-      >
-        <AddMultiSelect
-          id="Audience"
-          label=""
-          maxWidth="160px"
-          placeholder="Audience"
-          options={ageOptions}
-          setOptions={null}
-          optionsSelected={age}
-          setOptionsSelected={setAge}
-          allowMultiSelectOption={false}
-          allowAddOption={false}
-        />
-        <AddMultiSelect
-          id="genre"
-          label=""
-          maxWidth="284px"
-          placeholder="Genres"
-          options={genreOptions}
-          setOptions={null}
-          optionsSelected={genres}
-          setOptionsSelected={setGenres}
-          allowMultiSelectOption
-          allowAddOption={false}
-        />
-      </Stack>
 
-      <Stack
-        direction="row"
-        align="center"
-        width="100%"
-        h="120%"
-        spacing={1}
-        padding={0}
+  const clearTag = async (type: any, val: any) => {
+    if (type === "genre") {
+      setGenres(genres.filter((g) => g.label !== val));
+    } else {
+      setAge(age.filter((a) => a.label !== val));
+    }
+  };
+
+  return (
+    <>
+      <SimpleGrid
+        columns={searchStyle ? [1, 2, 2] : [1, 4, 4]}
+        spacingX="20px"
+        mt="2"
+        mb="6"
       >
-        <Button onClick={clickApply}>Apply</Button>
-        <Button onClick={clear}>Clear</Button>
-      </Stack>
-    </SimpleGrid>
+        <Stack
+          direction="row"
+          align="center"
+          w="100%"
+          h="100%"
+          spacing={3}
+          padding={0}
+        >
+          <AddMultiSelect
+            id="Audience"
+            label=""
+            maxWidth={searchStyle ? "284px" : "160px"}
+            placeholder="Audience"
+            options={ageOptions}
+            setOptions={null}
+            optionsSelected={age}
+            setOptionsSelected={setAge}
+            allowMultiSelectOption
+            allowAddOption={false}
+            searchStyle={searchStyle}
+          />
+          <AddMultiSelect
+            id="genre"
+            label=""
+            maxWidth="284px"
+            placeholder="Genres"
+            options={genreOptions}
+            setOptions={null}
+            optionsSelected={genres}
+            setOptionsSelected={setGenres}
+            allowMultiSelectOption
+            allowAddOption={false}
+            searchStyle={searchStyle}
+          />
+        </Stack>
+
+        <Stack
+          direction="row"
+          align="center"
+          justify="end"
+          width="100%"
+          h="120%"
+          spacing={4}
+          padding={0}
+        >
+          <Button
+            fontWeight="normal"
+            textDecoration="underline"
+            color="blue.500"
+            variant="link"
+            onClick={clickApply}
+          >
+            Apply
+          </Button>
+          <Button
+            fontWeight="normal"
+            textDecoration="underline"
+            color="blue.500"
+            variant="link"
+            onClick={clear}
+          >
+            Clear All
+          </Button>
+        </Stack>
+      </SimpleGrid>
+      {age.length || genres.length ? (
+        <HStack spacing={4} mb="3">
+          <Text>Applied filters: </Text>
+          {age.map((a) => {
+            return (
+              <Tag
+                key={a.value}
+                borderColor="blue.500"
+                backgroundColor="blue.50"
+                borderWidth={1}
+                paddingY={1}
+              >
+                <TagLabel>{a.label}</TagLabel>
+                <TagRightIcon
+                  as={SmallCloseIcon}
+                  color="gray.900"
+                  onClick={() => clearTag("age", a.label)}
+                />
+              </Tag>
+            );
+          })}
+          {genres.map((g) => {
+            return (
+              <Tag
+                key={g.value}
+                borderColor="blue.500"
+                backgroundColor="blue.50"
+                borderWidth={1}
+                paddingY={1}
+              >
+                <TagLabel>{g.label}</TagLabel>
+                <TagRightIcon
+                  as={SmallCloseIcon}
+                  color="gray.900"
+                  onClick={() => clearTag("genre", g.label)}
+                />
+              </Tag>
+            );
+          })}
+        </HStack>
+      ) : (
+        <></>
+      )}
+    </>
   );
 };
 
