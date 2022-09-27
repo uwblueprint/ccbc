@@ -13,7 +13,6 @@ import PgSeries from "../../models/series.model";
 import PgAuthor from "../../models/author.model";
 import PgPublisher from "../../models/publisher.model";
 import PgGenre from "../../models/genre.model";
-import PgUser from "../../models/user.model";
 import logger from "../../utilities/logger";
 import { sequelize } from "../../umzug";
 import {
