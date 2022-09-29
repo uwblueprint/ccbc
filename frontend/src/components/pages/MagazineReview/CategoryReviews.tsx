@@ -74,7 +74,11 @@ const CategoryReviews = ({
         </Box>
       </HStack>
       <Box mt="20px" mb="20px">
-        {reviews.length > 0 ? <ReviewsGrid displayedReviews={reviews.slice(0, displayReviews)} /> : <Text>No reviews found</Text>}
+        {reviews.length > 0 ? (
+          <ReviewsGrid displayedReviews={reviews.slice(0, displayReviews)} />
+        ) : (
+          <Text>No reviews found</Text>
+        )}
       </Box>
     </Box>
   );
