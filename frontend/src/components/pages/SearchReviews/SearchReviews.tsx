@@ -1,4 +1,4 @@
-import { Box, Center } from "@chakra-ui/react";
+import { Box, Center, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
@@ -23,6 +23,7 @@ const SearchReviews = (): React.ReactElement => {
   const [genresFilter, setGenresFilter] = useState<string[]>([]);
   const [ageRangeFilter, setAgeRangeFilter] = useState<number[]>([]); // ageRange[0] is min age, ageRange[1] is max age
   const [displayedReviews, setDisplayedReviews] = useState<Review[]>([]);
+  const [totalReviews, settotalReviews] = useState<number>(0);
 
   /** Fetches the search queries from url */
   useEffect(() => {
@@ -85,11 +86,11 @@ const SearchReviews = (): React.ReactElement => {
     reviewAPIClient
       .getReviews(searchText, 25, 0)
       .then((reviewResponse: PaginatedReviewResponse) => {
+        settotalReviews(reviewResponse.totalReviews);
         setDisplayedReviews(mapReviewResponseToReview(reviewResponse.reviews));
         setLoading(false);
       });
   }, [searchText, genresFilter, ageRangeFilter]);
-
   return (
     <Box
       bgImage={[null, null, background]}
@@ -101,7 +102,15 @@ const SearchReviews = (): React.ReactElement => {
     >
       <Center>
         <Box w={["90%", "85%", "70%"]} py="10">
-          <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
+          <VStack spacing="24px" align="stretch">
+            <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
+            {searchText !== "" && !loading && totalReviews === 1 &&(
+              <Text textStyle="body">{totalReviews} result found</Text>
+            )}
+            {searchText !== "" && !loading && totalReviews !== 1 &&(
+              <Text textStyle="body">{totalReviews} results found</Text>
+            )}
+          </VStack>
           {loading ? (
             <LoadingSpinner mt="21%" />
           ) : (
