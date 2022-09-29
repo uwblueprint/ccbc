@@ -104,10 +104,10 @@ const SearchReviews = (): React.ReactElement => {
         <Box w={["90%", "85%", "70%"]} py="10">
           <VStack spacing="24px" align="stretch">
             <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
-            {searchText !== "" && !loading && totalReviews === 1 &&(
+            {searchText !== "" && !loading && totalReviews === 1 && (
               <Text textStyle="body">{totalReviews} result found</Text>
             )}
-            {searchText !== "" && !loading && totalReviews !== 1 &&(
+            {searchText !== "" && !loading && totalReviews !== 1 && (
               <Text textStyle="body">{totalReviews} results found</Text>
             )}
           </VStack>
