@@ -87,7 +87,7 @@ module.exports = {
     return Promise.all([removeTagNameTransaction, everythingElseTransaction]);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     return queryInterface.sequelize.transaction(async (t) => {
       // Remove previous constraints
       await queryInterface.removeConstraint(
@@ -132,6 +132,7 @@ module.exports = {
         },
         transaction: t,
       });
+
       await queryInterface.addConstraint("book_genre", {
         fields: ["book_id"],
         type: "foreign key",
