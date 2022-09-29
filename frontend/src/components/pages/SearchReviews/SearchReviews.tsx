@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Box, Center, Text } from "@chakra-ui/react";
+=======
+import { Box, Center, Text, VStack } from "@chakra-ui/react";
+>>>>>>> development
 import React, { useEffect, useState } from "react";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
@@ -19,11 +23,12 @@ import ReviewsGrid from "./ReviewsGrid";
  *    ageRange: the age range filter applied to search, in the format of "minAge,maxAge" i.e "5,10"
  */
 const SearchReviews = (): React.ReactElement => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>("");
   const [genresFilter, setGenresFilter] = useState<string[]>([]);
   const [ageRangeFilter, setAgeRangeFilter] = useState<number[]>([]); // ageRange[0] is min age, ageRange[1] is max age
   const [displayedReviews, setDisplayedReviews] = useState<Review[]>([]);
+  const [totalReviews, settotalReviews] = useState<number>(0);
 
   /** Fetches the search queries from url */
   useEffect(() => {
@@ -45,6 +50,7 @@ const SearchReviews = (): React.ReactElement => {
     if (ageFilter && minAge >= 0 && maxAge >= 0) {
       setAgeRangeFilter([minAge, maxAge]);
     }
+    setLoading(false);
   }, []);
 
   /** Creates new url based on search text and filters */
@@ -69,6 +75,7 @@ const SearchReviews = (): React.ReactElement => {
 
   /** Changes url to when search filters are changed and fetches search results  */
   useEffect(() => {
+    if (loading) return;
     setLoading(true);
     const newSearchUrl = generateSearchUrl(
       searchText,
@@ -84,11 +91,11 @@ const SearchReviews = (): React.ReactElement => {
     reviewAPIClient
       .getReviews(searchText, 25, 0)
       .then((reviewResponse: PaginatedReviewResponse) => {
+        settotalReviews(reviewResponse.totalReviews);
         setDisplayedReviews(mapReviewResponseToReview(reviewResponse.reviews));
         setLoading(false);
       });
   }, [searchText, genresFilter, ageRangeFilter]);
-
   return (
     <Box
       bgImage={[null, null, background]}
@@ -99,6 +106,7 @@ const SearchReviews = (): React.ReactElement => {
       minH="100vh"
     >
       <Center>
+<<<<<<< HEAD
         <Box w={["90%", "85%", "70%"]} pt="10">
           <Box zIndex={100}>
             <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
@@ -112,6 +120,18 @@ const SearchReviews = (): React.ReactElement => {
           </Box>
           <Text>{displayedReviews.length} results found</Text>
 
+=======
+        <Box w={["90%", "85%", "70%"]} py="10">
+          <VStack spacing="24px" align="stretch">
+            <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
+            {searchText !== "" && !loading && totalReviews === 1 && (
+              <Text textStyle="body">{totalReviews} result found</Text>
+            )}
+            {searchText !== "" && !loading && totalReviews !== 1 && (
+              <Text textStyle="body">{totalReviews} results found</Text>
+            )}
+          </VStack>
+>>>>>>> development
           {loading ? (
             <LoadingSpinner mt="21%" />
           ) : (

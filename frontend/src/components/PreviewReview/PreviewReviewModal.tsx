@@ -58,7 +58,7 @@ const PreviewReviewModal = ({
         <ModalOverlay />
         <ModalContent overflowY="auto" maxHeight="100vh" fontFamily="DM Sans">
           <ModalHeader backgroundColor="#FFF8F3" borderRadius={10}>
-            <HStack spacing={150} fontSize={14}>
+            <HStack spacing={[35, 150]} fontSize={[12, 14]}>
               <HStack>
                 <Text fontWeight={600}>Previewing:</Text>
                 <Text fontWeight={400}>{modalState()}</Text>

@@ -1,5 +1,5 @@
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface) {
     return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.sequelize.query(
         "drop materialized view if exists review_search;",
@@ -57,7 +57,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.sequelize.query(
         "drop materialized view if exists review_search;",

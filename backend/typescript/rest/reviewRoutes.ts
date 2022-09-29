@@ -9,10 +9,18 @@ import {
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
 import reviewRequestDtoValidator from "../middlewares/validators/reviewValidators";
-import { isAuthorizedByUserId, isAuthorizedByRole } from "../middlewares/auth";
+import {
+  getAccessToken,
+  isAuthorizedByUserId,
+  isAuthorizedByRole,
+} from "../middlewares/auth";
+import AuthService from "../services/implementations/authService";
+import IAuthService from "../services/interfaces/authService";
+import UserService from "../services/implementations/userService";
 
 const reviewRouter: Router = Router();
 const reviewService: IReviewService = new ReviewService();
+const authService: IAuthService = new AuthService(new UserService());
 
 reviewRouter.post(
   "/",
@@ -49,7 +57,24 @@ reviewRouter.get(
     const { id } = req.params;
     try {
       const review = await reviewService.getReview(id);
-      res.status(200).json(review);
+      if (review.publishedAt == null) {
+        const accessToken = getAccessToken(req);
+        const isAdmin =
+          accessToken &&
+          (await authService.isAuthorizedByRole(
+            accessToken,
+            new Set(["Admin"]),
+          ));
+        if (isAdmin) {
+          res.status(200).json(review);
+        } else {
+          // this response should be identical to the one in reviewService,
+          // otherwise the attacker can deduce that this is a draft id.
+          sendErrorResponse(new Error(`Review id ${id} not found`), res);
+        }
+      } else {
+        res.status(200).json(review);
+      }
     } catch (e: unknown) {
       sendErrorResponse(e, res);
     }
@@ -68,9 +93,18 @@ reviewRouter.get(
       ? (req.query.genres as string).split(",")
       : [];
 
-    const { minAge, maxAge, featured, draft } = req.query;
+    const { minAge, maxAge, featured } = req.query;
 
     try {
+      const accessToken = getAccessToken(req);
+      const isAdmin =
+        accessToken &&
+        (await authService.isAuthorizedByRole(accessToken, new Set(["Admin"])));
+      let { draft } = req.query;
+      if (!isAdmin) {
+        draft = "false";
+      }
+
       const reviewsData = await reviewService.getReviews(
         page,
         size,
