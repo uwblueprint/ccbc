@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { body, validationResult } from "express-validator";
-import * as crypto from "crypto";
+import { createHmac } from "crypto";
 import AuthService from "../services/implementations/authService";
 import UserService from "../services/implementations/userService";
 import { sendErrorResponse } from "../utilities/errorResponse";
@@ -34,14 +34,16 @@ givecloudRouter.post(
   async (req: Request, res: Response) => {
     try {
       if (process.env.HMAC_SECRET_KEY) {
-        const hash = crypto
-          .createHmac("sha1", process.env.HMAC_SECRET_KEY)
+        const hash = createHmac("sha1", process.env.HMAC_SECRET_KEY)
           .update(JSON.stringify(req.body))
           .digest("hex");
+
         if (hash !== req.get("HTTP_X_GIVECLOUD_SIGNATURE")) {
           res.status(401).send("Unauthorized");
           return;
         }
+      } else {
+        throw new Error("No HMAC secret key set");
       }
       const errors = validationResult(req);
       if (errors.isEmpty()) {
