@@ -17,6 +17,20 @@ import { Option } from "../../../types/BookTypes";
 import ConfirmationModal from "../../common/ConfirmationModal";
 
 const EmptyOption = { value: "", label: "" };
+const EMPTY_FILTER_STYLES = {
+  color: "gray.900",
+  borderColor: "#3182CE",
+  borderWidth: 1.5,
+  backgroundColor: "#EBF8FF",
+};
+const NON_EMPTY_FILTER_STYLES = {
+  color: "gray.900",
+  borderColor: "black",
+  borderWidth: 1.5,
+  ":hover": {
+    color: "gray.900",
+  },
+};
 
 const customStyles = {
   option: (provided: any) => ({
@@ -112,19 +126,11 @@ const AddMultiSelect = ({
       optionsSelected.length > 0
         ? (provided: any) => ({
             ...provided,
-            color: "gray.900",
-            borderColor: "#3182CE",
-            borderWidth: 1.5,
-            backgroundColor: "#EBF8FF",
+            ...EMPTY_FILTER_STYLES,
           })
         : (provided: any) => ({
             ...provided,
-            color: "gray.900",
-            borderColor: "black",
-            borderWidth: 1.5,
-            ":hover": {
-              color: "gray.900",
-            },
+            ...NON_EMPTY_FILTER_STYLES,
           }),
     [optionsSelected],
   );
@@ -172,9 +178,7 @@ const AddMultiSelect = ({
             icon={<CloseIcon />}
             onClick={(e: any) => confirmDelete(e, data)}
           />
-        ) : (
-          ""
-        )}
+        ) : null}
       </components.Option>
     );
   };
@@ -192,9 +196,7 @@ const AddMultiSelect = ({
             icon={<CloseIcon />}
             onClick={(e: any) => confirmDelete(e, data)}
           />
-        ) : (
-          ""
-        )}
+        ) : null}
       </components.Option>
     );
   };
@@ -208,7 +210,7 @@ const AddMultiSelect = ({
         </Text>
       );
     }
-    return <></>;
+    return null;
   };
 
   const BlankComponent = () => {

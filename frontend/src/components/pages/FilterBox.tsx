@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 
+import { TagType } from "../../constants/Enums";
 import { Option } from "../../types/BookTypes";
 import AddMultiSelect from "./CreateReview/AddMultiSelect";
 
@@ -44,8 +45,8 @@ const FilterBox = ({
     setAgeFilter([]);
   };
 
-  const clearTag = async (type: any, val: any) => {
-    if (type === "genre") {
+  const clearTag = async (type: TagType, val: any) => {
+    if (type === TagType.Genre) {
       setGenres(genres.filter((g) => g.label !== val));
     } else {
       setAge(age.filter((a) => a.label !== val));
@@ -141,7 +142,7 @@ const FilterBox = ({
                 <TagRightIcon
                   as={SmallCloseIcon}
                   color="gray.900"
-                  onClick={() => clearTag("age", a.label)}
+                  onClick={() => clearTag(TagType.Age, a.label)}
                 />
               </Tag>
             );
@@ -159,15 +160,13 @@ const FilterBox = ({
                 <TagRightIcon
                   as={SmallCloseIcon}
                   color="gray.900"
-                  onClick={() => clearTag("genre", g.label)}
+                  onClick={() => clearTag(TagType.Genre, g.label)}
                 />
               </Tag>
             );
           })}
         </HStack>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </>
   );
 };
