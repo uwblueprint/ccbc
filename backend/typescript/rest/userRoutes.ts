@@ -84,16 +84,15 @@ userRouter.get("/", async (req, res) => {
 /* Create a user */
 userRouter.post("/", createUserDtoValidator, async (req, res) => {
   try {
-    const newUser = await userService.createUser({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      roleType: req.body.roleType,
-      password: req.body.password,
-      subscriptionExpiresOn: null,
-    });
+    const { firstName, lastName, email, roleType } = req.body;
 
-    await authService.sendEmailVerificationLink(req.body.email);
+    const newUser = await authService.createUserAndSendRegistrationEmail(
+      firstName,
+      lastName,
+      email,
+      roleType,
+      null,
+    );
 
     res.status(201).json(newUser);
   } catch (error: unknown) {
