@@ -87,11 +87,11 @@ userRouter.post("/", createUserDtoValidator, async (req, res) => {
     const { firstName, lastName, email, roleType } = req.body;
 
     const newUser = await authService.createUserAndSendRegistrationEmail(
-      firstName, 
-      lastName, 
-      email, 
-      roleType, 
-      null
+      firstName,
+      lastName,
+      email,
+      roleType,
+      null,
     );
 
     res.status(201).json(newUser);
