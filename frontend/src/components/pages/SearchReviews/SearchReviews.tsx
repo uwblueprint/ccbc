@@ -1,11 +1,14 @@
 import { Box, Center, Text, VStack } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 
+import GenreAPIClient from "../../../APIClients/GenreAPIClient";
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import background from "../../../assets/SearchResultsBackground.png";
+import { Option } from "../../../types/BookTypes";
 import { PaginatedReviewResponse, Review } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import LoadingSpinner from "../../common/LoadingSpinner";
+import FilterBox from "../FilterBox";
 import SearchBox from "../SearchBox";
 import ReviewsGrid from "./ReviewsGrid";
 
@@ -21,6 +24,8 @@ const SearchReviews = (): React.ReactElement => {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>("");
   const [genresFilter, setGenresFilter] = useState<string[]>([]);
+  const [allGenres, setAllGenres] = useState<Option[]>([]);
+  const [allAges, setAllAges] = useState<Option[]>([]);
   const [ageRangeFilter, setAgeRangeFilter] = useState<number[]>([]); // ageRange[0] is min age, ageRange[1] is max age
   const [displayedReviews, setDisplayedReviews] = useState<Review[]>([]);
   const [totalReviews, settotalReviews] = useState<number>(0);
@@ -46,6 +51,32 @@ const SearchReviews = (): React.ReactElement => {
       setAgeRangeFilter([minAge, maxAge]);
     }
     setLoading(false);
+
+    GenreAPIClient.getGenreOptions().then(
+      (genreResponse: SetStateAction<Option[]>) => {
+        setAllGenres(genreResponse);
+      },
+    );
+
+    const ageArr = [];
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
+    for (const review in displayedReviews) {
+      const targetBook = displayedReviews[review].books[0];
+      const ageRange = `${targetBook.minAge},${targetBook.maxAge}`;
+      const ageOpt = {
+        label: `Ages ${ageRange.replace(",", "-")}`,
+        value: ageRange,
+      };
+
+      if (
+        ageArr.findIndex(
+          (opt) => opt.label === ageOpt.label && opt.value === ageOpt.value,
+        ) === -1
+      ) {
+        ageArr.push(ageOpt);
+      }
+    }
+    setAllAges(ageArr);
   }, []);
 
   /** Creates new url based on search text and filters */
@@ -101,16 +132,26 @@ const SearchReviews = (): React.ReactElement => {
       minH="100vh"
     >
       <Center>
-        <Box w={["90%", "85%", "70%"]} py="10">
-          <VStack spacing="24px" align="stretch">
+        <Box w={["90%", "85%", "70%"]} pt="10">
+          <Box zIndex={100}>
             <SearchBox setSearchText={setSearchText} searchQuery={searchText} />
+            <FilterBox
+              genreOptions={allGenres}
+              ageOptions={allAges}
+              setGenreFilter={() => null}
+              setAgeFilter={() => null}
+              searchStyle
+            />
+          </Box>
+          <VStack spacing="24px" align="stretch">
             {searchText !== "" && !loading && totalReviews === 1 && (
-              <Text textStyle="body">{totalReviews} result found</Text>
+              <Text textStyle="body">{totalReviews || 0} result found</Text>
             )}
             {searchText !== "" && !loading && totalReviews !== 1 && (
-              <Text textStyle="body">{totalReviews} results found</Text>
+              <Text textStyle="body">{totalReviews || 0} results found</Text>
             )}
           </VStack>
+
           {loading ? (
             <LoadingSpinner mt="21%" />
           ) : (
