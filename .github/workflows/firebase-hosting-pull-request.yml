@@ -11,6 +11,9 @@ on:
 defaults:
   run:
     working-directory: frontend
+    
+env:
+  CI: false
 
 jobs:
   build_and_preview:
