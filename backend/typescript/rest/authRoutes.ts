@@ -1,6 +1,10 @@
 import { Router } from "express";
 
-import { isAuthorizedByEmail, isAuthorizedByUserId } from "../middlewares/auth";
+import {
+  isAuthorizedByEmail,
+  isAuthorizedByRole,
+  isAuthorizedByUserId,
+} from "../middlewares/auth";
 import {
   loginRequestValidator,
   registerRequestValidator,
@@ -54,23 +58,28 @@ authRouter.get("/:uid", async (req, res) => {
 });
 
 /* Register a user, returns access token and user info in response body and sets refreshToken as an httpOnly cookie */
-authRouter.post("/register", registerRequestValidator, async (req, res) => {
-  try {
-    const { firstName, lastName, email } = req.body;
+authRouter.post(
+  "/register",
+  isAuthorizedByRole(new Set(["Admin"])),
+  registerRequestValidator,
+  async (req, res) => {
+    try {
+      const { firstName, lastName, email } = req.body;
 
-    const authDTO = await authService.createUserAndSendRegistrationEmail(
-      firstName,
-      lastName,
-      email,
-      "Admin",
-      null,
-    );
+      const authDTO = await authService.createUserAndSendRegistrationEmail(
+        firstName,
+        lastName,
+        email,
+        "Admin",
+        null,
+      );
 
-    res.status(200).json(authDtoToToUserDto(authDTO));
-  } catch (error: unknown) {
-    sendErrorResponse(error, res);
-  }
-});
+      res.status(200).json(authDtoToToUserDto(authDTO));
+    } catch (error: unknown) {
+      sendErrorResponse(error, res);
+    }
+  },
+);
 
 /* Sends the user an email to reset their password. Used when the user has forgotten their password */
 authRouter.post("/forgotPassword", async (req, res) => {

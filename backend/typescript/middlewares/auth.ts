@@ -35,7 +35,6 @@ export const isAuthorizedByRole = (roles: Set<Role>) => {
         .status(401)
         .json({ error: "You are not authorized to make this request." });
     }
-    // user cannot be null, since this would be catched by isAuthorizedByRole
     const user: User | null = await authService.getUserByAccessToken(
       accessToken,
     );
