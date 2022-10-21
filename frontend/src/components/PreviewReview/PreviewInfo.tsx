@@ -30,7 +30,7 @@ const PreviewInfo = ({
               {review.books[currentBook].title}
             </Text>
             {review.books[currentBook].seriesName && (
-              <Text fontSize={12} as="i">
+              <Text fontSize={12}>
                 {review.books[currentBook].seriesName}
               </Text>
             )}
