@@ -101,8 +101,6 @@ class AuthService implements IAuthService {
     try {
       const ret = await FirebaseRestClient.refreshToken(refreshToken);
       const user = await this.getUserByAccessToken(ret.accessToken);
-
-      console.log(ret.accessToken);
       
       if (user && user.subscription_expires_on) {
         const currentDate = new Date();
