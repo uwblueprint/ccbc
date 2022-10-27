@@ -101,6 +101,12 @@ authRouter.post("/refresh", async (req, res) => {
   try {
     const token = await authService.renewToken(req.cookies.refreshToken);
 
+    if (token.accessToken === "") {
+      return res
+        .status(401)
+        .json({ error: "You are not authorized to make this request." });
+    }
+
     res
       .cookie("refreshToken", token.refreshToken, {
         httpOnly: true,
