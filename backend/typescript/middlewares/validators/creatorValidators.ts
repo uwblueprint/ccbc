@@ -6,8 +6,8 @@ export const creatorDtoValidator = async (
   res: Response,
   next: NextFunction,
 ): Promise<Response | void> => {
-  if (!validatePrimitive(req.body.id, "string")) {
-    return res.status(400).send(getApiValidationError("id", "string"));
+  if (!validatePrimitive(req.body.id, "integer")) {
+    return res.status(400).send(getApiValidationError("id", "integer"));
   }
   if (!validatePrimitive(req.body.userId, "integer")) {
     return res.status(400).send(getApiValidationError("userId", "integer"));
@@ -42,8 +42,8 @@ export const creatorCreateUpdateDtoValidator = async (
   res: Response,
   next: NextFunction,
 ): Promise<Response | void> => {
-  if (!validatePrimitive(req.body.id, "string")) {
-    return res.status(400).send(getApiValidationError("id", "string"));
+  if (!validatePrimitive(req.body.id, "integer")) {
+    return res.status(400).send(getApiValidationError("id", "integer"));
   }
   if (!validatePrimitive(req.body.userId, "integer")) {
     return res.status(400).send(getApiValidationError("userId", "integer"));

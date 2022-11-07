@@ -6,7 +6,7 @@ export type Token = {
 };
 
 export type CreatorDTO = {
-  id: string;
+  id: number;
   userId: number;
   location: string;
   rate: number;
