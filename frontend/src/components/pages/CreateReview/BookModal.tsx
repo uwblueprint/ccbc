@@ -1,6 +1,7 @@
 import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
   Button,
+  Checkbox,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -90,7 +91,8 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
 
   // optional book fields
   const [seriesName, setSeriesName] = useState<string>("");
-  const [seriesOrder, setSeriesOrder] = useState<number>(1);
+  const [isOrdered, setIsOrdered] = useState(false);
+  const [seriesOrder, setSeriesOrder] = useState<number>(0);
   const [illustrators, setIllustrator] = useState<string[]>([]);
   const [translators, setTranslator] = useState<string[]>([]);
   const [tags, setTags] = useState<Option[]>([]);
@@ -131,7 +133,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setTitle("");
       setCoverImage("");
       setPrefix("");
-      setSeriesOrder(1);
+      setSeriesOrder(0);
       setIllustrator([]);
       setTranslator([]);
       setGenres([]);
@@ -152,7 +154,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
       setTitle(book.title);
       setCoverImage(book.coverImage);
       setPrefix(book.titlePrefix ? book.titlePrefix : "");
-      setSeriesOrder(book.seriesOrder ? book.seriesOrder : 1);
+      setSeriesOrder(book.seriesOrder);
       setIllustrator(book.illustrator);
       setTranslator(book.translator ? book.translator : []);
 
@@ -224,6 +226,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
     publisher !== "" &&
     publicationYear !== "" &&
     coverImage !== "" &&
+    (!isOrdered || (isOrdered && seriesOrder > 0 && seriesName !== "")) &&
     // genre !== "" &&
     minAge >= 0 &&
     maxAge >= 0 &&
@@ -344,24 +347,39 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                     id="seriesName"
                     label="Series"
                     name="series-name"
-                    required={false}
+                    required={isOrdered}
                     inputFieldValue={seriesName}
                     setInputField={setSeriesName}
                   />
-                  <div>
-                    <FormLabel mb={2}>Book number</FormLabel>
-                    <AddNumberInput
-                      placeholder="Book number"
-                      mb={1}
-                      numberInputFieldValue={
-                        seriesOrder >= 1 ? seriesOrder : ""
-                      }
-                      setNumberField={setSeriesOrder}
-                      minNum={kMinBookNum}
-                      maxNum={kMaxBookNum}
-                    />
-                  </div>
+                  {isOrdered ? (
+                    <div>
+                      <FormLabel mb={2}>
+                        Book number
+                        <span style={{ color: "red" }}> * </span>
+                      </FormLabel>
+                      <AddNumberInput
+                        placeholder="#"
+                        mb={1}
+                        numberInputFieldValue={
+                          seriesOrder >= 1 ? seriesOrder : ""
+                        }
+                        setNumberField={setSeriesOrder}
+                        minNum={kMinBookNum}
+                        maxNum={kMaxBookNum}
+                      />
+                    </div>
+                  ) : null}
                 </Stack>
+                <Checkbox
+                  isChecked={isOrdered}
+                  onChange={(e) => {
+                    if (!e.target.checked) setSeriesOrder(0);
+                    else setSeriesOrder(1);
+                    setIsOrdered(e.target.checked);
+                  }}
+                >
+                  Ordered
+                </Checkbox>
                 <AddStringInputList
                   id="authors"
                   label="Author"
