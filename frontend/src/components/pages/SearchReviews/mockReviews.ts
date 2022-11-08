@@ -6,7 +6,7 @@ const mockGenericBookData: Book = {
   coverImage:
     "https://images-na.ssl-images-amazon.com/images/I/81drfTT9ZfL.jpg",
   titlePrefix: null,
-  seriesOrder: null,
+  seriesOrder: 0,
   illustrator: ["Dr. Seuss"],
   translator: null,
   formats: [],
@@ -26,7 +26,7 @@ const mockLongTitleBookData: Book = {
   coverImage:
     "https://upload.wikimedia.org/wikipedia/en/thumb/5/51/Spy_Family_vol_1.jpg/220px-Spy_Family_vol_1.jpg",
   titlePrefix: null,
-  seriesOrder: null,
+  seriesOrder: 0,
   illustrator: ["Mangaka"],
   translator: null,
   formats: [],

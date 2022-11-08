@@ -32,6 +32,9 @@ const PreviewInfo = ({
             {review.books[currentBook].seriesName && (
               <Text fontSize={12}>
                 {review.books[currentBook].seriesName}
+                {review.books[currentBook].seriesOrder > 0
+                  ? ` - ${review.books[currentBook].seriesOrder}`
+                  : ""}
               </Text>
             )}
           </Stack>
