@@ -32,10 +32,6 @@ class AuthService implements IAuthService {
         password,
       );
       const user = await this.userService.getUserByEmail(email);
-      let today = new Date();
-      if (user.subscriptionExpiresOn && user.subscriptionExpiresOn > today) {
-        throw Error("Generating token for expired user.")
-      }
       return { ...token, ...user };
     } catch (error) {
       Logger.error(`Failed to generate token for user with email ${email}`);
