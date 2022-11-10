@@ -1,6 +1,7 @@
 import {
   Box,
   Center,
+  Flex,
   Spinner,
   Text,
   useBreakpointValue,
@@ -14,6 +15,7 @@ import { PaginatedReviewResponse, Review } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import SearchBox from "../SearchBox";
 import CategoryReviews from "./CategoryReviews";
+import FeaturedReview from "./FeaturedReview";
 
 const MagazineReview = (): React.ReactElement => {
   const [searchText, setSearchText] = useState<string>("");
@@ -89,41 +91,54 @@ const MagazineReview = (): React.ReactElement => {
               </VStack>
             </Box>
           )}
-          <Box w={["90%", "85%", "70%"]} pt="6">
+          <Box w={["90%", "85%", "70%"]} maxW="1000px" pt="6">
             <SearchBox
               setSearchText={setSearchText}
               searchQuery={searchText}
               homePage
             />
-            {loading ? (
-              <Center mt="20">
-                <Spinner />
-              </Center>
-            ) : (
-              <Box py="10">
-                <CategoryReviews
+          </Box>
+
+          {loading ? (
+            <Center mt="20">
+              <Spinner />
+            </Center>
+          ) : (
+            <Flex
+              py="50"
+              w={["90%", "85%", "70%"]}
+              flexDirection="column"
+              alignItems="center"
+            >
+              <Box maxW="none" mb="20">
+                <FeaturedReview
                   name="Featured Reviews"
                   link="/magazine/search_results"
                   reviews={featuredReviews}
                 />
+              </Box>
+              <Box w={["90%", "90%", "100%"]} maxW="1000px">
                 <CategoryReviews
                   name="Age 0 - 3"
                   link="/magazine/search_results/?minAge=0&maxAge=3"
                   reviews={zeroToThreeReviews}
+                  // reviews={featuredReviews}
                 />
                 <CategoryReviews
                   name="Age 4 - 8"
                   link="/magazine/search_results/?minAge=4&maxAge=8"
                   reviews={fourToEightReviews}
+                  // reviews={featuredReviews}
                 />
                 <CategoryReviews
                   name="Age 9 - 12"
                   link="/magazine/search_results/?minAge=9&maxAge=12"
                   reviews={nineToTwelveReviews}
+                  // reviews={featuredReviews}
                 />
               </Box>
-            )}
-          </Box>
+            </Flex>
+          )}
         </VStack>
       </Box>
     </Center>
