@@ -40,6 +40,8 @@ authRouter.post("/login", loginRequestValidator, async (req, res) => {
         .json({
           message: "Generating token for expired user."
         });
+
+      return
     }
 
     res
