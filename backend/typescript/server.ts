@@ -14,6 +14,7 @@ import tagRouter from "./rest/tagRoutes";
 import genreRouter from "./rest/genreRoutes";
 import givecloudRouter from "./rest/givecloud";
 import creatorBookingRouter from "./rest/creatorBookingRoutes";
+import creatorRouter from "./rest/creatorRoutes";
 
 const clientHost = new RegExp(
   "https://ccbc-95e66(--([A-Za-z0-9-])+-[A-Za-z0-9]+)?.web.app",
@@ -43,6 +44,7 @@ app.use("/entities", entityRouter);
 app.use("/reviews", reviewRouter);
 app.use("/booking", creatorBookingRouter);
 app.use("/users", userRouter);
+app.use("/creators", creatorRouter);
 app.use("/tags", tagRouter);
 app.use("/givecloud", givecloudRouter);
 app.use("/genres", genreRouter);

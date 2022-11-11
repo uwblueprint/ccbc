@@ -5,6 +5,20 @@ export type Token = {
   refreshToken: string;
 };
 
+export type CreatorDTO = {
+  id: number;
+  userId: number;
+  location: string;
+  rate: number;
+  genre: string;
+  ageGroup: string;
+  timezone: string;
+  bio: string;
+  isApproved: boolean;
+};
+
+export type CreatorCreateUpdateDTO = Omit<CreatorDTO, "isApproved">;
+
 export type UserDTO = {
   id: string;
   roleType: Role;

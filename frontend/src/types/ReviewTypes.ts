@@ -32,7 +32,7 @@ export type BookRequest = {
   title: string;
   coverImage: string;
   titlePrefix?: string | null;
-  seriesOrder?: number | null;
+  seriesOrder?: number;
   illustrator?: string[] | null;
   translator?: string[] | null;
   formats: Format[] | null;
@@ -50,7 +50,7 @@ export type BookResponse = {
   title: string;
   coverImage: string;
   titlePrefix: string | null;
-  seriesOrder: number | null;
+  seriesOrder: number;
   illustrator: string[] | null;
   translator: string[] | null;
   formats: Format[] | null;
