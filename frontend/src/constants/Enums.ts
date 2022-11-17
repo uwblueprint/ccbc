@@ -42,4 +42,5 @@ export enum BookFormats {
   Hardcover = "Hardcover",
   Paperback = "Paperback",
   eBook = "eBook",
+  audioBook = "Audio Book",
 }
