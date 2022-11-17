@@ -107,7 +107,7 @@ authRouter.post("/refresh", async (req, res) => {
         .json({ error: "You are not authorized to make this request." });
     }
 
-    return res
+    res
       .cookie("refreshToken", token.refreshToken, {
         httpOnly: true,
         sameSite: "none",
@@ -117,6 +117,9 @@ authRouter.post("/refresh", async (req, res) => {
       .json({ accessToken: token.accessToken });
   } catch (error: unknown) {
     sendErrorResponse(error, res);
+    return res
+      .status(401)
+      .json({ error: "An error has occurred." });
   }
 });
 
