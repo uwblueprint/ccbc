@@ -56,7 +56,7 @@ class AuthService implements IAuthService {
         const user = await this.userService.getUserByEmail(googleUser.email);
         return { ...token, ...user };
         /* eslint-disable no-empty */
-      } catch (error) { }
+      } catch (error) {}
 
       const user = await this.userService.createUser(
         {
