@@ -25,7 +25,7 @@ authRouter.post("/login", loginRequestValidator, async (req, res) => {
   try {
     const authDTO = req.body.idToken
       ? // OAuth
-        await authService.generateTokenOAuth(req.body.idToken)
+      await authService.generateTokenOAuth(req.body.idToken)
       : await authService.generateToken(req.body.email, req.body.password);
 
     const { refreshToken, ...rest } = authDTO;

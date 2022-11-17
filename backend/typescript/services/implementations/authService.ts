@@ -56,7 +56,7 @@ class AuthService implements IAuthService {
         const user = await this.userService.getUserByEmail(googleUser.email);
         return { ...token, ...user };
         /* eslint-disable no-empty */
-      } catch (error) {}
+      } catch (error) { }
 
       const user = await this.userService.createUser(
         {
@@ -101,7 +101,7 @@ class AuthService implements IAuthService {
     try {
       const ret = await FirebaseRestClient.refreshToken(refreshToken);
       const user = await this.getUserByAccessToken(ret.accessToken);
-      
+
       if (user && user.subscription_expires_on) {
         const currentDate = new Date();
         currentDate.setUTCHours(0, 0, 0, 0);
@@ -110,7 +110,7 @@ class AuthService implements IAuthService {
 
         if (currentDate.getTime() > subscriptionExpireDate.getTime()) {
           await this.revokeTokens(user.id);
-          return {accessToken: "", refreshToken: ""};
+          return { accessToken: "", refreshToken: "" };
         }
       }
 
