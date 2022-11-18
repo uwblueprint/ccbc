@@ -21,34 +21,32 @@ class CreatorService implements ICreatorService {
       Logger.error(`Failed to get creator. Reason = ${getErrorMessage(error)}`);
       throw error;
     }
-
     return {
       id: creator.id,
       userId: creator.user_id,
       location: creator.location,
       rate: creator.rate,
       genre: creator.genre,
-      ageGroup: creator.age_group,
+      ageRange: creator.age_range,
       timezone: creator.timezone,
       bio: creator.bio,
-      isApproved: creator.isApproved,
+      isApproved: creator.is_approved,
     };
   }
 
   async getCreators(): Promise<Array<CreatorDTO>> {
     try {
       const creators: Array<Creator> = await Creator.findAll({ raw: true });
-
       return creators.map((creator) => ({
         id: creator.id,
         userId: creator.user_id,
         location: creator.location,
         rate: creator.rate,
         genre: creator.genre,
-        ageGroup: creator.age_group,
+        ageRange: creator.age_range,
         timezone: creator.timezone,
         bio: creator.bio,
-        isApproved: creator.isApproved,
+        isApproved: creator.is_approved,
       }));
     } catch (error) {
       Logger.error(

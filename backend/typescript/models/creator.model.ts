@@ -25,7 +25,7 @@ export default class Creator extends Model {
   genre!: string;
 
   @Column
-  age_group!: string;
+  age_range!: string;
 
   @Column
   timezone!: string;
@@ -34,5 +34,5 @@ export default class Creator extends Model {
   bio!: string;
 
   @Column
-  isApproved!: boolean;
+  is_approved!: boolean;
 }
