@@ -33,15 +33,13 @@ authRouter.post("/login", loginRequestValidator, async (req, res) => {
       : await authService.generateToken(req.body.email, req.body.password);
 
     const { refreshToken, ...rest } = authDTO;
-    let today = new Date();
+    const today = new Date();
     if (rest.subscriptionExpiresOn && rest.subscriptionExpiresOn > today) {
-      res
-        .status(400)
-        .json({
-          message: "Generating token for expired user."
-        });
+      res.status(400).json({
+        message: "Generating token for expired user.",
+      });
 
-      return
+      return;
     }
 
     res
