@@ -122,19 +122,16 @@ const MagazineReview = (): React.ReactElement => {
                   name="Age 0 - 3"
                   link="/magazine/search_results/?minAge=0&maxAge=3"
                   reviews={zeroToThreeReviews}
-                  // reviews={featuredReviews}
                 />
                 <CategoryReviews
                   name="Age 4 - 8"
                   link="/magazine/search_results/?minAge=4&maxAge=8"
                   reviews={fourToEightReviews}
-                  // reviews={featuredReviews}
                 />
                 <CategoryReviews
                   name="Age 9 - 12"
                   link="/magazine/search_results/?minAge=9&maxAge=12"
                   reviews={nineToTwelveReviews}
-                  // reviews={featuredReviews}
                 />
               </Box>
             </Flex>
