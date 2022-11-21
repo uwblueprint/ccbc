@@ -7,24 +7,26 @@ import { sendErrorResponse } from "../utilities/errorResponse";
 const creatorRouter: Router = Router();
 creatorRouter.get("/");
 
+interface CreatorReqQuery {
+  id?: string;
+  location?: string;
+  ageRange?: string;
+  genre?: string;
+  status?: string;
+}
+
 const creatorService: ICreatorService = new CreatorService();
 
 function isOverlap(ageRange: string, ageRangeCmp: string): boolean {
-  const lowerInclusiveBound = parseInt(
-    ageRange.split(",")[0].slice(1) || "",
-    10,
-  );
-  const upperExclusiveBound = parseInt(
-    ageRange.split(",")[1].slice(0, -1) || "",
-    10,
-  );
+  const lowerInclusiveBound = parseInt(ageRange.split(",")[0].slice(1), 10);
+  const upperExclusiveBound = parseInt(ageRange.split(",")[1].slice(0, -1), 10);
 
   const lowerInclusiveBoundCmp = parseInt(
-    ageRangeCmp?.split(",")[0].slice(1) || "",
+    ageRangeCmp?.split(",")[0].slice(1),
     10,
   );
   const upperExclusiveBoundCmp = parseInt(
-    ageRangeCmp?.split(",")[1].slice(0, -1) || "",
+    ageRangeCmp?.split(",")[1].slice(0, -1),
     10,
   );
 
@@ -38,62 +40,25 @@ creatorRouter.get(
   "/",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
-    const { id, location, ageRange, genre, status } = req.query;
+    const { id, location, ageRange, genre, status } =
+      req.query as CreatorReqQuery;
     const isAdmin = !isAuthorizedByRole(new Set(["Admin"]));
     if (id) {
-      if (typeof id === "string") {
-        const idNumeric = parseInt(id, 10);
-        // Get User By Id
-        if (Number.isNaN(idNumeric)) {
-          res
-            .status(400)
-            .json({ error: "id query parameter must be a number." });
-        } else {
-          try {
-            const creator = await creatorService.getCreatorById(id);
-            if (isAdmin && creator.isApproved === false) {
-              res.status(404).json({ error: "No creator was found." });
-            } else {
-              res.status(200).json(creator);
-            }
-          } catch (error: unknown) {
-            sendErrorResponse(error, res);
-          }
-        }
-      } else {
+      const idNumeric = parseInt(id, 10);
+      // Get User By Id
+      if (Number.isNaN(idNumeric)) {
         res.status(400).json({ error: "id query parameter must be a number." });
+      } else {
+        try {
+          res.status(200).json(await creatorService.getCreatorById(id));
+        } catch (error: unknown) {
+          sendErrorResponse(error, res);
+        }
       }
     } else {
       // Get all creators with filter
       try {
-        if (location && typeof location !== "string") {
-          res
-            .status(400)
-            .json({ error: "location query parameter must be a string." });
-          return;
-        }
-
-        if (ageRange && typeof ageRange !== "string") {
-          res.status(400).json({
-            error:
-              "age query parameter must be a string in interval form [x, y).",
-          });
-          return;
-        }
-        if (genre && typeof genre !== "string") {
-          res
-            .status(400)
-            .json({ error: "id query parameter must be a string." });
-          return;
-        }
-        if (status !== undefined && status !== "true" && status !== "false") {
-          res
-            .status(400)
-            .json({ error: "status query parameter must be a boolean." });
-          return;
-        }
         const creators = await creatorService.getCreators();
-
         const filteredCreators = creators.filter(
           (creator) =>
             (creator.isApproved || isAdmin) &&

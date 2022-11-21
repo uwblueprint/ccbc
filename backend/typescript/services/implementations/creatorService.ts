@@ -3,6 +3,7 @@ import logger from "../../utilities/logger";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import ICreatorService from "../interfaces/creatorService";
 import Creator from "../../models/creator.model";
+import { isAuthorizedByRole } from "../../middlewares/auth";
 
 const Logger = logger(__filename);
 
@@ -11,8 +12,13 @@ class CreatorService implements ICreatorService {
 
   async getCreatorById(creatorId: string): Promise<CreatorDTO> {
     let creator: Creator | null;
+    const isAdmin = !isAuthorizedByRole(new Set(["Admin"]));
     try {
       creator = await Creator.findByPk(Number(creatorId));
+
+      if (isAdmin && creator?.is_approved === false) {
+        throw new Error("No creator was found.");
+      }
 
       if (!creator) {
         throw new Error(`creatorId ${creatorId} not found.`);
