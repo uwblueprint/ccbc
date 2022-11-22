@@ -62,11 +62,14 @@ creatorRouter.get(
         const filteredCreators = creators.filter(
           (creator) =>
             (creator.isApproved || isAdmin) &&
-            (!status || creator.isApproved === (status === "true")) &&
-            (!genre || creator.genre.toLowerCase() === genre.toLowerCase()) &&
-            (!location ||
-              creator.location.toLowerCase() === location.toLowerCase()) &&
-            (!ageRange || isOverlap(creator.ageRange, ageRange)),
+            (status ? creator.isApproved === (status === "true") : true) &&
+            (genre
+              ? creator.genre.toLowerCase() === genre.toLowerCase()
+              : true) &&
+            (location
+              ? creator.location.toLowerCase() === location.toLowerCase()
+              : true) &&
+            (ageRange ? isOverlap(creator.ageRange, ageRange) : true),
         );
         res.status(200).json(filteredCreators);
       } catch (error: unknown) {
