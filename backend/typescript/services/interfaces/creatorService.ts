@@ -14,7 +14,17 @@ interface ICreatorService {
    * @returns array of CreatorDTOs
    * @throws Error if creator retrieval fails
    */
-  getCreators(): Promise<Array<CreatorDTO>>;
+  getCreators({
+    status,
+    genre,
+    location,
+    ageRange,
+  }: {
+    status?: string;
+    genre?: string;
+    location?: string;
+    ageRange?: string;
+  }): Promise<Array<CreatorDTO>>;
 }
 
 export default ICreatorService;

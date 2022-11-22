@@ -7,9 +7,27 @@ import { isAuthorizedByRole } from "../../middlewares/auth";
 
 const Logger = logger(__filename);
 
+function isOverlap(ageRange: string, ageRangeCmp: string): boolean {
+  const lowerInclusiveBound = parseInt(ageRange.split(",")[0].slice(1), 10);
+  const upperExclusiveBound = parseInt(ageRange.split(",")[1].slice(0, -1), 10);
+
+  const lowerInclusiveBoundCmp = parseInt(
+    ageRangeCmp?.split(",")[0].slice(1),
+    10,
+  );
+  const upperExclusiveBoundCmp = parseInt(
+    ageRangeCmp?.split(",")[1].slice(0, -1),
+    10,
+  );
+
+  return (
+    Math.max(lowerInclusiveBound, lowerInclusiveBoundCmp) <=
+    Math.min(upperExclusiveBound, upperExclusiveBoundCmp)
+  );
+}
+
 class CreatorService implements ICreatorService {
   /* eslint-disable class-methods-use-this */
-
   async getCreatorById(creatorId: string): Promise<CreatorDTO> {
     let creator: Creator | null;
     const isAdmin = !isAuthorizedByRole(new Set(["Admin"]));
@@ -40,20 +58,44 @@ class CreatorService implements ICreatorService {
     };
   }
 
-  async getCreators(): Promise<Array<CreatorDTO>> {
+  async getCreators({
+    status,
+    genre,
+    location,
+    ageRange,
+  }: {
+    status?: string;
+    genre?: string;
+    location?: string;
+    ageRange?: string;
+  }): Promise<Array<CreatorDTO>> {
+    const isAdmin = !isAuthorizedByRole(new Set(["Admin"]));
     try {
       const creators: Array<Creator> = await Creator.findAll({ raw: true });
-      return creators.map((creator) => ({
-        id: creator.id,
-        userId: creator.user_id,
-        location: creator.location,
-        rate: creator.rate,
-        genre: creator.genre,
-        ageRange: creator.age_range,
-        timezone: creator.timezone,
-        bio: creator.bio,
-        isApproved: creator.is_approved,
-      }));
+      return creators
+        .map((creator) => ({
+          id: creator.id,
+          userId: creator.user_id,
+          location: creator.location,
+          rate: creator.rate,
+          genre: creator.genre,
+          ageRange: creator.age_range,
+          timezone: creator.timezone,
+          bio: creator.bio,
+          isApproved: creator.is_approved,
+        }))
+        .filter(
+          (creator) =>
+            (creator.isApproved || isAdmin) &&
+            (status ? creator.isApproved === (status === "true") : true) &&
+            (genre
+              ? creator.genre.toLowerCase() === genre.toLowerCase()
+              : true) &&
+            (location
+              ? creator.location.toLowerCase() === location.toLowerCase()
+              : true) &&
+            (ageRange ? isOverlap(creator.ageRange, ageRange) : true),
+        );
     } catch (error) {
       Logger.error(
         `Failed to get creators. Reason = ${getErrorMessage(error)}`,
