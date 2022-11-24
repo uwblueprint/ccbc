@@ -17,12 +17,12 @@ interface PreviewInfoProps {
   currentBook: number;
 }
 
-const shortForm = {
-	"Hardcover": "(hc)",
+const shortFormats = {
+  "Hardcover": "(hc)",
   "Paperback": "(pb)",
   "eBook": "(eb)",
   "Audio Book": "(ab)"
-};
+}
 
 const PreviewInfo = ({
   review,
@@ -76,7 +76,7 @@ const PreviewInfo = ({
             ))}
             {review.books[currentBook].formats.map((format) => (
               <>
-                <Text>{`${format.isbn}, ${shortForm[format.format as keyof typeof shortForm]}, $${format.price}`}</Text>
+                <Text>{`${format.isbn}, ${shortFormats[format.format as keyof typeof shortFormats]}, $${format.price}`}</Text>
               </>
             ))}
             <Text>{`Ages ${review.books[currentBook].minAge}-${review.books[currentBook].maxAge}`}</Text>
