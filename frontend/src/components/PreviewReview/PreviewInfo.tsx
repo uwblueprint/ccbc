@@ -18,10 +18,10 @@ interface PreviewInfoProps {
 }
 
 const shortFormats = {
-	Hardcover: "(hc)",
-  Paperback: "(pb)",
-  eBook: "(eb)",
-  audioBook: "(ab)"
+	"Hardcover": "(hc)",
+  "Paperback": "(pb)",
+  "eBook": "(eb)",
+  "Audio Book": "(ab)"
 };
 
 const PreviewInfo = ({
