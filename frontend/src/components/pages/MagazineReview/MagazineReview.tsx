@@ -111,11 +111,7 @@ const MagazineReview = (): React.ReactElement => {
               alignItems="center"
             >
               <Box maxW="none" mb="20">
-                <FeaturedReview
-                  name="Featured Reviews"
-                  link="/magazine/search_results"
-                  reviews={featuredReviews}
-                />
+                <FeaturedReview reviews={featuredReviews} />
               </Box>
               <Box w={["90%", "90%", "100%"]} maxW="1000px">
                 <CategoryReviews

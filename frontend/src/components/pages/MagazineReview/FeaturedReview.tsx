@@ -1,44 +1,33 @@
 /* eslint-disable no-nested-ternary */
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import {
-  Box,
-  chakra,
-  Flex,
-  Image,
-  Text,
-  useBreakpointValue,
-} from "@chakra-ui/react";
+import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
 
 import { Review } from "../../../types/ReviewTypes";
 
-interface CategoryReviewsProps {
-  name: string;
-  link: string;
+interface FeaturedReviewsProps {
   reviews: Review[];
 }
 
 interface CaroselItemProps {
-  item: Review;
   index: number;
   toTranslate: number;
 }
 
 const CarouselItem = ({
-  item,
   index,
   toTranslate,
 }: CaroselItemProps): JSX.Element => {
   const onDisplay = {
-    width: { base: "110px", md: "240px", lg: "310px" },
+    width: { base: "110px", md: "210px", lg: "310px" },
     height: { base: "70px", md: "190px", lg: "290px" },
   };
 
   const background = {
-    width: { base: "90px", md: "180px", lg: "302px" },
+    width: { base: "102px", md: "202px", lg: "302px" },
     height: { base: "70px", md: "160px", lg: "250px" },
   };
+
   return (
     <Box
       display="flex"
@@ -52,13 +41,13 @@ const CarouselItem = ({
       transition="all 0.5s ease-out"
       cursor="pointer"
     >
-      <chakra.div
+      <Box
         display="flex"
         borderRadius="5px"
         boxShadow={index === toTranslate + 1 ? "md" : "xl"}
         overflow="hidden"
       >
-        <chakra.div
+        <Box
           h="100%"
           display="flex"
           flexDirection="column"
@@ -73,7 +62,7 @@ const CarouselItem = ({
           <Text color="gray">yyyy-mm-dd</Text>
 
           <Box display="inline">genre</Box>
-        </chakra.div>
+        </Box>
         <Image
           h="100%"
           w="100%"
@@ -82,14 +71,14 @@ const CarouselItem = ({
           src="https://upload.wikimedia.org/wikipedia/en/1/10/The_Cat_in_the_Hat.png"
           fit="cover"
         />
-      </chakra.div>
+      </Box>
     </Box>
   );
 };
 
 const MobileFeaturedReview = (): JSX.Element => {
   return (
-    <chakra.div
+    <Box
       h="200px"
       w="216px"
       display="flex"
@@ -97,7 +86,7 @@ const MobileFeaturedReview = (): JSX.Element => {
       borderRadius="5px"
       overflow="hidden"
     >
-      <chakra.div
+      <Box
         h="100%"
         display="flex"
         flexDirection="column"
@@ -116,7 +105,7 @@ const MobileFeaturedReview = (): JSX.Element => {
         <Box display="inline" fontSize={16}>
           genre
         </Box>
-      </chakra.div>
+      </Box>
       <Image
         h="100%"
         w="100%"
@@ -125,26 +114,13 @@ const MobileFeaturedReview = (): JSX.Element => {
         src="https://upload.wikimedia.org/wikipedia/en/1/10/The_Cat_in_the_Hat.png"
         fit="cover"
       />
-    </chakra.div>
+    </Box>
   );
 };
 
-const CategoryReviews = ({
-  name,
-  link,
+const FeaturedReviews = ({
   reviews,
-}: CategoryReviewsProps): React.ReactElement => {
-  const history = useHistory();
-  const displayReviews = useBreakpointValue(
-    {
-      base: 2,
-      lg: 5,
-      md: 3,
-      sm: 3,
-    },
-    "lg",
-  );
-
+}: FeaturedReviewsProps): React.ReactElement => {
   const [toTranslate, setToTranslate] = useState(0);
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
@@ -191,7 +167,7 @@ const CategoryReviews = ({
               h={{ base: "300px", md: "300px", lg: "420px" }}
               pt="30px"
             >
-              <chakra.div
+              <Box
                 display="flex"
                 alignItems="center"
                 transition="transform 0.55s ease-out"
@@ -205,13 +181,12 @@ const CategoryReviews = ({
                   return (
                     <CarouselItem
                       key={item.reviewId}
-                      item={item}
                       index={index}
                       toTranslate={toTranslate}
                     />
                   );
                 })}
-              </chakra.div>
+              </Box>
             </Box>
 
             <button
@@ -230,4 +205,4 @@ const CategoryReviews = ({
   );
 };
 
-export default CategoryReviews;
+export default FeaturedReviews;
