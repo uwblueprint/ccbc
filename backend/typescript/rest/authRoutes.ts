@@ -68,7 +68,7 @@ authRouter.get("/:uid", async (req, res) => {
 /* Register a user, returns access token and user info in response body and sets refreshToken as an httpOnly cookie */
 authRouter.post(
   "/register",
-  isAuthorizedByRole(new Set(["Admin"])),
+  // isAuthorizedByRole(new Set(["Admin"])),
   registerRequestValidator,
   async (req, res) => {
     try {
