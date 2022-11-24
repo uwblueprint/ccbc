@@ -92,6 +92,7 @@ const App = (): React.ReactElement => {
                           : Unauthorized
                       }
                     />
+                    
                     <Route
                       exact
                       path={Routes.UNAUTHORIZED_PAGE}
