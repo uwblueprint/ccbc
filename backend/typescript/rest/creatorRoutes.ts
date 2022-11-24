@@ -7,7 +7,6 @@ import ICreatorService from "../services/interfaces/creatorService";
 
 const creatorService: ICreatorService = new CreatorService();
 
-
 const creatorRouter: Router = Router();
 creatorRouter.get("/");
 
@@ -25,11 +24,11 @@ creatorRouter.put(
     try {
       await creatorService.approveCreator(id);
 
-      res.status(200).json({"message": "approved"});
+      res.status(200).json({ message: "approved" });
     } catch (e: unknown) {
       sendErrorResponse(e, res);
     }
-  }
-)
+  },
+);
 
 export default creatorRouter;
