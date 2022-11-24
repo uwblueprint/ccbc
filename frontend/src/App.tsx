@@ -86,12 +86,9 @@ const App = (): React.ReactElement => {
                     <Route
                       exact
                       path={Routes.SIGNUP_PAGE}
-                      component={
-                        process.env.NODE_ENV === "development"
-                          ? Signup
-                          : Unauthorized
-                      }
+                      component={Signup}
                     />
+                    
                     <Route
                       exact
                       path={Routes.UNAUTHORIZED_PAGE}

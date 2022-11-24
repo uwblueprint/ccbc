@@ -25,6 +25,7 @@ jobs:
       # ".._PROD" refers to staging, ".._PRODUCTION" refers to production, TODO change this
       - run: echo "REACT_APP_BACKEND_URL=${{ secrets.REACT_APP_BACKEND_URL_PROD }}" > .env
       - run: echo "REACT_APP_NODE_ENV=staging" >> .env
+      - run: echo "NODE_ENV=development" >> .env
       - run: rm -rf node_modules && yarn install --frozen-lockfile && yarn build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
