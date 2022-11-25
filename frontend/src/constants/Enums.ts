@@ -6,6 +6,11 @@ export enum UserRole {
   Creator = "Creator",
 }
 
+export enum TagType {
+  Genre = "Genre",
+  Age = "Age",
+}
+
 export enum Genre {
   /* Fiction */
   Fantasy = "Fantasy",
@@ -37,4 +42,5 @@ export enum BookFormats {
   Hardcover = "Hardcover",
   Paperback = "Paperback",
   eBook = "eBook",
+  audioBook = "Audio Book",
 }

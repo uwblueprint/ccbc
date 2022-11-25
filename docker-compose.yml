@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
   frontend:
+    container_name: ccbc-frontend-1
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -15,6 +16,7 @@ services:
     env_file:
       - ./frontend/.env
   ts-backend:
+    container_name: ccbc-ts-backend-1
     build:
       context: ./backend/typescript
       dockerfile: Dockerfile
@@ -31,6 +33,7 @@ services:
     env_file:
       - ./.env
   db:
+    container_name: ccbc-db-1
     image: postgres:12-alpine
     ports:
       - 5432:5432
@@ -39,6 +42,7 @@ services:
     env_file:
       - ./.env
   db-test:
+    container_name: ccbc-db-test-1
     image: postgres:12-alpine
     ports:
       - 5430:5432

@@ -2,15 +2,11 @@ module.exports = {
   async up(queryInterface) {
     const removeTagNameTransaction = queryInterface.sequelize.transaction(
       async (t) => {
-        try {
-          await queryInterface.removeConstraint(
-            "book_tag",
-            "book_tag_tag_name_fkey",
-            { transaction: t },
-          );
-        } catch (e) {
-          // console.warn(e);
-        }
+        await queryInterface.removeConstraint(
+          "book_tag",
+          "book_tag_tag_name_fkey",
+          { transaction: t },
+        );
       },
     );
 
@@ -132,6 +128,7 @@ module.exports = {
         },
         transaction: t,
       });
+
       await queryInterface.addConstraint("book_genre", {
         fields: ["book_id"],
         type: "foreign key",

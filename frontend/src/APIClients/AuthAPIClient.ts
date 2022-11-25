@@ -62,11 +62,15 @@ const register = async (
   lastName: string,
   email: string,
 ): Promise<AuthenticatedUser> => {
+  // const bearerToken = `Bearer ${getLocalStorageObjProperty(
+  //   AUTHENTICATED_USER_KEY,
+  //   "accessToken",
+  // )}`;
   try {
     const { data } = await baseAPIClient.post(
       "/auth/register",
       { firstName, lastName, email },
-      { withCredentials: true },
+      { withCredentials: true},
     );
     return data;
   } catch (error) {

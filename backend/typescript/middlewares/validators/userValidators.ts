@@ -16,8 +16,8 @@ export const createUserDtoValidator = async (
     return res.status(400).send(getApiValidationError("email", "string"));
   }
   if (
-    req.body.roleType !== "Admin" ||
-    req.body.roleType !== "Subscriber" ||
+    req.body.roleType !== "Admin" &&
+    req.body.roleType !== "Subscriber" &&
     req.body.roleType !== "Author"
   ) {
     return res.status(400).send(getApiValidationError("roleType", "Role"));
@@ -47,8 +47,8 @@ export const updateUserDtoValidator = async (
     return res.status(400).send(getApiValidationError("email", "string"));
   }
   if (
-    req.body.roleType !== "Admin" ||
-    req.body.roleType !== "Subscriber" ||
+    req.body.roleType !== "Admin" &&
+    req.body.roleType !== "Subscriber" &&
     req.body.roleType !== "Author"
   ) {
     return res.status(400).send(getApiValidationError("roleType", "Role"));

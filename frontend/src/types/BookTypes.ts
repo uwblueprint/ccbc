@@ -53,7 +53,7 @@ export type Book = {
   title: string;
   coverImage: string;
   titlePrefix: string | null;
-  seriesOrder: number | null;
+  seriesOrder: number;
   illustrator: string[];
   translator: string[] | null;
   formats: BookFormat[];

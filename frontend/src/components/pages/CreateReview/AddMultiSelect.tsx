@@ -1,8 +1,15 @@
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/jsx-props-no-spreading, @typescript-eslint/no-explicit-any */
 
 import { CloseIcon } from "@chakra-ui/icons";
-import { FormControl, FormLabel, IconButton } from "@chakra-ui/react";
-import React, { useState } from "react";
+import {
+  Checkbox,
+  FormControl,
+  FormLabel,
+  IconButton,
+  Text,
+} from "@chakra-ui/react";
+import React, { useMemo, useState } from "react";
 import { components } from "react-select";
 import Creatable from "react-select/creatable";
 
@@ -10,6 +17,20 @@ import { Option } from "../../../types/BookTypes";
 import ConfirmationModal from "../../common/ConfirmationModal";
 
 const EmptyOption = { value: "", label: "" };
+const EMPTY_FILTER_STYLES = {
+  color: "gray.900",
+  borderColor: "#3182CE",
+  borderWidth: 1.5,
+  backgroundColor: "#EBF8FF",
+};
+const NON_EMPTY_FILTER_STYLES = {
+  color: "gray.900",
+  borderColor: "black",
+  borderWidth: 1.5,
+  ":hover": {
+    color: "gray.900",
+  },
+};
 
 const customStyles = {
   option: (provided: any) => ({
@@ -30,6 +51,40 @@ const customStyles = {
   }),
 };
 
+const customSearchStyles = {
+  option: (provided: any) => ({
+    ...provided,
+    display: "flex",
+    paddingLeft: "5%",
+    justifyContent: "space-between",
+  }),
+  control: (provided: any) => ({
+    ...provided,
+    color: "gray.900",
+    borderColor: "black",
+    borderWidth: 1.5,
+    ":hover": {
+      color: "gray.900",
+    },
+  }),
+  placeholder: (provided: any) => ({
+    ...provided,
+    color: "gray.900",
+  }),
+  multiValueRemove: (provided: any, data: any) => ({
+    ...provided,
+    ":hover": {
+      backgroundColor: data.color,
+      color: "white",
+    },
+  }),
+  dropdownIndicator: (provided: any, state: any) => ({
+    ...provided,
+    color: "gray.900",
+    transform: state.isFocused ? "rotate(180deg)" : "rotate(0deg)",
+  }),
+};
+
 interface AddMultiSelectProps {
   id: string;
   label: string;
@@ -43,6 +98,7 @@ interface AddMultiSelectProps {
   allowDeleteOption?: boolean;
   allowAddOption?: boolean;
   allowMultiSelectOption?: boolean;
+  searchStyle?: boolean;
 }
 
 const AddMultiSelect = ({
@@ -58,11 +114,26 @@ const AddMultiSelect = ({
   allowDeleteOption,
   allowAddOption,
   allowMultiSelectOption,
+  searchStyle,
 }: AddMultiSelectProps): React.ReactElement => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [optionToDelete, setOptionToDelete] = useState<Option>(EmptyOption);
 
   const onClose = () => setShowModal(false);
+
+  customSearchStyles.control = useMemo(
+    () =>
+      optionsSelected.length > 0
+        ? (provided: any) => ({
+            ...provided,
+            ...EMPTY_FILTER_STYLES,
+          })
+        : (provided: any) => ({
+            ...provided,
+            ...NON_EMPTY_FILTER_STYLES,
+          }),
+    [optionsSelected],
+  );
 
   const createOption = (opt: string) => ({
     label: opt,
@@ -107,12 +178,53 @@ const AddMultiSelect = ({
             icon={<CloseIcon />}
             onClick={(e: any) => confirmDelete(e, data)}
           />
-        ) : (
-          ""
-        )}
+        ) : null}
       </components.Option>
     );
   };
+
+  const SearchCustomOption = (optionProps: any) => {
+    const { children, data } = optionProps;
+
+    return (
+      <components.Option {...optionProps}>
+        <Checkbox borderColor="gray.900">{children}</Checkbox>
+        {allowDeleteOption ? (
+          <IconButton
+            aria-label="Delete Button"
+            size="xs"
+            icon={<CloseIcon />}
+            onClick={(e: any) => confirmDelete(e, data)}
+          />
+        ) : null}
+      </components.Option>
+    );
+  };
+
+  const MultiValueContainer = (props: any) => {
+    const isFirst = props.selectProps.value[0] === props.data;
+    if (isFirst) {
+      return (
+        <Text>
+          {placeholder} ({props.selectProps.value.length})
+        </Text>
+      );
+    }
+    return null;
+  };
+
+  const BlankComponent = () => {
+    return <span />;
+  };
+
+  const selectComponents = searchStyle
+    ? {
+        Option: SearchCustomOption,
+        IndicatorSeparator: BlankComponent,
+        MultiValueContainer,
+        ClearIndicator: BlankComponent,
+      }
+    : { Option: CustomOption };
 
   return (
     <>
@@ -132,10 +244,10 @@ const AddMultiSelect = ({
           closeMenuOnSelect={!allowMultiSelectOption}
           options={options}
           onCreateOption={handleCreate}
-          styles={customStyles}
+          styles={searchStyle ? customSearchStyles : customStyles}
           value={optionsSelected}
           onChange={setOptionsSelected}
-          components={{ Option: CustomOption }}
+          components={selectComponents}
           formatCreateLabel={(optionType: string) => `Add ${optionType}`}
           isSearchable={allowAddOption}
         />

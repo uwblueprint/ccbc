@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { isAuthorizedByRole } from "../middlewares/auth";
+import { isAuthorizedByRole, getAccessToken } from "../middlewares/auth";
 import {
   createUserDtoValidator,
   updateUserDtoValidator,
@@ -15,9 +15,10 @@ import IUserService from "../services/interfaces/userService";
 import { UserDTO } from "../types";
 import { getErrorMessage, sendErrorResponse } from "../utilities/errorResponse";
 import sendResponseByMimeType from "../utilities/responseUtil";
+import User from "../models/user.model";
 
 const userRouter: Router = Router();
-userRouter.use(isAuthorizedByRole(new Set(["Admin"])));
+userRouter.use(isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])));
 
 const userService: IUserService = new UserService();
 const emailService: IEmailService = new EmailService(nodemailerConfig);
@@ -84,16 +85,15 @@ userRouter.get("/", async (req, res) => {
 /* Create a user */
 userRouter.post("/", createUserDtoValidator, async (req, res) => {
   try {
-    const newUser = await userService.createUser({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      roleType: req.body.roleType,
-      password: req.body.password,
-      subscriptionExpiresOn: null,
-    });
+    const { firstName, lastName, email, roleType } = req.body;
 
-    await authService.sendEmailVerificationLink(req.body.email);
+    const newUser = await authService.createUserAndSendRegistrationEmail(
+      firstName,
+      lastName,
+      email,
+      roleType,
+      null,
+    );
 
     res.status(201).json(newUser);
   } catch (error: unknown) {
@@ -103,17 +103,43 @@ userRouter.post("/", createUserDtoValidator, async (req, res) => {
 
 /* Update the user with the specified userId */
 userRouter.put("/:userId", updateUserDtoValidator, async (req, res) => {
-  try {
-    const updatedUser = await userService.updateUserById(req.params.userId, {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      roleType: req.body.roleType,
-      subscriptionExpiresOn: null,
-    });
-    res.status(200).json(updatedUser);
-  } catch (error: unknown) {
-    sendErrorResponse(error, res);
+  const accessToken = getAccessToken(req);
+
+  if (accessToken === null) {
+    res
+      .status(401)
+      .json({ error: "You are not authorized to make this request." });
+    return;
+  }
+
+  const user: User | null = await authService.getUserByAccessToken(accessToken);
+
+  if (user === null) {
+    res
+      .status(401)
+      .json({ error: "You are not authorized to make this request." });
+    return;
+  }
+  if (
+    user.role_type === "Admin" ||
+    user.id === parseInt(req.params.userId, 10)
+  ) {
+    try {
+      const updatedUser = await userService.updateUserById(req.params.userId, {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        roleType: req.body.roleType,
+        subscriptionExpiresOn: null,
+      });
+      res.status(200).json(updatedUser);
+    } catch (error: unknown) {
+      sendErrorResponse(error, res);
+    }
+  } else {
+    res
+      .status(401)
+      .json({ error: "You are not authorized to make this request." });
   }
 });
 
