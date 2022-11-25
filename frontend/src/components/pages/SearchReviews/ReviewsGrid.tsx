@@ -68,9 +68,8 @@ const ReviewsGrid = ({
           (review, key) =>
             review.publishedAt &&
             review.books[0].title && (
-              <Center>
+              <Center key={key}>
                 <ReviewThumbnail
-                  key={key}
                   id={review.reviewId}
                   title={
                     review.books.length > 0 && review.books[0].seriesName

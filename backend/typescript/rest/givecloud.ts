@@ -3,7 +3,7 @@ import { body, validationResult } from "express-validator";
 import AuthService from "../services/implementations/authService";
 import UserService from "../services/implementations/userService";
 import { sendErrorResponse } from "../utilities/errorResponse";
-import { Role, UserDTO } from "../types";
+import { Role } from "../types";
 import EmailService from "../services/implementations/emailService";
 import IEmailService from "../services/interfaces/emailService";
 import IAuthService from "../services/interfaces/authService";
