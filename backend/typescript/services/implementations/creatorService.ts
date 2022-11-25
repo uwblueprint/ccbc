@@ -61,8 +61,14 @@ class CreatorService implements ICreatorService {
 
   async approveCreator(userId: string): Promise<void> {
     try {
-      const creator = await this.getCreatorById(userId);
-      creator.isApproved = true;
+      await Creator.update(
+        {
+          isApproved: true
+        },
+        {
+          where: { id: userId },
+        }
+      );
     } catch (error) {
       Logger.error(
         `Failed to approve user. Reason = ${getErrorMessage(error)}`,
