@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import {
   isAuthorizedByEmail,
-  isAuthorizedByRole,
+  // isAuthorizedByRole,
   isAuthorizedByUserId,
 } from "../middlewares/auth";
 import {

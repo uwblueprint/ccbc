@@ -98,7 +98,7 @@ const MobileFeaturedReview = (): JSX.Element => {
           name
         </Text>
         <Text fontSize={16}>author</Text>
-        <Text color="gray" fontSIze={16}>
+        <Text color="gray" fontSize={16}>
           yyyy-mm-dd
         </Text>
 

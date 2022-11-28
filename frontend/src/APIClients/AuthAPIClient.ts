@@ -71,7 +71,7 @@ const register = async (
     const { data } = await baseAPIClient.post(
       "/auth/register",
       { firstName, lastName, email },
-      { withCredentials: true, headers: { Authorization: bearerToken }},
+      { withCredentials: true, headers: { Authorization: bearerToken } },
     );
     return data;
   } catch (error) {

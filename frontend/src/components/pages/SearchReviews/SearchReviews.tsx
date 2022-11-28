@@ -77,7 +77,7 @@ const SearchReviews = (): React.ReactElement => {
       }
     }
     setAllAges(ageArr);
-  }, []);
+  }, [displayedReviews]);
 
   /** Creates new url based on search text and filters */
   const generateSearchUrl = (
@@ -121,7 +121,7 @@ const SearchReviews = (): React.ReactElement => {
         setDisplayedReviews(mapReviewResponseToReview(reviewResponse.reviews));
         setLoading(false);
       });
-  }, [searchText, genresFilter, ageRangeFilter]);
+  }, [searchText, genresFilter, ageRangeFilter, loading]);
   return (
     <Box
       bgImage={[null, null, background]}
