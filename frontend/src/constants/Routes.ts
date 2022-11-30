@@ -6,6 +6,8 @@ export const UNAUTHORIZED_PAGE = "/unauthorized";
 
 export const SIGNUP_PAGE = "/signup";
 
+export const SUBSCRIBER_SIGNUP_PAGE = "/subscriber-signup";
+
 export const EDIT_TEAM_PAGE = "/edit-team";
 
 export const DISPLAY_ENTITY_PAGE = "/entity";
