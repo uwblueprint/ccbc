@@ -63,11 +63,11 @@ class CreatorService implements ICreatorService {
     try {
       await Creator.update(
         {
-          isApproved: true
+          isApproved: true,
         },
         {
           where: { id: userId },
-        }
+        },
       );
     } catch (error) {
       Logger.error(
