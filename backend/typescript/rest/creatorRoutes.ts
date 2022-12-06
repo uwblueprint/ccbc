@@ -5,8 +5,6 @@ import { creatorDtoValidator } from "../middlewares/validators/creatorValidators
 import CreatorService from "../services/implementations/creatorService";
 import ICreatorService from "../services/interfaces/creatorService";
 
-const creatorService: ICreatorService = new CreatorService();
-
 const creatorRouter: Router = Router();
 creatorRouter.get("/");
 
