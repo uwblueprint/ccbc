@@ -185,12 +185,12 @@ class UserService implements IUserService {
 
       try {
         newUser = await User.create({
-          first_name: user.firstName,
-          last_name: user.lastName,
+          first_name: "",
+          last_name: "",
           auth_id: firebaseUser.uid,
           email: firebaseUser.email,
           role_type: user.roleType,
-          subscription_expires_on: user.subscriptionExpiresOn,
+          subscription_expires_on: new Date(Date.now()),
         });
       } catch (postgresError) {
         try {
