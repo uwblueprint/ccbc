@@ -23,7 +23,7 @@ module.exports = {
       genre: {
         type: Sequelize.STRING,
       },
-      age_group: {
+      age_range: {
         type: Sequelize.STRING,
       },
       timezone: {
