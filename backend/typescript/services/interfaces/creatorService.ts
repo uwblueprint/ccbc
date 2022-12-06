@@ -15,6 +15,12 @@ interface ICreatorService {
    * @throws Error if creator retrieval fails
    */
   getCreators(): Promise<Array<CreatorDTO>>;
+
+  /**
+   * Approves a user to be a creator on the platform
+   * @param userId The id of the user we want to make an approved creator.
+   */
+  approveCreator(userId: string): Promise<void>;
 }
 
 export default ICreatorService;
