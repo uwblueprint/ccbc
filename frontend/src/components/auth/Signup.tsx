@@ -18,7 +18,7 @@ const Signup = (): React.ReactElement => {
       lastName,
       email,
     );
-    setAuthenticatedUser(user);
+    // setAuthenticatedUser(user);
   };
 
   if (authenticatedUser) {

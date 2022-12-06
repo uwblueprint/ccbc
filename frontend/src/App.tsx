@@ -10,6 +10,7 @@ import ForgotPassword from "./components/auth/ForgotPassword";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/auth/routes/PrivateRoute";
 import Signup from "./components/auth/Signup";
+import SubscriberSignup from "./components/auth/SubscriberSignup";
 import AdminDashboard from "./components/pages/AdminDashboard/AdminDashboard";
 import CreateReviewPage from "./components/pages/CreateReviewPage";
 import Default from "./components/pages/Default";
@@ -86,6 +87,8 @@ const App = (): React.ReactElement => {
                     <Route
                       exact
                       path={Routes.SIGNUP_PAGE}
+                      // component={Signup}
+                      // TODO: More permanent solution for getting signup to work on staging but not prod
                       component={
                         process.env.NODE_ENV === "development"
                           ? Signup
@@ -157,6 +160,11 @@ const App = (): React.ReactElement => {
                         UserRole.Subscriber,
                         UserRole.Creator,
                       ]}
+                    />
+                    <Route
+                      exact
+                      path={Routes.SUBSCRIBER_SIGNUP_PAGE}
+                      component={SubscriberSignup}
                     />
                     <Route
                       exact

@@ -93,7 +93,7 @@ const NavBar = (): React.ReactElement => {
             {isAdmin && <Text textStyle="h4">Admin Dashboard</Text>}
           </Link>
         </Flex>
-        <Flex>
+        <Flex sx={{'z-index': "3"}}>
           <Menu>
             <MenuButton>
               <HiUser

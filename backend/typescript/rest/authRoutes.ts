@@ -1,10 +1,6 @@
 import { Router } from "express";
 
-import {
-  isAuthorizedByEmail,
-  isAuthorizedByRole,
-  isAuthorizedByUserId,
-} from "../middlewares/auth";
+import { isAuthorizedByEmail, isAuthorizedByUserId } from "../middlewares/auth";
 import {
   loginRequestValidator,
   registerRequestValidator,
@@ -33,6 +29,14 @@ authRouter.post("/login", loginRequestValidator, async (req, res) => {
       : await authService.generateToken(req.body.email, req.body.password);
 
     const { refreshToken, ...rest } = authDTO;
+    const today = new Date();
+    if (rest.subscriptionExpiresOn && rest.subscriptionExpiresOn > today) {
+      res.status(400).json({
+        message: "Generating token for expired user.",
+      });
+
+      return;
+    }
 
     res
       .cookie("refreshToken", refreshToken, {
@@ -60,7 +64,7 @@ authRouter.get("/:uid", async (req, res) => {
 /* Register a user, returns access token and user info in response body and sets refreshToken as an httpOnly cookie */
 authRouter.post(
   "/register",
-  isAuthorizedByRole(new Set(["Admin"])),
+  // isAuthorizedByRole(new Set(["Admin"])),
   registerRequestValidator,
   async (req, res) => {
     try {
@@ -110,14 +114,20 @@ authRouter.post("/refresh", async (req, res) => {
   try {
     const token = await authService.renewToken(req.cookies.refreshToken);
 
-    res
-      .cookie("refreshToken", token.refreshToken, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: process.env.NODE_ENV === "production",
-      })
-      .status(200)
-      .json({ accessToken: token.accessToken });
+    if (token.accessToken === "") {
+      res
+        .status(401)
+        .json({ error: "You are not authorized to make this request." });
+    } else {
+      res
+        .cookie("refreshToken", token.refreshToken, {
+          httpOnly: true,
+          sameSite: "none",
+          secure: process.env.NODE_ENV === "production",
+        })
+        .status(200)
+        .json({ accessToken: token.accessToken });
+    }
   } catch (error: unknown) {
     sendErrorResponse(error, res);
   }

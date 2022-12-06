@@ -99,7 +99,22 @@ class AuthService implements IAuthService {
   /* eslint-disable class-methods-use-this */
   async renewToken(refreshToken: string): Promise<Token> {
     try {
-      return await FirebaseRestClient.refreshToken(refreshToken);
+      const ret = await FirebaseRestClient.refreshToken(refreshToken);
+      const user = await this.getUserByAccessToken(ret.accessToken);
+
+      if (user && user.subscription_expires_on) {
+        const currentDate = new Date();
+        currentDate.setUTCHours(0, 0, 0, 0);
+        const subscriptionExpireDate = new Date(user.subscription_expires_on);
+        subscriptionExpireDate.setUTCHours(0, 0, 0, 0);
+
+        if (currentDate.getTime() > subscriptionExpireDate.getTime()) {
+          await this.revokeTokens(user.id);
+          return { accessToken: "", refreshToken: "" };
+        }
+      }
+
+      return ret;
     } catch (error) {
       Logger.error("Failed to refresh token");
       throw error;

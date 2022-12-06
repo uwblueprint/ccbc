@@ -13,6 +13,7 @@ import userRouter from "./rest/userRoutes";
 import tagRouter from "./rest/tagRoutes";
 import genreRouter from "./rest/genreRoutes";
 import givecloudRouter from "./rest/givecloud";
+import creatorBookingRouter from "./rest/creatorBookingRoutes";
 import creatorRouter from "./rest/creatorRoutes";
 
 const clientHost = new RegExp(
@@ -41,6 +42,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/auth", authRouter);
 app.use("/entities", entityRouter);
 app.use("/reviews", reviewRouter);
+app.use("/booking", creatorBookingRouter);
 app.use("/users", userRouter);
 app.use("/creators", creatorRouter);
 app.use("/tags", tagRouter);

@@ -62,6 +62,7 @@ const register = async (
   lastName: string,
   email: string,
 ): Promise<AuthenticatedUser> => {
+  // TODO: Investigate why this breaks and forces a reload
   const bearerToken = `Bearer ${getLocalStorageObjProperty(
     AUTHENTICATED_USER_KEY,
     "accessToken",
