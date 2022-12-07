@@ -104,6 +104,7 @@ class CreatorService implements ICreatorService {
       throw error;
     }
   }
+
   async approveCreator(userId: string): Promise<void> {
     try {
       await Creator.update(
