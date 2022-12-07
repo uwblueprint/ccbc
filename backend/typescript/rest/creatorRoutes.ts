@@ -71,10 +71,10 @@ creatorRouter.put(
 );
 
 creatorRouter.post(
-  "/", 
+  "/",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   creatorDtoValidator,
-  async(req,res) => {
+  async (req, res) => {
     try {
       if (req.body.isApproved) throw new Error("invalid creator");
       await creatorService.createCreator({
@@ -87,7 +87,7 @@ creatorRouter.post(
         timezone: req.body.timezone,
         bio: req.body.bio,
       });
-    } catch (e:unknown) {
+    } catch (e: unknown) {
       sendErrorResponse(e, res);
     }
   },
