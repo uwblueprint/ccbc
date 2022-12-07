@@ -6,6 +6,7 @@ import CreatorService from "../services/implementations/creatorService";
 import ICreatorService from "../services/interfaces/creatorService";
 
 const creatorRouter: Router = Router();
+const creatorService: ICreatorService = new CreatorService();
 creatorRouter.get("/");
 
 interface CreatorReqQuery {
@@ -15,8 +16,6 @@ interface CreatorReqQuery {
   genre?: string;
   status?: string;
 }
-
-const creatorService: ICreatorService = new CreatorService();
 
 creatorRouter.get(
   "/",
@@ -66,6 +65,29 @@ creatorRouter.put(
 
       res.status(200).json({ message: "approved" });
     } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
+
+creatorRouter.post(
+  "/", 
+  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
+  creatorDtoValidator,
+  async(req,res) => {
+    try {
+      if (req.body.isApproved) throw new Error("invalid creator");
+      await creatorService.createCreator({
+        id: req.body.id,
+        userId: req.body.userId,
+        location: req.body.location,
+        rate: req.body.rate,
+        genre: req.body.genre,
+        ageRange: req.body.ageRange,
+        timezone: req.body.timezone,
+        bio: req.body.bio,
+      });
+    } catch (e:unknown) {
       sendErrorResponse(e, res);
     }
   },

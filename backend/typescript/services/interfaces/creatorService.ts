@@ -1,4 +1,4 @@
-import { CreatorDTO } from "../../types";
+import { CreatorDTO, CreatorCreateUpdateDTO } from "../../types";
 
 interface ICreatorService {
   /**
@@ -30,6 +30,14 @@ interface ICreatorService {
    * @param userId The id of the user we want to make an approved creator.
    */
   approveCreator(userId: string): Promise<void>;
+
+  /**
+   * Create new creator in databse
+   * @param CreatorCreateUpdateDTO
+   * @returns void
+   * @throws Error if creating a creator fails
+   */
+  createCreator(creator: CreatorCreateUpdateDTO): Promise<void>;
 }
 
 export default ICreatorService;
