@@ -31,6 +31,7 @@ import DeleteModal from "./DeleteBookModal";
 import DeleteReviewModal from "./DeleteReviewModal";
 import PublishModal from "./PublishModal";
 import ReviewEditor from "./ReviewEditor";
+import SaveDraftReviewModal from "./SaveDraftReviewModal";
 // import SaveDraftReviewModal from "./SaveDraftReviewModal";
 import SingleBook from "./SingleBook";
 
@@ -70,8 +71,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [showDeleteReviewModal, setShowDeleteReviewModal] = useState<boolean>(
     false,
   );
-  // const [showSaveDraftBeforeModal, setSaveDraftBeforeModal] =
-  //   useState<boolean>(false);
+  const [showSaveDraftBeforeModal, setSaveDraftBeforeModal] = useState<boolean>(false);
   const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
   const [books, setBooks] = useState<Book[]>([]);
   const [review, setReview] = useState("");
@@ -310,6 +310,19 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     }
   }, [history, id, setBooksFromBookResponse]);
 
+  const alertSaveChanges = (e: any) => {
+    e.preventDefault();
+    setSaveDraftBeforeModal(true);
+    e.returnValue = '';
+  }
+  
+  useEffect(() => {
+    window.addEventListener('beforeunload', alertSaveChanges);
+    return () => {
+      window.removeEventListener('beforeunload', alertSaveChanges);
+    }
+  })
+
   return (
     <Box>
       <BookModal
@@ -336,17 +349,13 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         onClose={onDeleteReviewModalClose}
         deleteReview={() => deleteReview()}
       />
-      {/*  on leaving the page we need to have the save as draft window confirmation pop up, disabled for now 
-      {
-        <SaveDraftReviewModal
+      <SaveDraftReviewModal
           isOpen={showSaveDraftBeforeModal}
-          onClose={onDeleteDraftReviewModalClose}
-          deleteReview={() => {}}
-          saveReview={() => onSubmit(save = true)}
-          bookTitle="idk"
+          onClose={onDeleteReviewModalClose}
+          deleteReview={deleteReview}
+          saveReview={() => handleSave()}
+          bookTitle="this review"
         />
-      }
-      */}
       <PreviewReviewModal
         review={createPreviewModalReviewObject()}
         isOpen={isOpenPreviewModal}
