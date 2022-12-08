@@ -1,16 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import {
-  Box,
-  HStack,
-  Icon,
-  Image,
-  Stack,
-  Tag,
-  Text,
-  VStack,
-  Wrap,
-  WrapItem,
-} from "@chakra-ui/react";
+import { Box, HStack, Icon, Image, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import background from "../../assets/review-book-orange-blob.png";

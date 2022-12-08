@@ -36,8 +36,9 @@ const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
   return (
     <Box
       flexDir="column"
-      w={["140px", "140px", "220px"]}
-      h={["300px", "300px", "410px"]}
+      w={["140px", "140px", "140px", "220px"]}
+      h={["300px", "300px", "300px", "410px"]}
+      bg="red.200"
     >
       <Box
         position="relative"
@@ -45,8 +46,8 @@ const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
         cursor="pointer"
       >
         <Image
-          h={["180px", "180px", "282px"]}
-          w={["140px", "140px", "220px"]}
+          h={["180px", "180px", "180px", "282px"]}
+          w={["140px", "140px", "140px", "220px"]}
           src={coverImage}
           style={{ objectFit: "cover" }}
         />

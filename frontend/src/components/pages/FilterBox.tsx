@@ -45,6 +45,7 @@ const FilterBox = ({
     setAgeFilter([]);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const clearTag = async (type: TagType, val: any) => {
     if (type === TagType.Genre) {
       setGenres(genres.filter((g) => g.label !== val));

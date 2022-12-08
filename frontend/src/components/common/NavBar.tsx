@@ -7,6 +7,7 @@ import {
   MenuItem,
   MenuList,
   Text,
+  useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
@@ -54,6 +55,16 @@ const NavBar = (): React.ReactElement => {
     onClose: onInviteAdminClose,
   } = useDisclosure();
 
+  const displayNavText = useBreakpointValue(
+    {
+      base: false,
+      sm: true,
+      md: true,
+      lg: true,
+    },
+    "lg",
+  );
+
   return (
     <div>
       <ChangePasswordModal
@@ -68,8 +79,8 @@ const NavBar = (): React.ReactElement => {
         align="center"
         pt="16px"
         pb="16px"
-        pl="80px"
-        pr="80px"
+        pl={["30px", "30px", "80px"]}
+        pr={["30px", "30px", "80px"]}
         justify="space-between"
         top="0"
       >
@@ -78,20 +89,22 @@ const NavBar = (): React.ReactElement => {
             <Image
               src={logo}
               alt="CCBC Logo"
-              boxSize="45px"
+              boxSize="64px"
               borderRadius="full"
             />
           </Link>
-
-          <Link to="/">
-            <Text textStyle="h4" ml="60px">
-              Home
-            </Text>
-          </Link>
-
-          <Link to="/dashboard">
-            {isAdmin && <Text textStyle="h4">Admin Dashboard</Text>}
-          </Link>
+          {displayNavText && (
+            <Link to="/">
+              <Text textStyle="h4" ml="60px">
+                Home
+              </Text>
+            </Link>
+          )}
+          {displayNavText && (
+            <Link to="/dashboard">
+              {isAdmin && <Text textStyle="h4">Admin Dashboard</Text>}
+            </Link>
+          )}
         </Flex>
         <Flex sx={{'z-index': "3"}}>
           <Menu>

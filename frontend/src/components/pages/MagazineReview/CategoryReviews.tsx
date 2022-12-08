@@ -35,7 +35,7 @@ const CategoryReviews = ({
   );
 
   return (
-    <Box>
+    <Box w="100%">
       <HStack justifyContent="space-between">
         <Text
           textStyle={[

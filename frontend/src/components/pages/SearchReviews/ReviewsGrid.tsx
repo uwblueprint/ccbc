@@ -59,7 +59,7 @@ const ReviewsGrid = ({
   return (
     <Center>
       <SimpleGrid
-        minChildWidth={["140px", "140px", "180px"]}
+        minChildWidth={["140px", "140px", "140px", "221px"]}
         w="100%"
         spacingY={[0, 4, 10]}
         spacingX={[2, 2, 4]}
@@ -68,9 +68,8 @@ const ReviewsGrid = ({
           (review, key) =>
             review.publishedAt &&
             review.books[0].title && (
-              <Center>
+              <Center key={key}>
                 <ReviewThumbnail
-                  key={key}
                   id={review.reviewId}
                   title={
                     review.books.length > 0 && review.books[0].seriesName
