@@ -88,7 +88,7 @@ creatorRouter.post(
         bio: req.body.bio,
       });
 
-      res.status(200).json({message: "Created creator!"});
+      res.status(200).json({ message: "Created creator!" });
     } catch (e: unknown) {
       sendErrorResponse(e, res);
     }
