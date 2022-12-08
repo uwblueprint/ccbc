@@ -18,7 +18,7 @@ export const creatorDtoValidator = async (
   if (!validatePrimitive(req.body.genre, "string")) {
     return res.status(400).send(getApiValidationError("genre", "string"));
   }
-  if (!validatePrimitive(req.body.rate, "float")) {
+  if (!validatePrimitive(req.body.rate, "number")) {
     return res.status(400).send(getApiValidationError("rate", "float"));
   }
   if (!validatePrimitive(req.body.ageRange, "string")) {
@@ -55,7 +55,7 @@ export const creatorCreateUpdateDtoValidator = async (
     return res.status(400).send(getApiValidationError("genre", "string"));
   }
   if (!validatePrimitive(req.body.rate, "float")) {
-    return res.status(400).send(getApiValidationError("rate", "float"));
+    return res.status(400).send(getApiValidationError("rate", "number"));
   }
   if (!validatePrimitive(req.body.ageRange, "string")) {
     return res.status(400).send(getApiValidationError("ageRange", "string"));

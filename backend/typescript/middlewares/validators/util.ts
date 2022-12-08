@@ -1,4 +1,4 @@
-type Type = "string" | "integer" | "boolean" | "Role" | "float";
+type Type = "string" | "integer" | "boolean" | "Role" | "float" | "number";
 
 const allowableContentTypes = new Set([
   "text/plain",
@@ -17,6 +17,9 @@ export const validatePrimitive = (value: unknown, type: Type): boolean => {
     }
     case "boolean": {
       return typeof value === "boolean";
+    }
+    case "number": {
+      return typeof value === "number";
     }
     case "integer": {
       return typeof value === "number" && Number.isInteger(value);

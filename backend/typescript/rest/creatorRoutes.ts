@@ -87,6 +87,8 @@ creatorRouter.post(
         timezone: req.body.timezone,
         bio: req.body.bio,
       });
+
+      res.status(200).json({message: "Created creator!"});
     } catch (e: unknown) {
       sendErrorResponse(e, res);
     }
