@@ -11,7 +11,7 @@ export type CreatorDTO = {
   location: string;
   rate: number;
   genre: string;
-  ageGroup: string;
+  ageRange: string;
   timezone: string;
   bio: string;
   isApproved: boolean;

@@ -106,7 +106,7 @@ const NavBar = (): React.ReactElement => {
             </Link>
           )}
         </Flex>
-        <Flex>
+        <Flex sx={{'z-index': "3"}}>
           <Menu>
             <MenuButton>
               <HiUser

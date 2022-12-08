@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import password from "secure-random-password";
 import { isAuthorizedByRole, getAccessToken } from "../middlewares/auth";
 import {
   createUserDtoValidator,
@@ -18,7 +19,6 @@ import sendResponseByMimeType from "../utilities/responseUtil";
 import User from "../models/user.model";
 
 const userRouter: Router = Router();
-userRouter.use(isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])));
 
 const userService: IUserService = new UserService();
 const emailService: IEmailService = new EmailService(nodemailerConfig);
@@ -84,16 +84,27 @@ userRouter.get("/", async (req, res) => {
 
 /* Create a user */
 userRouter.post("/", createUserDtoValidator, async (req, res) => {
-  try {
-    const { firstName, lastName, email, roleType } = req.body;
+  const accessCode = password.randomPassword({
+    length: 8, // length of the password
+    characters: [
+      // acceptable characters in the password
+      password.lower,
+      password.upper,
+      password.digits,
+    ],
+  });
 
-    const newUser = await authService.createUserAndSendRegistrationEmail(
-      firstName,
-      lastName,
-      email,
-      roleType,
-      null,
-    );
+  try {
+    const newUser = await userService.createUser({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      roleType: req.body.roleType,
+      password: accessCode.toString(),
+      subscriptionExpiresOn: new Date(Date.now()),
+    });
+
+    await authService.sendPasswordSetupLink(newUser, accessCode, true);
 
     res.status(201).json(newUser);
   } catch (error: unknown) {

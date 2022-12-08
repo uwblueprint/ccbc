@@ -1,10 +1,7 @@
 import { Router } from "express";
 
-import {
-  isAuthorizedByEmail,
-  // isAuthorizedByRole,
-  isAuthorizedByUserId,
-} from "../middlewares/auth";
+import { isAuthorizedByEmail, isAuthorizedByUserId } from "../middlewares/auth";
+
 import {
   loginRequestValidator,
   registerRequestValidator,
