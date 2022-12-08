@@ -1,4 +1,4 @@
-import { CreatorDTO } from "../../types";
+import { CreatorCreateUpdateDTO, CreatorDTO } from "../../types";
 import logger from "../../utilities/logger";
 import { getErrorMessage } from "../../utilities/errorResponse";
 import ICreatorService from "../interfaces/creatorService";
@@ -119,7 +119,26 @@ class CreatorService implements ICreatorService {
       Logger.error(
         `Failed to approve user. Reason = ${getErrorMessage(error)}`,
       );
+      throw error;
+    }
+  }
 
+  async createCreator(creator: CreatorCreateUpdateDTO): Promise<void> {
+    let newCreator: Creator;
+    try {
+      newCreator = await Creator.create({
+        user_id: creator.userId,
+        location: creator.location,
+        rate: creator.rate,
+        genre: creator.genre,
+        ageRange: creator.ageRange,
+        timezone: creator.timezone,
+        bio: creator.bio,
+      });
+    } catch (error) {
+      Logger.error(
+        `Failed to create creator. Reason = ${getErrorMessage(error)}`,
+      );
       throw error;
     }
   }
