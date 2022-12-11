@@ -38,7 +38,6 @@ const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
       flexDir="column"
       w={["140px", "140px", "140px", "220px"]}
       h={["300px", "300px", "300px", "410px"]}
-      bg="red.200"
     >
       <Box
         position="relative"
@@ -74,11 +73,29 @@ const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
           {publishDate.toLocaleDateString("sv")}
         </Text>
         <Spacer />
+
         {genre && (
-          <Tag size="sm" variant="solid" bgColor="#90CDF4" color="black">
+          <Tag
+            size="sm"
+            variant="solid"
+            bgColor="#90CDF4"
+            color="black"
+            textAlign="center"
+            paddingX={["2px", "2px", "2px", "8px"]}
+          >
             {genre}
           </Tag>
         )}
+        <Tag
+          size="sm"
+          variant="solid"
+          bgColor="#90CDF4"
+          color="black"
+          textAlign="center"
+          // paddingX={["2px", "2px", "2px", "8px"]}
+        >
+          Mystery
+        </Tag>
       </Flex>
     </Box>
   );
