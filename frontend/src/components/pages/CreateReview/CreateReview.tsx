@@ -87,9 +87,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
     reviewerByline === "" ||
     books.length === 0;
 
-  const cannotSave =
-    ((review === "" || review === "<p><br></p>") && reviewerByline === "") ||
-    books.length === 0;
+  const [cannotSave, setCannotSave] = useState(false);
 
   const [reviewError, setReviewError] = useState(false);
   const [bylineError, setBylineError] = useState(false);
@@ -288,6 +286,7 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
           setReviewerLastName(reviewResponse.createdByUser.lastName);
           setBooksFromBookResponse(reviewResponse);
           setPublishedAt(reviewResponse.publishedAt);
+          setCannotSave(true);
         })
         .catch(() => {
           // history.push("/404");
@@ -295,6 +294,10 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         });
     }
   }, [history, id, setBooksFromBookResponse]);
+  
+  useEffect(() => {
+    setCannotSave(false);
+  }, [books, review, featured, reviewerByline, reviewerFirstName, reviewerLastName])
 
   const alertSaveChanges = (e: any) => {
     e.preventDefault();
@@ -303,9 +306,11 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   }
   
   useEffect(() => {
-    window.addEventListener('beforeunload', alertSaveChanges);
+    if (!cannotSave)
+      window.addEventListener('beforeunload', alertSaveChanges);
     return () => {
-      window.removeEventListener('beforeunload', alertSaveChanges);
+      if (!cannotSave)
+        window.removeEventListener('beforeunload', alertSaveChanges);
     }
   })
 
