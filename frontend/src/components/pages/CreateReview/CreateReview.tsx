@@ -106,20 +106,6 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
 
   const { authenticatedUser } = useContext(AuthContext);
 
-  /* on leaving the page we need to have the save as draft window confirmation pop up
-  // useEffect(() => {
-  //   window.addEventListener("beforeunload", () => {
-  //     if (!cannotSave) {
-  //       console.log("hi");
-  //       setSaveDraftBeforeModal(true);
-  //     }
-  //   });
-  // }, [cannotSave]);
-
-  // const handleTagSelected = (e: Option[]) => {
-  //   setTagsSelected(e);
-  /* };
-
   /**
    * Adds a book to the list of books.
    * @param book - The book to be added.
@@ -351,8 +337,8 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
       />
       <SaveDraftReviewModal
           isOpen={showSaveDraftBeforeModal}
-          onClose={onDeleteReviewModalClose}
-          deleteReview={deleteReview}
+          onClose={() => setSaveDraftBeforeModal(false)}
+          deleteReview={() => { setSaveDraftBeforeModal(false); history.push("/dashboard"); }}
           saveReview={() => handleSave()}
           bookTitle="this review"
         />
