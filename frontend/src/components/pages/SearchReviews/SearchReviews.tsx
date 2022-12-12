@@ -58,25 +58,27 @@ const SearchReviews = (): React.ReactElement => {
       },
     );
 
-    const ageArr = [];
-    // eslint-disable-next-line no-restricted-syntax, guard-for-in
-    for (const review in displayedReviews) {
-      const targetBook = displayedReviews[review].books[0];
-      const ageRange = `${targetBook.minAge},${targetBook.maxAge}`;
-      const ageOpt = {
-        label: `Ages ${ageRange.replace(",", "-")}`,
-        value: ageRange,
-      };
+    // const ageArr = [];
+    // // eslint-disable-next-line no-restricted-syntax, guard-for-in
+    // for (const review in displayedReviews) {
+    //   console.log('review', review)
+    //   const targetBook = displayedReviews[review].books[0];
+    //   const ageRange = `${targetBook.minAge},${targetBook.maxAge}`;
+    //   const ageOpt = {
+    //     label: `Ages ${ageRange.replace(",", "-")}`,
+    //     value: ageRange,
+    //   };
 
-      if (
-        ageArr.findIndex(
-          (opt) => opt.label === ageOpt.label && opt.value === ageOpt.value,
-        ) === -1
-      ) {
-        ageArr.push(ageOpt);
-      }
-    }
-    setAllAges(ageArr);
+    //   if (
+    //     ageArr.findIndex(
+    //       (opt) => opt.label === ageOpt.label && opt.value === ageOpt.value,
+    //     ) === -1
+    //   ) {
+    //     ageArr.push(ageOpt);
+    //   }
+    // }
+    // setAllAges(ageArr);
+    // console.log('allAges', allAges)
   }, []);
 
   /** Creates new url based on search text and filters */
@@ -101,6 +103,11 @@ const SearchReviews = (): React.ReactElement => {
 
   /** Changes url to when search filters are changed and fetches search results  */
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const minAge = params.has("minAge") ? Number(params.get("minAge")) : 0;
+    const maxAge = params.has("maxAge") ? Number(params.get("maxAge")) : 0;
+    // console.log(minAge, maxAge)
+
     if (loading) return;
     setLoading(true);
     const newSearchUrl = generateSearchUrl(
@@ -115,13 +122,35 @@ const SearchReviews = (): React.ReactElement => {
     );
 
     reviewAPIClient
-      .getReviews(searchText, 25, 0)
+      .getReviews(searchText, 25, 0, minAge, maxAge)
       .then((reviewResponse: PaginatedReviewResponse) => {
         settotalReviews(reviewResponse.totalReviews);
         setDisplayedReviews(mapReviewResponseToReview(reviewResponse.reviews));
         setLoading(false);
       });
   }, [searchText, genresFilter, ageRangeFilter]);
+
+  useEffect(() => {
+    const ageArr = [];
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
+    for (const review in displayedReviews) {
+      const targetBook = displayedReviews[review].books[0];
+      const ageRange = `${targetBook.minAge},${targetBook.maxAge}`;
+      const ageOpt = {
+        label: `Ages ${ageRange.replace(",", "-")}`,
+        value: ageRange,
+      };
+
+      if (
+        ageArr.findIndex(
+          (opt) => opt.label === ageOpt.label && opt.value === ageOpt.value,
+        ) === -1
+      ) {
+        ageArr.push(ageOpt);
+      }
+    }
+    setAllAges(ageArr);
+  }, [displayedReviews])
   return (
     <Box
       bgImage={[null, null, background]}

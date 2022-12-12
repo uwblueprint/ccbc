@@ -23,6 +23,7 @@ const getReviews = async (
   maxAge?: number,
   featured?: boolean,
 ): Promise<PaginatedReviewResponse> => {
+  console.log('api params', minAge, maxAge)
   const params = new URLSearchParams();
   if (search) params.append("search", search);
   if (size || size === 0) params.append("size", String(size));
@@ -36,6 +37,7 @@ const getReviews = async (
       headers: { Authorization: getBearerToken() },
       params,
     });
+    console.log('api return', data)
     return data;
   } catch (error: unknown) {
     return error as PaginatedReviewResponse;

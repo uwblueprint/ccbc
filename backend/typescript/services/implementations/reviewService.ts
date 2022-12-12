@@ -527,6 +527,7 @@ class ReviewService implements IReviewService {
     const minAgeOpt = minAge || 0;
     const maxAgeOpt = maxAge || 100;
     const replacements: (number | string[])[] = [minAgeOpt, maxAgeOpt];
+    console.log('replacements', replacements)
 
     let genreFilterQuery = "";
     if (genres && genres.length > 0) {
@@ -549,6 +550,7 @@ class ReviewService implements IReviewService {
             type: QueryTypes.SELECT,
           },
         )) as ReviewIds[];
+        console.log('reviewIds', reviewIds)
         return reviewIds.map(({ review_id }) => {
           return review_id;
         });
@@ -647,10 +649,11 @@ class ReviewService implements IReviewService {
 
         // If it returned an empty list for search or filter we have no match so we return empty list of reviews
         if (
-          (searchedIds && searchedIds.length === 0) ||
+          // (searchedIds && searchedIds.length === 0) ||
           (filteredIds && filteredIds.length === 0)
         ) {
           return {
+            test: 'here',
             totalReviews: 0,
             totalPages: 0,
             currentPage: 0,
@@ -707,6 +710,7 @@ class ReviewService implements IReviewService {
         const totalPages = limit ? Math.ceil(count / limit) : 1;
 
         return {
+          count: count,
           totalReviews: count,
           totalPages,
           currentPage,
