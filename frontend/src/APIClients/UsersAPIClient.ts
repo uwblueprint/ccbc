@@ -11,11 +11,9 @@ const register = async (email: string): Promise<AuthenticatedUser> => {
   };
 
   try {
-    const { data } = await baseAPIClient.post(
-      "/users/", 
-      newSubscriber, 
-      { withCredentials: true }
-    );
+    const { data } = await baseAPIClient.post("/users/", newSubscriber, {
+      withCredentials: true,
+    });
     return data;
   } catch (error) {
     return null;
