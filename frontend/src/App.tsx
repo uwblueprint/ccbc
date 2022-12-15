@@ -87,13 +87,13 @@ const App = (): React.ReactElement => {
                     <Route
                       exact
                       path={Routes.SIGNUP_PAGE}
-                      // component={Signup}
+                      component={Signup}
                       // TODO: More permanent solution for getting signup to work on staging but not prod
-                      component={
-                        process.env.NODE_ENV === "development"
-                          ? Signup
-                          : Unauthorized
-                      }
+                      // component={
+                      //   process.env.NODE_ENV === "development"
+                      //     ? Signup
+                      //     : Unauthorized
+                      // }
                     />
                     <Route
                       exact
