@@ -38,7 +38,6 @@ const ReviewThumbnail = (props: ReviewThumbnailProps): React.ReactElement => {
       flexDir="column"
       w={["140px", "140px", "140px", "220px"]}
       h={["300px", "300px", "300px", "410px"]}
-      bg="red.200"
     >
       <Box
         position="relative"
