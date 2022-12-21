@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { body, validationResult } from "express-validator";
 import { createHmac } from "crypto";
+import password from "secure-random-password";
 import AuthService from "../services/implementations/authService";
 import UserService from "../services/implementations/userService";
 import { sendErrorResponse } from "../utilities/errorResponse";
@@ -65,15 +66,26 @@ givecloudRouter.post(
           );
           res.status(200).json(userDTO);
         } catch {
-          const authDTO = await authService.createUserAndSendRegistrationEmail(
-            supporter.first_name,
-            supporter.last_name,
+          const accessCode = password.randomPassword({
+            length: 8, // length of the password
+            characters: [
+              // acceptable characters in the password
+              password.lower,
+              password.upper,
+              password.digits,
+            ],
+          });
+
+          const newUser = await userService.createUser({
+            firstName: supporter.first_name,
+            lastName: supporter.last_name,
             email,
             roleType,
+            password: accessCode.toString(),
             subscriptionExpiresOn,
-          );
-
-          res.status(201).json(authDtoToToUserDto(authDTO));
+          });
+          await authService.sendPasswordSetupLink(newUser, accessCode, true);
+          res.status(201).json(newUser);
         }
       } else {
         res.status(400).json({ errors: errors.array() });
