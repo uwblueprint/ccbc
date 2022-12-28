@@ -57,7 +57,7 @@ const FilterBox = ({
   return (
     <>
       <SimpleGrid
-        columns={searchStyle ? [1, 2, 2] : [1, 4, 4]}
+        columns={searchStyle ? [1, 2, 2] : [2, 5, 2]}
         spacingX="20px"
         mt="2"
         mb="6"
@@ -73,7 +73,7 @@ const FilterBox = ({
           <AddMultiSelect
             id="Audience"
             label=""
-            maxWidth={searchStyle ? "284px" : "160px"}
+            maxWidth={searchStyle ? "284px" : "250px"}
             placeholder="Audience"
             options={ageOptions}
             setOptions={null}
@@ -86,7 +86,7 @@ const FilterBox = ({
           <AddMultiSelect
             id="genre"
             label=""
-            maxWidth="284px"
+            maxWidth="250px"
             placeholder="Genres"
             options={genreOptions}
             setOptions={null}
