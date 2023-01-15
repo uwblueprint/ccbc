@@ -57,26 +57,6 @@ const SearchReviews = (): React.ReactElement => {
         setAllGenres(genreResponse);
       },
     );
-
-    const ageArr = [];
-    // eslint-disable-next-line no-restricted-syntax, guard-for-in
-    for (const review in displayedReviews) {
-      const targetBook = displayedReviews[review].books[0];
-      const ageRange = `${targetBook.minAge},${targetBook.maxAge}`;
-      const ageOpt = {
-        label: `Ages ${ageRange.replace(",", "-")}`,
-        value: ageRange,
-      };
-
-      if (
-        ageArr.findIndex(
-          (opt) => opt.label === ageOpt.label && opt.value === ageOpt.value,
-        ) === -1
-      ) {
-        ageArr.push(ageOpt);
-      }
-    }
-    setAllAges(ageArr);
   }, []);
 
   /** Creates new url based on search text and filters */
@@ -114,11 +94,39 @@ const SearchReviews = (): React.ReactElement => {
       newSearchUrl.toString(),
     );
 
+    const params = new URLSearchParams(window.location.search);
+    const genres = params.has("genres") ? String(params.get("genres")) : "";
+    const minAge = params.has("minAge") ? Number(params.get("minAge")) : 0;
+    const maxAge = params.has("maxAge") ? Number(params.get("maxAge")) : 0;
+
     reviewAPIClient
-      .getReviews(searchText, 25, 0)
+      .getReviews(searchText, 25, 0, minAge, maxAge, undefined, genres)
       .then((reviewResponse: PaginatedReviewResponse) => {
         settotalReviews(reviewResponse.totalReviews);
         setDisplayedReviews(mapReviewResponseToReview(reviewResponse.reviews));
+        const ageArr = [];
+        // eslint-disable-next-line no-restricted-syntax, guard-for-in
+        for (const review in mapReviewResponseToReview(
+          reviewResponse.reviews,
+        )) {
+          const targetBook = mapReviewResponseToReview(reviewResponse.reviews)[
+            review
+          ].books[0];
+          const ageRange = `${targetBook.minAge}-${targetBook.maxAge}`;
+          const ageOpt = {
+            label: `Ages ${ageRange}`,
+            value: ageRange,
+          };
+
+          if (
+            ageArr.findIndex(
+              (opt) => opt.label === ageOpt.label && opt.value === ageOpt.value,
+            ) === -1
+          ) {
+            ageArr.push(ageOpt);
+          }
+        }
+        setAllAges(ageArr);
         setLoading(false);
       });
   }, [searchText, genresFilter, ageRangeFilter]);
@@ -138,10 +146,19 @@ const SearchReviews = (): React.ReactElement => {
             <FilterBox
               genreOptions={allGenres}
               ageOptions={allAges}
-              setGenreFilter={() => null}
-              setAgeFilter={() => null}
-              searchStyle
+              setGenreFilter={(genres) => {
+                setGenresFilter(genres.map((g) => g.label));
+              }}
+              setAgeFilter={(ages) => {
+                const numAges = ages.map((a) => {
+                  return (a.value.split("-")).map((x) => parseInt(x, 10));
+                });
+                console.log(numAges)
+                const ageOpts = numAges.flat();
+                setAgeRangeFilter([Math.min(...ageOpts), Math.max(...ageOpts)]);
+              }}
             />
+            {console.log(allAges)}
           </Box>
           <VStack spacing="24px" align="stretch">
             {searchText !== "" && !loading && totalReviews === 1 && (
