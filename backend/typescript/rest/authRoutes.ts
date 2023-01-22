@@ -76,7 +76,7 @@ authRouter.post(
         lastName,
         email,
         "Admin",
-        null,
+        null,  //when not registering admin, ensure this value is set to the day b4 to ensure user is not activated 
       );
 
       res.status(200).json(authDtoToToUserDto(authDTO));

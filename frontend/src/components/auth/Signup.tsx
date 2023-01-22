@@ -1,13 +1,23 @@
-import React, { useContext, useState } from "react";
-import { Redirect } from "react-router-dom";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Stack,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
+import React, { useState } from "react";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
-import { HOME_PAGE } from "../../constants/Routes";
-import AuthContext from "../../contexts/AuthContext";
 import { AuthenticatedUser } from "../../types/AuthTypes";
+import SuccessfullyCreatedEmailModal from "./SuccessfullyCreatedEmailModal";
 
 const Signup = (): React.ReactElement => {
-  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
+  const [isInvalid, setInvalid] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,52 +28,55 @@ const Signup = (): React.ReactElement => {
       lastName,
       email,
     );
-    setAuthenticatedUser(user);
+
+    if (user) {
+      setInvalid(false);
+      onOpen();
+    } else {
+      setInvalid(true);
+    }
   };
 
-  if (authenticatedUser) {
-    return <Redirect to={HOME_PAGE} />;
-  }
-
   return (
-    <div style={{ textAlign: "center" }}>
-      <h1>Signup</h1>
-      <form>
-        <div>
-          <input
-            type="text"
+    <Stack justify="center" p="25vh 10vw">
+      <Text textStyle="heading">Signup</Text>
+      <FormControl
+        onKeyPress={(e) => e.key === "Enter" && onSignupClick()}
+        isInvalid={isInvalid}
+      >
+        <Box mt="0.5em">
+          <FormLabel>First name</FormLabel>
+          <Input
             value={firstName}
             onChange={(event) => setFirstName(event.target.value)}
-            placeholder="first name"
+            placeholder="First name"
           />
-        </div>
-        <div>
-          <input
-            type="text"
+        </Box>
+        <Box mt="0.5em" mb="1em">
+          <FormLabel>Last name</FormLabel>
+          <Input
             value={lastName}
             onChange={(event) => setLastName(event.target.value)}
-            placeholder="last name"
+            placeholder="Last name"
           />
-        </div>
-        <div>
-          <input
-            type="email"
+        </Box>
+        <Box mt="0.5em">
+          <FormLabel>Email address</FormLabel>
+          <Input
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder="username@domain.com"
           />
-        </div>
-        <div>
-          <button
-            className="btn btn-primary"
-            type="button"
-            onClick={onSignupClick}
-          >
+        </Box>
+        <FormErrorMessage>Account creation failed</FormErrorMessage>
+        <Box mt="1em">
+          <Button variant="submit" type="submit" onClick={onSignupClick}>
             Sign Up
-          </button>
-        </div>
-      </form>
-    </div>
+          </Button>
+          <SuccessfullyCreatedEmailModal isOpen={isOpen} onClose={onClose} />
+        </Box>
+      </FormControl>
+    </Stack>
   );
 };
 
