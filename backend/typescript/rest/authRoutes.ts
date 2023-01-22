@@ -71,12 +71,13 @@ authRouter.post(
     try {
       const { firstName, lastName, email } = req.body;
 
+      /* when not registering admin, ensure this value is set to the day b4 to ensure user is not activated */
       const authDTO = await authService.createUserAndSendRegistrationEmail(
         firstName,
         lastName,
         email,
         "Admin",
-        null,  //when not registering admin, ensure this value is set to the day b4 to ensure user is not activated 
+        null,
       );
 
       res.status(200).json(authDtoToToUserDto(authDTO));
