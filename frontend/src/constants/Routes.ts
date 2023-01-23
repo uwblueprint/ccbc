@@ -8,6 +8,10 @@ export const SIGNUP_PAGE = "/signup";
 
 export const SUBSCRIBER_SIGNUP_PAGE = "/subscriber-signup";
 
+export const CREATOR_PROFILE_LANDING = "/finish-profile";
+
+export const CREATOR_PROFILE_SETUP = "/create-creator-profile";
+
 export const EDIT_TEAM_PAGE = "/edit-team";
 
 export const DISPLAY_ENTITY_PAGE = "/entity";
