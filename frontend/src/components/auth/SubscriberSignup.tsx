@@ -3,6 +3,7 @@ import {
   Button,
   Center,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Grid,
   GridItem,
@@ -11,6 +12,7 @@ import {
   Link,
   Stack,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 
@@ -19,17 +21,27 @@ import * as Routes from "../../constants/Routes";
 /* Images */
 import CCBCLogo from "../../images/ccbc-logo.png";
 import LoginGraphic from "../../images/Login-graphic.png";
+import { AuthenticatedUser } from "../../types/AuthTypes";
 import authUtils from "../../utils/AuthUtils";
+import SuccessfullyCreatedEmailModal from "./SuccessfullyCreatedEmailModal";
 
 const SubscriberSignup = (): React.ReactElement => {
   const [isEmailInvalid, setIsEmailInvalid] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [email, setEmail] = useState("");
 
   const onSendEmailClick = async () => {
     if (!authUtils.validateEmail(email)) {
       setIsEmailInvalid(true);
     } else {
-      await UsersAPIClient.register(email);
+      const user: AuthenticatedUser = await UsersAPIClient.register(email);
+
+      if (user) {
+        setIsEmailInvalid(false);
+        onOpen();
+      } else {
+        setIsEmailInvalid(true);
+      }
     }
   };
 
@@ -62,19 +74,23 @@ const SubscriberSignup = (): React.ReactElement => {
           <Text textStyle="body" color="gray.700">
             Please enter an email for a verification code to be sent
           </Text>
-          <FormControl mt="1rem">
+          <FormControl
+            mt="1rem"
+            onKeyPress={(e) => e.key === "Enter" && onSendEmailClick()}
+            isInvalid={isEmailInvalid}
+          >
             <Box mt="4%" mb="4%">
               <FormLabel>Email address</FormLabel>
               <Input
                 value={email}
                 name="email"
                 placeholder="example@gmail.com"
-                isInvalid={isEmailInvalid}
                 onChange={(event) => {
                   setEmail(event.target.value);
                   setIsEmailInvalid(false);
                 }}
               />
+              <FormErrorMessage>Account creation failed</FormErrorMessage>
             </Box>
             <Button variant="submit" type="button" onClick={onSendEmailClick}>
               Sign Up
@@ -90,6 +106,10 @@ const SubscriberSignup = (): React.ReactElement => {
                   Log In
                 </Text>
               </Link>
+              <SuccessfullyCreatedEmailModal
+                isOpen={isOpen}
+                onClose={onClose}
+              />
             </Box>
           </FormControl>
         </Stack>
