@@ -38,6 +38,13 @@ interface ICreatorService {
    * @throws Error if creating a creator fails
    */
   createCreator(creator: CreatorCreateUpdateDTO): Promise<void>;
+
+  /**
+   * Sends a link to the creator profile setup page to the creator with the given email
+   * @param email email of creator that will be setting up their profile
+   * @throws Error if unable to send email
+   */
+  sendCreatorProfileSetupLink(email: string): Promise<void>;
 }
 
 export default ICreatorService;
