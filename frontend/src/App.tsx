@@ -14,6 +14,7 @@ import Signup from "./components/auth/Signup";
 import SubscriberSignup from "./components/auth/SubscriberSignup";
 import AdminDashboard from "./components/pages/AdminDashboard/AdminDashboard";
 import CreateReviewPage from "./components/pages/CreateReviewPage";
+import FinishProfileLanding from "./components/pages/CreatorProfile/FinishProfileLanding";
 import Default from "./components/pages/Default";
 import DisplayReview from "./components/pages/DisplayReview/DisplayReview";
 import EditReviewPage from "./components/pages/EditReviewPage";
@@ -105,6 +106,12 @@ const App = (): React.ReactElement => {
                       path={Routes.HOME_PAGE}
                       component={MagazineReview}
                       requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
+                    />
+                    <PrivateRoute
+                      exact
+                      path={Routes.CREATOR_PROFILE_LANDING}
+                      component={FinishProfileLanding}
+                      requiredRoles={[UserRole.Admin, UserRole.Creator]}
                     />
                     <PrivateRoute
                       exact

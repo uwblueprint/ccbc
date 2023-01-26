@@ -4,6 +4,7 @@ import { getErrorMessage } from "../../utilities/errorResponse";
 import ICreatorService from "../interfaces/creatorService";
 import Creator from "../../models/creator.model";
 import { isAuthorizedByRole } from "../../middlewares/auth";
+import IEmailService from "../interfaces/emailService";
 
 const Logger = logger(__filename);
 
@@ -27,6 +28,12 @@ function isOverlap(ageRange: string, ageRangeCmp: string): boolean {
 }
 
 class CreatorService implements ICreatorService {
+  emailService: IEmailService | null;
+
+  constructor(emailService: IEmailService | null = null) {
+    this.emailService = emailService;
+  }
+
   /* eslint-disable class-methods-use-this */
   async getCreatorById(creatorId: string): Promise<CreatorDTO> {
     let creator: Creator | null;
@@ -138,6 +145,37 @@ class CreatorService implements ICreatorService {
     } catch (error) {
       Logger.error(
         `Failed to create creator. Reason = ${getErrorMessage(error)}`,
+      );
+      throw error;
+    }
+  }
+
+  async sendCreatorProfileSetupLink(email: string): Promise<void> {
+    if (!this.emailService) {
+      const errorMessage =
+        "Attempted to call sendCreatorProfileSetupLink but this instance of CreatorService does not have an EmailService instance";
+      Logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    const createProfileLink = `${process.env.CLIENT_URL}/finish-profile`;
+
+    try {
+      const emailBody = `
+      Hello,
+      <br><br>
+      Please click the following link to set up your creator profile.
+      <br><br>
+      <a href=${createProfileLink}>Create Profile</a>`;
+
+      this.emailService.sendEmail(
+        email,
+        "Finish your Creator Profile!",
+        emailBody,
+      );
+    } catch (error) {
+      Logger.error(
+        `Failed to generate email verification link for user with email ${email}`,
       );
       throw error;
     }

@@ -2,12 +2,15 @@ import { AuthenticatedUser } from "../types/AuthTypes";
 import baseAPIClient from "./BaseAPIClient";
 
 const register = async (email: string): Promise<AuthenticatedUser> => {
+  const date = new Date(Date.now());
+  date.setDate(date.getDate() - 1);
+
   const newSubscriber = {
     firstName: "",
     lastName: "",
     email,
     roleType: "Subscriber",
-    subscriptionExpiresOn: null,
+    subscriptionExpiresOn: date,
   };
 
   try {
