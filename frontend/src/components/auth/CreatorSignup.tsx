@@ -1,27 +1,40 @@
 import {
   Center,
   FormControl,
+  FormErrorMessage,
   Grid,
   GridItem,
   Image,
   Stack,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 import UsersAPIClient from "../../APIClients/UsersAPIClient";
 import CCBCLogo from "../../images/ccbc-logo.png";
 import LoginGraphic from "../../images/Login-graphic.png";
+import { AuthenticatedUser } from "../../types/AuthTypes";
 import authUtils from "../../utils/AuthUtils";
 import EmailForm from "./EmailForm";
+import SuccessfullyCreatedEmailModal from "./SuccessfullyCreatedEmailModal";
 
 const CreatorSignup = (): React.ReactElement => {
   const [isEmailInvalid, setIsEmailInvalid] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const onSendEmailClick = async (email: string) => {
     if (!authUtils.validateEmail(email)) {
       setIsEmailInvalid(true);
     } else {
-      await UsersAPIClient.register(email);
+      const user: AuthenticatedUser = await UsersAPIClient.register(email);
+
+      if (user) {
+        setIsEmailInvalid(false);
+        onOpen();
+      } else {
+        setIsEmailInvalid(true);
+      }
     }
   };
   return (
@@ -59,6 +72,8 @@ const CreatorSignup = (): React.ReactElement => {
               isEmailInvalid={isEmailInvalid}
               setIsEmailInvalid={setIsEmailInvalid}
             />
+            <FormErrorMessage>Account creation failed</FormErrorMessage>
+            <SuccessfullyCreatedEmailModal isOpen={isOpen} onClose={onClose} />
           </FormControl>
         </Stack>
       </GridItem>

@@ -2,7 +2,6 @@ import {
   Center,
   FormControl,
   FormErrorMessage,
-  FormLabel,
   Grid,
   GridItem,
   Image,
@@ -24,7 +23,6 @@ import SuccessfullyCreatedEmailModal from "./SuccessfullyCreatedEmailModal";
 const SubscriberSignup = (): React.ReactElement => {
   const [isEmailInvalid, setIsEmailInvalid] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [email, setEmail] = useState("");
 
   const onSendEmailClick = async (email: string) => {
     if (!authUtils.validateEmail(email)) {
@@ -76,10 +74,8 @@ const SubscriberSignup = (): React.ReactElement => {
               isEmailInvalid={isEmailInvalid}
               setIsEmailInvalid={setIsEmailInvalid}
             />
-          <SuccessfullyCreatedEmailModal
-            isOpen={isOpen}
-            onClose={onClose}
-          />
+            <FormErrorMessage>Account creation failed</FormErrorMessage>
+            <SuccessfullyCreatedEmailModal isOpen={isOpen} onClose={onClose} />
           </FormControl>
         </Stack>
       </GridItem>
