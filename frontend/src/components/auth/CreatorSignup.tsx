@@ -10,15 +10,13 @@ import {
 import React, { useState } from "react";
 
 import UsersAPIClient from "../../APIClients/UsersAPIClient";
-/* Images */
 import CCBCLogo from "../../images/ccbc-logo.png";
 import LoginGraphic from "../../images/Login-graphic.png";
 import authUtils from "../../utils/AuthUtils";
 import EmailForm from "./EmailForm";
 
-const SubscriberSignup = (): React.ReactElement => {
+const CreatorSignup = (): React.ReactElement => {
   const [isEmailInvalid, setIsEmailInvalid] = useState(false);
-
   const onSendEmailClick = async (email: string) => {
     if (!authUtils.validateEmail(email)) {
       setIsEmailInvalid(true);
@@ -26,7 +24,6 @@ const SubscriberSignup = (): React.ReactElement => {
       await UsersAPIClient.register(email);
     }
   };
-
   return (
     <Grid
       overflow="hidden"
@@ -69,4 +66,4 @@ const SubscriberSignup = (): React.ReactElement => {
   );
 };
 
-export default SubscriberSignup;
+export default CreatorSignup;

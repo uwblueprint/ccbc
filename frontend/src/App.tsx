@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 /* Pages */
 import AuthActions from "./components/auth/AuthActions";
+import CreatorSignup from "./components/auth/CreatorSignup";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/auth/routes/PrivateRoute";
@@ -46,9 +47,8 @@ const App = (): React.ReactElement => {
     AUTHENTICATED_USER_KEY,
   );
 
-  const [authenticatedUser, setAuthenticatedUser] = useState<AuthenticatedUser>(
-    currentUser,
-  );
+  const [authenticatedUser, setAuthenticatedUser] =
+    useState<AuthenticatedUser>(currentUser);
 
   // Some sort of global state. Context API replaces redux.
   // Split related states into different contexts as necessary.
@@ -160,6 +160,11 @@ const App = (): React.ReactElement => {
                         UserRole.Subscriber,
                         UserRole.Creator,
                       ]}
+                    />
+                    <Route
+                      exact
+                      path={Routes.CREATOR_SIGNUP_PAGE}
+                      component={CreatorSignup}
                     />
                     <Route
                       exact
