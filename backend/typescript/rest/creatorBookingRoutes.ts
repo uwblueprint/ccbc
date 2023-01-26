@@ -14,7 +14,6 @@ const creatorBookingService: ICreatorBookingService =
 
 creatorBookingRouter.post(
   "/",
-  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
     const contentType = req.headers["content-type"];
     try {
