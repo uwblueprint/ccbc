@@ -13,6 +13,7 @@ import Signup from "./components/auth/Signup";
 import SubscriberSignup from "./components/auth/SubscriberSignup";
 import AdminDashboard from "./components/pages/AdminDashboard/AdminDashboard";
 import CreateReviewPage from "./components/pages/CreateReviewPage";
+import CreatorProfileForm from "./components/pages/CreatorProfile/CreatorProfileForm";
 import FinishProfileLanding from "./components/pages/CreatorProfile/FinishProfileLanding";
 import Default from "./components/pages/Default";
 import DisplayReview from "./components/pages/DisplayReview/DisplayReview";
@@ -111,6 +112,12 @@ const App = (): React.ReactElement => {
                       exact
                       path={Routes.CREATOR_PROFILE_LANDING}
                       component={FinishProfileLanding}
+                      requiredRoles={[UserRole.Admin, UserRole.Creator]}
+                    />
+                    <PrivateRoute
+                      exact
+                      path={Routes.CREATOR_PROFILE_SETUP}
+                      component={CreatorProfileForm}
                       requiredRoles={[UserRole.Admin, UserRole.Creator]}
                     />
                     <PrivateRoute
