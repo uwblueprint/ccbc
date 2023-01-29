@@ -70,6 +70,7 @@ creatorRouter.put(
   },
 );
 
+/* Create creator by id in database */
 creatorRouter.post(
   "/",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
@@ -77,18 +78,25 @@ creatorRouter.post(
   async (req, res) => {
     try {
       if (req.body.isApproved) throw new Error("invalid creator");
-      await creatorService.createCreator({
-        id: req.body.id,
-        userId: req.body.userId,
-        location: req.body.location,
-        rate: req.body.rate,
-        genre: req.body.genre,
-        ageRange: req.body.ageRange,
-        timezone: req.body.timezone,
-        bio: req.body.bio,
-      });
+      await creatorService.createCreator(req.body.userId);
 
       res.status(200).json({ message: "Created creator!" });
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
+
+/* Update creator in the database */
+creatorRouter.put(
+  "/creators/:userId",
+  isAuthorizedByRole(new Set(["Admin","Subscriber","Author"])),
+  async (req, res) => {
+    try {
+      if (req.body.isApproved) throw new Error("invalid creator");
+      const { userId } = req.params;
+      const creator = await creatorService.updateCreator(userId, req.body);
+      res.status(200).json(creator);
     } catch (e: unknown) {
       sendErrorResponse(e, res);
     }

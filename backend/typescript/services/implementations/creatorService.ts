@@ -130,17 +130,17 @@ class CreatorService implements ICreatorService {
     }
   }
 
-  async createCreator(creator: CreatorCreateUpdateDTO): Promise<void> {
+  async createCreator(userId: number): Promise<void> {
     let newCreator: Creator;
     try {
-      newCreator = await Creator.create({
-        user_id: creator.userId,
-        location: creator.location,
-        rate: creator.rate,
-        genre: creator.genre,
-        ageRange: creator.ageRange,
-        timezone: creator.timezone,
-        bio: creator.bio,
+       newCreator= await Creator.create({
+        user_id: userId,
+        location: '',
+        rate: null,
+        genre: '',
+        ageRange: '',
+        timezone: '',
+        bio: '',
       });
     } catch (error) {
       Logger.error(
@@ -149,6 +149,32 @@ class CreatorService implements ICreatorService {
       throw error;
     }
   }
+
+  async updateCreator(userId: number, creator: CreatorCreateUpdateDTO): Promise<CreatorCreateUpdateDTO> {
+    try {
+      const newCreator = await Creator.update(
+        {
+          location: creator.location,
+          rate: creator.rate, 
+          genre: creator.genre, 
+          ageRange: creator.ageRange, 
+          timezone: creator.timezone, 
+          bio: creator.bio,
+        },
+        {
+          where: { userId: userId },
+        },
+      );
+      return newCreator;
+    } catch (error) {
+      Logger.error(
+        `Failed to update creator. Reason = ${getErrorMessage(error)}`,
+      );
+      throw error;
+    }
+  }
+
+  
 
   async sendCreatorProfileSetupLink(email: string): Promise<void> {
     if (!this.emailService) {
