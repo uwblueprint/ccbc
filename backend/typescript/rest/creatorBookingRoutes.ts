@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { isAuthorizedByRole } from "../middlewares/auth";
 import CreatorBookingService from "../services/implementations/creatorBookingService";
 import {
   CreatorBookingResponseDTO,
