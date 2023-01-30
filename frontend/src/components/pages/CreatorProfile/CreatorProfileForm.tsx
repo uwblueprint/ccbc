@@ -5,17 +5,14 @@ import {
   createIcon,
   Flex,
   Spacer,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { CREATOR_PROFILE_LANDING } from "../../../constants/Routes";
+import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
+import { CreatorProfile } from "../../../types/CreatorProfileTypes";
 import ContactInfoForm from "./ContactInfoForm";
 
 const SaveIcon = createIcon({
@@ -32,15 +29,16 @@ const SaveIcon = createIcon({
 });
 
 const CreatorProfileForm = (): React.ReactElement => {
-  // Contact Info Form
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [city, setCity] = useState<string>("");
-  const [province, setProvince] = useState<string>("");
-  const [postalCode, setPostalCode] = useState<string>("");
+  const [creatorProfile, setCreatorProfile] = useState<CreatorProfile>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    province: "",
+    postalCode: "",
+  });
 
   const [activeForm, setActiveForm] = useState<number>(0);
   const [error, setError] = useState<boolean>(false);
@@ -57,14 +55,14 @@ const CreatorProfileForm = (): React.ReactElement => {
   const handleNav = (direction: number) => {
     if (
       activeForm === 0 &&
-      (firstName === "" ||
-        lastName === "" ||
-        email === "" ||
-        phone === "" ||
-        address === "" ||
-        city === "" ||
-        province === "" ||
-        postalCode === "")
+      (creatorProfile?.firstName === "" ||
+        creatorProfile?.lastName === "" ||
+        creatorProfile?.email === "" ||
+        creatorProfile?.phone === "" ||
+        creatorProfile?.address === "" ||
+        creatorProfile?.city === "" ||
+        creatorProfile?.province === "" ||
+        creatorProfile?.postalCode === "")
     ) {
       setError(true);
       return;
@@ -146,27 +144,11 @@ const CreatorProfileForm = (): React.ReactElement => {
         </Flex>
         <Flex direction="column" pt="4">
           <Center borderLeftWidth="thin" borderLeftColor="gray.200" px="16">
-            {activeForm === 0 && (
-              <ContactInfoForm
-                firstName={firstName}
-                lastName={lastName}
-                email={email}
-                phone={phone}
-                address={address}
-                city={city}
-                province={province}
-                postalCode={postalCode}
-                setFirstName={setFirstName}
-                setLastName={setLastName}
-                setEmail={setEmail}
-                setPhone={setPhone}
-                setAddress={setAddress}
-                setCity={setCity}
-                setProvince={setProvince}
-                setPostalCode={setPostalCode}
-                submitted={error}
-              />
-            )}
+            <CreatorProfileContext.Provider
+              value={{ creatorProfile, setCreatorProfile }}
+            >
+              {activeForm === 0 && <ContactInfoForm submitted={error} />}
+            </CreatorProfileContext.Provider>
           </Center>
           <Flex justify="space-between" my="20" px="16">
             <Button
