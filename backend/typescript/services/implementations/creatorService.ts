@@ -133,14 +133,14 @@ class CreatorService implements ICreatorService {
   async createCreator(userId: number): Promise<void> {
     let newCreator: Creator;
     try {
-       newCreator= await Creator.create({
+      newCreator = await Creator.create({
         user_id: userId,
-        location: '',
+        location: "''",
         rate: null,
-        genre: '',
-        ageRange: '',
-        timezone: '',
-        bio: '',
+        genre: "''",
+        ageRange: "''",
+        timezone: "''",
+        bio: "''",
       });
     } catch (error) {
       Logger.error(
@@ -150,19 +150,22 @@ class CreatorService implements ICreatorService {
     }
   }
 
-  async updateCreator(userId: number, creator: CreatorCreateUpdateDTO): Promise<CreatorCreateUpdateDTO> {
+  async updateCreator(
+    userId: number,
+    creator: CreatorCreateUpdateDTO,
+  ): Promise<CreatorCreateUpdateDTO> {
     try {
       const newCreator = await Creator.update(
         {
           location: creator.location,
-          rate: creator.rate, 
-          genre: creator.genre, 
-          ageRange: creator.ageRange, 
-          timezone: creator.timezone, 
+          rate: creator.rate,
+          genre: creator.genre,
+          ageRange: creator.ageRange,
+          timezone: creator.timezone,
           bio: creator.bio,
         },
         {
-          where: { userId: userId },
+          where: { userId },
         },
       );
       return newCreator;
@@ -173,8 +176,6 @@ class CreatorService implements ICreatorService {
       throw error;
     }
   }
-
-  
 
   async sendCreatorProfileSetupLink(email: string): Promise<void> {
     if (!this.emailService) {

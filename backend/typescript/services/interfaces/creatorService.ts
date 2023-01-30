@@ -40,13 +40,16 @@ interface ICreatorService {
   createCreator(userId: number): Promise<void>;
 
   /**
-   * Update creator with the given id, return updated creator 
-   * @param userId Creator id 
+   * Update creator with the given id, return updated creator
+   * @param userId Creator id
    * @param CreatorCreateUpdateDTO Updated creator
    * @returns Updated creator
    * @throws Error if updating a creator fails
    */
-  updateCreator(userId: number, creator: CreatorCreateUpdateDTO): Promise<CreatorCreateUpdateDTO>; 
+  updateCreator(
+    userId: number,
+    creator: CreatorCreateUpdateDTO,
+  ): Promise<CreatorCreateUpdateDTO>;
 
   /**
    * Sends a link to the creator profile setup page to the creator with the given email

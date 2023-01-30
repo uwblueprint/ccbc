@@ -90,7 +90,7 @@ creatorRouter.post(
 /* Update creator in the database */
 creatorRouter.put(
   "/creators/:userId",
-  isAuthorizedByRole(new Set(["Admin","Subscriber","Author"])),
+  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
     try {
       if (req.body.isApproved) throw new Error("invalid creator");
