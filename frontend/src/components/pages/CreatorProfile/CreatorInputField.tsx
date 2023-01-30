@@ -5,12 +5,18 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
+
+import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
+import {
+  CreatorProfile,
+  CreatorProfileProps,
+} from "../../../types/CreatorProfileTypes";
 
 interface CreatorInputFieldProps {
   name: string;
-  value: string;
-  setter: React.Dispatch<React.SetStateAction<string>>;
+  value?: string;
+  field: CreatorProfileProps;
   placeholder?: string;
   error?: boolean;
   selectOptions?: Array<string>;
@@ -24,13 +30,20 @@ const CreatorInputField = ({
   selectOptions,
   width = "full",
   value,
-  setter,
+  field,
 }: CreatorInputFieldProps): React.ReactElement => {
+  const { creatorProfile, setCreatorProfile } = useContext(
+    CreatorProfileContext,
+  );
+
   const handleOnChange = (
-    func: React.Dispatch<React.SetStateAction<string>>,
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    func(e.target.value);
+    const creatorProfileObj: CreatorProfile = {
+      ...creatorProfile,
+    };
+    creatorProfileObj[field] = e.target.value;
+    setCreatorProfile(creatorProfileObj);
   };
 
   return (
@@ -42,7 +55,7 @@ const CreatorInputField = ({
         <Select
           placeholder={placeholder || `Enter your ${name.toLowerCase()}`}
           value={value}
-          onChange={(e) => handleOnChange(setter, e)}
+          onChange={(e) => handleOnChange(e)}
         >
           {selectOptions.map((item, index) => {
             return <option key={index}>{item}</option>;
@@ -52,7 +65,7 @@ const CreatorInputField = ({
         <Input
           placeholder={placeholder || `Enter your ${name.toLowerCase()}`}
           value={value}
-          onChange={(e) => handleOnChange(setter, e)}
+          onChange={(e) => handleOnChange(e)}
           width={width}
         />
       )}
