@@ -22,7 +22,13 @@ import {
 import React, { useState } from "react";
 import { HiLightBulb } from "react-icons/hi2";
 
-const ContactInquiry = (CreatorID: number): React.ReactElement => {
+export type ContactInquiryProps = {
+  creatorID: number;
+};
+
+const ContactInquiry = ({
+  creatorID: number,
+}: ContactInquiryProps): React.ReactElement => {
   const [messageLength, setMessageLength] = useState<number>(0);
   const [externalBooking, setExternalBooking] = useState<boolean>(false);
   const [tentativeDate, setTentativeDate] = useState<boolean>(true);
@@ -76,6 +82,7 @@ const ContactInquiry = (CreatorID: number): React.ReactElement => {
                       >
                         <Text fontSize="18px" fontWeight={500}>
                           [pfp] James Martin
+                          {/* TODO: add profile pic and replace placeholder name */}
                         </Text>
                         <Divider
                           orientation="vertical"
@@ -84,7 +91,7 @@ const ContactInquiry = (CreatorID: number): React.ReactElement => {
                           borderColor="#A0AEC0"
                         />
                         <Text fontSize="16px" fontWeight={400}>
-                          Illustrator
+                          Illustrator{/* TODO: replace placeholder role */}
                         </Text>
                       </HStack>
                     </Box>
@@ -248,7 +255,9 @@ const ContactInquiry = (CreatorID: number): React.ReactElement => {
                       }}
                     >
                       <Stack direction="row">
-                        <Radio value="yes">Yes</Radio>
+                        <Radio value="yes" mb="0px">
+                          Yes
+                        </Radio>
                         <Radio value="no">No</Radio>
                       </Stack>
                     </RadioGroup>
@@ -378,7 +387,7 @@ const ContactInquiry = (CreatorID: number): React.ReactElement => {
                 The creator has received your message and will reply shortly. We
                 hope your event is a success!
               </Text>
-              <Image src="/Group 80.png" margin="auto" />
+              <Image src="/InquirySent.png" margin="auto" />
               <Button
                 backgroundColor="#0EBCBD"
                 fontWeight={500}
