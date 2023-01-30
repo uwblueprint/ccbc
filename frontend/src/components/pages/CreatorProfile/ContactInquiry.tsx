@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -20,6 +19,7 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
+import React, { useState } from "react";
 import { HiLightBulb } from "react-icons/hi2";
 
 const ContactInquiry = (CreatorID: number): React.ReactElement => {
