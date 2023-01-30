@@ -57,6 +57,26 @@ const SearchReviews = (): React.ReactElement => {
         setAllGenres(genreResponse);
       },
     );
+
+    const ageArr = [];
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
+    for (const review in displayedReviews) {
+      const targetBook = displayedReviews[review].books[0];
+      const ageRange = `${targetBook.minAge},${targetBook.maxAge}`;
+      const ageOpt = {
+        label: `Ages ${ageRange.replace(",", "-")}`,
+        value: ageRange,
+      };
+
+      if (
+        ageArr.findIndex(
+          (opt) => opt.label === ageOpt.label && opt.value === ageOpt.value,
+        ) === -1
+      ) {
+        ageArr.push(ageOpt);
+      }
+    }
+    setAllAges(ageArr);
   }, []);
 
   /** Creates new url based on search text and filters */

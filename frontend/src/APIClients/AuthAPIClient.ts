@@ -70,8 +70,7 @@ const register = async (
   try {
     const { data } = await baseAPIClient.post(
       "/auth/register",
-      { firstName, lastName, email },
-      { withCredentials: true},
+      { firstName, lastName, email }
     );
     return data;
   } catch (error) {
