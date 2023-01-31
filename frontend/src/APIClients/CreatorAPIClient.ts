@@ -15,7 +15,7 @@ const createCreator = async (id: number): Promise<Creator> => {
     });
     return data;
   } catch (error) {
-    return null;
+    throw new Error(`Create creator failed`);
   }
 };
 
@@ -32,7 +32,7 @@ const updateCreator = async (
     });
     return data;
   } catch (error) {
-    return null;
+    throw new Error(`Update creator failed`);
   }
 };
 
