@@ -7,7 +7,7 @@ const createCreator = async (id: number): Promise<Creator> => {
     userId: id,
   };
   try {
-    const { data } = await baseAPIClient.post("/", newCreator, {
+    const { data } = await baseAPIClient.post("/creators", newCreator, {
       headers: {
         Authorization: getBearerToken(),
         "Content-Type": "application/json",
@@ -20,11 +20,11 @@ const createCreator = async (id: number): Promise<Creator> => {
 };
 
 const updateCreator = async (
-  userId: number,
+  id: number,
   creator: Creator,
 ): Promise<Creator> => {
   try {
-    const { data } = await baseAPIClient.put(`/creators/${userId}`, creator, {
+    const { data } = await baseAPIClient.put(`/creators/${id}`, creator, {
       headers: {
         Authorization: getBearerToken(),
         "Content-Type": "application/json",
