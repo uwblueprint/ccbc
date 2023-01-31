@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { isAuthorizedByRole } from "../middlewares/auth";
 import { sendErrorResponse } from "../utilities/errorResponse";
-import { creatorDtoValidator } from "../middlewares/validators/creatorValidators";
+import { creatorUpdateDtoValidator } from "../middlewares/validators/creatorValidators";
 import CreatorService from "../services/implementations/creatorService";
 import ICreatorService from "../services/interfaces/creatorService";
 
@@ -74,13 +74,12 @@ creatorRouter.put(
 creatorRouter.post(
   "/",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
-  creatorDtoValidator,
   async (req, res) => {
     try {
       if (req.body.isApproved) throw new Error("invalid creator");
-      await creatorService.createCreator(req.body.userId);
+      const result = await creatorService.createCreator(req.body.userId);
 
-      res.status(200).json({ message: "Created creator!" });
+      res.status(200).json(result);
     } catch (e: unknown) {
       sendErrorResponse(e, res);
     }
@@ -89,13 +88,14 @@ creatorRouter.post(
 
 /* Update creator in the database */
 creatorRouter.put(
-  "/creators/:userId",
+  "/:id",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
+  creatorUpdateDtoValidator,
   async (req, res) => {
     try {
       if (req.body.isApproved) throw new Error("invalid creator");
-      const { userId } = req.params;
-      const creator = await creatorService.updateCreator(userId, req.body);
+      const { id } = req.params;
+      const creator = await creatorService.updateCreator(parseInt(id), req.body);
       res.status(200).json(creator);
     } catch (e: unknown) {
       sendErrorResponse(e, res);
