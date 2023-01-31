@@ -51,7 +51,7 @@ export const creatorUpdateDtoValidator = async (
   if (!validatePrimitive(req.body.genre, "string")) {
     return res.status(400).send(getApiValidationError("genre", "string"));
   }
-  //temporarily commenting this out, somewhere in the backend the type for rate is an integer
+  // temporarily commenting this out, somewhere in the backend the type for rate is an integer
   // if (!validatePrimitive(req.body.rate, "float")) {
   //   return res.status(400).send(getApiValidationError("rate", "number"));
   // }

@@ -95,7 +95,10 @@ creatorRouter.put(
     try {
       if (req.body.isApproved) throw new Error("invalid creator");
       const { id } = req.params;
-      const creator = await creatorService.updateCreator(parseInt(id), req.body);
+      const creator = await creatorService.updateCreator(
+        parseInt(id, 10),
+        req.body,
+      );
       res.status(200).json(creator);
     } catch (e: unknown) {
       sendErrorResponse(e, res);

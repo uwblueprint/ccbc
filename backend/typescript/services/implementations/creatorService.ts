@@ -135,16 +135,16 @@ class CreatorService implements ICreatorService {
       const newCreator = await Creator.create({
         user_id: userId,
       });
-      return { 
-        id: newCreator.id, 
-        userId: newCreator.user_id, 
-        location: newCreator.location, 
-        rate: newCreator.rate, 
-        genre: newCreator.genre, 
-        ageRange: newCreator.age_range, 
-        timezone: newCreator.timezone, 
-        bio: newCreator.bio, 
-        isApproved: newCreator.is_approved
+      return {
+        id: newCreator.id,
+        userId: newCreator.user_id,
+        location: newCreator.location,
+        rate: newCreator.rate,
+        genre: newCreator.genre,
+        ageRange: newCreator.age_range,
+        timezone: newCreator.timezone,
+        bio: newCreator.bio,
+        isApproved: newCreator.is_approved,
       };
     } catch (error) {
       Logger.error(
@@ -171,26 +171,25 @@ class CreatorService implements ICreatorService {
         },
         {
           where: { id },
-          returning: true, 
+          returning: true,
         },
       );
-      if(updateResult[0] < 1){ 
+      if (updateResult[0] < 1) {
         throw new Error(`id ${id} not found.`);
       }
-      const updatedCreator = updateResult[1][0]; 
+      const updatedCreator = updateResult[1][0];
 
-      return { 
-        id: updatedCreator.id, 
-        userId: updatedCreator.user_id, 
-        location: updatedCreator.location, 
-        rate: updatedCreator.rate, 
-        genre: updatedCreator.genre, 
-        ageRange: updatedCreator.age_range, 
-        timezone: updatedCreator.timezone, 
-        bio: updatedCreator.bio, 
-        isApproved: updatedCreator.is_approved
-      }
-
+      return {
+        id: updatedCreator.id,
+        userId: updatedCreator.user_id,
+        location: updatedCreator.location,
+        rate: updatedCreator.rate,
+        genre: updatedCreator.genre,
+        ageRange: updatedCreator.age_range,
+        timezone: updatedCreator.timezone,
+        bio: updatedCreator.bio,
+        isApproved: updatedCreator.is_approved,
+      };
     } catch (error) {
       Logger.error(
         `Failed to update creator. Reason = ${getErrorMessage(error)}`,
