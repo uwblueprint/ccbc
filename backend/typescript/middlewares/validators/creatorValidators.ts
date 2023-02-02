@@ -37,14 +37,11 @@ export const creatorDtoValidator = async (
   return next();
 };
 
-export const creatorCreateUpdateDtoValidator = async (
+export const creatorUpdateDtoValidator = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<Response | void> => {
-  if (!validatePrimitive(req.body.id, "integer")) {
-    return res.status(400).send(getApiValidationError("id", "integer"));
-  }
   if (!validatePrimitive(req.body.userId, "integer")) {
     return res.status(400).send(getApiValidationError("userId", "integer"));
   }
@@ -54,9 +51,10 @@ export const creatorCreateUpdateDtoValidator = async (
   if (!validatePrimitive(req.body.genre, "string")) {
     return res.status(400).send(getApiValidationError("genre", "string"));
   }
-  if (!validatePrimitive(req.body.rate, "float")) {
-    return res.status(400).send(getApiValidationError("rate", "number"));
-  }
+  // temporarily commenting this out, somewhere in the backend the type for rate is an integer
+  // if (!validatePrimitive(req.body.rate, "float")) {
+  //   return res.status(400).send(getApiValidationError("rate", "number"));
+  // }
   if (!validatePrimitive(req.body.ageRange, "string")) {
     return res.status(400).send(getApiValidationError("ageRange", "string"));
   }
