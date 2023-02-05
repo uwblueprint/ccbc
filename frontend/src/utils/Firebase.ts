@@ -1,4 +1,5 @@
 import * as firebase from "firebase/app";
+import { getStorage } from "firebase/storage";
 
 // It is ok to expose apiKey as per this slack article: https://stackoverflow.com/questions/37482366/is-it-safe-to-expose-firebase-apikey-to-the-public
 const firebaseConfig =
@@ -21,5 +22,7 @@ const firebaseConfig =
       };
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
+
+export const storage = getStorage(firebaseApp);
 
 export default firebaseApp;

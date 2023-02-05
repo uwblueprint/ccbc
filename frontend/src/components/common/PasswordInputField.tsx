@@ -19,13 +19,8 @@ export type PasswordInputProps = {
 };
 
 const PasswordInputField = (props: PasswordInputProps): React.ReactElement => {
-  const {
-    isInvalid,
-    value,
-    placeholder,
-    onChangeHandler,
-    errorMessage,
-  } = props;
+  const { isInvalid, value, placeholder, onChangeHandler, errorMessage } =
+    props;
 
   const [showPassword, setShowPassword] = useState(false);
 

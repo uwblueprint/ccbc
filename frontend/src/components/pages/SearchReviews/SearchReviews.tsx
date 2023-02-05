@@ -171,9 +171,8 @@ const SearchReviews = (): React.ReactElement => {
               }}
               setAgeFilter={(ages) => {
                 const numAges = ages.map((a) => {
-                  return (a.value.split("-")).map((x) => parseInt(x, 10));
+                  return a.value.split("-").map((x) => parseInt(x, 10));
                 });
-                console.log(numAges)
                 const ageOpts = numAges.flat();
                 setAgeRangeFilter([Math.min(...ageOpts), Math.max(...ageOpts)]);
               }}

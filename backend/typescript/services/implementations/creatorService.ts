@@ -162,21 +162,69 @@ class CreatorService implements ICreatorService {
     }
   }
 
-  async createCreator(creator: CreatorCreateUpdateDTO): Promise<void> {
-    let newCreator: Creator;
+  async createCreator(userId: number): Promise<CreatorDTO> {
     try {
-      newCreator = await Creator.create({
-        user_id: creator.userId,
-        location: creator.location,
-        rate: creator.rate,
-        genre: creator.genre,
-        ageRange: creator.ageRange,
-        timezone: creator.timezone,
-        bio: creator.bio,
+      const newCreator = await Creator.create({
+        user_id: userId,
       });
+      return {
+        id: newCreator.id,
+        userId: newCreator.user_id,
+        location: newCreator.location,
+        rate: newCreator.rate,
+        genre: newCreator.genre,
+        ageRange: newCreator.age_range,
+        timezone: newCreator.timezone,
+        bio: newCreator.bio,
+        isApproved: newCreator.is_approved,
+      };
     } catch (error) {
       Logger.error(
         `Failed to create creator. Reason = ${getErrorMessage(error)}`,
+      );
+      throw error;
+    }
+  }
+
+  async updateCreator(
+    id: number,
+    creator: CreatorCreateUpdateDTO,
+  ): Promise<CreatorDTO> {
+    try {
+      const updateResult = await Creator.update(
+        {
+          user_id: creator.userId,
+          location: creator.location,
+          rate: creator.rate,
+          genre: creator.genre,
+          age_range: creator.ageRange,
+          timezone: creator.timezone,
+          bio: creator.bio,
+        },
+        {
+          where: { id },
+          returning: true,
+        },
+      );
+      if (updateResult[0] < 1) {
+        throw new Error(`id ${id} not found.`);
+      }
+      const updatedCreator = updateResult[1][0];
+
+      return {
+        id: updatedCreator.id,
+        userId: updatedCreator.user_id,
+        location: updatedCreator.location,
+        rate: updatedCreator.rate,
+        genre: updatedCreator.genre,
+        ageRange: updatedCreator.age_range,
+        timezone: updatedCreator.timezone,
+        bio: updatedCreator.bio,
+        isApproved: updatedCreator.is_approved,
+      };
+    } catch (error) {
+      Logger.error(
+        `Failed to update creator. Reason = ${getErrorMessage(error)}`,
       );
       throw error;
     }
