@@ -75,22 +75,28 @@ class CreatorService implements ICreatorService {
     genre?: string;
     location?: string;
     ageRange?: string;
-  }): Promise<Array<CreatorDTO>> {
-    const isAdmin = !isAuthorizedByRole(new Set(["Admin"]));
+  }): Promise<Array<any>> {
+    const isAdmin = !!isAuthorizedByRole(new Set(["Admin"]));
+
     try {
       const creators: Array<Creator> = await Creator.findAll({ raw: true });
+
       return creators
-        .map((creator) => ({
-          id: creator.id,
-          userId: creator.user_id,
-          location: creator.location,
-          rate: creator.rate,
-          genre: creator.genre,
-          ageRange: creator.age_range,
-          timezone: creator.timezone,
-          bio: creator.bio,
-          isApproved: creator.is_approved,
-        }))
+        .map((creator) => {
+          return {
+            id: creator.id,
+            userId: creator.user_id,
+            location: creator.location,
+            rate: creator.rate,
+            genre: creator.genre,
+            ageRange: creator.age_range,
+            timezone: creator.timezone,
+            bio: creator.bio,
+            isApproved: creator.is_approved,
+            createdAt: creator.createdAt,
+            updatedAt: creator.updatedAt,
+          };
+        })
         .filter(
           (creator) =>
             (creator.isApproved || isAdmin) &&
@@ -112,14 +118,40 @@ class CreatorService implements ICreatorService {
     }
   }
 
+  async deleteCreator(userId: string): Promise<void> {
+    try {
+      // Sequelize doesn't provide a way to atomically find, delete, and return deleted row
+      const deletedUser: Creator | null = await Creator.findByPk(
+        Number(userId),
+      );
+
+      if (!deletedUser) {
+        throw new Error(`userid ${userId} not found.`);
+      }
+
+      const numDestroyed: number = await Creator.destroy({
+        where: { id: userId },
+      });
+
+      if (numDestroyed <= 0) {
+        throw new Error(`userid ${userId} was not deleted in Postgres.`);
+      }
+    } catch (error) {
+      Logger.error(
+        `Failed to delete creator. Reason = ${getErrorMessage(error)}`,
+      );
+      throw error;
+    }
+  }
+
   async approveCreator(userId: string): Promise<void> {
     try {
       await Creator.update(
         {
-          isApproved: true,
+          is_approved: true,
         },
         {
-          where: { id: userId },
+          where: { id: parseInt(userId, 10) },
         },
       );
     } catch (error) {

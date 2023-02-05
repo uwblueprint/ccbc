@@ -33,6 +33,14 @@ interface ICreatorService {
 
   /**
    * Create new creator in databse
+   * @param userId The id of the user we want to delete.
+   * @returns void
+   * @throws Error if deleting a creator fails
+   */
+  deleteCreator(userId: string): Promise<void>;
+
+  /**
+   * Create new creator in databse
    * @param CreatorCreateUpdateDTO
    * @returns void
    * @throws Error if creating a creator fails
