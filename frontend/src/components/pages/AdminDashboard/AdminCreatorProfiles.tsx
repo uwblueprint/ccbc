@@ -36,7 +36,6 @@ const AdminCreatorProfiles = (): React.ReactElement => {
   useEffect(() => {
     setIsLoading(true);
     creatorAPIClient.getCreators().then((resp: Creator[]) => {
-      console.log(resp);
       if (!resp) {
         setData([]);
       } else {

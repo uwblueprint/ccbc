@@ -81,7 +81,6 @@ creatorRouter.delete(
     const { id } = req.params;
 
     try {
-      console.log("hello", id);
       await creatorService.deleteCreator(id);
 
       res.status(200).json({ message: "deleted" });
