@@ -15,6 +15,23 @@ export type CreatorDTO = {
   timezone: string;
   bio: string;
   isApproved: boolean;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  street_address: string;
+  city: string;
+  province: string;
+  postal_code: string;
+  craft: string;
+  website: string;
+  profile_picture_link: string;
+  availability: string;
+  book_covers: string[];
+  isReadyForReview: boolean;
+  // TODO:
+  // presentations: Presentation[];
+  // publications: Publication[];
 };
 
 export type CreatorCreateUpdateDTO = Omit<CreatorDTO, "isApproved">;
