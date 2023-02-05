@@ -62,6 +62,20 @@ class CreatorService implements ICreatorService {
       timezone: creator.timezone,
       bio: creator.bio,
       isApproved: creator.is_approved,
+      firstName: creator.first_name,
+      lastName: creator.last_name,
+      email: creator.email,
+      phone: creator.phone,
+      streetAddress: creator.street_address,
+      city: creator.city,
+      province: creator.province,
+      postalCode: creator.postal_code,
+      craft: creator.craft,
+      website: creator.website,
+      profilePictureLink: creator.profile_picture_link,
+      availability: creator.availability,
+      bookCovers: creator.book_covers,
+      isReadyForReview: creator.isReadyForReview,
     };
   }
 
@@ -70,11 +84,13 @@ class CreatorService implements ICreatorService {
     genre,
     location,
     ageRange,
+    province
   }: {
     status?: string;
     genre?: string;
     location?: string;
     ageRange?: string;
+    province?: string;
   }): Promise<Array<CreatorDTO>> {
     const isAdmin = !isAuthorizedByRole(new Set(["Admin"]));
     try {
@@ -90,6 +106,20 @@ class CreatorService implements ICreatorService {
           timezone: creator.timezone,
           bio: creator.bio,
           isApproved: creator.is_approved,
+          firstName: creator.first_name,
+          lastName: creator.last_name,
+          email: creator.email,
+          phone: creator.phone,
+          streetAddress: creator.street_address,
+          city: creator.city,
+          province: creator.province,
+          postalCode: creator.postal_code,
+          craft: creator.craft,
+          website: creator.website,
+          profilePictureLink: creator.profile_picture_link,
+          availability: creator.availability,
+          bookCovers: creator.book_covers,
+          isReadyForReview: creator.isReadyForReview,
         }))
         .filter(
           (creator) =>
@@ -141,6 +171,20 @@ class CreatorService implements ICreatorService {
         ageRange: creator.ageRange,
         timezone: creator.timezone,
         bio: creator.bio,
+        first_name: creator.firstName,
+        last_name: creator.lastName,
+        email: creator.email,
+        phone: creator.phone,
+        street_address: creator.streetAddress,
+        city: creator.city,
+        province: creator.province,
+        postal_code: creator.postalCode,
+        craft: creator.craft,
+        website: creator.website,
+        profile_picture_link: creator.profilePictureLink,
+        availability: creator.availability,
+        book_covers: creator.bookCovers,
+        isReadyForReview: creator.isReadyForReview,
       });
     } catch (error) {
       Logger.error(

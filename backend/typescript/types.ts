@@ -15,19 +15,19 @@ export type CreatorDTO = {
   timezone: string;
   bio: string;
   isApproved: boolean;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
-  street_address: string;
+  streetAddress: string;
   city: string;
   province: string;
-  postal_code: string;
+  postalCode: string;
   craft: string;
   website: string;
-  profile_picture_link: string;
+  profilePictureLink: string;
   availability: string;
-  book_covers: string[];
+  bookCovers: string[];
   isReadyForReview: boolean;
   // TODO:
   // presentations: Presentation[];

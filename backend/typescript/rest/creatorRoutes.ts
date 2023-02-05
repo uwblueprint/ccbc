@@ -15,13 +15,14 @@ interface CreatorReqQuery {
   ageRange?: string;
   genre?: string;
   status?: string;
+  province?: string;
 }
 
 creatorRouter.get(
   "/",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
-    const { id, location, ageRange, genre, status } =
+    const { id, location, ageRange, genre, status, province } =
       req.query as CreatorReqQuery;
     if (id) {
       const idNumeric = parseInt(id, 10);
@@ -44,6 +45,7 @@ creatorRouter.get(
             genre,
             location,
             ageRange,
+            province,
           }),
         );
       } catch (error: unknown) {
@@ -86,6 +88,21 @@ creatorRouter.post(
         ageRange: req.body.ageRange,
         timezone: req.body.timezone,
         bio: req.body.bio,
+        // new fields
+        firstName: req.body.firstName,
+        lastName: req.body.firstName,
+        email: req.body.email,
+        phone: req.body.phone,
+        streetAddress: req.body.streetAddress,
+        city: req.body.city,
+        province: req.body.province,
+        postalCode: req.body.postalCode,
+        craft: req.body.craft,
+        website: req.body.website,
+        profilePictureLink: req.body.profilePictureLink,
+        availability: req.body.availability,
+        bookCovers: req.body.bookCovers,
+        isReadyForReview: req.body.isReadyForReview,
       });
 
       res.status(200).json({ message: "Created creator!" });

@@ -19,11 +19,13 @@ interface ICreatorService {
     genre,
     location,
     ageRange,
+    province
   }: {
     status?: string;
     genre?: string;
     location?: string;
     ageRange?: string;
+    province?: string;
   }): Promise<Array<CreatorDTO>>;
   /**
    * Approves a user to be a creator on the platform
