@@ -18,17 +18,3 @@ export type CreatorProfileProps =
   | "city"
   | "province"
   | "postalCode";
-
-export interface Creator {
-  id: number;
-  user_id: number;
-  location: string;
-  rate: number;
-  genre: string;
-  age_range: string;
-  timezone: string;
-  bio: string;
-  isApproved: boolean;
-  createdAt: number;
-  updatedAt: number;
-}

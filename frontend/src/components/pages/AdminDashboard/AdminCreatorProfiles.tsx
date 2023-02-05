@@ -8,7 +8,7 @@ import MUIDataTable, {
 import React, { useEffect, useState } from "react";
 
 import creatorAPIClient from "../../../APIClients/CreatorAPIClient";
-import { Creator } from "../../../types/CreatorProfileTypes";
+import { Creator } from "../../../types/CreatorTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import useToasts from "../../Toast";
 import ApproveConfirmationModal from "./ApproveConfirmationModal";
@@ -46,7 +46,7 @@ const AdminCreatorProfiles = (): React.ReactElement => {
   }, []);
 
   const getIndex = (id: number) => {
-    return data.findIndex((element) => element.id === id);
+    return data.findIndex((element) => (element ? element.id === id : false));
   };
 
   const DeleteProfile = async () => {
@@ -74,7 +74,9 @@ const AdminCreatorProfiles = (): React.ReactElement => {
       await creatorAPIClient.approveCreator(ApproveProfileId);
       const newData = [...data];
       const ApproveProfileIndex = getIndex(ApproveProfileId);
-      newData[ApproveProfileIndex].isApproved = true;
+      if (newData && newData[ApproveProfileIndex]) {
+        newData[ApproveProfileIndex].isApproved = true;
+      }
       setData(newData);
       newToast("success", "Creator approved", "This creator has been approved");
     } catch (e) {
@@ -278,13 +280,15 @@ const AdminCreatorProfiles = (): React.ReactElement => {
 
     if (data.length > 0) {
       data.forEach((creator: Creator) => {
-        created = new Date(creator.createdAt).toDateString().substring(4);
+        created = new Date(creator.createdAt as number)
+          .toDateString()
+          .substring(4);
 
         const row: CreatorRow = {
-          id: creator.id,
-          name: "Full Name",
-          email: "Email",
-          isApproved: creator.isApproved,
+          id: creator.id || -1,
+          name: `${creator.first_name} ${creator.last_name}`,
+          email: creator.email || "",
+          isApproved: creator.isApproved || false,
           createdAt: created,
         };
         rows.push(row);

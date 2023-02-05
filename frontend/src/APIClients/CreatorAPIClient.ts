@@ -1,4 +1,4 @@
-import { Creator } from "../types/CreatorProfileTypes";
+import { Creator } from "../types/CreatorTypes";
 import { getBearerToken } from "../utils/AuthUtils";
 import baseAPIClient from "./BaseAPIClient";
 
@@ -82,4 +82,6 @@ export default {
   getCreators,
   approveCreator,
   deleteCreator,
+  createCreator,
+  updateCreator,
 };

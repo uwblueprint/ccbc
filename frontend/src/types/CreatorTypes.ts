@@ -2,6 +2,7 @@
  * Type for Creator, a special class of user
  */
 export type Creator = {
+  id?: number;
   userId: number;
   genre?: string;
   grade_level?: string;
@@ -24,7 +25,9 @@ export type Creator = {
   isReadyForReview?: boolean;
   presentations?: Presentation[];
   publications?: Publication[];
-} | null;
+  createdAt?: number;
+  updatedAt?: number;
+};
 
 /**
  * Type for Presentation
