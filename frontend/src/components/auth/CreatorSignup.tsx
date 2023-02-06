@@ -12,7 +12,6 @@ import {
 import React, { useState } from "react";
 
 import UsersAPIClient from "../../APIClients/UsersAPIClient";
-/* Images */
 import CCBCLogo from "../../images/ccbc-logo.png";
 import LoginGraphic from "../../images/Login-graphic.png";
 import { AuthenticatedUser } from "../../types/AuthTypes";
@@ -20,7 +19,7 @@ import authUtils from "../../utils/AuthUtils";
 import EmailForm from "./EmailForm";
 import SuccessfullyCreatedEmailModal from "./SuccessfullyCreatedEmailModal";
 
-const SubscriberSignup = (): React.ReactElement => {
+const CreatorSignup = (): React.ReactElement => {
   const [isEmailInvalid, setIsEmailInvalid] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -38,7 +37,6 @@ const SubscriberSignup = (): React.ReactElement => {
       }
     }
   };
-
   return (
     <Grid
       overflow="hidden"
@@ -83,4 +81,4 @@ const SubscriberSignup = (): React.ReactElement => {
   );
 };
 
-export default SubscriberSignup;
+export default CreatorSignup;

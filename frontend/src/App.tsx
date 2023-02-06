@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 /* Pages */
 import AuthActions from "./components/auth/AuthActions";
+import CreatorSignup from "./components/auth/CreatorSignup";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/auth/routes/PrivateRoute";
@@ -13,6 +14,7 @@ import Signup from "./components/auth/Signup";
 import SubscriberSignup from "./components/auth/SubscriberSignup";
 import AdminDashboard from "./components/pages/AdminDashboard/AdminDashboard";
 import CreateReviewPage from "./components/pages/CreateReviewPage";
+import CreatorProfileForm from "./components/pages/CreatorProfile/CreatorProfileForm";
 import FinishProfileLanding from "./components/pages/CreatorProfile/FinishProfileLanding";
 import Default from "./components/pages/Default";
 import DisplayReview from "./components/pages/DisplayReview/DisplayReview";
@@ -47,9 +49,8 @@ const App = (): React.ReactElement => {
     AUTHENTICATED_USER_KEY,
   );
 
-  const [authenticatedUser, setAuthenticatedUser] = useState<AuthenticatedUser>(
-    currentUser,
-  );
+  const [authenticatedUser, setAuthenticatedUser] =
+    useState<AuthenticatedUser>(currentUser);
 
   // Some sort of global state. Context API replaces redux.
   // Split related states into different contexts as necessary.
@@ -115,6 +116,12 @@ const App = (): React.ReactElement => {
                     />
                     <PrivateRoute
                       exact
+                      path={Routes.CREATOR_PROFILE_SETUP}
+                      component={CreatorProfileForm}
+                      requiredRoles={[UserRole.Admin, UserRole.Creator]}
+                    />
+                    <PrivateRoute
+                      exact
                       path={Routes.PROFILE_PAGE}
                       component={Profile}
                       requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
@@ -167,6 +174,11 @@ const App = (): React.ReactElement => {
                         UserRole.Subscriber,
                         UserRole.Creator,
                       ]}
+                    />
+                    <Route
+                      exact
+                      path={Routes.CREATOR_SIGNUP_PAGE}
+                      component={CreatorSignup}
                     />
                     <Route
                       exact
