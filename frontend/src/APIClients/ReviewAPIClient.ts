@@ -23,7 +23,7 @@ const getReviews = async (
   minAge?: number,
   maxAge?: number,
   featured?: boolean,
-  genres?: string
+  genres?: string,
 ): Promise<PaginatedReviewResponse> => {
   const params = new URLSearchParams();
   if (search) params.append("search", search);
