@@ -14,6 +14,7 @@ import { CREATOR_PROFILE_LANDING } from "../../../constants/Routes";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { CreatorProfile } from "../../../types/CreatorProfileTypes";
 import ContactInfoForm from "./ContactInfoForm";
+import GeneralInfoForm from "./GeneralInfoForm";
 
 const SaveIcon = createIcon({
   displayName: "SaveIcon",
@@ -38,6 +39,10 @@ const CreatorProfileForm = (): React.ReactElement => {
     city: "",
     province: "",
     postalCode: "",
+    crafts: [],
+    genres: [],
+    presentations: [],
+    website: "",
   });
 
   const [activeForm, setActiveForm] = useState<number>(0);
@@ -67,6 +72,9 @@ const CreatorProfileForm = (): React.ReactElement => {
       setError(true);
       return;
     }
+    if (activeForm === 1 && creatorProfile?.website === "") {
+      setError(true);
+    }
     setError(false);
     if (direction === 1) {
       setActiveForm(Math.min(activeForm + 1, 5));
@@ -91,7 +99,8 @@ const CreatorProfileForm = (): React.ReactElement => {
       </Link>
       <Flex
         direction={{ sm: "column", base: "row", md: "row", lg: "row" }}
-        justify="center"
+        justify="flex-start"
+        pl="168" // TODO: Should this be hardcoded? might need bootstrap?
       >
         <Flex
           direction="column"
@@ -150,6 +159,14 @@ const CreatorProfileForm = (): React.ReactElement => {
               {activeForm === 0 && <ContactInfoForm submitted={error} />}
             </CreatorProfileContext.Provider>
           </Center>
+          <Center borderLeftWidth="thin" borderLeftColor="gray.200" px="16">
+            <CreatorProfileContext.Provider
+              value={{ creatorProfile, setCreatorProfile }}
+            >
+              {activeForm === 1 && <GeneralInfoForm submitted={error} />}
+            </CreatorProfileContext.Provider>
+          </Center>
+
           <Flex justify="space-between" my="20" px="16">
             <Button
               leftIcon={<ArrowBackIcon />}

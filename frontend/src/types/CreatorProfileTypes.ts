@@ -7,6 +7,10 @@ export type CreatorProfile = {
   city?: string;
   province?: string;
   postalCode?: string;
+  crafts?: string[];
+  genres?: string[];
+  presentations?: string[];
+  website?: string;
 } | null;
 
 export type CreatorProfileProps =
@@ -17,4 +21,5 @@ export type CreatorProfileProps =
   | "address"
   | "city"
   | "province"
-  | "postalCode";
+  | "postalCode"
+  | "website";
