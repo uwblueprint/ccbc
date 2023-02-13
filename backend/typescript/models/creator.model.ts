@@ -24,8 +24,8 @@ export default class Creator extends Model {
   @Column
   rate!: number;
 
-  @Column
-  genre!: string;
+  @Column({ type: DataType.ARRAY(DataType.STRING) })
+  genre!: string[];
 
   @Column
   age_range!: string;
@@ -64,8 +64,8 @@ export default class Creator extends Model {
   @Column
   postal_code!: string;
   
-  @Column
-  craft!: string;
+  @Column({ type: DataType.ARRAY(DataType.STRING) })
+  craft!: string[];
   
   @Column
   website!: string;
@@ -76,15 +76,15 @@ export default class Creator extends Model {
   @Column
   availability!: string;
   
-  @Column
+  @Column({ type: DataType.ARRAY(DataType.STRING) })
   book_covers!: string[];
   
   @Column
   isReadyForReview!: boolean;
   
-  @Column
+  @Column({ type: DataType.ARRAY(DataType.JSON) })
   presentations!: Presentation[];
   
-  @Column
+  @Column({ type: DataType.ARRAY(DataType.JSON) })
   publications!: Publication[];
 }

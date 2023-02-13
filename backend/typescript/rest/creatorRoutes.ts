@@ -13,7 +13,7 @@ interface CreatorReqQuery {
   id?: string;
   location?: string;
   ageRange?: string;
-  genre?: string;
+  genre?: string[];
   status?: string;
   province?: string;
 }

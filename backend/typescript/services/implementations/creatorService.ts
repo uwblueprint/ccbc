@@ -87,7 +87,7 @@ class CreatorService implements ICreatorService {
     province
   }: {
     status?: string;
-    genre?: string;
+    genre?: string[];
     location?: string;
     ageRange?: string;
     province?: string;
@@ -126,7 +126,8 @@ class CreatorService implements ICreatorService {
             (creator.isApproved || isAdmin) &&
             (status ? creator.isApproved === (status === "true") : true) &&
             (genre
-              ? creator.genre.toLowerCase() === genre.toLowerCase()
+              // ez clap
+              ? creator.genre.filter(i => (new Set(genre)).has(i)).length > 0
               : true) &&
             (location
               ? creator.location.toLowerCase() === location.toLowerCase()
@@ -176,6 +177,20 @@ class CreatorService implements ICreatorService {
         timezone: newCreator.timezone,
         bio: newCreator.bio,
         isApproved: newCreator.is_approved,
+        firstName: newCreator.first_name,
+        lastName: newCreator.last_name,
+        email: newCreator.email,
+        phone: newCreator.phone,
+        streetAddress: newCreator.street_address,
+        city: newCreator.city,
+        province: newCreator.province,
+        postalCode: newCreator.postal_code,
+        craft: newCreator.craft,
+        website: newCreator.website,
+        profilePictureLink: newCreator.profile_picture_link,
+        availability: newCreator.availability,
+        bookCovers: newCreator.book_covers,
+        isReadyForReview: newCreator.isReadyForReview,
       };
     } catch (error) {
       Logger.error(
@@ -220,6 +235,20 @@ class CreatorService implements ICreatorService {
         timezone: updatedCreator.timezone,
         bio: updatedCreator.bio,
         isApproved: updatedCreator.is_approved,
+        firstName: updatedCreator.first_name,
+        lastName: updatedCreator.last_name,
+        email: updatedCreator.email,
+        phone: updatedCreator.phone,
+        streetAddress: updatedCreator.street_address,
+        city: updatedCreator.city,
+        province: updatedCreator.province,
+        postalCode: updatedCreator.postal_code,
+        craft: updatedCreator.craft,
+        website: updatedCreator.website,
+        profilePictureLink: updatedCreator.profile_picture_link,
+        availability: updatedCreator.availability,
+        bookCovers: updatedCreator.book_covers,
+        isReadyForReview: updatedCreator.isReadyForReview,
       };
     } catch (error) {
       Logger.error(
