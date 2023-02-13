@@ -7,6 +7,15 @@ export type CreatorProfile = {
   city?: string;
   province?: string;
   postalCode?: string;
+  offeredLocations?: string;
+  preferredGradeLevel?: string;
+  preferredAudienceSize?: string;
+  inPersonDeliveryFee?: string;
+  virtualDeliveryFree?: string;
+  equipmentRequired?: string;
+  otherReadingLanguages?: string;
+  booksPurchasedAndAutoGraphed?: string;
+  contentOfReadings?: string;
 } | null;
 
 export type CreatorProfileProps =
@@ -17,4 +26,8 @@ export type CreatorProfileProps =
   | "address"
   | "city"
   | "province"
-  | "postalCode";
+  | "postalCode"
+  | "offeredLocations"
+  | "preferredGradeLevel"
+  | "preferredAudienceSize"
+  | "equipmentRequired";
