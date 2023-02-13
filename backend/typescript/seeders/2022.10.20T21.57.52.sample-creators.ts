@@ -28,7 +28,7 @@ const seedCreators = [
     book_covers: ["TODO1", "TODO2"], // array of URLs
     isReadyForReview: true,
     presentations: [],
-    publications: []
+    publications: [],
   },
   {
     id: 2,
@@ -57,7 +57,7 @@ const seedCreators = [
     book_covers: ["TODO1", "TODO2"], // array of URLs
     isReadyForReview: true,
     presentations: [],
-    publications: []
+    publications: [],
   },
 ];
 

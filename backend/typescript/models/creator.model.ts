@@ -42,49 +42,49 @@ export default class Creator extends Model {
   // Calder W: new columns
   @Column
   first_name!: string;
-  
+
   @Column
   last_name!: string;
-  
+
   @Column
   email!: string;
-  
+
   @Column
   phone!: string;
-  
+
   @Column
   street_address!: string;
-  
+
   @Column
   city!: string;
-  
+
   @Column
   province!: string;
-  
+
   @Column
   postal_code!: string;
-  
+
   @Column({ type: DataType.ARRAY(DataType.STRING) })
   craft!: string[];
-  
+
   @Column
   website!: string;
-  
+
   @Column
   profile_picture_link!: string;
-  
+
   @Column
   availability!: string;
-  
+
   @Column({ type: DataType.ARRAY(DataType.STRING) })
   book_covers!: string[];
-  
+
   @Column
   isReadyForReview!: boolean;
-  
+
   @Column({ type: DataType.ARRAY(DataType.JSON) })
   presentations!: Presentation[];
-  
+
   @Column({ type: DataType.ARRAY(DataType.JSON) })
   publications!: Publication[];
 }

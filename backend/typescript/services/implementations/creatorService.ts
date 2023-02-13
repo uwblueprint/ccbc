@@ -84,7 +84,7 @@ class CreatorService implements ICreatorService {
     genre,
     location,
     ageRange,
-    province
+    province,
   }: {
     status?: string;
     genre?: string[];
@@ -126,8 +126,8 @@ class CreatorService implements ICreatorService {
             (creator.isApproved || isAdmin) &&
             (status ? creator.isApproved === (status === "true") : true) &&
             (genre
-              // ez clap
-              ? creator.genre.filter(i => (new Set(genre)).has(i)).length > 0
+              ? // ez clap
+                creator.genre.filter((i) => new Set(genre).has(i)).length > 0
               : true) &&
             (location
               ? creator.location.toLowerCase() === location.toLowerCase()
@@ -163,9 +163,9 @@ class CreatorService implements ICreatorService {
 
   async createCreator(userId: number): Promise<CreatorDTO> {
     try {
-    // Only allow creation w no data
+      // Only allow creation w no data
       const newCreator = await Creator.create({
-        user_id: userId
+        user_id: userId,
       });
       return {
         id: newCreator.id,

@@ -10,7 +10,7 @@ export type CreatorDTO = {
   userId: number;
   location: string;
   rate: number;
-  genre: string;
+  genre: string[];
   ageRange: string;
   timezone: string;
   bio: string;
@@ -23,7 +23,7 @@ export type CreatorDTO = {
   city: string;
   province: string;
   postalCode: string;
-  craft: string;
+  craft: string[];
   website: string;
   profilePictureLink: string;
   availability: string;

@@ -19,7 +19,7 @@ interface ICreatorService {
     genre,
     location,
     ageRange,
-    province
+    province,
   }: {
     status?: string;
     genre?: string[];
