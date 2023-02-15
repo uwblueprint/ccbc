@@ -22,5 +22,4 @@ export type CreatorProfileProps =
   | "province"
   | "postalCode"
   | "geographicReach"
-  | "primaryTimezone"
-  | "availability";
+  | "primaryTimezone";
