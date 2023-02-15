@@ -44,6 +44,9 @@ const CreatorInputField = ({
     const creatorProfileObj: CreatorProfile = {
       ...creatorProfile,
     };
+    if (creatorProfileObj[field] instanceof Array){
+      return;
+    }
     creatorProfileObj[field] = e.target.value;
     setCreatorProfile(creatorProfileObj);
   };
