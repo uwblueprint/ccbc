@@ -71,7 +71,7 @@ const CreatorInputField = ({
       )}
       {error && value === "" && (
         <FormErrorMessage>
-          Please enter you {name.toLowerCase()}
+          Please enter your {name.toLowerCase()}
         </FormErrorMessage>
       )}
     </FormControl>

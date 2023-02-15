@@ -5,6 +5,7 @@ import { CloseIcon } from "@chakra-ui/icons";
 import {
   Checkbox,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   IconButton,
   Text,
@@ -99,6 +100,7 @@ interface AddMultiSelectProps {
   allowAddOption?: boolean;
   allowMultiSelectOption?: boolean;
   searchStyle?: boolean;
+  error?: boolean;
 }
 
 const AddMultiSelect = ({
@@ -115,6 +117,7 @@ const AddMultiSelect = ({
   allowAddOption,
   allowMultiSelectOption,
   searchStyle,
+  error = false,
 }: AddMultiSelectProps): React.ReactElement => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [optionToDelete, setOptionToDelete] = useState<Option>(EmptyOption);
@@ -235,22 +238,34 @@ const AddMultiSelect = ({
         itemToDelete={optionToDelete}
         deleteType="Tag"
       />
-      <FormControl id={id} isRequired={required} width={maxWidth || "100%"}>
-        <FormLabel>{label}</FormLabel>
-        <Creatable
-          isMulti={allowMultiSelectOption}
-          isClearable
-          placeholder={placeholder || "Select some options..."}
-          closeMenuOnSelect={!allowMultiSelectOption}
-          options={options}
-          onCreateOption={handleCreate}
-          styles={searchStyle ? customSearchStyles : customStyles}
-          value={optionsSelected}
-          onChange={setOptionsSelected}
-          components={selectComponents}
-          formatCreateLabel={(optionType: string) => `Add ${optionType}`}
-          isSearchable={allowAddOption}
-        />
+      <FormControl
+        id={id}
+        isRequired={required}
+        isInvalid={error && optionsSelected.length === 0}
+        width={maxWidth || "100%"}
+      >
+      <FormLabel  mb="1" mt="3">
+        {label}
+      </FormLabel>
+      <Creatable
+        isMulti={allowMultiSelectOption}
+        isClearable
+        placeholder={placeholder || "Select some options..."}
+        closeMenuOnSelect={!allowMultiSelectOption}
+        options={options}
+        onCreateOption={handleCreate}
+        styles={searchStyle ? customSearchStyles : customStyles}
+        value={optionsSelected}
+        onChange={setOptionsSelected}
+        components={selectComponents}
+        formatCreateLabel={(optionType: string) => `Add ${optionType}`}
+        isSearchable={allowAddOption}
+      />
+        {error && optionsSelected.length === 0 && (
+          <FormErrorMessage>
+            Please enter your {label.toLowerCase()}
+          </FormErrorMessage>
+        )}
       </FormControl>
     </>
   );

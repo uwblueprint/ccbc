@@ -99,7 +99,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
       <div>
         <AddMultiSelect
           id="crafts"
-          label="Craft(s)"
+          label="Craft"
           options={[
             { label: "Illustrator", value: "illustrator" },
             { label: "Author", value: "author" },
@@ -110,10 +110,11 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           setOptionsSelected={(options: Option[]) => setCrafts(options)}
           allowMultiSelectOption
           allowAddOption
+          required
         />
         <AddMultiSelect
           id="genres"
-          label="Genre(s)"
+          label="Genre"
           options={[
             { label: "Picture Book", value: "pictureBook" },
             { label: "Early Chapter Books", value: "earlyChapterBooks" },
@@ -127,6 +128,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           setOptionsSelected={(options: Option[]) => setGenres(options)}
           allowMultiSelectOption
           allowAddOption
+          required
         />
         <AddMultiSelect
           id="presentations"
@@ -141,6 +143,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           setOptionsSelected={(options: Option[]) => setPresentations(options)}
           allowMultiSelectOption
           allowAddOption
+          required
         />
         <CreatorInputField
           name="Website"

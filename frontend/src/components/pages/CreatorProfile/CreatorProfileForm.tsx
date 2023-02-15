@@ -72,8 +72,13 @@ const CreatorProfileForm = (): React.ReactElement => {
       setError(true);
       return;
     }
-    if (activeForm === 1 && creatorProfile?.website === "") {
+    if (activeForm === 1 &&
+      (creatorProfile?.crafts && creatorProfile.crafts.length === 0 ||
+        creatorProfile?.genres && creatorProfile.genres.length === 0 ||
+        creatorProfile?.presentations && creatorProfile.presentations.length === 0)
+    ) {
       setError(true);
+      return;
     }
     setError(false);
     if (direction === 1) {
