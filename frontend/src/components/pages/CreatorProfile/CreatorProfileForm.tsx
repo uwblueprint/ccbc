@@ -58,32 +58,25 @@ const CreatorProfileForm = (): React.ReactElement => {
   ];
 
   const handleNav = (direction: number) => {
-    if (
-      activeForm === 0 &&
-      (creatorProfile?.firstName === "" ||
-        creatorProfile?.lastName === "" ||
-        creatorProfile?.email === "" ||
-        creatorProfile?.phone === "" ||
-        creatorProfile?.address === "" ||
-        creatorProfile?.city === "" ||
-        creatorProfile?.province === "" ||
-        creatorProfile?.postalCode === "")
-    ) {
-      setError(true);
-      return;
-    }
-    if (activeForm === 1 &&
-      (creatorProfile?.crafts && creatorProfile.crafts.length === 0 ||
-        creatorProfile?.genres && creatorProfile.genres.length === 0 ||
-        creatorProfile?.presentations && creatorProfile.presentations.length === 0)
-    ) {
-      setError(true);
-      return;
-    }
-    setError(false);
-    if (direction === 1) {
+    const fieldsInvalid =
+      // (activeForm === 0 &&
+      //   (creatorProfile?.firstName === "" ||
+      //     creatorProfile?.lastName === "" ||
+      //     creatorProfile?.email === "" ||
+      //     creatorProfile?.phone === "" ||
+      //     creatorProfile?.address === "" ||
+      //     creatorProfile?.city === "" ||
+      //     creatorProfile?.province === "" ||
+      //     creatorProfile?.postalCode === "")) ||
+      activeForm === 1 &&
+      ((creatorProfile?.crafts && creatorProfile.crafts.length === 0) ||
+        (creatorProfile?.genres && creatorProfile.genres.length === 0) ||
+        (creatorProfile?.presentations &&
+          creatorProfile.presentations.length === 0));
+    setError(fieldsInvalid ?? false);
+    if (direction === 1 && !fieldsInvalid) {
       setActiveForm(Math.min(activeForm + 1, 5));
-    } else {
+    } else if (direction === -1) {
       setActiveForm(Math.max(activeForm - 1, 0));
     }
   };
@@ -162,16 +155,9 @@ const CreatorProfileForm = (): React.ReactElement => {
               value={{ creatorProfile, setCreatorProfile }}
             >
               {activeForm === 0 && <ContactInfoForm submitted={error} />}
-            </CreatorProfileContext.Provider>
-          </Center>
-          <Center borderLeftWidth="thin" borderLeftColor="gray.200" px="16">
-            <CreatorProfileContext.Provider
-              value={{ creatorProfile, setCreatorProfile }}
-            >
               {activeForm === 1 && <GeneralInfoForm submitted={error} />}
             </CreatorProfileContext.Provider>
           </Center>
-
           <Flex justify="space-between" my="20" px="16">
             <Button
               leftIcon={<ArrowBackIcon />}

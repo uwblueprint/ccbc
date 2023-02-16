@@ -1,6 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { PresentToAll } from "@material-ui/icons";
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useMemo, useState } from "react";
 
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { Option } from "../../../types/BookTypes";
@@ -16,6 +16,25 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
     CreatorProfileContext,
   );
 
+  const [craftOptions, setCraftOptions] = useState([
+    { label: "Illustrator", value: "illustrator" },
+    { label: "Author", value: "author" },
+    { label: "Storyteller", value: "storyteller" },
+  ]);
+  const [genreOptions, setGenreOptions] = useState([
+    { label: "Picture Book", value: "pictureBook" },
+    { label: "Early Chapter Books", value: "earlyChapterBooks" },
+    { label: "Middle Grade Fiction", value: "middleGradeFiction" },
+    { label: "Teen Fiction", value: "teenFiction" },
+    { label: "Non-Fiction", value: "nonFiction" },
+    { label: "Graphic Novels", value: "graphicNovels" },
+  ]);
+  const [presentationOptions, setPresentationOptions] = useState([
+    { label: "Readings", value: "readings" },
+    { label: "Workshops", value: "workshops" },
+    { label: "Other", value: "other" },
+  ]);
+
   const craftsMap = new Map<string, string>([
     ["illustrator", "Illustrator"],
     ["author", "Author"],
@@ -25,7 +44,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
     ["pictureBook", "Picture Book"],
     ["earlyChapterBooks", "Early Chapter Books"],
     ["middleGradeFiction", "Middle Grade Fiction"],
-    ["teenFiction", "Teen Fictioj"],
+    ["teenFiction", "Teen Fiction"],
     ["nonFiction", "Non-Fiction"],
     ["graphicNovels", "Graphic Novels"],
   ]);
@@ -40,13 +59,12 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
     optionsMap: Map<string, string>,
   ) => {
     return valuesArray.map((value: string) => ({
-      label: optionsMap.get(value) ?? value,
+      label: optionsMap.has(value) ? optionsMap.get(value) ?? value : value,
       value,
     }));
   };
 
   const setCrafts = (selectedCrafts: Option[]) => {
-    console.log(selectedCrafts);
     const craftValues = selectedCrafts.map((craft) => craft.value);
     setCreatorProfile({
       ...creatorProfile,
@@ -100,49 +118,42 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
         <AddMultiSelect
           id="crafts"
           label="Craft"
-          options={[
-            { label: "Illustrator", value: "illustrator" },
-            { label: "Author", value: "author" },
-            { label: "Storyteller", value: "storyteller" },
-          ]}
-          setOptions={() => {}}
+          options={craftOptions}
+          placeholder="Select or type to add your own option"
+          setOptions={setCraftOptions}
           optionsSelected={crafts}
           setOptionsSelected={(options: Option[]) => setCrafts(options)}
           allowMultiSelectOption
           allowAddOption
+          maxWidth="443px"
+          error={submitted}
           required
         />
         <AddMultiSelect
           id="genres"
           label="Genre"
-          options={[
-            { label: "Picture Book", value: "pictureBook" },
-            { label: "Early Chapter Books", value: "earlyChapterBooks" },
-            { label: "Middle Grade Fiction", value: "middleGradeFiction" },
-            { label: "Teen Fiction", value: "teenFiction" },
-            { label: "Non-Fiction", value: "nonFiction" },
-            { label: "Graphic Novels", value: "graphicNovels" },
-          ]}
-          setOptions={() => {}}
+          options={genreOptions}
+          placeholder="Select or type to add your own option"
+          setOptions={setGenreOptions}
           optionsSelected={genres}
           setOptionsSelected={(options: Option[]) => setGenres(options)}
           allowMultiSelectOption
           allowAddOption
+          error={submitted}
+          maxWidth="443px"
           required
         />
         <AddMultiSelect
           id="presentations"
-          label="Presentation(s)"
-          options={[
-            { label: "Readings", value: "readings" },
-            { label: "Workshops", value: "workshops" },
-            { label: "Other", value: "other" },
-          ]}
-          setOptions={() => {}}
+          label="Presentation"
+          placeholder="Select option(s)"
+          options={presentationOptions}
+          setOptions={setPresentationOptions}
           optionsSelected={presentations}
           setOptionsSelected={(options: Option[]) => setPresentations(options)}
           allowMultiSelectOption
-          allowAddOption
+          error={submitted}
+          maxWidth="443px"
           required
         />
         <CreatorInputField
@@ -150,6 +161,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           placeholder="Enter a URL to your website"
           value={creatorProfile?.website}
           field="website"
+          required={false}
           error={submitted}
         />
       </div>

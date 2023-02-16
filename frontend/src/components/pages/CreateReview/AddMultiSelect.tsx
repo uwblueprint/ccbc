@@ -3,6 +3,7 @@
 
 import { CloseIcon } from "@chakra-ui/icons";
 import {
+  Box,
   Checkbox,
   FormControl,
   FormErrorMessage,
@@ -40,7 +41,7 @@ const customStyles = {
     paddingLeft: "5%",
     justifyContent: "space-between",
     ":hover": {
-      color: "gray.100",
+      color: "grey.100",
     },
   }),
   multiValueRemove: (provided: any, data: any) => ({
@@ -50,6 +51,9 @@ const customStyles = {
       color: "white",
     },
   }),
+  control: (provided: any, state: any) => ({
+    ...provided,
+  })
 };
 
 const customSearchStyles = {
@@ -57,7 +61,7 @@ const customSearchStyles = {
     ...provided,
     display: "flex",
     paddingLeft: "5%",
-    justifyContent: "space-between",
+    justifyContent: "space-f",
   }),
   control: (provided: any) => ({
     ...provided,
@@ -114,7 +118,7 @@ const AddMultiSelect = ({
   optionsSelected,
   setOptionsSelected,
   allowDeleteOption,
-  allowAddOption,
+  allowAddOption = false,
   allowMultiSelectOption,
   searchStyle,
   error = false,
@@ -229,6 +233,14 @@ const AddMultiSelect = ({
       }
     : { Option: CustomOption };
 
+  customStyles.control =  (provided: any, state: any) => ({
+    ...provided,
+    border: error && !state.isFocused && optionsSelected.length === 0? "2px solid red" : "",
+    ":hover": {
+      border: error && !state.isFocused && optionsSelected.length === 0? "2px solid red" : ""
+    },
+  })
+
   return (
     <>
       <ConfirmationModal
@@ -244,26 +256,26 @@ const AddMultiSelect = ({
         isInvalid={error && optionsSelected.length === 0}
         width={maxWidth || "100%"}
       >
-      <FormLabel  mb="1" mt="3">
-        {label}
-      </FormLabel>
-      <Creatable
-        isMulti={allowMultiSelectOption}
-        isClearable
-        placeholder={placeholder || "Select some options..."}
-        closeMenuOnSelect={!allowMultiSelectOption}
-        options={options}
-        onCreateOption={handleCreate}
-        styles={searchStyle ? customSearchStyles : customStyles}
-        value={optionsSelected}
-        onChange={setOptionsSelected}
-        components={selectComponents}
-        formatCreateLabel={(optionType: string) => `Add ${optionType}`}
-        isSearchable={allowAddOption}
-      />
+        <FormLabel mb="1" mt="3">
+          {label}
+        </FormLabel>
+        <Creatable
+          isMulti={allowMultiSelectOption}
+          isClearable
+          placeholder={placeholder || "Select some options..."}
+          closeMenuOnSelect={!allowMultiSelectOption}
+          options={options}
+          onCreateOption={handleCreate}
+          styles={searchStyle ? customSearchStyles : customStyles}
+          value={optionsSelected}
+          onChange={setOptionsSelected}
+          components={selectComponents}
+          formatCreateLabel={(optionType: string) => `Add ${optionType}`}
+          isSearchable={allowAddOption}
+        />
         {error && optionsSelected.length === 0 && (
           <FormErrorMessage>
-            Please enter your {label.toLowerCase()}
+            {`Please enter your ${label.toLowerCase()}(s)`}
           </FormErrorMessage>
         )}
       </FormControl>
