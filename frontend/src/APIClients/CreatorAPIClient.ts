@@ -33,6 +33,22 @@ const approveCreator = async (id: number): Promise<void> => {
 };
 
 /**
+ * Reject a creator by ID
+ */
+const rejectCreator = async (id: number): Promise<void> => {
+  await baseAPIClient.put(
+    `/creators/reject/${id.toString()}`,
+    {},
+    {
+      headers: {
+        Authorization: getBearerToken(),
+        "Content-Type": "application/json",
+      },
+    },
+  );
+};
+
+/**
  * Delete a creator by ID
  */
 const deleteCreator = async (id: number): Promise<void> => {
@@ -81,6 +97,7 @@ const updateCreator = async (
 export default {
   getCreators,
   approveCreator,
+  rejectCreator,
   deleteCreator,
   createCreator,
   updateCreator,

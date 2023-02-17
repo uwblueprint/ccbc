@@ -162,6 +162,48 @@ class CreatorService implements ICreatorService {
     }
   }
 
+  async rejectCreator(userId: string): Promise<void> {
+    try {
+      if (!this.emailService) {
+        const errorMessage =
+          "Attempted to call sendCreatorProfileSetupLink but this instance of CreatorService does not have an EmailService instance";
+        Logger.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      const rejectedUser: Creator | null = await Creator.findByPk(
+        Number(userId),
+      );
+
+      if (!rejectedUser) {
+        return;
+      }
+
+      try {
+        const emailBody = `
+        Hello ${rejectedUser.first_name},
+        <br><br>
+        Unfortunately, your creator profile for the Canadian Children's Book Centre creator directory has been declined. We encourage you to check over your profile again and contact us if further assistance is required.
+        <br><br>
+        Thanks,<br>CCBC`;
+
+        this.emailService.sendEmail(
+          rejectedUser.email,
+          "Update on your creator status",
+          emailBody,
+        );
+      } catch (error) {
+        Logger.error(
+          `Failed to generate email rejection link for user with email ${rejectedUser.email}`,
+        );
+        throw error;
+      }
+    } catch (error) {
+      Logger.error(`Failed to reject user. Reason = ${getErrorMessage(error)}`);
+      throw error;
+    }
+  }
+
   async createCreator(userId: number): Promise<CreatorDTO> {
     try {
       const newCreator = await Creator.create({

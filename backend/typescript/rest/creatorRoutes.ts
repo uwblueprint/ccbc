@@ -73,6 +73,23 @@ creatorRouter.put(
   },
 );
 
+/* Reject users to be creators by id */
+creatorRouter.put(
+  "/reject/:id",
+  isAuthorizedByRole(new Set(["Admin"])),
+  async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      await creatorService.rejectCreator(id);
+
+      res.status(200).json({ message: "rejected" });
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
+
 /* Delete creators by id */
 creatorRouter.delete(
   "/delete/:id",

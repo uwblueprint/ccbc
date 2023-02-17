@@ -11,7 +11,7 @@ import creatorAPIClient from "../../../APIClients/CreatorAPIClient";
 import { Creator } from "../../../types/CreatorTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import useToasts from "../../Toast";
-import ApproveConfirmationModal from "./ApproveConfirmationModal";
+import StatusConfirmationModal from "./ApproveConfirmationModal";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 type CreatorRow = {
@@ -30,6 +30,9 @@ const AdminCreatorProfiles = (): React.ReactElement => {
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [ApproveProfileName, setApproveProfileName] = useState("");
   const [ApproveProfileId, setApproveProfileId] = useState(-1);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [RejectProfileName, setRejectProfileName] = useState("");
+  const [RejectProfileId, setRejectProfileId] = useState(-1);
   const [isLoading, setIsLoading] = useState(false);
   const newToast = useToasts();
 
@@ -83,6 +86,27 @@ const AdminCreatorProfiles = (): React.ReactElement => {
       newToast(
         "error",
         "Error approving creator",
+        "Something went wrong, please refresh the page and try again.",
+      );
+    }
+    setIsLoading(false);
+  };
+
+  const RejectProfile = async () => {
+    try {
+      setIsLoading(true);
+      await creatorAPIClient.rejectCreator(RejectProfileId);
+      const newData = [...data];
+      const RejectProfileIndex = getIndex(RejectProfileId);
+      if (newData && newData[RejectProfileIndex]) {
+        newData[RejectProfileIndex].isApproved = true;
+      }
+      setData(newData);
+      newToast("success", "Creator rejected", "This creator has been rejected");
+    } catch (e) {
+      newToast(
+        "error",
+        "Error rejecting creator",
         "Something went wrong, please refresh the page and try again.",
       );
     }
@@ -218,9 +242,9 @@ const AdminCreatorProfiles = (): React.ReactElement => {
                     <Button
                       color="red.500"
                       onClick={() => {
-                        setIsDeleteModalOpen(true);
-                        setDeleteProfileName(tableMeta.rowData[1]);
-                        setDeleteProfileId(tableMeta.rowData[0]);
+                        setIsRejectModalOpen(true);
+                        setRejectProfileName(tableMeta.rowData[1]);
+                        setRejectProfileId(tableMeta.rowData[0]);
                       }}
                     >
                       Reject
@@ -321,11 +345,18 @@ const AdminCreatorProfiles = (): React.ReactElement => {
         onDelete={DeleteProfile}
         authorName={DeleteProfileName}
       />
-      <ApproveConfirmationModal
+      <StatusConfirmationModal
         isOpen={isApproveModalOpen}
         onClose={() => setIsApproveModalOpen(false)}
-        onApprove={ApproveProfile}
+        onConfirm={ApproveProfile}
+        isApproving
         authorName={ApproveProfileName}
+      />
+      <StatusConfirmationModal
+        isOpen={isRejectModalOpen}
+        onClose={() => setIsRejectModalOpen(false)}
+        onConfirm={RejectProfile}
+        authorName={RejectProfileName}
       />
     </Box>
   );

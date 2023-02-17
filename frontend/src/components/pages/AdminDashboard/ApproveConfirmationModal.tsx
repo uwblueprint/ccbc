@@ -10,10 +10,11 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-export type ApproveConfirmationProps = {
+export type StatusConfirmationProps = {
   isOpen: boolean;
   onClose: () => void;
-  onApprove: () => Promise<void>;
+  onConfirm: () => Promise<void>;
+  isApproving?: boolean;
   authorName?: string;
 };
 
@@ -21,12 +22,13 @@ export type ApproveConfirmationProps = {
  * ApproveConfirmationModal displays and asks for confirmation when
  * the approve button on an Admin Dashboard row is clicked
  */
-const ApproveConfirmationModal = ({
+const StatusConfirmationModal = ({
   isOpen,
   onClose,
-  onApprove,
+  onConfirm,
+  isApproving,
   authorName,
-}: ApproveConfirmationProps): React.ReactElement => {
+}: StatusConfirmationProps): React.ReactElement => {
   return (
     <Modal isOpen={isOpen} onClose={() => onClose()} isCentered>
       <ModalOverlay />
@@ -43,7 +45,8 @@ const ApproveConfirmationModal = ({
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody ml="40px" mr="40px" fontFamily="DM Sans">
-          Are you sure you want to approve {authorName}?
+          Are you sure you want to {isApproving ? "approve" : "reject"}{" "}
+          {authorName}?
         </ModalBody>
         <ModalFooter mb="40px" mr="40px" ml="40px">
           <Button
@@ -51,10 +54,10 @@ const ApproveConfirmationModal = ({
             colorScheme="teal"
             onClick={() => {
               onClose();
-              onApprove();
+              onConfirm();
             }}
           >
-            Yes, approve creator
+            Yes, {isApproving ? "approve" : "reject"} creator
           </Button>
           <Button
             w="167px"
@@ -71,4 +74,4 @@ const ApproveConfirmationModal = ({
   );
 };
 
-export default ApproveConfirmationModal;
+export default StatusConfirmationModal;
