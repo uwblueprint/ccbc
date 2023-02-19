@@ -42,7 +42,7 @@ const CreatorInputField = ({
     const creatorProfileObj: CreatorProfile = {
       ...creatorProfile,
     };
-    creatorProfileObj[field] = e.target.value;
+    if (field !== "bibliography") creatorProfileObj[field] = e.target.value;
     setCreatorProfile(creatorProfileObj);
   };
 

@@ -14,6 +14,7 @@ import { CREATOR_PROFILE_LANDING } from "../../../constants/Routes";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { CreatorProfile } from "../../../types/CreatorProfileTypes";
 import ContactInfoForm from "./ContactInfoForm";
+import PublicationsForm from "./PublicationsForm";
 
 const SaveIcon = createIcon({
   displayName: "SaveIcon",
@@ -40,7 +41,7 @@ const CreatorProfileForm = (): React.ReactElement => {
     postalCode: "",
   });
 
-  const [activeForm, setActiveForm] = useState<number>(0);
+  const [activeForm, setActiveForm] = useState<number>(4);
   const [error, setError] = useState<boolean>(false);
 
   const forms = [
@@ -148,6 +149,7 @@ const CreatorProfileForm = (): React.ReactElement => {
               value={{ creatorProfile, setCreatorProfile }}
             >
               {activeForm === 0 && <ContactInfoForm submitted={error} />}
+              {activeForm === 4 && <PublicationsForm submitted={error} />}
             </CreatorProfileContext.Provider>
           </Center>
           <Flex justify="space-between" my="20" px="16">

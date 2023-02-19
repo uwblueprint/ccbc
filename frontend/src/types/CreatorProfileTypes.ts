@@ -7,6 +7,7 @@ export type CreatorProfile = {
   city?: string;
   province?: string;
   postalCode?: string;
+  bibliography?: BibliographyEntry[];
 } | null;
 
 export type CreatorProfileProps =
@@ -17,4 +18,12 @@ export type CreatorProfileProps =
   | "address"
   | "city"
   | "province"
-  | "postalCode";
+  | "postalCode"
+  | "bibliography";
+
+export type BibliographyEntry = {
+  title: string;
+  publisher: string;
+  publicationYear: number;
+  additionalNotes?: string;
+};
