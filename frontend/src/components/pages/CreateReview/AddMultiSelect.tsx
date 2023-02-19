@@ -3,7 +3,6 @@
 
 import { CloseIcon } from "@chakra-ui/icons";
 import {
-  Box,
   Checkbox,
   FormControl,
   FormErrorMessage,
@@ -53,7 +52,7 @@ const customStyles = {
   }),
   control: (provided: any, state: any) => ({
     ...provided,
-  })
+  }),
 };
 
 const customSearchStyles = {
@@ -233,13 +232,19 @@ const AddMultiSelect = ({
       }
     : { Option: CustomOption };
 
-  customStyles.control =  (provided: any, state: any) => ({
+  customStyles.control = (provided: any, state: any) => ({
     ...provided,
-    border: error && !state.isFocused && optionsSelected.length === 0? "2px solid red" : "",
+    border:
+      error && !state.isFocused && optionsSelected.length === 0
+        ? "2px solid red"
+        : "",
     ":hover": {
-      border: error && !state.isFocused && optionsSelected.length === 0? "2px solid red" : ""
+      border:
+        error && !state.isFocused && optionsSelected.length === 0
+          ? "2px solid red"
+          : "",
     },
-  })
+  });
 
   return (
     <>

@@ -43,6 +43,7 @@ const CreatorProfileForm = (): React.ReactElement => {
     genres: [],
     presentations: [],
     website: "",
+    bio: "",
   });
 
   const [activeForm, setActiveForm] = useState<number>(0);

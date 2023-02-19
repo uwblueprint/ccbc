@@ -1,11 +1,11 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { PresentToAll } from "@material-ui/icons";
 import React, { useContext, useMemo, useState } from "react";
 
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { Option } from "../../../types/BookTypes";
 import AddMultiSelect from "../CreateReview/AddMultiSelect";
 import CreatorInputField from "./CreatorInputField";
+import RichTextEditorField from "./RichTextEditorField";
 
 interface GeneraInfoProps {
   submitted: boolean;
@@ -164,6 +164,14 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           required={false}
           error={submitted}
         />
+        <RichTextEditorField
+          name="Bio"
+          placeholder="Here's where you can briefly describe who you are as a creator!"
+          value={creatorProfile?.bio}
+          field="bio"
+          error={submitted}
+        />
+        
       </div>
     </Flex>
   );
