@@ -126,7 +126,6 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           setOptionsSelected={(options: Option[]) => setCrafts(options)}
           allowMultiSelectOption
           allowAddOption
-          maxWidth="443px"
           error={submitted}
           required
         />
@@ -141,7 +140,6 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           allowMultiSelectOption
           allowAddOption
           error={submitted}
-          maxWidth="443px"
           required
         />
         <AddMultiSelect
@@ -154,7 +152,6 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           setOptionsSelected={(options: Option[]) => setPresentations(options)}
           allowMultiSelectOption
           error={submitted}
-          maxWidth="443px"
           required
         />
         <CreatorInputField
@@ -163,6 +160,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           value={creatorProfile?.website}
           field="website"
           required={false}
+          width="100%"
           error={submitted}
         />
         <RichTextEditorField

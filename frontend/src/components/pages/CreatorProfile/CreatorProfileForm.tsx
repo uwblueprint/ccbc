@@ -61,22 +61,22 @@ const CreatorProfileForm = (): React.ReactElement => {
 
   const handleNav = (direction: number) => {
     const fieldsInvalid =
-      // (activeForm === 0 &&
-      //   (creatorProfile?.firstName === "" ||
-      //     creatorProfile?.lastName === "" ||
-      //     creatorProfile?.email === "" ||
-      //     creatorProfile?.phone === "" ||
-      //     creatorProfile?.address === "" ||
-      //     creatorProfile?.city === "" ||
-      //     creatorProfile?.province === "" ||
-      //     creatorProfile?.postalCode === "")) ||
+      (activeForm === 0 &&
+        (creatorProfile?.firstName === "" ||
+          creatorProfile?.lastName === "" ||
+          creatorProfile?.email === "" ||
+          creatorProfile?.phone === "" ||
+          creatorProfile?.address === "" ||
+          creatorProfile?.city === "" ||
+          creatorProfile?.province === "" ||
+          creatorProfile?.postalCode === "")) ||
       activeForm === 1 &&
       ((creatorProfile?.crafts && creatorProfile.crafts.length === 0) ||
         (creatorProfile?.genres && creatorProfile.genres.length === 0) ||
         (creatorProfile?.presentations &&
           creatorProfile.presentations.length === 0) ||
-          creatorProfile?.bio === "" ||
-          creatorProfile?.profilePicUrl === "");
+        creatorProfile?.bio === "" ||
+        creatorProfile?.profilePicUrl === "");
     setError(fieldsInvalid ?? false);
     if (direction === 1 && !fieldsInvalid) {
       setActiveForm(Math.min(activeForm + 1, 5));
