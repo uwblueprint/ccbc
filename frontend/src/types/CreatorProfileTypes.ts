@@ -11,6 +11,8 @@ export type CreatorProfile = {
   genres?: string[];
   presentations?: string[];
   website?: string;
+  bio?: string;
+  profilePicUrl?: string;
 } | null;
 
 export type CreatorProfileProps =
@@ -22,4 +24,6 @@ export type CreatorProfileProps =
   | "city"
   | "province"
   | "postalCode"
-  | "website";
+  | "website"
+  | "bio"
+  | "profilePicUrl";

@@ -1,8 +1,4 @@
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from "@chakra-ui/react";
+import { FormControl, FormErrorMessage, FormLabel } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import ReactQuill from "react-quill";
 
@@ -18,7 +14,6 @@ interface AddRichTextEditorProps {
   field: CreatorProfileProps;
   placeholder?: string;
   error?: boolean;
-//   width?: string;
   required?: boolean;
 }
 
@@ -38,7 +33,12 @@ const AddRichTextEditor = ({
     const creatorProfileObj: CreatorProfile = {
       ...creatorProfile,
     };
-    creatorProfileObj[field] = content;
+    if (content === "<p><br></p>") {
+      // This content counts as empty (happens when user inputs something then deletes it)
+      creatorProfileObj[field] = "";
+    } else {
+      creatorProfileObj[field] = content;
+    }
     setCreatorProfile(creatorProfileObj);
   };
 
@@ -54,7 +54,7 @@ const AddRichTextEditor = ({
         theme="snow"
         value={value}
         placeholder={placeholder || `Enter your ${name.toLowerCase()} here`}
-        onChange={handleOnChange}
+        onChange={(e) => handleOnChange(e)}
       />
       {error && value === "" && required && (
         <FormErrorMessage>

@@ -4,6 +4,7 @@ import React, { useContext, useMemo, useState } from "react";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { Option } from "../../../types/BookTypes";
 import AddMultiSelect from "../CreateReview/AddMultiSelect";
+import AddProfilePictureField from "./AddProfilePictureField";
 import CreatorInputField from "./CreatorInputField";
 import RichTextEditorField from "./RichTextEditorField";
 
@@ -171,7 +172,12 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           field="bio"
           error={submitted}
         />
-        
+        <AddProfilePictureField
+          name="Profile Picture"
+          value={creatorProfile?.profilePicUrl}
+          field="profilePicUrl"
+          error={submitted}
+        />
       </div>
     </Flex>
   );

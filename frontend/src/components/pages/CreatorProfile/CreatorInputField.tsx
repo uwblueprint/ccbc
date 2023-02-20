@@ -21,7 +21,7 @@ interface CreatorInputFieldProps {
   error?: boolean;
   selectOptions?: Array<string>;
   width?: string;
-  required? : boolean;
+  required?: boolean;
 }
 
 const CreatorInputField = ({
@@ -32,7 +32,7 @@ const CreatorInputField = ({
   width = "full",
   value,
   field,
-  required=true,
+  required = true,
 }: CreatorInputFieldProps): React.ReactElement => {
   const { creatorProfile, setCreatorProfile } = useContext(
     CreatorProfileContext,
@@ -49,7 +49,10 @@ const CreatorInputField = ({
   };
 
   return (
-    <FormControl isRequired={required} isInvalid={required && error && value === ""}>
+    <FormControl
+      isRequired={required}
+      isInvalid={required && error && value === ""}
+    >
       <FormLabel mb="1" mt="3">
         {name}
       </FormLabel>
