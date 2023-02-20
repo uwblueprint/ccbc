@@ -1,3 +1,5 @@
+import { Option } from "./BookTypes";
+
 export type CreatorProfile = {
   firstName?: string;
   lastName?: string;
@@ -7,12 +9,13 @@ export type CreatorProfile = {
   city?: string;
   province?: string;
   postalCode?: string;
-  offeredLocations?: string;
-  preferredGradeLevel?: string;
+  offeredLocations?: Option[];
+  preferredGradeLevel?: Option[];
   preferredAudienceSize?: string;
   inPersonDeliveryFee?: string;
-  virtualDeliveryFree?: string;
+  virtualDeliveryFee?: string;
   equipmentRequired?: string;
+  languages?: [string];
   otherReadingLanguages?: string;
   booksPurchasedAndAutoGraphed?: string;
   contentOfReadings?: string;
@@ -30,4 +33,10 @@ export type CreatorProfileProps =
   | "offeredLocations"
   | "preferredGradeLevel"
   | "preferredAudienceSize"
-  | "equipmentRequired";
+  | "inPersonDeliveryFee"
+  | "virtualDeliveryFee"
+  | "equipmentRequired"
+  | "languages"
+  | "otherReadingLanguages"
+  | "booksPurchasedAndAutoGraphed"
+  | "contentOfReadings";

@@ -1,38 +1,62 @@
 import {
   Button,
   Checkbox,
+  CheckboxGroup,
   Flex,
   FormControl,
   FormLabel,
-  Grid,
   Input,
   Radio,
   RadioGroup,
-  Select,
   Text,
   Textarea,
 } from "@chakra-ui/react";
+import { StringOrNumber } from "@chakra-ui/utils/dist/declarations/src/types";
 import React, { useContext, useEffect, useState } from "react";
 
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { Option } from "../../../types/BookTypes";
 import AddMultiSelect from "../CreateReview/AddMultiSelect";
-import InputField from "../CreateReview/InputField";
 import CreatorInputField from "./CreatorInputField";
 
-interface PresentationFornProps {
+interface PresentationFormProps {
   submitted: boolean;
+}
+
+interface MultiSelectHandler {
+  newValue: Option[];
+  field: "offeredLocations" 
+  | "preferredGradeLevel";
+}
+
+interface CheckboxGroupHandler {
+  newValue: StringOrNumber[],
+  field: string,
+}
+
+interface InputHandler {
+  newValue: string;
+  field: "inPersonDeliveryFee" | "virtualDeliveryFee" | "otherReadingLanguages";
 }
 
 const PresentationForm = ({
   submitted,
-}: PresentationFornProps): React.ReactElement => {
-  const { creatorProfile } = useContext(CreatorProfileContext);
-  const [inPersonFee] = useState("");
-  const [virtualFee] = useState("");
-
-  const [offeredLocations, setOfferedLocations] = useState<Option[]>([]);
-  const [preferredGradeLevel, setPreferredGradeLevel] = useState<Option[]>([]);
+}: PresentationFormProps): React.ReactElement => {
+  const { creatorProfile, setCreatorProfile } = useContext(
+    CreatorProfileContext,
+  );
+  /**
+   * @param newOptionsSelected handle updating context
+   * @param field string of key in context value
+   */
+  const handleFormInputChange = (
+    keyValue: MultiSelectHandler | InputHandler | CheckboxGroupHandler | RadioGroupHandler,
+  ) => {
+    const { newValue, field } = keyValue;
+    const creatorProfileObj = { ...creatorProfile };
+    creatorProfileObj[field] = newValue;
+    setCreatorProfile(creatorProfileObj);
+  };
 
   const [offeredLocationsOptions, setOfferedLocationsOptions] = useState<
     Option[]
@@ -41,9 +65,7 @@ const PresentationForm = ({
     Option[]
   >([]);
 
-  const [booksPurchasedAndAutographed, setBooksPurchasedAndAutographed] =
-    useState("");
-
+  // Set inital multiselection options
   useEffect(() => {
     // TODO: Replace with DB calls
     setOfferedLocationsOptions([
@@ -71,20 +93,34 @@ const PresentationForm = ({
       <AddMultiSelect
         id="offeredLocations"
         label="Offered locations"
-        optionsSelected={offeredLocations}
-        setOptionsSelected={setOfferedLocations}
+        placeholder="Select or add your own option"
+        optionsSelected={creatorProfile?.offeredLocations || []}
+        setOptionsSelected={(newOptionsSelected: Option[]) => {
+          handleFormInputChange({
+            newValue: newOptionsSelected,
+            field: "offeredLocations",
+          });
+        }}
         options={offeredLocationsOptions}
         setOptions={setOfferedLocationsOptions}
+        allowAddOption
         allowMultiSelectOption
         maxWidth="80%"
       />
       <AddMultiSelect
         id="preferredGradeLevel"
         label="Preferred grade level"
-        optionsSelected={preferredGradeLevel}
-        setOptionsSelected={setPreferredGradeLevel}
+        placeholder="Select or add your own option"
+        optionsSelected={creatorProfile?.preferredGradeLevel || []}
+        setOptionsSelected={(newOptionsSelected: Option[]) => {
+          handleFormInputChange({
+            newValue: newOptionsSelected,
+            field: "preferredGradeLevel",
+          });
+        }}
         options={preferredGradeLevelOptions}
         setOptions={setPreferredGradeLevelOptions}
+        allowAddOption
         allowMultiSelectOption
         maxWidth="80%"
       />
@@ -96,17 +132,37 @@ const PresentationForm = ({
         selectOptions={["0-5", "6-10", "11-15", "16-20", "21-25"]}
         width="33%"
       />
-      <FormControl isRequired isInvalid={submitted && inPersonFee === ""}>
+      <FormControl isRequired isInvalid={submitted}>
         <FormLabel mb="1" mt="3">
           How do you deliver readings?
         </FormLabel>
         <Flex>
           <Button> In-person </Button>
-          <Input />
+          <Input
+            name="In-person delivery fee"
+            placeholder="Enter fee for in-person"
+            value={creatorProfile?.inPersonDeliveryFee}
+            onChange={(e) => {
+              handleFormInputChange({
+                newValue: e.target.value,
+                field: "inPersonDeliveryFee",
+              });
+            }}
+          />
         </Flex>
         <Flex>
           <Button> Virtual </Button>
-          <Input />
+          <Input
+            name="Virtual delivery fee"
+            placeholder="Enter fee for virtual"
+            value={creatorProfile?.virtualDeliveryFee}
+            onChange={(e) => {
+              handleFormInputChange({
+                newValue: e.target.value,
+                field: "virtualDeliveryFee",
+              });
+            }}
+          />
         </Flex>
       </FormControl>
 
@@ -122,14 +178,32 @@ const PresentationForm = ({
           Please list the languages your readings are avaliable in:
         </FormLabel>
         <Flex direction="column">
-          <Checkbox> English </Checkbox>
-          <Checkbox> French </Checkbox>
-          <Checkbox> Other </Checkbox>
+          <CheckboxGroup
+            value={creatorProfile?.languages || []}
+            onChange={(newValueSelected) => {
+              handleFormInputChange({
+                newValue: newValueSelected,
+                field: "languages",
+              });
+            }}
+          >
+            <Checkbox value="english"> English </Checkbox>
+            <Checkbox value="french"> French </Checkbox>
+            <Checkbox value="other"> Other </Checkbox>
+          </CheckboxGroup>
         </Flex>
 
         <Flex alignContent="center">
           <FormLabel w="270px">If Other, please specify:</FormLabel>
-          <Input placeholder="Specify other languages" />
+          <Input
+            placeholder="Specify other languages"
+            onChange={(e) => {
+              handleFormInputChange({
+                newValue: e.target.value,
+                field: "otherReadingLanguages",
+              });
+            }}
+          />
         </Flex>
         <FormLabel />
       </FormControl>
@@ -140,8 +214,11 @@ const PresentationForm = ({
           to purchase and have autographed?
         </FormLabel>
         <RadioGroup
-          onChange={setBooksPurchasedAndAutographed}
-          value={booksPurchasedAndAutographed}
+          onChange={(newValueSelected) => {
+            handleFormInputChange({
+              newValue: newValueSelected,
+              field: "booksPurchasedAndAutoGraphed"})}}
+          value={creatorProfile?.booksPurchasedAndAutoGraphed}
         >
           <Flex direction="column">
             <Radio value="yes"> Yes </Radio>
