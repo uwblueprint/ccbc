@@ -33,11 +33,23 @@ interface ICreatorService {
 
   /**
    * Create new creator in databse
-   * @param CreatorCreateUpdateDTO
-   * @returns void
+   * @param userId the userId of the creator
+   * @returns New creator
    * @throws Error if creating a creator fails
    */
-  createCreator(creator: CreatorCreateUpdateDTO): Promise<void>;
+  createCreator(userId: number): Promise<CreatorDTO>;
+
+  /**
+   * Update creator with the given id, return updated creator
+   * @param id Creator's id
+   * @param creator updated creator object
+   * @returns Updated creator
+   * @throws Error if updating a creator fails
+   */
+  updateCreator(
+    id: number,
+    creator: CreatorCreateUpdateDTO,
+  ): Promise<CreatorDTO>;
 
   /**
    * Sends a link to the creator profile setup page to the creator with the given email

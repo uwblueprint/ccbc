@@ -57,18 +57,12 @@ const ChangePasswordModal = (
   const [newPassword, setNewPassword] = React.useState<string>("");
   const [confirmPassword, setConfirmPassword] = React.useState<string>("");
 
-  const [
-    oldPasswordFeedback,
-    setOldPasswordFeedback,
-  ] = React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
-  const [
-    newPasswordFeedback,
-    setNewPasswordFeedback,
-  ] = React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
-  const [
-    confirmPasswordFeedback,
-    setConfirmPasswordFeedback,
-  ] = React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
+  const [oldPasswordFeedback, setOldPasswordFeedback] =
+    React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
+  const [newPasswordFeedback, setNewPasswordFeedback] =
+    React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
+  const [confirmPasswordFeedback, setConfirmPasswordFeedback] =
+    React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
 
   const [feedback, setFeedback] = React.useState<string>("");
   const [submitted, setSubmitted] = React.useState<boolean>(false);

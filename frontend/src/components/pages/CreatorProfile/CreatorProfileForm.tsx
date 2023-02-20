@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { CREATOR_PROFILE_LANDING } from "../../../constants/Routes";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { CreatorProfile } from "../../../types/CreatorProfileTypes";
+import AvailabilityForm from "./AvailabilityForm";
 import ContactInfoForm from "./ContactInfoForm";
 import PublicationsForm from "./PublicationsForm";
 
@@ -39,6 +40,9 @@ const CreatorProfileForm = (): React.ReactElement => {
     city: "",
     province: "",
     postalCode: "",
+    geographicReach: "",
+    primaryTimezone: "",
+    availability: [],
   });
 
   const [activeForm, setActiveForm] = useState<number>(4);
@@ -55,15 +59,20 @@ const CreatorProfileForm = (): React.ReactElement => {
 
   const handleNav = (direction: number) => {
     if (
-      activeForm === 0 &&
-      (creatorProfile?.firstName === "" ||
-        creatorProfile?.lastName === "" ||
-        creatorProfile?.email === "" ||
-        creatorProfile?.phone === "" ||
-        creatorProfile?.address === "" ||
-        creatorProfile?.city === "" ||
-        creatorProfile?.province === "" ||
-        creatorProfile?.postalCode === "")
+      (activeForm === 0 &&
+        (creatorProfile?.firstName === "" ||
+          creatorProfile?.lastName === "" ||
+          creatorProfile?.email === "" ||
+          creatorProfile?.phone === "" ||
+          creatorProfile?.address === "" ||
+          creatorProfile?.city === "" ||
+          creatorProfile?.province === "" ||
+          creatorProfile?.postalCode === "")) ||
+      (activeForm === 4 &&
+        (creatorProfile?.geographicReach === "" ||
+          creatorProfile?.primaryTimezone === "" ||
+          !creatorProfile?.availability ||
+          creatorProfile?.availability.length === 0))
     ) {
       setError(true);
       return;
@@ -150,6 +159,7 @@ const CreatorProfileForm = (): React.ReactElement => {
             >
               {activeForm === 0 && <ContactInfoForm submitted={error} />}
               {activeForm === 4 && <PublicationsForm submitted={error} />}
+              {activeForm === 5 && <AvailabilityForm submitted={error} />}
             </CreatorProfileContext.Provider>
           </Center>
           <Flex justify="space-between" my="20" px="16">

@@ -8,6 +8,9 @@ export type CreatorProfile = {
   province?: string;
   postalCode?: string;
   bibliography?: BibliographyEntry[];
+  geographicReach?: string;
+  primaryTimezone?: string;
+  availability?: string[];
 } | null;
 
 export type CreatorProfileProps =
@@ -19,7 +22,9 @@ export type CreatorProfileProps =
   | "city"
   | "province"
   | "postalCode"
-  | "bibliography";
+  | "bibliography"
+  | "geographicReach"
+  | "primaryTimezone";
 
 export type BibliographyEntry = {
   title: string;

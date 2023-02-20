@@ -21,6 +21,7 @@ interface CreatorInputFieldProps {
   error?: boolean;
   selectOptions?: Array<string>;
   width?: string;
+  mb?: string;
 }
 
 const CreatorInputField = ({
@@ -31,6 +32,7 @@ const CreatorInputField = ({
   width = "full",
   value,
   field,
+  mb,
 }: CreatorInputFieldProps): React.ReactElement => {
   const { creatorProfile, setCreatorProfile } = useContext(
     CreatorProfileContext,
@@ -39,15 +41,14 @@ const CreatorInputField = ({
   const handleOnChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    const creatorProfileObj: CreatorProfile = {
-      ...creatorProfile,
-    };
+    const creatorProfileObj: CreatorProfile = { ...creatorProfile };
+    const { availability, ...rest } = creatorProfileObj;
     if (field !== "bibliography") creatorProfileObj[field] = e.target.value;
-    setCreatorProfile(creatorProfileObj);
+    setCreatorProfile({ ...rest, availability });
   };
 
   return (
-    <FormControl isRequired isInvalid={error && value === ""}>
+    <FormControl isRequired isInvalid={error && value === ""} mb={mb}>
       <FormLabel mb="1" mt="3">
         {name}
       </FormLabel>
