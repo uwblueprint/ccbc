@@ -1,4 +1,4 @@
-import { FormControl, FormErrorMessage, FormLabel } from "@chakra-ui/react";
+import { Button, FormControl, FormErrorMessage, FormLabel } from "@chakra-ui/react";
 import React, { useContext, useRef } from "react";
 
 import uploadImage from "../../../APIClients/StorageAPIClient";
@@ -29,6 +29,10 @@ const AddProfilePicture = ({
 
   const profilePicFile = useRef<HTMLInputElement>(null);
 
+  const handleClick = () => {
+    profilePicFile?.current?.click();
+  };
+
   const handleOnChange = async () => {
     console.log("Here");
     console.log(profilePicFile)
@@ -53,8 +57,15 @@ const AddProfilePicture = ({
       <FormLabel mb="1" mt="3">
         {name}
       </FormLabel>
-      <input type="file" ref={profilePicFile} onChange={handleOnChange} />
-
+      <Button onClick={handleClick}>
+        Choose file
+      </Button>
+      <input 
+        type="file"
+        style={{display:'none'}}
+        ref={profilePicFile} 
+        onChange={handleOnChange} 
+      />
       {error && value === "" && required && (
         <FormErrorMessage>
           Please upload a {name.toLowerCase()}
