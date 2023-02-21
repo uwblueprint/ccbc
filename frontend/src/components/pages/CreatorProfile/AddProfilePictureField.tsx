@@ -37,9 +37,12 @@ const AddProfilePicture = ({
 
   const profilePicFile = useRef<HTMLInputElement>(null);
 
-  const [fileName, setFileName] = useState<string>("test")
-  const [fileSize, setFileSize] = useState(0)
-
+  const [fileName, setFileName] = useState<string>(
+    localStorage.getItem("fileName") ?? "",
+  );
+  const [fileSize, setFileSize] = useState<string>(
+    localStorage.getItem("fileSize") ?? "0",
+  );
 
   const handleClick = () => {
     profilePicFile?.current?.click();
@@ -54,9 +57,10 @@ const AddProfilePicture = ({
         ...creatorProfile,
       };
       creatorProfileObj[field] = Url;
-      console.log(profilePic.size)
-      setFileSize(profilePic.size)
-      setFileName(profilePic.name)
+      setFileSize(profilePic.size.toString());
+      setFileName(profilePic.name);
+      localStorage.setItem("fileSize", profilePic.size.toString());
+      localStorage.setItem("fileName", profilePic.name);
       setCreatorProfile(creatorProfileObj);
     }
   };
@@ -95,19 +99,19 @@ const AddProfilePicture = ({
           onClick={handleClick}
         >
           <Text
-              width="68px"
-              height="17px"
-              fontFamily="DM Sans"
-              fontStyle="normal"
-              fontWeight="400"
-              fontSize="13px"
-              lineHeight="17px"
-              color="#718096"
-              flex="none"
-              order={0}
-              flexGrow={0}
+            width="68px"
+            height="17px"
+            fontFamily="DM Sans"
+            fontStyle="normal"
+            fontWeight="400"
+            fontSize="13px"
+            lineHeight="17px"
+            color="#718096"
+            flex="none"
+            order={0}
+            flexGrow={0}
           >
-              Choose file
+            Choose file
           </Text>
         </Box>
         <input
@@ -128,7 +132,11 @@ const AddProfilePicture = ({
           </Text>
         )}
         {value !== "" && (
-          <Link href={value} color="#4299E1" textDecoration="underline">{`${fileName}`}</Link>
+          <Link
+            href={value}
+            color="#4299E1"
+            textDecoration="underline"
+          >{`${fileName}`}</Link>
         )}
         {value !== "" && (
           <Text
@@ -138,10 +146,9 @@ const AddProfilePicture = ({
             fontSize="16px"
             color="#A0AEC0"
           >
-            {`${(fileSize/1000000).toFixed(1)} MB`}
+            {`${(parseInt(fileSize, 10) / 1000000).toFixed(1)} MB`}
           </Text>
         )}
-
       </Flex>
 
       {error && value === "" && required && (
