@@ -7,6 +7,9 @@ export type CreatorProfile = {
   city?: string;
   province?: string;
   postalCode?: string;
+  geographicReach?: string;
+  primaryTimezone?: string;
+  availability?: string[];
   crafts?: string[];
   genres?: string[];
   presentations?: string[];
@@ -24,6 +27,8 @@ export type CreatorProfileProps =
   | "city"
   | "province"
   | "postalCode"
+  | "geographicReach"
+  | "primaryTimezone"
   | "website"
   | "bio"
   | "profilePicUrl";

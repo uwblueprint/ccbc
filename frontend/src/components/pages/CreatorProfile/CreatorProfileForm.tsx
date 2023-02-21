@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { CREATOR_PROFILE_LANDING } from "../../../constants/Routes";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { CreatorProfile } from "../../../types/CreatorProfileTypes";
+import AvailabilityForm from "./AvailabilityForm";
 import ContactInfoForm from "./ContactInfoForm";
 import GeneralInfoForm from "./GeneralInfoForm";
 
@@ -39,6 +40,9 @@ const CreatorProfileForm = (): React.ReactElement => {
     city: "",
     province: "",
     postalCode: "",
+    geographicReach: "",
+    primaryTimezone: "",
+    availability: [],
     crafts: [],
     genres: [],
     presentations: [],
@@ -61,15 +65,20 @@ const CreatorProfileForm = (): React.ReactElement => {
 
   const handleNav = (direction: number) => {
     const fieldsInvalid =
-      (activeForm === 0 &&
-        (creatorProfile?.firstName === "" ||
-          creatorProfile?.lastName === "" ||
-          creatorProfile?.email === "" ||
-          creatorProfile?.phone === "" ||
-          creatorProfile?.address === "" ||
-          creatorProfile?.city === "" ||
-          creatorProfile?.province === "" ||
-          creatorProfile?.postalCode === "")) ||
+      ((activeForm === 0 &&
+          (creatorProfile?.firstName === "" ||
+            creatorProfile?.lastName === "" ||
+            creatorProfile?.email === "" ||
+            creatorProfile?.phone === "" ||
+            creatorProfile?.address === "" ||
+            creatorProfile?.city === "" ||
+            creatorProfile?.province === "" ||
+            creatorProfile?.postalCode === "")) ||
+      (activeForm === 4 &&
+        (creatorProfile?.geographicReach === "" ||
+          creatorProfile?.primaryTimezone === "" ||
+          !creatorProfile?.availability ||
+          creatorProfile?.availability.length === 0))) ||
       (activeForm === 1 &&
         ((creatorProfile?.crafts && creatorProfile.crafts.length === 0) ||
           (creatorProfile?.genres && creatorProfile.genres.length === 0) ||
@@ -160,6 +169,7 @@ const CreatorProfileForm = (): React.ReactElement => {
             >
               {activeForm === 0 && <ContactInfoForm submitted={error} />}
               {activeForm === 1 && <GeneralInfoForm submitted={error} />}
+              {activeForm === 4 && <AvailabilityForm submitted={error} />}
             </CreatorProfileContext.Provider>
           </Center>
           <Flex justify="space-between" my="20" px="16">

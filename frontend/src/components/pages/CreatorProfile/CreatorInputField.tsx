@@ -21,6 +21,7 @@ interface CreatorInputFieldProps {
   error?: boolean;
   selectOptions?: Array<string>;
   width?: string;
+  mb?: string;
   required?: boolean;
 }
 
@@ -32,6 +33,7 @@ const CreatorInputField = ({
   width = "full",
   value,
   field,
+  mb,
   required = true,
 }: CreatorInputFieldProps): React.ReactElement => {
   const { creatorProfile, setCreatorProfile } = useContext(
@@ -41,17 +43,17 @@ const CreatorInputField = ({
   const handleOnChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    const creatorProfileObj: CreatorProfile = {
-      ...creatorProfile,
-    };
-    creatorProfileObj[field] = e.target.value;
-    setCreatorProfile(creatorProfileObj);
+    const creatorProfileObj: CreatorProfile = { ...creatorProfile };
+    const { availability, ...rest } = creatorProfileObj;
+    rest[field] = e.target.value;
+    setCreatorProfile({ ...rest, availability });
   };
 
   return (
     <FormControl
       isRequired={required}
       isInvalid={required && error && value === ""}
+      mb={mb}
     >
       <FormLabel mb="1" mt="3">
         {name}
