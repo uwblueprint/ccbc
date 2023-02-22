@@ -18,13 +18,13 @@ const SaveIcon = createIcon({
 interface CreatorProfileNavProps {
   activeForm: number;
   handleNav: (direction: number) => void;
-  save?: () => void;
+  saveAndExit: () => void;
 }
 
 const CreatorProfileNav = ({
   activeForm,
   handleNav,
-  save,
+  saveAndExit,
 }: CreatorProfileNavProps): React.ReactElement => {
   return (
     <Flex justify="space-between" my="20" px="16">
@@ -41,10 +41,7 @@ const CreatorProfileNav = ({
           colorScheme="teal"
           variant="outline"
           leftIcon={<SaveIcon />}
-          onClick={() => {
-            if (save) save();
-            // TODO: exit
-          }}
+          onClick={saveAndExit}
         >
           Save and exit
         </Button>

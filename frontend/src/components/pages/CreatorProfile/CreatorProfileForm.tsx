@@ -152,6 +152,7 @@ const CreatorProfileForm = (): React.ReactElement => {
                 <CreatorProfileNav
                   activeForm={activeForm}
                   handleNav={handleNav}
+                  saveAndExit={() => {}}
                 />
               </>
             ) : (

@@ -110,7 +110,7 @@ const PublicationsForm = ({
     setCreatorProfile(creatorProfileObj);
   };
 
-  const handleAddBibEntry = () => {
+  const handleAddBibEntry = (): boolean => {
     if (
       formInputs.title &&
       formInputs.publisher &&
@@ -132,9 +132,10 @@ const PublicationsForm = ({
         additionalNotes: "",
       });
       setError(false);
-    } else {
-      setError(true);
+      return true;
     }
+    setError(true);
+    return false;
   };
 
   const Dropzone = ({ ...props }: DropzoneRootProps) => {
@@ -326,7 +327,34 @@ const PublicationsForm = ({
           </Button>
         </Flex>
       </Center>
-      <CreatorProfileNav activeForm={3} handleNav={handleNav} save={() => {}} />
+      <CreatorProfileNav
+        activeForm={3}
+        handleNav={handleNav}
+        saveAndExit={() => {
+          let addedNew = false;
+          if (
+            // Check for unsaved changes
+            formInputs.title ||
+            formInputs.publisher ||
+            formInputs.publicationYear !== new Date().getFullYear() ||
+            formInputs.additionalNotes
+          ) {
+            addedNew = handleAddBibEntry();
+          }
+          if (
+            // Check for missing covers or info
+            creatorProfile?.bookCovers?.length !==
+            (addedNew ? 1 : 0) + (creatorProfile?.bibliography?.length ?? 0)
+          ) {
+            // eslint-disable-next-line no-alert
+            alert(
+              "Please ensure the number of book covers uploaded matches the number of bibliography entries.",
+            );
+          } else {
+            // TODO: exit
+          }
+        }}
+      />
     </>
   );
 };
