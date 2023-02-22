@@ -28,7 +28,7 @@ const CreatorProfileForm = (): React.ReactElement => {
     availability: [],
   });
 
-  const [activeForm, setActiveForm] = useState<number>(3);
+  const [activeForm, setActiveForm] = useState<number>(0);
   const [error, setError] = useState<boolean>(false);
 
   const forms = [
