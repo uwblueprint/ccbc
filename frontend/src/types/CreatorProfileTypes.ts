@@ -8,6 +8,7 @@ export type CreatorProfile = {
   province?: string;
   postalCode?: string;
   bibliography?: BibliographyEntry[];
+  bookCovers?: BookCoverFile[];
   geographicReach?: string;
   primaryTimezone?: string;
   availability?: string[];
@@ -22,7 +23,6 @@ export type CreatorProfileProps =
   | "city"
   | "province"
   | "postalCode"
-  | "bibliography"
   | "geographicReach"
   | "primaryTimezone";
 
@@ -31,4 +31,10 @@ export type BibliographyEntry = {
   publisher: string;
   publicationYear: number;
   additionalNotes?: string;
+};
+
+export type BookCoverFile = {
+  url: string;
+  name: string;
+  fileSize: number;
 };

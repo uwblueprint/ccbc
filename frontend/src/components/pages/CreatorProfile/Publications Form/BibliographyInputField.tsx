@@ -13,7 +13,6 @@ interface BibliographyInputFieldProps {
   value?: string | number;
   placeholder: string;
   error?: boolean;
-  width?: string;
   optional?: boolean;
   numberInput?: boolean;
   onChange?: (e: any) => void;
@@ -23,7 +22,6 @@ const BibliographyInputField = ({
   name,
   placeholder,
   error = false,
-  width = "full",
   value,
   optional = false,
   numberInput,
@@ -41,7 +39,6 @@ const BibliographyInputField = ({
         placeholder={placeholder || `Please enter a ${name.toLowerCase()}`}
         value={value}
         onChange={onChange}
-        width={width}
         type={numberInput ? "number" : ""}
       />
       {error && (!value || value === "") && (
