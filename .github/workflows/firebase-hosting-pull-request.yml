@@ -24,7 +24,7 @@ jobs:
       - run: echo "REACT_APP_BACKEND_URL=${{ secrets.REACT_APP_BACKEND_URL_PREVIEW }}" > .env
       - run: echo "REACT_APP_NODE_ENV=staging" >> .env
       - run: echo "NODE_ENV=development" >> .env
-      - run: rm -rf node_modules && yarn install --frozen-lockfile && yarn build
+      - run: rm -rf node_modules && yarn install && yarn build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
