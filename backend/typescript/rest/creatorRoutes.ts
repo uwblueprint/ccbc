@@ -16,15 +16,16 @@ interface CreatorReqQuery {
   id?: string;
   location?: string;
   ageRange?: string;
-  genre?: string;
+  genre?: string[];
   status?: string;
+  province?: string;
 }
 
 creatorRouter.get(
   "/",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
-    const { id, location, ageRange, genre, status } =
+    const { id, location, ageRange, genre, status, province } =
       req.query as CreatorReqQuery;
     if (id) {
       const idNumeric = parseInt(id, 10);
@@ -47,6 +48,7 @@ creatorRouter.get(
             genre,
             location,
             ageRange,
+            province,
           }),
         );
       } catch (error: unknown) {
@@ -114,6 +116,7 @@ creatorRouter.post(
   async (req, res) => {
     try {
       if (req.body.isApproved) throw new Error("invalid creator");
+      // Only allow creation without any data
       const result = await creatorService.createCreator(req.body.userId);
 
       res.status(200).json(result);

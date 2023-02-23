@@ -7,6 +7,9 @@ export type CreatorProfile = {
   city?: string;
   province?: string;
   postalCode?: string;
+  geographicReach?: string;
+  primaryTimezone?: string;
+  availability?: string[];
 } | null;
 
 export type CreatorProfileProps =
@@ -17,4 +20,6 @@ export type CreatorProfileProps =
   | "address"
   | "city"
   | "province"
-  | "postalCode";
+  | "postalCode"
+  | "geographicReach"
+  | "primaryTimezone";

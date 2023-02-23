@@ -62,6 +62,20 @@ class CreatorService implements ICreatorService {
       timezone: creator.timezone,
       bio: creator.bio,
       isApproved: creator.is_approved,
+      firstName: creator.first_name,
+      lastName: creator.last_name,
+      email: creator.email,
+      phone: creator.phone,
+      streetAddress: creator.street_address,
+      city: creator.city,
+      province: creator.province,
+      postalCode: creator.postal_code,
+      craft: creator.craft,
+      website: creator.website,
+      profilePictureLink: creator.profile_picture_link,
+      availability: creator.availability,
+      bookCovers: creator.book_covers,
+      isReadyForReview: creator.isReadyForReview,
     };
   }
 
@@ -70,39 +84,51 @@ class CreatorService implements ICreatorService {
     genre,
     location,
     ageRange,
+    province,
   }: {
     status?: string;
-    genre?: string;
+    genre?: string[];
     location?: string;
     ageRange?: string;
-  }): Promise<Array<any>> {
-    const isAdmin = !!isAuthorizedByRole(new Set(["Admin"]));
-
+    province?: string;
+  }): Promise<Array<CreatorDTO>> {
+    const isAdmin = !isAuthorizedByRole(new Set(["Admin"]));
     try {
       const creators: Array<Creator> = await Creator.findAll({ raw: true });
 
       return creators
-        .map((creator) => {
-          return {
-            id: creator.id,
-            userId: creator.user_id,
-            location: creator.location,
-            rate: creator.rate,
-            genre: creator.genre,
-            ageRange: creator.age_range,
-            timezone: creator.timezone,
-            bio: creator.bio,
-            isApproved: creator.is_approved,
-            createdAt: creator.createdAt,
-            updatedAt: creator.updatedAt,
-          };
-        })
+        .map((creator) => ({
+          id: creator.id,
+          userId: creator.user_id,
+          location: creator.location,
+          rate: creator.rate,
+          genre: creator.genre,
+          ageRange: creator.age_range,
+          timezone: creator.timezone,
+          bio: creator.bio,
+          isApproved: creator.is_approved,
+          firstName: creator.first_name,
+          lastName: creator.last_name,
+          email: creator.email,
+          phone: creator.phone,
+          streetAddress: creator.street_address,
+          city: creator.city,
+          province: creator.province,
+          postalCode: creator.postal_code,
+          craft: creator.craft,
+          website: creator.website,
+          profilePictureLink: creator.profile_picture_link,
+          availability: creator.availability,
+          bookCovers: creator.book_covers,
+          isReadyForReview: creator.isReadyForReview,
+        }))
         .filter(
           (creator) =>
             (creator.isApproved || isAdmin) &&
             (status ? creator.isApproved === (status === "true") : true) &&
             (genre
-              ? creator.genre.toLowerCase() === genre.toLowerCase()
+              ? // ez clap
+                creator.genre.filter((i) => new Set(genre).has(i)).length > 0
               : true) &&
             (location
               ? creator.location.toLowerCase() === location.toLowerCase()
@@ -206,6 +232,7 @@ class CreatorService implements ICreatorService {
 
   async createCreator(userId: number): Promise<CreatorDTO> {
     try {
+      // Only allow creation w no data
       const newCreator = await Creator.create({
         user_id: userId,
       });
@@ -219,6 +246,20 @@ class CreatorService implements ICreatorService {
         timezone: newCreator.timezone,
         bio: newCreator.bio,
         isApproved: newCreator.is_approved,
+        firstName: newCreator.first_name,
+        lastName: newCreator.last_name,
+        email: newCreator.email,
+        phone: newCreator.phone,
+        streetAddress: newCreator.street_address,
+        city: newCreator.city,
+        province: newCreator.province,
+        postalCode: newCreator.postal_code,
+        craft: newCreator.craft,
+        website: newCreator.website,
+        profilePictureLink: newCreator.profile_picture_link,
+        availability: newCreator.availability,
+        bookCovers: newCreator.book_covers,
+        isReadyForReview: newCreator.isReadyForReview,
       };
     } catch (error) {
       Logger.error(
@@ -263,6 +304,20 @@ class CreatorService implements ICreatorService {
         timezone: updatedCreator.timezone,
         bio: updatedCreator.bio,
         isApproved: updatedCreator.is_approved,
+        firstName: updatedCreator.first_name,
+        lastName: updatedCreator.last_name,
+        email: updatedCreator.email,
+        phone: updatedCreator.phone,
+        streetAddress: updatedCreator.street_address,
+        city: updatedCreator.city,
+        province: updatedCreator.province,
+        postalCode: updatedCreator.postal_code,
+        craft: updatedCreator.craft,
+        website: updatedCreator.website,
+        profilePictureLink: updatedCreator.profile_picture_link,
+        availability: updatedCreator.availability,
+        bookCovers: updatedCreator.book_covers,
+        isReadyForReview: updatedCreator.isReadyForReview,
       };
     } catch (error) {
       Logger.error(
