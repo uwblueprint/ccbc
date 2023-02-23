@@ -175,6 +175,7 @@ class CreatorService implements ICreatorService {
       await Creator.update(
         {
           is_approved: true,
+          isReadyForReview: false,
         },
         {
           where: { id: parseInt(userId, 10) },
@@ -204,6 +205,16 @@ class CreatorService implements ICreatorService {
       if (!rejectedUser) {
         return;
       }
+
+      await Creator.update(
+        {
+          is_approved: false,
+          isReadyForReview: false,
+        },
+        {
+          where: { id: parseInt(userId, 10) },
+        },
+      );
 
       try {
         const emailBody = `

@@ -19,6 +19,7 @@ type CreatorRow = {
   name: string;
   email: string;
   isApproved: boolean;
+  isReadyForReview: boolean;
   createdAt: string;
 };
 
@@ -198,6 +199,13 @@ const AdminCreatorProfiles = (): React.ReactElement => {
         },
       },
       {
+        name: "isReadyForReview",
+        label: "Is Ready For Review",
+        options: {
+          display: false,
+        },
+      },
+      {
         name: "actions",
         label: "Actions",
         options: {
@@ -206,7 +214,7 @@ const AdminCreatorProfiles = (): React.ReactElement => {
           customBodyRender: (value, tableMeta, updateValue) => {
             return (
               <div>
-                {tableMeta.rowData[4] ? (
+                {tableMeta.rowData[5] ? (
                   <>
                     <Tooltip label="Edit review">
                       <IconButton
@@ -313,9 +321,12 @@ const AdminCreatorProfiles = (): React.ReactElement => {
           name: `${creator.first_name} ${creator.last_name}`,
           email: creator.email || "",
           isApproved: creator.isApproved || false,
+          isReadyForReview: creator.isReadyForReview || false,
           createdAt: created,
         };
-        rows.push(row);
+        if (row.isReadyForReview || row.isApproved) {
+          rows.push(row);
+        }
       });
     }
     return rows;
