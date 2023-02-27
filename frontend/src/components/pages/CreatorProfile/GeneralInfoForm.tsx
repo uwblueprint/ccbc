@@ -108,7 +108,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
   }, [creatorProfile]);
 
   return (
-    <Flex flex="1" direction="column" justify="start">
+    <Flex flex="1" direction="column" justify="start" width={[300, 400, 500]}>
       <Text textStyle="heading" textAlign="left" fontWeight="bold">
         General Info
       </Text>
@@ -169,6 +169,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           value={creatorProfile?.bio}
           field="bio"
           error={submitted}
+          charLimit={500}
         />
         <AddProfilePictureField
           name="Profile Picture"
