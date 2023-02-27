@@ -318,7 +318,7 @@ const AdminCreatorProfiles = (): React.ReactElement => {
 
         const row: CreatorRow = {
           id: creator.id || -1,
-          name: `${creator.first_name} ${creator.last_name}`,
+          name: `${creator.firstName} ${creator.lastName}`,
           email: creator.email || "",
           isApproved: creator.isApproved || false,
           isReadyForReview: creator.isReadyForReview || false,

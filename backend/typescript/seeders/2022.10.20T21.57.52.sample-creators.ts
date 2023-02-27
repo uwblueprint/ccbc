@@ -1,12 +1,42 @@
 import { Seeder } from "../umzug";
 
-const seedCreators = [
+type CreatorSeed = {
+  id: number;
+  user_id: number;
+  location: string;
+  rate: number;
+  genre: string[];
+  age_range: string;
+  timezone: string;
+  bio: string;
+  is_approved: boolean;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  street_address: string;
+  city: string;
+  province: string;
+  postal_code: string;
+  craft: string[];
+  website: string;
+  profile_picture_link: string;
+  availability: string;
+  book_covers: string[];
+  isReadyForReview: boolean;
+  presentations?: any;
+  publications?: any;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+const seedCreators: CreatorSeed[] = [
   {
     id: 1,
     user_id: 1,
     location: "Canada",
     rate: 4.6,
-    genre: "Mystery",
+    genre: ["Mystery"],
     age_range: "[10, 30)",
     timezone: "EDT",
     bio: "A mysterious author who writes detective stories to unravel great conspiracies",
@@ -21,21 +51,19 @@ const seedCreators = [
     city: "Toronto",
     province: "ON",
     postal_code: "M5V 2J4",
-    craft: "TODO",
+    craft: ["TODO"],
     website: "https://example.com",
     profile_picture_link: "TODO", // get from firebase cloud storage,
     availability: "TODO",
     book_covers: ["TODO1", "TODO2"], // array of URLs
     isReadyForReview: true,
-    presentations: [],
-    publications: [],
   },
   {
     id: 2,
     user_id: 2,
     location: "USA",
     rate: 2.3,
-    genre: "Horror",
+    genre: ["Horror"],
     age_range: "[15, 28)",
     timezone: "EDT",
     bio: "A proactive author using books to teach youngsters about the horrors in the real world like those found in abandoned ghost towns",
@@ -50,14 +78,12 @@ const seedCreators = [
     city: "Waterloo",
     province: "ON",
     postal_code: "N2L 3G1",
-    craft: "TODO",
+    craft: ["TODO"],
     website: "https://google.com",
     profile_picture_link: "TODO", // get from firebase cloud storage,
     availability: "TODO",
     book_covers: ["TODO1", "TODO2"], // array of URLs
     isReadyForReview: true,
-    presentations: [],
-    publications: [],
   },
 ];
 
