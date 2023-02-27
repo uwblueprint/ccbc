@@ -6,6 +6,7 @@ import MUIDataTable, {
   MUIDataTableColumn,
 } from "mui-datatables";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import creatorAPIClient from "../../../APIClients/CreatorAPIClient";
 import { Creator } from "../../../types/CreatorTypes";
@@ -36,6 +37,7 @@ const AdminCreatorProfiles = (): React.ReactElement => {
   const [RejectProfileId, setRejectProfileId] = useState(-1);
   const [isLoading, setIsLoading] = useState(false);
   const newToast = useToasts();
+  const history = useHistory();
 
   useEffect(() => {
     setIsLoading(true);
@@ -101,6 +103,7 @@ const AdminCreatorProfiles = (): React.ReactElement => {
       const RejectProfileIndex = getIndex(RejectProfileId);
       if (newData && newData[RejectProfileIndex]) {
         newData[RejectProfileIndex].isApproved = true;
+        newData[RejectProfileIndex].isReadyForReview = false;
       }
       setData(newData);
       newToast("success", "Creator rejected", "This creator has been rejected");
@@ -212,15 +215,16 @@ const AdminCreatorProfiles = (): React.ReactElement => {
           // eslint-disable-next-line
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
+            const isReadyForReview = tableMeta.rowData[5];
             return (
               <div>
-                {tableMeta.rowData[5] ? (
+                {!isReadyForReview ? (
                   <>
-                    <Tooltip label="Edit review">
+                    <Tooltip label="Edit Creator">
                       <IconButton
                         aria-label="edit creator"
                         icon={<EditIcon color="#718096" />}
-                        onClick={() => {}}
+                        onClick={() => history.push("/create-creator-profile")}
                       />
                     </Tooltip>
                     <Tooltip label="Delete">
