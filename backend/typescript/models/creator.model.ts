@@ -73,8 +73,8 @@ export default class Creator extends Model {
   @Column
   profile_picture_link!: string;
 
-  @Column
-  availability!: string;
+  @Column({ type: DataType.ARRAY(DataType.STRING) })
+  availability!: string[];
 
   @Column({ type: DataType.ARRAY(DataType.STRING) })
   book_covers!: string[];

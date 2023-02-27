@@ -42,9 +42,8 @@ const CreatorInputField = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const creatorProfileObj: CreatorProfile = { ...creatorProfile };
-    const { availability, ...rest } = creatorProfileObj;
-    rest[field] = e.target.value;
-    setCreatorProfile({ ...rest, availability });
+    creatorProfileObj[field] = e.target.value;
+    setCreatorProfile({ ...creatorProfileObj });
   };
 
   return (
@@ -72,7 +71,7 @@ const CreatorInputField = ({
       )}
       {error && value === "" && (
         <FormErrorMessage>
-          Please enter you {name.toLowerCase()}
+          Please enter your {name.toLowerCase()}
         </FormErrorMessage>
       )}
     </FormControl>
