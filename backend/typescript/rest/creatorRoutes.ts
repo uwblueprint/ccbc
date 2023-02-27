@@ -4,10 +4,13 @@ import { sendErrorResponse } from "../utilities/errorResponse";
 import { creatorUpdateDtoValidator } from "../middlewares/validators/creatorValidators";
 import CreatorService from "../services/implementations/creatorService";
 import ICreatorService from "../services/interfaces/creatorService";
+import EmailService from "../services/implementations/emailService";
+import nodemailerConfig from "../nodemailer.config";
 
 const creatorRouter: Router = Router();
-const creatorService: ICreatorService = new CreatorService();
-creatorRouter.get("/");
+const creatorService: ICreatorService = new CreatorService(
+  new EmailService(nodemailerConfig),
+);
 
 interface CreatorReqQuery {
   id?: string;
@@ -66,6 +69,40 @@ creatorRouter.put(
       await creatorService.approveCreator(id);
 
       res.status(200).json({ message: "approved" });
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
+
+/* Reject users to be creators by id */
+creatorRouter.put(
+  "/reject/:id",
+  isAuthorizedByRole(new Set(["Admin"])),
+  async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      await creatorService.rejectCreator(id);
+
+      res.status(200).json({ message: "rejected" });
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
+
+/* Delete creators by id */
+creatorRouter.delete(
+  "/delete/:id",
+  isAuthorizedByRole(new Set(["Admin"])),
+  async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      await creatorService.deleteCreator(id);
+
+      res.status(200).json({ message: "deleted" });
     } catch (e: unknown) {
       sendErrorResponse(e, res);
     }
