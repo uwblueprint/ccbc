@@ -21,7 +21,7 @@ type CreatorSeed = {
   craft: string[];
   website: string;
   profile_picture_link: string;
-  availability: string;
+  availability: string[];
   book_covers: string[];
   isReadyForReview: boolean;
   presentations?: any;
@@ -54,7 +54,7 @@ const seedCreators: CreatorSeed[] = [
     craft: ["TODO"],
     website: "https://example.com",
     profile_picture_link: "TODO", // get from firebase cloud storage,
-    availability: "TODO",
+    availability: ["TODO"],
     book_covers: ["TODO1", "TODO2"], // array of URLs
     isReadyForReview: true,
   },
@@ -81,7 +81,7 @@ const seedCreators: CreatorSeed[] = [
     craft: ["TODO"],
     website: "https://google.com",
     profile_picture_link: "TODO", // get from firebase cloud storage,
-    availability: "TODO",
+    availability: ["TODO"],
     book_covers: ["TODO1", "TODO2"], // array of URLs
     isReadyForReview: true,
   },
