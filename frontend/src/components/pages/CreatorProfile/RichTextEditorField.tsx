@@ -81,7 +81,9 @@ const AddRichTextEditor = ({
             ref={quillRef}
             onChange={handleOnChange}
         />
-        <Text
+
+      { charLimit !== Number.MAX_VALUE && 
+          <Text
           align="right"
           fontFamily="DM Sans"
           fontStyle="normal"
@@ -93,6 +95,21 @@ const AddRichTextEditor = ({
         >
           {`${charCount.current}/${charLimit} characters`}
         </Text>
+      }
+      { charLimit === Number.MAX_VALUE && 
+          <Text
+          align="right"
+          fontFamily="DM Sans"
+          fontStyle="normal"
+          fontWeight="400"
+          fontSize="13px"
+          color="#A0AEC0"
+          lineHeight="17px"
+          mt="7px"
+        >
+          {`${charCount.current} characters`}
+        </Text>
+      }
 
       {error && value === "" && required && (
         <FormErrorMessage>
