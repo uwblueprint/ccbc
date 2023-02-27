@@ -33,6 +33,59 @@ export const creatorDtoValidator = async (
   if (!validatePrimitive(req.body.isApproved, "boolean")) {
     return res.status(400).send(getApiValidationError("isApproved", "boolean"));
   }
+  // Calder W: New types
+  if (!validatePrimitive(req.body.first_name, "string")) {
+    return res.status(400).send(getApiValidationError("first_name", "string"));
+  }
+  if (!validatePrimitive(req.body.last_name, "string")) {
+    return res.status(400).send(getApiValidationError("last_name", "string"));
+  }
+  if (!validatePrimitive(req.body.email, "string")) {
+    return res.status(400).send(getApiValidationError("email", "string"));
+  }
+  if (!validatePrimitive(req.body.phone, "string")) {
+    return res.status(400).send(getApiValidationError("phone", "string"));
+  }
+  if (!validatePrimitive(req.body.street_address, "string")) {
+    return res
+      .status(400)
+      .send(getApiValidationError("street_address", "string"));
+  }
+  if (!validatePrimitive(req.body.city, "string")) {
+    return res.status(400).send(getApiValidationError("city", "string"));
+  }
+  if (!validatePrimitive(req.body.province, "string")) {
+    return res.status(400).send(getApiValidationError("province", "string"));
+  }
+  if (!validatePrimitive(req.body.postal_code, "string")) {
+    return res.status(400).send(getApiValidationError("postal_code", "string"));
+  }
+  if (!validatePrimitive(req.body.craft, "string")) {
+    return res.status(400).send(getApiValidationError("craft", "string"));
+  }
+  if (!validatePrimitive(req.body.website, "string")) {
+    return res.status(400).send(getApiValidationError("website", "string"));
+  }
+  if (!validatePrimitive(req.body.profile_picture_link, "string")) {
+    return res
+      .status(400)
+      .send(getApiValidationError("profile_picture_link", "string"));
+  }
+  if (!validatePrimitive(req.body.availability, "string")) {
+    return res
+      .status(400)
+      .send(getApiValidationError("availability", "string"));
+  }
+  // TODO: How to do arrays?
+  // if (!validatePrimitive(req.body.book_covers, "string")) {
+  //   return res.status(400).send(getApiValidationError("book_covers", "string"));
+  // }
+  if (!validatePrimitive(req.body.isReadyForReview, "boolean")) {
+    return res
+      .status(400)
+      .send(getApiValidationError("isReadyForReview", "boolean"));
+  }
+  // TODO: How to validate the presentations and publications?
 
   return next();
 };
@@ -67,6 +120,59 @@ export const creatorUpdateDtoValidator = async (
   if (req.body.isApproved) {
     return res.status(400).send("The isApproved is not undefined");
   }
+  // Calder W: New types
+  if (!validatePrimitive(req.body.first_name, "string")) {
+    return res.status(400).send(getApiValidationError("first_name", "string"));
+  }
+  if (!validatePrimitive(req.body.last_name, "string")) {
+    return res.status(400).send(getApiValidationError("last_name", "string"));
+  }
+  if (!validatePrimitive(req.body.email, "string")) {
+    return res.status(400).send(getApiValidationError("email", "string"));
+  }
+  if (!validatePrimitive(req.body.phone, "string")) {
+    return res.status(400).send(getApiValidationError("phone", "string"));
+  }
+  if (!validatePrimitive(req.body.street_address, "string")) {
+    return res
+      .status(400)
+      .send(getApiValidationError("street_address", "string"));
+  }
+  if (!validatePrimitive(req.body.city, "string")) {
+    return res.status(400).send(getApiValidationError("city", "string"));
+  }
+  if (!validatePrimitive(req.body.province, "string")) {
+    return res.status(400).send(getApiValidationError("province", "string"));
+  }
+  if (!validatePrimitive(req.body.postal_code, "string")) {
+    return res.status(400).send(getApiValidationError("postal_code", "string"));
+  }
+  if (!validatePrimitive(req.body.craft, "string")) {
+    return res.status(400).send(getApiValidationError("craft", "string"));
+  }
+  if (!validatePrimitive(req.body.website, "string")) {
+    return res.status(400).send(getApiValidationError("website", "string"));
+  }
+  if (!validatePrimitive(req.body.profile_picture_link, "string")) {
+    return res
+      .status(400)
+      .send(getApiValidationError("profile_picture_link", "string"));
+  }
+  if (!validatePrimitive(req.body.availability, "string")) {
+    return res
+      .status(400)
+      .send(getApiValidationError("availability", "string"));
+  }
+  // TODO: How to do arrays?
+  // if (!validatePrimitive(req.body.book_covers, "string")) {
+  //   return res.status(400).send(getApiValidationError("book_covers", "string"));
+  // }
+  if (!validatePrimitive(req.body.isReadyForReview, "boolean")) {
+    return res
+      .status(400)
+      .send(getApiValidationError("isReadyForReview", "boolean"));
+  }
+  // TODO: How to validate the presentations and publications?
 
   return next();
 };

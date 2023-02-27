@@ -62,6 +62,20 @@ class CreatorService implements ICreatorService {
       timezone: creator.timezone,
       bio: creator.bio,
       isApproved: creator.is_approved,
+      firstName: creator.first_name,
+      lastName: creator.last_name,
+      email: creator.email,
+      phone: creator.phone,
+      streetAddress: creator.street_address,
+      city: creator.city,
+      province: creator.province,
+      postalCode: creator.postal_code,
+      craft: creator.craft,
+      website: creator.website,
+      profilePictureLink: creator.profile_picture_link,
+      availability: creator.availability,
+      bookCovers: creator.book_covers,
+      isReadyForReview: creator.isReadyForReview,
     };
   }
 
@@ -70,15 +84,18 @@ class CreatorService implements ICreatorService {
     genre,
     location,
     ageRange,
+    province,
   }: {
     status?: string;
-    genre?: string;
+    genre?: string[];
     location?: string;
     ageRange?: string;
+    province?: string;
   }): Promise<Array<CreatorDTO>> {
     const isAdmin = !isAuthorizedByRole(new Set(["Admin"]));
     try {
       const creators: Array<Creator> = await Creator.findAll({ raw: true });
+
       return creators
         .map((creator) => ({
           id: creator.id,
@@ -90,13 +107,28 @@ class CreatorService implements ICreatorService {
           timezone: creator.timezone,
           bio: creator.bio,
           isApproved: creator.is_approved,
+          firstName: creator.first_name,
+          lastName: creator.last_name,
+          email: creator.email,
+          phone: creator.phone,
+          streetAddress: creator.street_address,
+          city: creator.city,
+          province: creator.province,
+          postalCode: creator.postal_code,
+          craft: creator.craft,
+          website: creator.website,
+          profilePictureLink: creator.profile_picture_link,
+          availability: creator.availability,
+          bookCovers: creator.book_covers,
+          isReadyForReview: creator.isReadyForReview,
         }))
         .filter(
           (creator) =>
             (creator.isApproved || isAdmin) &&
             (status ? creator.isApproved === (status === "true") : true) &&
             (genre
-              ? creator.genre.toLowerCase() === genre.toLowerCase()
+              ? // ez clap
+                creator.genre.filter((i) => new Set(genre).has(i)).length > 0
               : true) &&
             (location
               ? creator.location.toLowerCase() === location.toLowerCase()
@@ -112,14 +144,41 @@ class CreatorService implements ICreatorService {
     }
   }
 
+  async deleteCreator(userId: string): Promise<void> {
+    try {
+      // Sequelize doesn't provide a way to atomically find, delete, and return deleted row
+      const deletedUser: Creator | null = await Creator.findByPk(
+        Number(userId),
+      );
+
+      if (!deletedUser) {
+        throw new Error(`userid ${userId} not found.`);
+      }
+
+      const numDestroyed: number = await Creator.destroy({
+        where: { id: userId },
+      });
+
+      if (numDestroyed <= 0) {
+        throw new Error(`userid ${userId} was not deleted in Postgres.`);
+      }
+    } catch (error) {
+      Logger.error(
+        `Failed to delete creator. Reason = ${getErrorMessage(error)}`,
+      );
+      throw error;
+    }
+  }
+
   async approveCreator(userId: string): Promise<void> {
     try {
       await Creator.update(
         {
-          isApproved: true,
+          is_approved: true,
+          isReadyForReview: false,
         },
         {
-          where: { id: userId },
+          where: { id: parseInt(userId, 10) },
         },
       );
     } catch (error) {
@@ -130,8 +189,61 @@ class CreatorService implements ICreatorService {
     }
   }
 
+  async rejectCreator(userId: string): Promise<void> {
+    try {
+      if (!this.emailService) {
+        const errorMessage =
+          "Attempted to call sendCreatorProfileSetupLink but this instance of CreatorService does not have an EmailService instance";
+        Logger.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      const rejectedUser: Creator | null = await Creator.findByPk(
+        Number(userId),
+      );
+
+      if (!rejectedUser) {
+        return;
+      }
+
+      await Creator.update(
+        {
+          is_approved: false,
+          isReadyForReview: false,
+        },
+        {
+          where: { id: parseInt(userId, 10) },
+        },
+      );
+
+      try {
+        const emailBody = `
+        Hello ${rejectedUser.first_name},
+        <br><br>
+        Unfortunately, your creator profile for the Canadian Children's Book Centre creator directory has been declined. We encourage you to check over your profile again and contact us if further assistance is required.
+        <br><br>
+        Thanks,<br>CCBC`;
+
+        this.emailService.sendEmail(
+          rejectedUser.email,
+          "Update on your creator status",
+          emailBody,
+        );
+      } catch (error) {
+        Logger.error(
+          `Failed to generate email rejection link for user with email ${rejectedUser.email}`,
+        );
+        throw error;
+      }
+    } catch (error) {
+      Logger.error(`Failed to reject user. Reason = ${getErrorMessage(error)}`);
+      throw error;
+    }
+  }
+
   async createCreator(userId: number): Promise<CreatorDTO> {
     try {
+      // Only allow creation w no data
       const newCreator = await Creator.create({
         user_id: userId,
       });
@@ -145,6 +257,20 @@ class CreatorService implements ICreatorService {
         timezone: newCreator.timezone,
         bio: newCreator.bio,
         isApproved: newCreator.is_approved,
+        firstName: newCreator.first_name,
+        lastName: newCreator.last_name,
+        email: newCreator.email,
+        phone: newCreator.phone,
+        streetAddress: newCreator.street_address,
+        city: newCreator.city,
+        province: newCreator.province,
+        postalCode: newCreator.postal_code,
+        craft: newCreator.craft,
+        website: newCreator.website,
+        profilePictureLink: newCreator.profile_picture_link,
+        availability: newCreator.availability,
+        bookCovers: newCreator.book_covers,
+        isReadyForReview: newCreator.isReadyForReview,
       };
     } catch (error) {
       Logger.error(
@@ -189,6 +315,20 @@ class CreatorService implements ICreatorService {
         timezone: updatedCreator.timezone,
         bio: updatedCreator.bio,
         isApproved: updatedCreator.is_approved,
+        firstName: updatedCreator.first_name,
+        lastName: updatedCreator.last_name,
+        email: updatedCreator.email,
+        phone: updatedCreator.phone,
+        streetAddress: updatedCreator.street_address,
+        city: updatedCreator.city,
+        province: updatedCreator.province,
+        postalCode: updatedCreator.postal_code,
+        craft: updatedCreator.craft,
+        website: updatedCreator.website,
+        profilePictureLink: updatedCreator.profile_picture_link,
+        availability: updatedCreator.availability,
+        bookCovers: updatedCreator.book_covers,
+        isReadyForReview: updatedCreator.isReadyForReview,
       };
     } catch (error) {
       Logger.error(

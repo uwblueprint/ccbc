@@ -19,17 +19,33 @@ interface ICreatorService {
     genre,
     location,
     ageRange,
+    province,
   }: {
     status?: string;
-    genre?: string;
+    genre?: string[];
     location?: string;
     ageRange?: string;
+    province?: string;
   }): Promise<Array<CreatorDTO>>;
   /**
    * Approves a user to be a creator on the platform
    * @param userId The id of the user we want to make an approved creator.
    */
   approveCreator(userId: string): Promise<void>;
+
+  /**
+   * Rejects a user to be a creator on the platform
+   * @param userId The id of the user we want to reject.
+   */
+  rejectCreator(userId: string): Promise<void>;
+
+  /**
+   * Create new creator in databse
+   * @param userId The id of the user we want to delete.
+   * @returns void
+   * @throws Error if deleting a creator fails
+   */
+  deleteCreator(userId: string): Promise<void>;
 
   /**
    * Create new creator in databse

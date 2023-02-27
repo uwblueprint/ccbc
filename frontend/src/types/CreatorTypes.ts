@@ -2,29 +2,32 @@
  * Type for Creator, a special class of user
  */
 export type Creator = {
+  id?: number;
   userId: number;
   genre?: string;
-  grade_level?: string;
+  ageRange?: string;
   timezone?: string;
   bio?: string;
   isApproved?: boolean;
-  first_name?: string;
-  last_name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   phone?: string;
-  street_address?: string;
+  streetAddress?: string;
   city?: string;
   province?: string;
-  postal_code?: string;
+  postalCode?: string;
   craft?: string;
   website?: string;
-  profile_picture_link?: string;
+  profilePictureLink?: string;
   availability?: string;
-  book_covers?: string[];
+  bookCovers?: string[];
   isReadyForReview?: boolean;
   presentations?: Presentation[];
   publications?: Publication[];
-} | null;
+  createdAt?: number;
+  updatedAt?: number;
+};
 
 /**
  * Type for Presentation

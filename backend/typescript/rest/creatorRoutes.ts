@@ -4,24 +4,28 @@ import { sendErrorResponse } from "../utilities/errorResponse";
 import { creatorUpdateDtoValidator } from "../middlewares/validators/creatorValidators";
 import CreatorService from "../services/implementations/creatorService";
 import ICreatorService from "../services/interfaces/creatorService";
+import EmailService from "../services/implementations/emailService";
+import nodemailerConfig from "../nodemailer.config";
 
 const creatorRouter: Router = Router();
-const creatorService: ICreatorService = new CreatorService();
-creatorRouter.get("/");
+const creatorService: ICreatorService = new CreatorService(
+  new EmailService(nodemailerConfig),
+);
 
 interface CreatorReqQuery {
   id?: string;
   location?: string;
   ageRange?: string;
-  genre?: string;
+  genre?: string[];
   status?: string;
+  province?: string;
 }
 
 creatorRouter.get(
   "/",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
-    const { id, location, ageRange, genre, status } =
+    const { id, location, ageRange, genre, status, province } =
       req.query as CreatorReqQuery;
     if (id) {
       const idNumeric = parseInt(id, 10);
@@ -44,6 +48,7 @@ creatorRouter.get(
             genre,
             location,
             ageRange,
+            province,
           }),
         );
       } catch (error: unknown) {
@@ -70,6 +75,40 @@ creatorRouter.put(
   },
 );
 
+/* Reject users to be creators by id */
+creatorRouter.put(
+  "/reject/:id",
+  isAuthorizedByRole(new Set(["Admin"])),
+  async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      await creatorService.rejectCreator(id);
+
+      res.status(200).json({ message: "rejected" });
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
+
+/* Delete creators by id */
+creatorRouter.delete(
+  "/delete/:id",
+  isAuthorizedByRole(new Set(["Admin"])),
+  async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      await creatorService.deleteCreator(id);
+
+      res.status(200).json({ message: "deleted" });
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
+
 /* Create creator by id in database */
 creatorRouter.post(
   "/",
@@ -77,6 +116,7 @@ creatorRouter.post(
   async (req, res) => {
     try {
       if (req.body.isApproved) throw new Error("invalid creator");
+      // Only allow creation without any data
       const result = await creatorService.createCreator(req.body.userId);
 
       res.status(200).json(result);
