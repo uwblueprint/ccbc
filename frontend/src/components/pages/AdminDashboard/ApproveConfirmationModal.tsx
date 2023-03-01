@@ -10,25 +10,25 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-export type DeleteConfirmationProps = {
+export type StatusConfirmationProps = {
   isOpen: boolean;
   onClose: () => void;
-  onDelete: () => Promise<void>;
-  reviewName?: string;
+  onConfirm: () => Promise<void>;
+  isApproving?: boolean;
   authorName?: string;
 };
 
 /**
- * DeleteConfirmationModal displays and asks for confirmation when
- * the delete button on an Admin Dashboard row is clicked
+ * ApproveConfirmationModal displays and asks for confirmation when
+ * the approve button on an Admin Dashboard row is clicked
  */
-const DeleteConfirmationModal = ({
+const StatusConfirmationModal = ({
   isOpen,
   onClose,
-  onDelete,
-  reviewName,
+  onConfirm,
+  isApproving,
   authorName,
-}: DeleteConfirmationProps): React.ReactElement => {
+}: StatusConfirmationProps): React.ReactElement => {
   return (
     <Modal isOpen={isOpen} onClose={() => onClose()} isCentered>
       <ModalOverlay />
@@ -44,25 +44,20 @@ const DeleteConfirmationModal = ({
           Hey wait!
         </ModalHeader>
         <ModalCloseButton />
-        {reviewName ? (
-          <ModalBody ml="40px" mr="40px" fontFamily="DM Sans">
-            Are you sure you want to delete this review of {reviewName}?
-          </ModalBody>
-        ) : (
-          <ModalBody ml="40px" mr="40px" fontFamily="DM Sans">
-            Are you sure you want to delete {authorName}?
-          </ModalBody>
-        )}
+        <ModalBody ml="40px" mr="40px" fontFamily="DM Sans">
+          Are you sure you want to {isApproving ? "approve" : "reject"}{" "}
+          {authorName}?
+        </ModalBody>
         <ModalFooter mb="40px" mr="40px" ml="40px">
           <Button
-            w="167px"
+            w="195px"
             colorScheme="teal"
             onClick={() => {
               onClose();
-              onDelete();
+              onConfirm();
             }}
           >
-            Yes, delete {reviewName ? "review" : "creator"}
+            Yes, {isApproving ? "approve" : "reject"} creator
           </Button>
           <Button
             w="167px"
@@ -79,4 +74,4 @@ const DeleteConfirmationModal = ({
   );
 };
 
-export default DeleteConfirmationModal;
+export default StatusConfirmationModal;
