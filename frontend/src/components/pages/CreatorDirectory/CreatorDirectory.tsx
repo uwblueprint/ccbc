@@ -10,11 +10,30 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-import background from "../../../assets/home-bg.png";
+import creatorAPIClient from "../../../APIClients/CreatorAPIClient";
+import background from "../../../assets/creator-bg.png";
+import { Creator } from "../../../types/CreatorTypes";
+import LoadingSpinner from "../../common/LoadingSpinner";
+import CreatorPreview from "./CreatorPreview";
 
 const CreatorDirectory = (): React.ReactElement => {
+  const [data, setData] = useState<Creator[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    creatorAPIClient.getCreators("true").then((resp: Creator[]) => {
+      if (!resp) {
+        setData([]);
+      } else {
+        setData(resp || []);
+      }
+      setIsLoading(false);
+    });
+  }, []);
+
   return (
     <Center>
       <Box
@@ -65,62 +84,17 @@ const CreatorDirectory = (): React.ReactElement => {
                   Genres
                 </GridItem>
               </Grid>
-              <Grid
-                templateColumns="repeat(9, 1fr)"
-                gap={6}
-                w="full"
-                bgColor="white"
-              >
-                <GridItem
-                  height="80px"
-                  flexDir="column"
-                  display="flex"
-                  justifyContent="center"
-                  colSpan={3}
-                >
-                  <Box
-                    flexDir="row"
-                    display="flex"
-                    justifyContent="flex-start"
-                    alignItems="center"
-                  >
-                    <Avatar h="48px" w="48px" mx="3" />
-                    <Text fontWeight="bold" mr="2">
-                      Amy John
-                    </Text>
-                    <Tag h="5" bg="gray.200">
-                      BC
-                    </Tag>
-                  </Box>
-                </GridItem>
-                <GridItem
-                  height="80px"
-                  flexDir="column"
-                  display="flex"
-                  justifyContent="center"
-                  colSpan={2}
-                >
-                  <Text>Kindergarten</Text>
-                </GridItem>
-                <GridItem
-                  height="80px"
-                  flexDir="column"
-                  display="flex"
-                  justifyContent="center"
-                  colSpan={2}
-                >
-                  <Text>Illustrator</Text>
-                </GridItem>
-                <GridItem
-                  height="80px"
-                  flexDir="column"
-                  display="flex"
-                  justifyContent="center"
-                  colSpan={2}
-                >
-                  <Text>Fiction</Text>
-                </GridItem>
-              </Grid>
+              {isLoading ? (
+                <Box alignContent="center" flexDirection="row" width="full">
+                  <LoadingSpinner h="20%" />
+                </Box>
+              ) : (
+                <>
+                  {data.map((creator, index) => {
+                    return <CreatorPreview key={index} creator={creator} />;
+                  })}
+                </>
+              )}
             </VStack>
           </Box>
         </VStack>

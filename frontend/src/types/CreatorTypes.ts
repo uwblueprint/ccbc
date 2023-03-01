@@ -4,7 +4,7 @@
 export type Creator = {
   id?: number;
   userId: number;
-  genre?: string;
+  genre?: string[];
   ageRange?: string;
   timezone?: string;
   bio?: string;
@@ -17,7 +17,7 @@ export type Creator = {
   city?: string;
   province?: string;
   postalCode?: string;
-  craft?: string;
+  craft?: string[];
   website?: string;
   profilePictureLink?: string;
   availability?: string;
