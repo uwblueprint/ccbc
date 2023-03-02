@@ -94,6 +94,21 @@ const updateCreator = async (
   }
 };
 
+/**
+ * This function obtains a creator given a unique identifer
+ *
+ * @param id - the unique identifier of the creator to obtain
+ * @returns Promise<ReviewResponse>
+ */
+
+const getCreatorById = async (id: string): Promise<Creator> => {
+  const requestRoute = `/creators/${id}`;
+  const { data } = await baseAPIClient.get(requestRoute, {
+    headers: { Authorization: getBearerToken() }, // this line is copied jwt token
+  });
+  return data;
+};
+
 export default {
   getCreators,
   approveCreator,
@@ -101,4 +116,5 @@ export default {
   deleteCreator,
   createCreator,
   updateCreator,
+  getCreatorById,
 };
