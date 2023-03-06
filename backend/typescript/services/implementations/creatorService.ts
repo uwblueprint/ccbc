@@ -92,7 +92,7 @@ class CreatorService implements ICreatorService {
     ageRange?: string;
     province?: string;
   }): Promise<Array<CreatorDTO>> {
-    const isAdmin = !isAuthorizedByRole(new Set(["Admin"]));
+    const isAdmin = !!isAuthorizedByRole(new Set(["Admin"]));
     try {
       const creators: Array<Creator> = await Creator.findAll({ raw: true });
 
