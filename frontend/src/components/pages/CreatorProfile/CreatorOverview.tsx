@@ -28,7 +28,7 @@ export default function CreatorOverview({
           borderRadius="sm"
           maxW="100%"
           maxH="349px"
-          src="https://storage.googleapis.com/ccbc-95e66.appspot.com/images/86b092bb-b082-49d9-ac32-790f0a1472b8"
+          src={currentCreator.profilePictureLink}
           objectFit="cover"
         />
         <Grid gridTemplateColumns="120px 1fr">
