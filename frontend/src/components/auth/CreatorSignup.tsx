@@ -27,7 +27,10 @@ const CreatorSignup = (): React.ReactElement => {
     if (!authUtils.validateEmail(email)) {
       setIsEmailInvalid(true);
     } else {
-      const user: AuthenticatedUser = await UsersAPIClient.register(email);
+      const user: AuthenticatedUser = await UsersAPIClient.register(
+        email,
+        "Author",
+      );
 
       if (user) {
         setIsEmailInvalid(false);

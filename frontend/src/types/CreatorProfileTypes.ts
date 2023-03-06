@@ -12,6 +12,12 @@ export type CreatorProfile = {
   geographicReach?: string;
   primaryTimezone?: string;
   availability?: string[];
+  crafts?: string[];
+  genres?: string[];
+  presentations?: string[];
+  website?: string;
+  bio?: string;
+  profilePictureLink?: string;
 } | null;
 
 export type CreatorProfileProps =
@@ -24,7 +30,10 @@ export type CreatorProfileProps =
   | "province"
   | "postalCode"
   | "geographicReach"
-  | "primaryTimezone";
+  | "primaryTimezone"
+  | "website"
+  | "bio"
+  | "profilePictureLink";
 
 export type BibliographyEntry = {
   title: string;

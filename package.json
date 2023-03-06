@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@fontsource/dm-sans": "^4.5.0"
+    "@fontsource/dm-sans": "^4.5.0",
+    "react-quill": "^2.0.0"
   }
 }

@@ -92,9 +92,10 @@ class CreatorService implements ICreatorService {
     ageRange?: string;
     province?: string;
   }): Promise<Array<CreatorDTO>> {
-    const isAdmin = !isAuthorizedByRole(new Set(["Admin"]));
+    const isAdmin = !!isAuthorizedByRole(new Set(["Admin"]));
     try {
       const creators: Array<Creator> = await Creator.findAll({ raw: true });
+
       return creators
         .map((creator) => ({
           id: creator.id,
@@ -143,20 +144,99 @@ class CreatorService implements ICreatorService {
     }
   }
 
+  async deleteCreator(userId: string): Promise<void> {
+    try {
+      // Sequelize doesn't provide a way to atomically find, delete, and return deleted row
+      const deletedUser: Creator | null = await Creator.findByPk(
+        Number(userId),
+      );
+
+      if (!deletedUser) {
+        throw new Error(`userid ${userId} not found.`);
+      }
+
+      const numDestroyed: number = await Creator.destroy({
+        where: { id: userId },
+      });
+
+      if (numDestroyed <= 0) {
+        throw new Error(`userid ${userId} was not deleted in Postgres.`);
+      }
+    } catch (error) {
+      Logger.error(
+        `Failed to delete creator. Reason = ${getErrorMessage(error)}`,
+      );
+      throw error;
+    }
+  }
+
   async approveCreator(userId: string): Promise<void> {
     try {
       await Creator.update(
         {
-          isApproved: true,
+          is_approved: true,
+          isReadyForReview: false,
         },
         {
-          where: { id: userId },
+          where: { id: parseInt(userId, 10) },
         },
       );
     } catch (error) {
       Logger.error(
         `Failed to approve user. Reason = ${getErrorMessage(error)}`,
       );
+      throw error;
+    }
+  }
+
+  async rejectCreator(userId: string): Promise<void> {
+    try {
+      if (!this.emailService) {
+        const errorMessage =
+          "Attempted to call sendCreatorProfileSetupLink but this instance of CreatorService does not have an EmailService instance";
+        Logger.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      const rejectedUser: Creator | null = await Creator.findByPk(
+        Number(userId),
+      );
+
+      if (!rejectedUser) {
+        return;
+      }
+
+      await Creator.update(
+        {
+          is_approved: false,
+          isReadyForReview: false,
+        },
+        {
+          where: { id: parseInt(userId, 10) },
+        },
+      );
+
+      try {
+        const emailBody = `
+        Hello ${rejectedUser.first_name},
+        <br><br>
+        Unfortunately, your creator profile for the Canadian Children's Book Centre creator directory has been declined. We encourage you to check over your profile again and contact us if further assistance is required.
+        <br><br>
+        Thanks,<br>CCBC`;
+
+        this.emailService.sendEmail(
+          rejectedUser.email,
+          "Update on your creator status",
+          emailBody,
+        );
+      } catch (error) {
+        Logger.error(
+          `Failed to generate email rejection link for user with email ${rejectedUser.email}`,
+        );
+        throw error;
+      }
+    } catch (error) {
+      Logger.error(`Failed to reject user. Reason = ${getErrorMessage(error)}`);
       throw error;
     }
   }
