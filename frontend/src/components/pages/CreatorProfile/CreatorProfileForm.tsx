@@ -45,7 +45,7 @@ const CreatorProfileForm = (): React.ReactElement => {
     presentations: [],
     website: "",
     bio: "",
-    profilePicUrl: "",
+    profilePictureLink: "",
   });
 
   const [activeForm, setActiveForm] = useState<number>(0);
@@ -77,7 +77,7 @@ const CreatorProfileForm = (): React.ReactElement => {
           (creatorProfile?.presentations &&
             creatorProfile.presentations.length === 0) ||
           creatorProfile?.bio === "" ||
-          creatorProfile?.profilePicUrl === "")) ||
+          creatorProfile?.profilePictureLink === "")) ||
       (activeForm === 4 &&
         (creatorProfile?.geographicReach === "" ||
           creatorProfile?.primaryTimezone === "" ||

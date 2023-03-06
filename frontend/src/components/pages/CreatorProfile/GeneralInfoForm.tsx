@@ -173,8 +173,8 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
         />
         <AddProfilePictureField
           name="Profile Picture"
-          value={creatorProfile?.profilePicUrl}
-          field="profilePicUrl"
+          value={creatorProfile?.profilePictureLink}
+          field="profilePictureLink"
           error={submitted}
         />
       </div>

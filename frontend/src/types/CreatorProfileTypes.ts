@@ -17,7 +17,7 @@ export type CreatorProfile = {
   presentations?: string[];
   website?: string;
   bio?: string;
-  profilePicUrl?: string;
+  profilePictureLink?: string;
 } | null;
 
 export type CreatorProfileProps =
@@ -33,7 +33,7 @@ export type CreatorProfileProps =
   | "primaryTimezone"
   | "website"
   | "bio"
-  | "profilePicUrl";
+  | "profilePictureLink";
 
 export type BibliographyEntry = {
   title: string;
