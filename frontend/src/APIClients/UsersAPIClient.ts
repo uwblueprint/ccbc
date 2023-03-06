@@ -1,7 +1,10 @@
 import { AuthenticatedUser } from "../types/AuthTypes";
 import baseAPIClient from "./BaseAPIClient";
 
-const register = async (email: string): Promise<AuthenticatedUser> => {
+const register = async (
+  email: string,
+  roleType = "Subscriber",
+): Promise<AuthenticatedUser> => {
   const date = new Date(Date.now());
   date.setDate(date.getDate() - 1);
 
@@ -9,7 +12,7 @@ const register = async (email: string): Promise<AuthenticatedUser> => {
     firstName: "",
     lastName: "",
     email,
-    roleType: "Subscriber",
+    roleType,
     subscriptionExpiresOn: date,
   };
 
