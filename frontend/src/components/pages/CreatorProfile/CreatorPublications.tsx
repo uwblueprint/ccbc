@@ -41,7 +41,7 @@ const CreatorPublications = ({
   };
 
   const bookCoverDisplay = (bookCoverImageURL: string) => {
-    return <Image maxWidth="175px" maxHeight="250px" src={bookCoverImageURL} />;
+    return <Image minWidth="175px" height="auto" src={bookCoverImageURL} />;
   };
 
   return (
@@ -68,7 +68,7 @@ const CreatorPublications = ({
             View All <ExternalLinkIcon mx="2px" />
           </Link>
         </Box>
-        <Flex flex="4" flexDirection="row" bg="blue.500">
+        <Flex flex="4" paddingLeft="50px">
           {bookCovers
             ?.slice(0, 3)
             .map((bookCoverImageURL: string) =>
