@@ -188,11 +188,10 @@ const App = (): React.ReactElement => {
                       path={Routes.CREATOR_SIGNUP_PAGE}
                       component={CreatorSignup}
                     />
-                    <PrivateRoute
+                    <Route
                       exact
                       path={Routes.CREATOR_PROFILE_OVERVIEW}
                       component={CreatorProfile}
-                      requiredRoles={[UserRole.Admin]}
                     />
                     <Route
                       exact

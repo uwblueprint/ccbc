@@ -48,7 +48,7 @@ export default function CreatorOverview({
               <Box py="2px" px="8px" bg="green.100" borderRadius="sm">
                 {currentCreator.craft}
               </Box>
-              <div> {currentCreator.genre?.replace(/[{}]/g, "")}</div>
+              <div> {currentCreator.genre?.join(", ")}</div>
               <div>
                 {currentCreator.ageRange
                   ?.replace(/[^0-9\s]/g, "")
