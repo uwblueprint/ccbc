@@ -8,6 +8,7 @@ import background from "../../../assets/SearchResultsBackground.png";
 import { Creator } from "../../../types/CreatorTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import CreatorOverview from "./CreatorOverview";
+import CreatorPublications from "./CreatorPublications";
 
 interface CreatorProfileParams {
   id: string;
@@ -73,6 +74,7 @@ const CreatorProfile = (): React.ReactElement => {
               </Flex>
 
               <CreatorOverview currentCreator={currentCreator} />
+              <CreatorPublications currentCreator={currentCreator} />
             </Box>
           </Center>
         </Box>

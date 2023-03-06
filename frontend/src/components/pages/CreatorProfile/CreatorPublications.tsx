@@ -4,20 +4,14 @@ import React from "react";
 
 import rectangle from "../../../assets/rectangle.png";
 import * as Routes from "../../../constants/Routes";
-import { Publication } from "../../../types/CreatorTypes";
+import { Creator, Publication } from "../../../types/CreatorTypes";
 
 interface CreatorPublicationsProps {
-  publications?: Publication[];
-  bookCovers?: string[];
-  firstName?: string;
-  lastName?: string;
+  currentCreator: Creator;
 }
 
 const CreatorPublications = ({
-  publications,
-  bookCovers,
-  firstName,
-  lastName,
+  currentCreator,
 }: CreatorPublicationsProps): React.ReactElement => {
   const publicationDisplay = (publication: Publication) => {
     return (
@@ -57,19 +51,19 @@ const CreatorPublications = ({
       </Text>
       <Flex>
         <Box flex="2">
-          {publications
+          {currentCreator.publications
             ?.slice(0, 3)
             .map((publication: Publication) => publicationDisplay(publication))}
           <Link
             ml="16px"
-            href={`${Routes.SEARCH_REVIEWS_PAGE}/?search_query=${firstName}+${lastName}`}
+            href={`${Routes.SEARCH_REVIEWS_PAGE}/?search_query=${currentCreator.firstName}+${currentCreator.lastName}`}
             isExternal
           >
             View All <ExternalLinkIcon mx="2px" />
           </Link>
         </Box>
         <Flex flex="4" paddingLeft="50px">
-          {bookCovers
+          {currentCreator.bookCovers
             ?.slice(0, 3)
             .map((bookCoverImageURL: string) =>
               bookCoverDisplay(bookCoverImageURL),
