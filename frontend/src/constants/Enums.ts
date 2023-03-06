@@ -3,7 +3,7 @@
 export enum UserRole {
   Admin = "Admin",
   Subscriber = "Subscriber",
-  Creator = "Creator",
+  Creator = "Author",
 }
 
 export enum TagType {

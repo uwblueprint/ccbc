@@ -52,13 +52,13 @@ const AddRichTextEditor = ({
     };
     if (content === "<p><br></p>") {
       // This content counts as empty (happens when user inputs something then deletes it)
-      charCount.current = 0
+      charCount.current = 0;
       creatorProfileObj[field] = "";
       setCreatorProfile(creatorProfileObj);
     } else if (editor.getLength() - 1 > charLimit) {
       quillRef?.current?.getEditor().deleteText(charLimit, editor.getLength());
-      charCount.current = charLimit
-     } else {
+      charCount.current = charLimit;
+    } else {
       charCount.current = editor.getLength() - 1;
       creatorProfileObj[field] = content;
       setCreatorProfile(creatorProfileObj);
@@ -74,16 +74,16 @@ const AddRichTextEditor = ({
       <FormLabel mb="1" mt="3">
         {name}
       </FormLabel>
-        <ReactQuill
-            theme="snow"
-            value={value}
-            placeholder={placeholder || `Enter your ${name.toLowerCase()} here`}
-            ref={quillRef}
-            onChange={handleOnChange}
-        />
+      <ReactQuill
+        theme="snow"
+        value={value}
+        placeholder={placeholder || `Enter your ${name.toLowerCase()} here`}
+        ref={quillRef}
+        onChange={handleOnChange}
+      />
 
-      { charLimit !== Number.MAX_VALUE && 
-          <Text
+      {charLimit !== Number.MAX_VALUE && (
+        <Text
           align="right"
           fontFamily="DM Sans"
           fontStyle="normal"
@@ -95,9 +95,9 @@ const AddRichTextEditor = ({
         >
           {`${charCount.current}/${charLimit} characters`}
         </Text>
-      }
-      { charLimit === Number.MAX_VALUE && 
-          <Text
+      )}
+      {charLimit === Number.MAX_VALUE && (
+        <Text
           align="right"
           fontFamily="DM Sans"
           fontStyle="normal"
@@ -109,7 +109,7 @@ const AddRichTextEditor = ({
         >
           {`${charCount.current} characters`}
         </Text>
-      }
+      )}
 
       {error && value === "" && required && (
         <FormErrorMessage>
