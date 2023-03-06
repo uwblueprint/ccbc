@@ -22,6 +22,8 @@ import {
 import React, { useState } from "react";
 import { HiLightBulb } from "react-icons/hi2";
 
+const MDYFormat = "MM/DD/YYYY";
+
 export type ContactInquiryProps = {
   creatorID: number;
 };
@@ -32,12 +34,22 @@ const ContactInquiry = ({
   const [messageLength, setMessageLength] = useState<number>(0);
   const [externalBooking, setExternalBooking] = useState<boolean>(false);
   const [tentativeDate, setTentativeDate] = useState<boolean>(true);
-  const [date1, setDate1] = useState<string>("MM/DD/YYYY");
-  const [date2, setDate2] = useState<string>("MM/DD/YYYY");
+  const [date1, setDate1] = useState<string>(MDYFormat);
+  const [date2, setDate2] = useState<string>(MDYFormat);
   const [formView, setFormView] = useState<boolean>(true);
   const [exitCaution, setExitCaution] = useState<boolean>(false);
 
   const onClose = () => {};
+
+  const ageGroups = [
+    "Pre-k",
+    "Kindergarten",
+    "Grades 1-2",
+    "Grades 3-4",
+    "Grades 5-6",
+    "Grades 7-8",
+    "Grades 9-12",
+  ];
 
   return (
     <Modal isOpen onClose={onClose} isCentered>
@@ -157,13 +169,13 @@ const ContactInquiry = ({
                           },
                         }}
                       >
-                        <option value="prek">Pre-k</option>
-                        <option value="kindergarten">Kindergarten</option>
-                        <option value="grades1-2">Grades 1-2</option>
-                        <option value="grades3-4">Grades 3-4</option>
-                        <option value="grades5-6">Grades 5-6</option>
-                        <option value="grades7-8">Grades 7-8</option>
-                        <option value="grades9-12">Grades 9-12</option>
+                        {ageGroups.map((group) => {
+                          return (
+                            <option key={group} value={group}>
+                              {group}
+                            </option>
+                          );
+                        })}
                       </Select>
                     </Box>
                     <Box width="186px">
@@ -194,10 +206,10 @@ const ContactInquiry = ({
                     </Text>
                     <HStack justifyContent="space-between">
                       <Input
-                        placeholder="MM/DD/YYYY"
+                        placeholder={MDYFormat}
                         sx={{
                           "&": {
-                            color: date1 === "MM/DD/YYYY" && "#CBD5E0",
+                            color: date1 === MDYFormat && "#CBD5E0",
                           },
                         }}
                         type="date"
@@ -212,10 +224,10 @@ const ContactInquiry = ({
                         <>
                           <Text>-</Text>
                           <Input
-                            placeholder="MM/DD/YYYY"
+                            placeholder={MDYFormat}
                             sx={{
                               "&": {
-                                color: date2 === "MM/DD/YYYY" && "#CBD5E0",
+                                color: date2 === MDYFormat && "#CBD5E0",
                               },
                             }}
                             type="date"

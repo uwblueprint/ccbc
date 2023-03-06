@@ -1,12 +1,5 @@
-import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
-import {
-  Button,
-  Center,
-  createIcon,
-  Flex,
-  Spacer,
-  Text,
-} from "@chakra-ui/react";
+import { ArrowBackIcon } from "@chakra-ui/icons";
+import { Button, Center, Flex, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -29,6 +22,8 @@ const SaveIcon = createIcon({
     />
   ),
 });
+import CreatorProfileNav from "./CreatorProfileNav";
+import PublicationsForm from "./Publications Form/PublicationsForm";
 
 const CreatorProfileForm = (): React.ReactElement => {
   const [creatorProfile, setCreatorProfile] = useState<CreatorProfile>({
@@ -40,6 +35,8 @@ const CreatorProfileForm = (): React.ReactElement => {
     city: "",
     province: "",
     postalCode: "",
+    bibliography: [],
+    bookCovers: [],
     geographicReach: "",
     primaryTimezone: "",
     availability: [],
@@ -163,43 +160,32 @@ const CreatorProfileForm = (): React.ReactElement => {
           })}
         </Flex>
         <Flex direction="column" pt="4">
-          <Center borderLeftWidth="thin" borderLeftColor="gray.200" px="16">
-            <CreatorProfileContext.Provider
-              value={{ creatorProfile, setCreatorProfile }}
-            >
-              {activeForm === 0 && <ContactInfoForm submitted={error} />}
-              {activeForm === 1 && <GeneralInfoForm submitted={error} />}
-              {activeForm === 4 && <AvailabilityForm submitted={error} />}
-            </CreatorProfileContext.Provider>
-          </Center>
-          <Flex justify="space-between" my="20" px="16">
-            <Button
-              leftIcon={<ArrowBackIcon />}
-              colorScheme="teal"
-              disabled={activeForm === 0}
-              onClick={() => handleNav(-1)}
-            >
-              Previous
-            </Button>
-            <Flex>
-              <Button
-                colorScheme="teal"
-                variant="outline"
-                leftIcon={<SaveIcon />}
-              >
-                Save and exit
-              </Button>
-              <Spacer w="3" />
-              <Button
-                leftIcon={<ArrowForwardIcon />}
-                colorScheme="teal"
-                disabled={activeForm === 5}
-                onClick={() => handleNav(1)}
-              >
-                Next
-              </Button>
-            </Flex>
-          </Flex>
+          <CreatorProfileContext.Provider
+            value={{ creatorProfile, setCreatorProfile }}
+          >
+            {activeForm !== 3 ? (
+              <>
+                <Center
+                  borderLeftWidth="thin"
+                  borderLeftColor="gray.200"
+                  px="16"
+                >
+                  {activeForm === 0 && <ContactInfoForm submitted={error} />}
+                  {activeForm === 1 && <GeneralInfoForm submitted={error} />}
+                  {activeForm === 4 && <AvailabilityForm submitted={error} />}
+                </Center>
+                <CreatorProfileNav
+                  activeForm={activeForm}
+                  handleNav={handleNav}
+                  saveAndExit={() => {}}
+                />
+              </>
+            ) : (
+              // CreatorProfileNav needs to be within PublicationsForm because the "Save and exit"
+              //   button in this step also needs to verify and set state, unlike in other steps
+              <PublicationsForm handleNav={handleNav} />
+            )}
+          </CreatorProfileContext.Provider>
         </Flex>
       </Flex>
     </>

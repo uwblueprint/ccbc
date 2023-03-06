@@ -26,7 +26,7 @@ export type CreatorDTO = {
   craft: string[];
   website: string;
   profilePictureLink: string;
-  availability: string;
+  availability: string[];
   bookCovers: string[];
   isReadyForReview: boolean;
   // TODO:

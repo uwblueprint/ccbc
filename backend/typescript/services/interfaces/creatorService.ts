@@ -34,6 +34,20 @@ interface ICreatorService {
   approveCreator(userId: string): Promise<void>;
 
   /**
+   * Rejects a user to be a creator on the platform
+   * @param userId The id of the user we want to reject.
+   */
+  rejectCreator(userId: string): Promise<void>;
+
+  /**
+   * Create new creator in databse
+   * @param userId The id of the user we want to delete.
+   * @returns void
+   * @throws Error if deleting a creator fails
+   */
+  deleteCreator(userId: string): Promise<void>;
+
+  /**
    * Create new creator in databse
    * @param userId the userId of the creator
    * @returns New creator

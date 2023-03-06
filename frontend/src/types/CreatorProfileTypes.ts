@@ -7,6 +7,8 @@ export type CreatorProfile = {
   city?: string;
   province?: string;
   postalCode?: string;
+  bibliography?: BibliographyEntry[];
+  bookCovers?: BookCoverFile[];
   geographicReach?: string;
   primaryTimezone?: string;
   availability?: string[];
@@ -32,3 +34,16 @@ export type CreatorProfileProps =
   | "website"
   | "bio"
   | "profilePicUrl";
+
+export type BibliographyEntry = {
+  title: string;
+  publisher: string;
+  publicationYear: number;
+  additionalNotes?: string;
+};
+
+export type BookCoverFile = {
+  url: string;
+  name: string;
+  fileSize: number;
+};
