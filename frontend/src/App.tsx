@@ -14,6 +14,7 @@ import Signup from "./components/auth/Signup";
 import SubscriberSignup from "./components/auth/SubscriberSignup";
 import AdminDashboard from "./components/pages/AdminDashboard/AdminDashboard";
 import CreateReviewPage from "./components/pages/CreateReviewPage";
+import CreatorProfile from "./components/pages/CreatorProfile/CreatorProfile";
 import SearchCreators from "./components/pages/CreatorDirectory/SearchCreators";
 import CreatorProfileForm from "./components/pages/CreatorProfile/CreatorProfileForm";
 import FinishProfileLanding from "./components/pages/CreatorProfile/FinishProfileLanding";
@@ -186,6 +187,11 @@ const App = (): React.ReactElement => {
                       exact
                       path={Routes.CREATOR_SIGNUP_PAGE}
                       component={CreatorSignup}
+                    />
+                    <Route
+                      exact
+                      path={Routes.CREATOR_PROFILE_OVERVIEW}
+                      component={CreatorProfile}
                     />
                     <Route
                       exact
