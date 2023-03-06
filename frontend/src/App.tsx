@@ -14,7 +14,7 @@ import Signup from "./components/auth/Signup";
 import SubscriberSignup from "./components/auth/SubscriberSignup";
 import AdminDashboard from "./components/pages/AdminDashboard/AdminDashboard";
 import CreateReviewPage from "./components/pages/CreateReviewPage";
-import CreatorDirectory from "./components/pages/CreatorDirectory/CreatorDirectory";
+import SearchCreators from "./components/pages/CreatorDirectory/SearchCreators";
 import CreatorProfileForm from "./components/pages/CreatorProfile/CreatorProfileForm";
 import FinishProfileLanding from "./components/pages/CreatorProfile/FinishProfileLanding";
 import Default from "./components/pages/Default";
@@ -112,7 +112,7 @@ const App = (): React.ReactElement => {
                     <PrivateRoute
                       exact
                       path={Routes.CREATOR_DIRECTORY}
-                      component={CreatorDirectory}
+                      component={SearchCreators}
                       requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
                     />
                     <PrivateRoute

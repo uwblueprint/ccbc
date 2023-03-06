@@ -18,7 +18,7 @@ import { Creator } from "../../../types/CreatorTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import CreatorPreview from "./CreatorPreview";
 
-const CreatorDirectory = (): React.ReactElement => {
+const SearchCreators = (): React.ReactElement => {
   const [data, setData] = useState<Creator[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -103,4 +103,4 @@ const CreatorDirectory = (): React.ReactElement => {
   );
 };
 
-export default CreatorDirectory;
+export default SearchCreators;
