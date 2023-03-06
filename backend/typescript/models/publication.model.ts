@@ -7,7 +7,6 @@ import {
   Table,
   ForeignKey,
 } from "sequelize-typescript";
-import { Col } from "sequelize/types/lib/utils";
 
 @Table({ tableName: "publication" })
 export default class Publication extends Model {

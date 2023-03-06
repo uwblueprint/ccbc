@@ -1,14 +1,15 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import { Button, Center, Flex, Text } from "@chakra-ui/react";
+import { Button, Center, createIcon, Flex, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
 import { CREATOR_PROFILE_LANDING } from "../../../constants/Routes";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { CreatorProfile } from "../../../types/CreatorProfileTypes";
 import AvailabilityForm from "./AvailabilityForm";
 import ContactInfoForm from "./ContactInfoForm";
 import GeneralInfoForm from "./GeneralInfoForm";
+import CreatorProfileNav from "./CreatorProfileNav";
+import PublicationsForm from "./Publications Form/PublicationsForm";
 
 const SaveIcon = createIcon({
   displayName: "SaveIcon",
@@ -22,8 +23,6 @@ const SaveIcon = createIcon({
     />
   ),
 });
-import CreatorProfileNav from "./CreatorProfileNav";
-import PublicationsForm from "./Publications Form/PublicationsForm";
 
 const CreatorProfileForm = (): React.ReactElement => {
   const [creatorProfile, setCreatorProfile] = useState<CreatorProfile>({
