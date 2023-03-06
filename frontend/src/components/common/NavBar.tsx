@@ -96,8 +96,13 @@ const NavBar = (): React.ReactElement => {
           {displayNavText && (
             <Link to="/">
               <Text textStyle="h4" ml="60px">
-                Home
+                Magazine Directory
               </Text>
+            </Link>
+          )}
+          {displayNavText && (
+            <Link to="/creator-directory">
+              {isAdmin && <Text textStyle="h4">Creator Directory</Text>}
             </Link>
           )}
           {displayNavText && (

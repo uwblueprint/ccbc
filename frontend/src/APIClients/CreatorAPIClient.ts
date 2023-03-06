@@ -5,10 +5,14 @@ import baseAPIClient from "./BaseAPIClient";
 /**
  * Get all creators
  */
-const getCreators = async (): Promise<Array<Creator>> => {
+const getCreators = async (status?: string): Promise<Array<Creator>> => {
+  const params = new URLSearchParams();
+  if (status) params.append("status", status);
+
   try {
     const { data } = await baseAPIClient.get("/creators", {
       headers: { Authorization: getBearerToken() },
+      params,
     });
     return data;
   } catch (error: unknown) {
