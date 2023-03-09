@@ -5,6 +5,7 @@ import { CloseIcon } from "@chakra-ui/icons";
 import {
   Checkbox,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   IconButton,
   Text,
@@ -39,7 +40,7 @@ const customStyles = {
     paddingLeft: "5%",
     justifyContent: "space-between",
     ":hover": {
-      color: "gray.100",
+      color: "grey.100",
     },
   }),
   multiValueRemove: (provided: any, data: any) => ({
@@ -49,6 +50,9 @@ const customStyles = {
       color: "white",
     },
   }),
+  control: (provided: any, state: any) => ({
+    ...provided,
+  }),
 };
 
 const customSearchStyles = {
@@ -56,7 +60,7 @@ const customSearchStyles = {
     ...provided,
     display: "flex",
     paddingLeft: "5%",
-    justifyContent: "space-between",
+    justifyContent: "space-f",
   }),
   control: (provided: any) => ({
     ...provided,
@@ -99,6 +103,7 @@ interface AddMultiSelectProps {
   allowAddOption?: boolean;
   allowMultiSelectOption?: boolean;
   searchStyle?: boolean;
+  error?: boolean;
 }
 
 const AddMultiSelect = ({
@@ -112,9 +117,10 @@ const AddMultiSelect = ({
   optionsSelected,
   setOptionsSelected,
   allowDeleteOption,
-  allowAddOption,
+  allowAddOption = false,
   allowMultiSelectOption,
   searchStyle,
+  error = false,
 }: AddMultiSelectProps): React.ReactElement => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [optionToDelete, setOptionToDelete] = useState<Option>(EmptyOption);
@@ -226,6 +232,20 @@ const AddMultiSelect = ({
       }
     : { Option: CustomOption };
 
+  customStyles.control = (provided: any, state: any) => ({
+    ...provided,
+    border:
+      error && !state.isFocused && optionsSelected.length === 0
+        ? "2px solid red"
+        : "",
+    ":hover": {
+      border:
+        error && !state.isFocused && optionsSelected.length === 0
+          ? "2px solid red"
+          : "",
+    },
+  });
+
   return (
     <>
       <ConfirmationModal
@@ -235,8 +255,15 @@ const AddMultiSelect = ({
         itemToDelete={optionToDelete}
         deleteType="Tag"
       />
-      <FormControl id={id} isRequired={required} width={maxWidth || "100%"}>
-        <FormLabel>{label}</FormLabel>
+      <FormControl
+        id={id}
+        isRequired={required}
+        isInvalid={error && optionsSelected.length === 0}
+        width={maxWidth || "100%"}
+      >
+        <FormLabel mb="1" mt="3">
+          {label}
+        </FormLabel>
         <Creatable
           isMulti={allowMultiSelectOption}
           isClearable
@@ -251,6 +278,11 @@ const AddMultiSelect = ({
           formatCreateLabel={(optionType: string) => `Add ${optionType}`}
           isSearchable={allowAddOption}
         />
+        {error && optionsSelected.length === 0 && (
+          <FormErrorMessage>
+            {`Please enter your ${label.toLowerCase()}(s)`}
+          </FormErrorMessage>
+        )}
       </FormControl>
     </>
   );

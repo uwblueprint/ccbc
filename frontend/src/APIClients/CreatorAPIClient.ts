@@ -5,10 +5,14 @@ import baseAPIClient from "./BaseAPIClient";
 /**
  * Get all creators
  */
-const getCreators = async (): Promise<Array<Creator>> => {
+const getCreators = async (status?: string): Promise<Array<Creator>> => {
+  const params = new URLSearchParams();
+  if (status) params.append("status", status);
+
   try {
     const { data } = await baseAPIClient.get("/creators", {
       headers: { Authorization: getBearerToken() },
+      params,
     });
     return data;
   } catch (error: unknown) {
@@ -94,6 +98,21 @@ const updateCreator = async (
   }
 };
 
+/**
+ * This function obtains a creator given a unique identifer
+ *
+ * @param id - the unique identifier of the creator to obtain
+ * @returns Promise<ReviewResponse>
+ */
+
+const getCreatorById = async (id: string): Promise<Creator> => {
+  const requestRoute = `/creators/${id}`;
+  const { data } = await baseAPIClient.get(requestRoute, {
+    headers: { Authorization: getBearerToken() }, // this line is copied jwt token
+  });
+  return data;
+};
+
 export default {
   getCreators,
   approveCreator,
@@ -101,4 +120,5 @@ export default {
   deleteCreator,
   createCreator,
   updateCreator,
+  getCreatorById,
 };
