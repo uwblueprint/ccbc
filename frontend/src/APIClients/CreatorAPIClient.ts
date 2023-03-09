@@ -5,9 +5,21 @@ import baseAPIClient from "./BaseAPIClient";
 /**
  * Get all creators
  */
-const getCreators = async (status?: string): Promise<Array<Creator>> => {
+const getCreators = async (
+  status?: string,
+  searchText?: string,
+  genres?: string[],
+  provinces?: string[],
+  crafts?: string[],
+  gradeLevel?: string
+): Promise<Array<Creator>> => {
   const params = new URLSearchParams();
   if (status) params.append("status", status);
+  if (searchText) params.append("searchText", searchText);
+  if (genres) params.append("genres", String(genres));
+  if (provinces) params.append("provinces", String(provinces));
+  if (crafts) params.append("crafts", String(crafts));
+  if (gradeLevel) params.append("ageRange", String(gradeLevel));
 
   try {
     const { data } = await baseAPIClient.get("/creators", {
