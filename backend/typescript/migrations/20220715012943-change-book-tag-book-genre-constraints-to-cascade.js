@@ -70,7 +70,7 @@ module.exports = {
       },
     );
 
-    return Promise.all([removeTagNameTransaction, everythingElseTransaction]);
+    return Promise.all([everythingElseTransaction]);
   },
 
   async down(queryInterface) {
