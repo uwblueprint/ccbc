@@ -1,7 +1,7 @@
 import React from "react";
 
-import { presentationsTest } from "./Carousel";
-import CreatorPresentations from "./CreatorPresentations";
+import { presentationsTest } from "./CreatorProfile/Carousel";
+import CreatorPresentations from "./CreatorProfile/CreatorPresentations";
 
 const Profile = (): React.ReactElement => {
   return (
