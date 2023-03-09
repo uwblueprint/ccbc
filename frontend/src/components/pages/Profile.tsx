@@ -1,12 +1,9 @@
 import React from "react";
 
-import { presentationsTest } from "./CreatorProfile/Carousel";
-import CreatorPresentations from "./CreatorProfile/CreatorPresentations";
-
 const Profile = (): React.ReactElement => {
   return (
-    <div style={{ width: "55%", margin: "0px auto" }}>
-      <CreatorPresentations presentations={presentationsTest} />
+    <div style={{ textAlign: "center", width: "25%", margin: "0px auto" }}>
+      <h1>Profile Page!</h1>
     </div>
   );
 };
