@@ -1,15 +1,5 @@
 module.exports = {
   async up(queryInterface) {
-    const removeTagNameTransaction = queryInterface.sequelize.transaction(
-      async (t) => {
-        await queryInterface.removeConstraint(
-          "book_tag",
-          "book_tag_tag_name_fkey",
-          { transaction: t },
-        );
-      },
-    );
-
     const everythingElseTransaction = queryInterface.sequelize.transaction(
       async (t) => {
         // Remove previous constraints
