@@ -10,7 +10,7 @@ const seedUsers = [
     email: "shrinjaymukherjee@gmail.com",
     createdAt: new Date(1636226732806),
     updatedAt: new Date(1636226732806),
-  }
+  },
 ];
 
 export const up: Seeder = async ({ context: sequelize }) => {
