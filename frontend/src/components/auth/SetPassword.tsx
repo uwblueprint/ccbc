@@ -67,7 +67,9 @@ const SetPassword = ({
         } catch (e: any) {
           if (e.message.includes("weak-password")) {
             setInvalid(true);
-            setErrorMessage("Password is too short");
+            setErrorMessage(
+              "The password is too weak, must be at least 6 characters long.",
+            );
             return;
           }
           throw new Error(e);
