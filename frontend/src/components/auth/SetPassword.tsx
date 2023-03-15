@@ -15,7 +15,7 @@ import React, { useContext, useState } from "react";
 import { Redirect } from "react-router-dom";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
-import { HOME_PAGE } from "../../constants/Routes";
+import { CREATOR_PROFILE_LANDING, HOME_PAGE } from "../../constants/Routes";
 import AuthContext from "../../contexts/AuthContext";
 /* Images */
 import CCBCLogo from "../../images/ccbc-logo.png";
@@ -87,6 +87,9 @@ const SetPassword = ({
     }
   };
 
+  if (authenticatedUser?.roleType === "Author") {
+    return <Redirect to={CREATOR_PROFILE_LANDING} />;
+  }
   if (authenticatedUser) {
     return <Redirect to={HOME_PAGE} />;
   }
