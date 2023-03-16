@@ -20,7 +20,7 @@ export type Creator = {
   craft?: string[];
   website?: string;
   profilePictureLink?: string;
-  availability?: string;
+  availability?: string[];
   bookCovers?: string[];
   isReadyForReview?: boolean;
   presentations?: Presentation[];
