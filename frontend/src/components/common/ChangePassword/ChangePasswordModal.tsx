@@ -25,6 +25,7 @@ import firebaseApp from "../../../utils/Firebase";
 import PasswordInputField from "../PasswordInputField";
 import ChangePasswordErrorModal from "./ChangePasswordErrorModal";
 import ChangePasswordSuccessModal from "./ChangePasswordSuccessModal";
+import PasswordRequirements from "./PasswordRequirements";
 
 /**
  * The model defining the props for the Change Password Modal component
@@ -135,7 +136,8 @@ const ChangePasswordModal = (
                 if ((e as FirebaseError).code === "auth/weak-password") {
                   setNewPasswordFeedback({
                     isInvalid: true,
-                    errorMessage: "Password is too weak.",
+                    errorMessage:
+                      "The password is too weak, must be at least 6 characters long.",
                   });
                 } else {
                   setSubmitted(true);
@@ -202,6 +204,7 @@ const ChangePasswordModal = (
         <ModalHeader>Change password</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
+          <PasswordRequirements />
           <FormControl
             isInvalid={
               oldPasswordFeedback.isInvalid ||
