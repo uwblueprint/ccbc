@@ -81,16 +81,20 @@ class CreatorService implements ICreatorService {
 
   async getCreators({
     status,
-    genre,
+    genres,
     location,
     ageRange,
-    province,
+    provinces,
+    crafts,
+    searchText,
   }: {
     status?: string;
-    genre?: string[];
+    genres?: string[];
     location?: string;
     ageRange?: string;
-    province?: string;
+    provinces?: string[];
+    crafts?: string[];
+    searchText?: string;
   }): Promise<Array<CreatorDTO>> {
     const isAdmin = !!isAuthorizedByRole(new Set(["Admin"]));
     try {
@@ -126,14 +130,21 @@ class CreatorService implements ICreatorService {
           (creator) =>
             (creator.isApproved || isAdmin) &&
             (status ? creator.isApproved === (status === "true") : true) &&
-            (genre
+            (genres
               ? // ez clap
-                creator.genre.filter((i) => new Set(genre).has(i)).length > 0
+                creator.genre.filter((i) => genres.includes(i)).length > 0
               : true) &&
+            (crafts
+              ? creator.craft.filter((i) => crafts.includes(i)).length > 0
+              : true) &&
+            (provinces ? provinces.includes(creator.province) : true) &&
             (location
               ? creator.location.toLowerCase() === location.toLowerCase()
               : true) &&
-            (ageRange ? isOverlap(creator.ageRange, ageRange) : true),
+            (ageRange ? isOverlap(creator.ageRange, ageRange) : true) &&
+            (searchText
+              ? `${creator.firstName} ${creator.lastName}`.includes(searchText)
+              : true),
         );
     } catch (error) {
       Logger.error(

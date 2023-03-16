@@ -16,16 +16,20 @@ interface ICreatorService {
    */
   getCreators({
     status,
-    genre,
+    genres,
     location,
     ageRange,
-    province,
+    provinces,
+    crafts,
+    searchText,
   }: {
     status?: string;
-    genre?: string[];
+    genres?: string[];
     location?: string;
     ageRange?: string;
-    province?: string;
+    provinces?: string[];
+    crafts?: string[];
+    searchText?: string;
   }): Promise<Array<CreatorDTO>>;
   /**
    * Approves a user to be a creator on the platform
