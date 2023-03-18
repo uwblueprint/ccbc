@@ -54,7 +54,7 @@ const seedCreators: CreatorSeed[] = [
     craft: ["TODO"],
     website: "https://example.com",
     profile_picture_link: "TODO", // get from firebase cloud storage,
-    availability: ["TODO"],
+    availability: ["SundayMorning", "TuesdayMorning", "ThursdayMorning", "SaturdayMorning", "MondayAfternoon", "WednesdayAfternoon", "FridayAfternoon" ],
     book_covers: ["TODO1", "TODO2"], // array of URLs
     isReadyForReview: true,
   },

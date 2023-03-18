@@ -1,10 +1,8 @@
 
 
-import { Button, Flex, Grid, GridItem, Image, Text } from "@chakra-ui/react";
-import React, { useContext } from "react";
+import { Flex, Grid, GridItem, Text } from "@chakra-ui/react";
+import React from "react";
 
-import checkMarkActive from "../../../assets/checkmark-active.svg";
-import checkMarkInactive from "../../../assets/checkmark-inactive.svg";
 import { Creator } from "../../../types/CreatorTypes";
 
 interface CreatorPublicationsProps {
@@ -90,6 +88,7 @@ const CreatorAvailability = ({
           return createAvailabilitySlot(slot);
         })}
       </Grid>
+      
     </Flex>
     //
   );
