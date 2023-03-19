@@ -1,10 +1,11 @@
-import { ArrowBackIcon, EmailIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, EmailIcon, SearchIcon } from "@chakra-ui/icons";
 import { Box, Button, Center, Flex, Heading, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 
 import CreatorAPIClient from "../../../APIClients/CreatorAPIClient";
 import background from "../../../assets/SearchResultsBackground.png";
+import { SEARCH_REVIEWS_PAGE } from "../../../constants/Routes";
 import { Creator } from "../../../types/CreatorTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import CreatorOverview from "./CreatorOverview";
@@ -70,6 +71,18 @@ const CreatorProfile = (): React.ReactElement => {
                 </Heading>
                 <Button leftIcon={<EmailIcon />} variant="add" cursor="pointer">
                   Contact
+                </Button>
+                <Button
+                  leftIcon={<SearchIcon />}
+                  variant="add"
+                  cursor="pointer"
+                  onClick={() => {
+                    history.push(
+                      `${SEARCH_REVIEWS_PAGE}/?search_query=${currentCreator.firstName} ${currentCreator.lastName}`,
+                    );
+                  }}
+                >
+                  Related Reviews
                 </Button>
               </Flex>
 
