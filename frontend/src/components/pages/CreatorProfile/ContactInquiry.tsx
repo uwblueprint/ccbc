@@ -3,6 +3,7 @@ import {
   Button,
   CloseButton,
   Divider,
+  Flex,
   HStack,
   Icon,
   Image,
@@ -22,14 +23,20 @@ import {
 import React, { useState } from "react";
 import { HiLightBulb } from "react-icons/hi2";
 
+import { Creator } from "../../../types/CreatorTypes";
+
 const MDYFormat = "MM/DD/YYYY";
 
 export type ContactInquiryProps = {
-  creatorID: number;
+  currentCreator: Creator;
+  isOpen: boolean;
+  onClose: () => void;
 };
 
 const ContactInquiry = ({
-  creatorID: number,
+  currentCreator,
+  isOpen,
+  onClose,
 }: ContactInquiryProps): React.ReactElement => {
   const [messageLength, setMessageLength] = useState<number>(0);
   const [externalBooking, setExternalBooking] = useState<boolean>(false);
@@ -38,8 +45,6 @@ const ContactInquiry = ({
   const [date2, setDate2] = useState<string>(MDYFormat);
   const [formView, setFormView] = useState<boolean>(true);
   const [exitCaution, setExitCaution] = useState<boolean>(false);
-
-  const onClose = () => {};
 
   const ageGroups = [
     "Pre-k",
@@ -52,7 +57,7 @@ const ContactInquiry = ({
   ];
 
   return (
-    <Modal isOpen onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent
         minW="1181px"
@@ -92,10 +97,17 @@ const ContactInquiry = ({
                         py="11px"
                         pl="15px"
                       >
-                        <Text fontSize="18px" fontWeight={500}>
-                          [pfp] James Martin
-                          {/* TODO: add profile pic and replace placeholder name */}
-                        </Text>
+                        <Flex alignItems="center" justifyContent="center">
+                          <Image
+                            src={currentCreator.profilePictureLink}
+                            boxSize="38px"
+                            borderRadius="100px"
+                            mr="10px"
+                          />
+                          <Text fontSize="18px" fontWeight={700}>
+                            {`${currentCreator.firstName} ${currentCreator.lastName}`}
+                          </Text>
+                        </Flex>
                         <Divider
                           orientation="vertical"
                           height="18px"
@@ -103,7 +115,7 @@ const ContactInquiry = ({
                           borderColor="#A0AEC0"
                         />
                         <Text fontSize="16px" fontWeight={400}>
-                          Illustrator{/* TODO: replace placeholder role */}
+                          {currentCreator.craft}
                         </Text>
                       </HStack>
                     </Box>
@@ -375,6 +387,7 @@ const ContactInquiry = ({
                     alignSelf="flex-end"
                     onClick={() => {
                       setFormView(false);
+                      // TODO: Send ContactInquiry form data.
                     }}
                   >
                     Submit
@@ -437,6 +450,7 @@ const ContactInquiry = ({
                 mr="16px"
                 onClick={() => {
                   onClose();
+                  setExitCaution(false);
                 }}
               >
                 Yes, exit

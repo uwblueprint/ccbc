@@ -1,5 +1,13 @@
 import { ArrowBackIcon, EmailIcon } from "@chakra-ui/icons";
-import { Box, Button, Center, Flex, Heading, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 
@@ -7,6 +15,7 @@ import CreatorAPIClient from "../../../APIClients/CreatorAPIClient";
 import background from "../../../assets/SearchResultsBackground.png";
 import { Creator } from "../../../types/CreatorTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
+import ContactInquiry from "./ContactInquiry";
 import CreatorOverview from "./CreatorOverview";
 import CreatorPublications from "./CreatorPublications";
 
@@ -18,6 +27,7 @@ const CreatorProfile = (): React.ReactElement => {
   const [currentCreator, setCurrentCreator] = useState<Creator | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { id } = useParams<CreatorProfileParams>();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const history = useHistory();
 
@@ -68,13 +78,23 @@ const CreatorProfile = (): React.ReactElement => {
                 <Heading as="h2" size="xl">
                   {currentCreator.firstName} {currentCreator.lastName}
                 </Heading>
-                <Button leftIcon={<EmailIcon />} variant="add" cursor="pointer">
+                <Button
+                  leftIcon={<EmailIcon />}
+                  variant="add"
+                  cursor="pointer"
+                  onClick={onOpen}
+                >
                   Contact
                 </Button>
               </Flex>
 
               <CreatorOverview currentCreator={currentCreator} />
               <CreatorPublications currentCreator={currentCreator} />
+              <ContactInquiry
+                currentCreator={currentCreator}
+                isOpen={isOpen}
+                onClose={onClose}
+              />
             </Box>
           </Center>
         </Box>
