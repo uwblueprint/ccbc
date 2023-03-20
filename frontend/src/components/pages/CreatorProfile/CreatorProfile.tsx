@@ -1,4 +1,3 @@
-import { ArrowBackIcon, EmailIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -8,11 +7,13 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { ArrowBackIcon, EmailIcon, SearchIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 
 import CreatorAPIClient from "../../../APIClients/CreatorAPIClient";
 import background from "../../../assets/SearchResultsBackground.png";
+import { SEARCH_REVIEWS_PAGE } from "../../../constants/Routes";
 import { Creator } from "../../../types/CreatorTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import ContactInquiry from "./ContactInquiry";
@@ -85,6 +86,18 @@ const CreatorProfile = (): React.ReactElement => {
                   onClick={onOpen}
                 >
                   Contact
+                </Button>
+                <Button
+                  leftIcon={<SearchIcon />}
+                  variant="add"
+                  cursor="pointer"
+                  onClick={() => {
+                    history.push(
+                      `${SEARCH_REVIEWS_PAGE}/?search_query=${currentCreator.firstName} ${currentCreator.lastName}`,
+                    );
+                  }}
+                >
+                  Related Reviews
                 </Button>
               </Flex>
 
