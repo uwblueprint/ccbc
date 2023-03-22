@@ -23,7 +23,8 @@ import {
 import React, { useState } from "react";
 import { HiLightBulb } from "react-icons/hi2";
 
-import { Creator } from "../../../types/CreatorTypes";
+import creatorAPIClient from "../../../APIClients/CreatorAPIClient";
+import { Creator, CreatorBookingRequest } from "../../../types/CreatorTypes";
 
 const MDYFormat = "MM/DD/YYYY";
 
@@ -38,13 +39,19 @@ const ContactInquiry = ({
   isOpen,
   onClose,
 }: ContactInquiryProps): React.ReactElement => {
-  const [messageLength, setMessageLength] = useState<number>(0);
   const [externalBooking, setExternalBooking] = useState<boolean>(false);
   const [tentativeDate, setTentativeDate] = useState<boolean>(true);
-  const [date1, setDate1] = useState<string>(MDYFormat);
-  const [date2, setDate2] = useState<string>(MDYFormat);
+  const [preferredDate, setPreferredDate] = useState<boolean>(false);
+  const [date1, setDate1] = useState<string>("");
+  const [date2, setDate2] = useState<string>("");
   const [formView, setFormView] = useState<boolean>(true);
   const [exitCaution, setExitCaution] = useState<boolean>(false);
+  const [ageGroup, setAgeGroup] = useState<string>("");
+  const [audienceSize, setAudienceSize] = useState<number>(0);
+  const [subject, setSubject] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [replyEmail, setReplyEmail] = useState<string>("");
+  const [contactName, setContactName] = useState<string>("");
 
   const ageGroups = [
     "Pre-k",
@@ -55,6 +62,32 @@ const ContactInquiry = ({
     "Grades 7-8",
     "Grades 9-12",
   ];
+
+  const submitCreatorBooking = async () => {
+    let date;
+
+    if (preferredDate || !date2) {
+      date = date1;
+    } else {
+      date = `${date1} - ${date2}`;
+    }
+
+    const creatorBookingRequest: CreatorBookingRequest = {
+      creatorId: currentCreator.id,
+      name: contactName,
+      email: replyEmail,
+      date,
+      isTentative: tentativeDate,
+      isOneDay: preferredDate,
+      ageGroup,
+      audienceSize,
+      subject,
+      message,
+    };
+
+    await creatorAPIClient.addCreatorBooking(creatorBookingRequest);
+    setFormView(false);
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -145,6 +178,9 @@ const ContactInquiry = ({
                       placeholder="Your name"
                       _placeholder={{ color: "#CBD5E0" }}
                       width="387px"
+                      onChange={(event) => {
+                        setContactName(event.target.value);
+                      }}
                     />
                   </Box>
                   <Box>
@@ -160,6 +196,9 @@ const ContactInquiry = ({
                       placeholder="Email"
                       _placeholder={{ color: "#CBD5E0" }}
                       width="387px"
+                      onChange={(event) => {
+                        setReplyEmail(event.target.value);
+                      }}
                     />
                   </Box>
                   <HStack>
@@ -179,6 +218,9 @@ const ContactInquiry = ({
                           "&": {
                             color: "#CBD5E0",
                           },
+                        }}
+                        onChange={(event) => {
+                          setAgeGroup(event.target.value);
                         }}
                       >
                         {ageGroups.map((group) => {
@@ -204,6 +246,9 @@ const ContactInquiry = ({
                         placeholder="Select size"
                         _placeholder={{ color: "#CBD5E0" }}
                         width="162px"
+                        onChange={(event) => {
+                          setAudienceSize(event.target.valueAsNumber);
+                        }}
                       />
                     </Box>
                   </HStack>
@@ -255,6 +300,7 @@ const ContactInquiry = ({
                       <RadioGroup
                         onChange={(value) => {
                           setTentativeDate(value === "tentative");
+                          setPreferredDate(value === "preferred");
                         }}
                       >
                         <Stack direction="column" spacing="0px">
@@ -352,6 +398,9 @@ const ContactInquiry = ({
                     <Input
                       placeholder="Subject"
                       _placeholder={{ color: "#CBD5E0" }}
+                      onChange={(event) => {
+                        setSubject(event.target.value);
+                      }}
                     />
                   </Box>
                   <Box>
@@ -360,7 +409,7 @@ const ContactInquiry = ({
                     </Text>
                     <Textarea
                       onChange={(event) => {
-                        setMessageLength(event.target.value.length);
+                        setMessage(event.target.value);
                       }}
                       placeholder="Message"
                       _placeholder={{ color: "#CBD5E0" }}
@@ -375,7 +424,7 @@ const ContactInquiry = ({
                       fontSize="13px"
                       textColor="#A0AEC0"
                     >
-                      {messageLength}/500 characters
+                      {message.length}/500 characters
                     </Text>
                   </Box>
                   <Button
@@ -386,8 +435,7 @@ const ContactInquiry = ({
                     mt="20px"
                     alignSelf="flex-end"
                     onClick={() => {
-                      setFormView(false);
-                      // TODO: Send ContactInquiry form data.
+                      submitCreatorBooking();
                     }}
                   >
                     Submit

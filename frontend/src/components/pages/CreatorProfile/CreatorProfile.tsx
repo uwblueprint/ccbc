@@ -1,3 +1,4 @@
+import { ArrowBackIcon, EmailIcon, SearchIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -7,7 +8,6 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { ArrowBackIcon, EmailIcon, SearchIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 

@@ -1,4 +1,4 @@
-import { Creator } from "../types/CreatorTypes";
+import { Creator, CreatorBookingRequest } from "../types/CreatorTypes";
 import { getBearerToken } from "../utils/AuthUtils";
 import baseAPIClient from "./BaseAPIClient";
 
@@ -110,6 +110,25 @@ const updateCreator = async (
   }
 };
 
+const addCreatorBooking = async (
+  creatorBooking: CreatorBookingRequest,
+): Promise<void> => {
+  try {
+    await baseAPIClient.post(
+      `/booking/${creatorBooking.creatorId}`,
+      creatorBooking,
+      {
+        headers: {
+          Authorization: getBearerToken(),
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  } catch (error) {
+    throw new Error("Add creator booking request failed");
+  }
+};
+
 /**
  * This function obtains a creator given a unique identifer
  *
@@ -132,5 +151,6 @@ export default {
   deleteCreator,
   createCreator,
   updateCreator,
+  addCreatorBooking,
   getCreatorById,
 };
