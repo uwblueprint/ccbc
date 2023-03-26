@@ -9,16 +9,7 @@ export type CreatorProfile = {
   city?: string;
   province?: string;
   postalCode?: string;
-  offeredLocations?: Option[];
-  preferredGradeLevel?: Option[];
-  preferredAudienceSize?: string;
-  inPersonDeliveryFee?: string;
-  virtualDeliveryFee?: string;
-  equipmentRequired?: string;
-  languages?: [string];
-  otherReadingLanguages?: string;
-  booksPurchasedAndAutoGraphed?: string;
-  contentOfReadings?: string;
+  presentations?: Presentation[];
 } | null;
 
 export type CreatorProfileProps =
@@ -29,7 +20,24 @@ export type CreatorProfileProps =
   | "address"
   | "city"
   | "province"
-  | "postalCode"
+  | "postalCode";
+
+export type Presentation = {
+  title: string;
+  offeredLocations: Option[];
+  preferredGradeLevel: Option[];
+  preferredAudienceSize: string;
+  inPersonDeliveryFee: string;
+  virtualDeliveryFee: string;
+  equipmentRequired: string;
+  languages: string[];
+  otherReadingLanguages: string;
+  booksPurchasedAndAutoGraphed: string;
+  contentOfReadings: string;
+};
+
+export type PresentationAttributes =
+  | "title"
   | "offeredLocations"
   | "preferredGradeLevel"
   | "preferredAudienceSize"

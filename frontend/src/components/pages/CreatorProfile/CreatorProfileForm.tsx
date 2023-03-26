@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Option from "react-select/dist/declarations/src/components/Option";
 
 import { CREATOR_PROFILE_LANDING } from "../../../constants/Routes";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
@@ -39,15 +40,34 @@ const CreatorProfileForm = (): React.ReactElement => {
     city: "",
     province: "",
     postalCode: "",
-    offeredLocations: [],
-    preferredGradeLevel: [],
-    preferredAudienceSize: "",
-    inPersonDeliveryFee: "",
-    virtualDeliveryFee: "",
-    equipmentRequired: "",
-    otherReadingLanguages: "",
-    booksPurchasedAndAutoGraphed: "",
-    contentOfReadings: "",
+    presentations: [
+      {
+        title: "Readings",
+        offeredLocations: [],
+        preferredGradeLevel: [],
+        preferredAudienceSize: "",
+        inPersonDeliveryFee: "",
+        virtualDeliveryFee: "",
+        equipmentRequired: "",
+        languages: [],
+        otherReadingLanguages: "",
+        booksPurchasedAndAutoGraphed: "",
+        contentOfReadings: "",
+      },
+      {
+        title: "Workshops",
+        offeredLocations: [],
+        preferredGradeLevel: [],
+        preferredAudienceSize: "",
+        inPersonDeliveryFee: "",
+        virtualDeliveryFee: "",
+        equipmentRequired: "",
+        languages: [],
+        otherReadingLanguages: "",
+        booksPurchasedAndAutoGraphed: "",
+        contentOfReadings: "",
+      },
+    ],
   });
 
   const [activeForm, setActiveForm] = useState<number>(0);

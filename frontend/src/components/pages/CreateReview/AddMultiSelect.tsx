@@ -99,6 +99,7 @@ interface AddMultiSelectProps {
   allowAddOption?: boolean;
   allowMultiSelectOption?: boolean;
   searchStyle?: boolean;
+  p?: string;
 }
 
 const AddMultiSelect = ({
@@ -115,6 +116,7 @@ const AddMultiSelect = ({
   allowAddOption,
   allowMultiSelectOption,
   searchStyle,
+  p
 }: AddMultiSelectProps): React.ReactElement => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [optionToDelete, setOptionToDelete] = useState<Option>(EmptyOption);
@@ -235,7 +237,7 @@ const AddMultiSelect = ({
         itemToDelete={optionToDelete}
         deleteType="Tag"
       />
-      <FormControl id={id} isRequired={required} width={maxWidth || "100%"}>
+      <FormControl id={id} isRequired={required} width={maxWidth || "100%"} p={p}>
         <FormLabel>{label}</FormLabel>
         <Creatable
           isMulti={allowMultiSelectOption}
