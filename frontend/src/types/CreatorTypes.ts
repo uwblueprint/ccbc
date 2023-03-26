@@ -32,7 +32,7 @@ export type Creator = {
 /**
  * Type for Presentation
  */
-export type Presentation = {
+export interface Presentation {
   name?: string;
   locations?: string;
   age_groups?: string;
@@ -45,8 +45,8 @@ export type Presentation = {
   languages?: string;
   is_bringing?: boolean;
   details?: string;
-  photos?: string;
-};
+  photos?: string[];
+}
 
 /**
  * Type for Publication

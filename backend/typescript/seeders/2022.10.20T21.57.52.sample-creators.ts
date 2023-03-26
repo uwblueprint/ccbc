@@ -57,6 +57,63 @@ const seedCreators: CreatorSeed[] = [
     availability: ["TODO"],
     book_covers: ["TODO1", "TODO2"], // array of URLs
     isReadyForReview: true,
+    presentations: [
+      {
+        name: "Readings",
+        details:
+          "Creator’s description here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Neque accumsan, commodo lacus massa vulputate pellentesque urna. Enim sed tellus viverra mattis convallis sit elit aliquam. Magnis a rhoncus amet, morbi laoreet. Dignissim lobortis sapien, et et. Sollicitudin cursus et lacus aenean vel feugiat volutpat enim. Dui vitae eget ullamcorper ornare enim nisi. Sed fermentum curabitur viverra nisl.",
+        age_groups: "Primary",
+        audience_size: 30,
+        locations: "Libraries, Schools",
+        languages: "English, French",
+        special_equipment: "Projector for powerpoints",
+        is_virtual: true,
+        is_bringing: true,
+        in_person_rate: 400,
+        virtual_rate: 300,
+        photos: [
+          "https://images.unsplash.com/photo-1612852098516-55d01c75769a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDR8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60",
+          "https://images.unsplash.com/photo-1627875764093-315831ac12f7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDJ8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60",
+          "https://images.unsplash.com/photo-1571432248690-7fd6980a1ae2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDl8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60",
+        ],
+      },
+      {
+        name: "Workshops",
+        details:
+          "Creator’s description here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Neque accumsan, commodo lacus massa vulputate pellentesque urna. Enim sed tellus viverra mattis convallis sit elit aliquam. Magnis a rhoncus amet, morbi laoreet. Dignissim lobortis sapien, et et. Sollicitudin cursus et lacus aenean vel feugiat volutpat enim. Dui vitae eget ullamcorper ornare enim nisi. Sed fermentum curabitur viverra nisl.",
+        age_groups: "Primary",
+        audience_size: 20,
+        locations: "Libraries, Schools",
+        languages: "English",
+        special_equipment: "Projector for powerpoints",
+        is_virtual: false,
+        is_bringing: true,
+        in_person_rate: 300,
+        photos: [
+          "https://images.unsplash.com/photo-1612852098516-55d01c75769a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDR8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60",
+          "https://images.unsplash.com/photo-1627875764093-315831ac12f7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDJ8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60",
+          "https://images.unsplash.com/photo-1571432248690-7fd6980a1ae2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDl8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60",
+        ],
+      },
+      {
+        name: "[other presentation]",
+        details:
+          "Creator’s description here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Neque accumsan, commodo lacus massa vulputate pellentesque urna. Enim sed tellus viverra mattis convallis sit elit aliquam. Magnis a rhoncus amet, morbi laoreet. Dignissim lobortis sapien, et et. Sollicitudin cursus et lacus aenean vel feugiat volutpat enim. Dui vitae eget ullamcorper ornare enim nisi. Sed fermentum curabitur viverra nisl.",
+        age_groups: "Primary",
+        audience_size: 60,
+        locations: "Schools",
+        languages: "English, French",
+        special_equipment: "Projector for powerpoints",
+        is_virtual: true,
+        is_bringing: true,
+        in_person_rate: 500,
+        virtual_rate: 500,
+        photos: [
+          "https://images.unsplash.com/photo-1612852098516-55d01c75769a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDR8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60",
+          "https://images.unsplash.com/photo-1571432248690-7fd6980a1ae2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDl8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60",
+        ],
+      },
+    ]
   },
   {
     id: 2,
@@ -84,6 +141,7 @@ const seedCreators: CreatorSeed[] = [
     availability: ["TODO"],
     book_covers: ["TODO1", "TODO2"], // array of URLs
     isReadyForReview: true,
+    presentations: []
   },
 ];
 
