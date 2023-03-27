@@ -62,23 +62,44 @@ class CreatorService implements ICreatorService {
       timezone: creator.timezone,
       bio: creator.bio,
       isApproved: creator.is_approved,
+      firstName: creator.first_name,
+      lastName: creator.last_name,
+      email: creator.email,
+      phone: creator.phone,
+      streetAddress: creator.street_address,
+      city: creator.city,
+      province: creator.province,
+      postalCode: creator.postal_code,
+      craft: creator.craft,
+      website: creator.website,
+      profilePictureLink: creator.profile_picture_link,
+      availability: creator.availability,
+      bookCovers: creator.book_covers,
+      isReadyForReview: creator.isReadyForReview,
     };
   }
 
   async getCreators({
     status,
-    genre,
+    genres,
     location,
     ageRange,
+    provinces,
+    crafts,
+    searchText,
   }: {
     status?: string;
-    genre?: string;
+    genres?: string[];
     location?: string;
     ageRange?: string;
+    provinces?: string[];
+    crafts?: string[];
+    searchText?: string;
   }): Promise<Array<CreatorDTO>> {
-    const isAdmin = !isAuthorizedByRole(new Set(["Admin"]));
+    const isAdmin = !!isAuthorizedByRole(new Set(["Admin"]));
     try {
       const creators: Array<Creator> = await Creator.findAll({ raw: true });
+
       return creators
         .map((creator) => ({
           id: creator.id,
@@ -90,18 +111,40 @@ class CreatorService implements ICreatorService {
           timezone: creator.timezone,
           bio: creator.bio,
           isApproved: creator.is_approved,
+          firstName: creator.first_name,
+          lastName: creator.last_name,
+          email: creator.email,
+          phone: creator.phone,
+          streetAddress: creator.street_address,
+          city: creator.city,
+          province: creator.province,
+          postalCode: creator.postal_code,
+          craft: creator.craft,
+          website: creator.website,
+          profilePictureLink: creator.profile_picture_link,
+          availability: creator.availability,
+          bookCovers: creator.book_covers,
+          isReadyForReview: creator.isReadyForReview,
         }))
         .filter(
           (creator) =>
             (creator.isApproved || isAdmin) &&
             (status ? creator.isApproved === (status === "true") : true) &&
-            (genre
-              ? creator.genre.toLowerCase() === genre.toLowerCase()
+            (genres
+              ? // ez clap
+                creator.genre.filter((i) => genres.includes(i)).length > 0
               : true) &&
+            (crafts
+              ? creator.craft.filter((i) => crafts.includes(i)).length > 0
+              : true) &&
+            (provinces ? provinces.includes(creator.province) : true) &&
             (location
               ? creator.location.toLowerCase() === location.toLowerCase()
               : true) &&
-            (ageRange ? isOverlap(creator.ageRange, ageRange) : true),
+            (ageRange ? isOverlap(creator.ageRange, ageRange) : true) &&
+            (searchText
+              ? `${creator.firstName} ${creator.lastName}`.includes(searchText)
+              : true),
         );
     } catch (error) {
       Logger.error(
@@ -112,14 +155,41 @@ class CreatorService implements ICreatorService {
     }
   }
 
+  async deleteCreator(userId: string): Promise<void> {
+    try {
+      // Sequelize doesn't provide a way to atomically find, delete, and return deleted row
+      const deletedUser: Creator | null = await Creator.findByPk(
+        Number(userId),
+      );
+
+      if (!deletedUser) {
+        throw new Error(`userid ${userId} not found.`);
+      }
+
+      const numDestroyed: number = await Creator.destroy({
+        where: { id: userId },
+      });
+
+      if (numDestroyed <= 0) {
+        throw new Error(`userid ${userId} was not deleted in Postgres.`);
+      }
+    } catch (error) {
+      Logger.error(
+        `Failed to delete creator. Reason = ${getErrorMessage(error)}`,
+      );
+      throw error;
+    }
+  }
+
   async approveCreator(userId: string): Promise<void> {
     try {
       await Creator.update(
         {
-          isApproved: true,
+          is_approved: true,
+          isReadyForReview: false,
         },
         {
-          where: { id: userId },
+          where: { id: parseInt(userId, 10) },
         },
       );
     } catch (error) {
@@ -130,21 +200,150 @@ class CreatorService implements ICreatorService {
     }
   }
 
-  async createCreator(creator: CreatorCreateUpdateDTO): Promise<void> {
-    let newCreator: Creator;
+  async rejectCreator(userId: string): Promise<void> {
     try {
-      newCreator = await Creator.create({
-        user_id: creator.userId,
-        location: creator.location,
-        rate: creator.rate,
-        genre: creator.genre,
-        ageRange: creator.ageRange,
-        timezone: creator.timezone,
-        bio: creator.bio,
+      if (!this.emailService) {
+        const errorMessage =
+          "Attempted to call sendCreatorProfileSetupLink but this instance of CreatorService does not have an EmailService instance";
+        Logger.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      const rejectedUser: Creator | null = await Creator.findByPk(
+        Number(userId),
+      );
+
+      if (!rejectedUser) {
+        return;
+      }
+
+      await Creator.update(
+        {
+          is_approved: false,
+          isReadyForReview: false,
+        },
+        {
+          where: { id: parseInt(userId, 10) },
+        },
+      );
+
+      try {
+        const emailBody = `
+        Hello ${rejectedUser.first_name},
+        <br><br>
+        Unfortunately, your creator profile for the Canadian Children's Book Centre creator directory has been declined. We encourage you to check over your profile again and contact us if further assistance is required.
+        <br><br>
+        Thanks,<br>CCBC`;
+
+        this.emailService.sendEmail(
+          rejectedUser.email,
+          "Update on your creator status",
+          emailBody,
+        );
+      } catch (error) {
+        Logger.error(
+          `Failed to generate email rejection link for user with email ${rejectedUser.email}`,
+        );
+        throw error;
+      }
+    } catch (error) {
+      Logger.error(`Failed to reject user. Reason = ${getErrorMessage(error)}`);
+      throw error;
+    }
+  }
+
+  async createCreator(userId: number): Promise<CreatorDTO> {
+    try {
+      // Only allow creation w no data
+      const newCreator = await Creator.create({
+        user_id: userId,
       });
+      return {
+        id: newCreator.id,
+        userId: newCreator.user_id,
+        location: newCreator.location,
+        rate: newCreator.rate,
+        genre: newCreator.genre,
+        ageRange: newCreator.age_range,
+        timezone: newCreator.timezone,
+        bio: newCreator.bio,
+        isApproved: newCreator.is_approved,
+        firstName: newCreator.first_name,
+        lastName: newCreator.last_name,
+        email: newCreator.email,
+        phone: newCreator.phone,
+        streetAddress: newCreator.street_address,
+        city: newCreator.city,
+        province: newCreator.province,
+        postalCode: newCreator.postal_code,
+        craft: newCreator.craft,
+        website: newCreator.website,
+        profilePictureLink: newCreator.profile_picture_link,
+        availability: newCreator.availability,
+        bookCovers: newCreator.book_covers,
+        isReadyForReview: newCreator.isReadyForReview,
+      };
     } catch (error) {
       Logger.error(
         `Failed to create creator. Reason = ${getErrorMessage(error)}`,
+      );
+      throw error;
+    }
+  }
+
+  async updateCreator(
+    id: number,
+    creator: CreatorCreateUpdateDTO,
+  ): Promise<CreatorDTO> {
+    try {
+      const updateResult = await Creator.update(
+        {
+          user_id: creator.userId,
+          location: creator.location,
+          rate: creator.rate,
+          genre: creator.genre,
+          age_range: creator.ageRange,
+          timezone: creator.timezone,
+          bio: creator.bio,
+        },
+        {
+          where: { id },
+          returning: true,
+        },
+      );
+      if (updateResult[0] < 1) {
+        throw new Error(`id ${id} not found.`);
+      }
+      const updatedCreator = updateResult[1][0];
+
+      return {
+        id: updatedCreator.id,
+        userId: updatedCreator.user_id,
+        location: updatedCreator.location,
+        rate: updatedCreator.rate,
+        genre: updatedCreator.genre,
+        ageRange: updatedCreator.age_range,
+        timezone: updatedCreator.timezone,
+        bio: updatedCreator.bio,
+        isApproved: updatedCreator.is_approved,
+        firstName: updatedCreator.first_name,
+        lastName: updatedCreator.last_name,
+        email: updatedCreator.email,
+        phone: updatedCreator.phone,
+        streetAddress: updatedCreator.street_address,
+        city: updatedCreator.city,
+        province: updatedCreator.province,
+        postalCode: updatedCreator.postal_code,
+        craft: updatedCreator.craft,
+        website: updatedCreator.website,
+        profilePictureLink: updatedCreator.profile_picture_link,
+        availability: updatedCreator.availability,
+        bookCovers: updatedCreator.book_covers,
+        isReadyForReview: updatedCreator.isReadyForReview,
+      };
+    } catch (error) {
+      Logger.error(
+        `Failed to update creator. Reason = ${getErrorMessage(error)}`,
       );
       throw error;
     }

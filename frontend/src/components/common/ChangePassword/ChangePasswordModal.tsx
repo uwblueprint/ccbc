@@ -25,6 +25,7 @@ import firebaseApp from "../../../utils/Firebase";
 import PasswordInputField from "../PasswordInputField";
 import ChangePasswordErrorModal from "./ChangePasswordErrorModal";
 import ChangePasswordSuccessModal from "./ChangePasswordSuccessModal";
+import PasswordRequirements from "./PasswordRequirements";
 
 /**
  * The model defining the props for the Change Password Modal component
@@ -57,18 +58,12 @@ const ChangePasswordModal = (
   const [newPassword, setNewPassword] = React.useState<string>("");
   const [confirmPassword, setConfirmPassword] = React.useState<string>("");
 
-  const [
-    oldPasswordFeedback,
-    setOldPasswordFeedback,
-  ] = React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
-  const [
-    newPasswordFeedback,
-    setNewPasswordFeedback,
-  ] = React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
-  const [
-    confirmPasswordFeedback,
-    setConfirmPasswordFeedback,
-  ] = React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
+  const [oldPasswordFeedback, setOldPasswordFeedback] =
+    React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
+  const [newPasswordFeedback, setNewPasswordFeedback] =
+    React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
+  const [confirmPasswordFeedback, setConfirmPasswordFeedback] =
+    React.useState<PasswordFeedback>({ isInvalid: false, errorMessage: "" });
 
   const [feedback, setFeedback] = React.useState<string>("");
   const [submitted, setSubmitted] = React.useState<boolean>(false);
@@ -141,7 +136,8 @@ const ChangePasswordModal = (
                 if ((e as FirebaseError).code === "auth/weak-password") {
                   setNewPasswordFeedback({
                     isInvalid: true,
-                    errorMessage: "Password is too weak.",
+                    errorMessage:
+                      "The password is too weak, must be at least 6 characters long.",
                   });
                 } else {
                   setSubmitted(true);
@@ -208,6 +204,7 @@ const ChangePasswordModal = (
         <ModalHeader>Change password</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
+          <PasswordRequirements />
           <FormControl
             isInvalid={
               oldPasswordFeedback.isInvalid ||

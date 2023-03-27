@@ -10,6 +10,17 @@ export type CreatorProfile = {
   province?: string;
   postalCode?: string;
   presentations?: Presentation[];
+  bibliography?: BibliographyEntry[];
+  bookCovers?: BookCoverFile[];
+  geographicReach?: string;
+  primaryTimezone?: string;
+  availability?: string[];
+  crafts?: string[];
+  genres?: string[];
+  presentationTypes?: string[];
+  website?: string;
+  bio?: string;
+  profilePictureLink?: string;
 } | null;
 
 export type CreatorProfileProps =
@@ -48,3 +59,22 @@ export type PresentationAttributes =
   | "otherReadingLanguages"
   | "booksPurchasedAndAutoGraphed"
   | "contentOfReadings";
+  | "postalCode"
+  | "geographicReach"
+  | "primaryTimezone"
+  | "website"
+  | "bio"
+  | "profilePictureLink";
+
+export type BibliographyEntry = {
+  title: string;
+  publisher: string;
+  publicationYear: number;
+  additionalNotes?: string;
+};
+
+export type BookCoverFile = {
+  url: string;
+  name: string;
+  fileSize: number;
+};

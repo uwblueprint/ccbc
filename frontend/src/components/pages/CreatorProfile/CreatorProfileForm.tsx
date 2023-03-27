@@ -1,21 +1,17 @@
-import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
-import {
-  Button,
-  Center,
-  createIcon,
-  Flex,
-  Spacer,
-  Text,
-} from "@chakra-ui/react";
+import { ArrowBackIcon } from "@chakra-ui/icons";
+import { Button, Center, createIcon, Flex, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Option from "react-select/dist/declarations/src/components/Option";
 
 import { CREATOR_PROFILE_LANDING } from "../../../constants/Routes";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { CreatorProfile } from "../../../types/CreatorProfileTypes";
+import AvailabilityForm from "./AvailabilityForm";
 import ContactInfoForm from "./ContactInfoForm";
 import PresentationForm from "./PresentationForm";
+import CreatorProfileNav from "./CreatorProfileNav";
+import GeneralInfoForm from "./GeneralInfoForm";
+import PublicationsForm from "./Publications Form/PublicationsForm";
 
 const SaveIcon = createIcon({
   displayName: "SaveIcon",
@@ -40,6 +36,13 @@ const CreatorProfileForm = (): React.ReactElement => {
     city: "",
     province: "",
     postalCode: "",
+    bibliography: [],
+    bookCovers: [],
+    geographicReach: "",
+    primaryTimezone: "",
+    availability: [],
+    crafts: [],
+    genres: [],
     presentations: [
       {
         title: "Readings",
@@ -68,6 +71,9 @@ const CreatorProfileForm = (): React.ReactElement => {
         contentOfReadings: "",
       },
     ],
+    website: "",
+    bio: "",
+    profilePictureLink: "",
   });
 
   const [activeForm, setActiveForm] = useState<number>(0);
@@ -83,24 +89,32 @@ const CreatorProfileForm = (): React.ReactElement => {
   ];
 
   const handleNav = (direction: number) => {
-    if (
-      activeForm === 0 &&
-      (creatorProfile?.firstName === "" ||
-        creatorProfile?.lastName === "" ||
-        creatorProfile?.email === "" ||
-        creatorProfile?.phone === "" ||
-        creatorProfile?.address === "" ||
-        creatorProfile?.city === "" ||
-        creatorProfile?.province === "" ||
-        creatorProfile?.postalCode === "")
-    ) {
-      setError(true);
-      return;
-    }
-    setError(false);
-    if (direction === 1) {
+    const fieldsInvalid =
+      (activeForm === 0 &&
+        (creatorProfile?.firstName === "" ||
+          creatorProfile?.lastName === "" ||
+          creatorProfile?.email === "" ||
+          creatorProfile?.phone === "" ||
+          creatorProfile?.address === "" ||
+          creatorProfile?.city === "" ||
+          creatorProfile?.province === "" ||
+          creatorProfile?.postalCode === "")) ||
+      (activeForm === 1 &&
+        ((creatorProfile?.crafts && creatorProfile.crafts.length === 0) ||
+          (creatorProfile?.genres && creatorProfile.genres.length === 0) ||
+          (creatorProfile?.presentations &&
+            creatorProfile.presentations.length === 0) ||
+          creatorProfile?.bio === "" ||
+          creatorProfile?.profilePictureLink === "")) ||
+      (activeForm === 4 &&
+        (creatorProfile?.geographicReach === "" ||
+          creatorProfile?.primaryTimezone === "" ||
+          !creatorProfile?.availability ||
+          creatorProfile?.availability.length === 0));
+    setError(fieldsInvalid ?? false);
+    if (direction === 1 && !fieldsInvalid) {
       setActiveForm(Math.min(activeForm + 1, 5));
-    } else {
+    } else if (direction === -1) {
       setActiveForm(Math.max(activeForm - 1, 0));
     }
   };
@@ -121,7 +135,8 @@ const CreatorProfileForm = (): React.ReactElement => {
       </Link>
       <Flex
         direction={{ sm: "column", base: "row", md: "row", lg: "row" }}
-        justify="center"
+        justify="flex-start"
+        pl="168" // TODO: Should this be hardcoded? might need bootstrap?
       >
         <Flex
           direction="column"
@@ -173,42 +188,33 @@ const CreatorProfileForm = (): React.ReactElement => {
           })}
         </Flex>
         <Flex direction="column" pt="4">
-          <Center borderLeftWidth="thin" borderLeftColor="gray.200" px="16">
-            <CreatorProfileContext.Provider
-              value={{ creatorProfile, setCreatorProfile }}
-            >
-              {activeForm === 0 && <ContactInfoForm submitted={error} />}
-              {activeForm === 1 && <PresentationForm submitted={error} />}
-            </CreatorProfileContext.Provider>
-          </Center>
-          <Flex justify="space-between" my="20" px="16">
-            <Button
-              leftIcon={<ArrowBackIcon />}
-              colorScheme="teal"
-              disabled={activeForm === 0}
-              onClick={() => handleNav(-1)}
-            >
-              Previous
-            </Button>
-            <Flex>
-              <Button
-                colorScheme="teal"
-                variant="outline"
-                leftIcon={<SaveIcon />}
-              >
-                Save and exit
-              </Button>
-              <Spacer w="3" />
-              <Button
-                leftIcon={<ArrowForwardIcon />}
-                colorScheme="teal"
-                disabled={activeForm === 5}
-                onClick={() => handleNav(1)}
-              >
-                Next
-              </Button>
-            </Flex>
-          </Flex>
+          <CreatorProfileContext.Provider
+            value={{ creatorProfile, setCreatorProfile }}
+          >
+            {activeForm !== 3 ? (
+              <>
+                <Center
+                  borderLeftWidth="thin"
+                  borderLeftColor="gray.200"
+                  px="16"
+                >
+                  {activeForm === 0 && <ContactInfoForm submitted={error} />}
+                  {activeForm === 1 && <GeneralInfoForm submitted={error} />}
+                  {activeForm === 3 && <PresentationForm submitted={error} />}
+                  {activeForm === 4 && <AvailabilityForm submitted={error} />}
+                </Center>
+                <CreatorProfileNav
+                  activeForm={activeForm}
+                  handleNav={handleNav}
+                  saveAndExit={() => {}}
+                />
+              </>
+            ) : (
+              // CreatorProfileNav needs to be within PublicationsForm because the "Save and exit"
+              //   button in this step also needs to verify and set state, unlike in other steps
+              <PublicationsForm handleNav={handleNav} />
+            )}
+          </CreatorProfileContext.Provider>
         </Flex>
       </Flex>
     </>

@@ -14,6 +14,8 @@ import Signup from "./components/auth/Signup";
 import SubscriberSignup from "./components/auth/SubscriberSignup";
 import AdminDashboard from "./components/pages/AdminDashboard/AdminDashboard";
 import CreateReviewPage from "./components/pages/CreateReviewPage";
+import CreatorProfile from "./components/pages/CreatorProfile/CreatorProfile";
+import SearchCreators from "./components/pages/CreatorDirectory/SearchCreators";
 import CreatorProfileForm from "./components/pages/CreatorProfile/CreatorProfileForm";
 import FinishProfileLanding from "./components/pages/CreatorProfile/FinishProfileLanding";
 import Default from "./components/pages/Default";
@@ -110,6 +112,12 @@ const App = (): React.ReactElement => {
                     />
                     <PrivateRoute
                       exact
+                      path={Routes.CREATOR_DIRECTORY}
+                      component={SearchCreators}
+                      requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
+                    />
+                    <PrivateRoute
+                      exact
                       path={Routes.CREATOR_PROFILE_LANDING}
                       component={FinishProfileLanding}
                       requiredRoles={[UserRole.Admin, UserRole.Creator]}
@@ -179,6 +187,11 @@ const App = (): React.ReactElement => {
                       exact
                       path={Routes.CREATOR_SIGNUP_PAGE}
                       component={CreatorSignup}
+                    />
+                    <Route
+                      exact
+                      path={Routes.CREATOR_PROFILE_OVERVIEW}
+                      component={CreatorProfile}
                     />
                     <Route
                       exact

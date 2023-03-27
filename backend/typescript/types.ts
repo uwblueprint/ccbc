@@ -10,11 +10,28 @@ export type CreatorDTO = {
   userId: number;
   location: string;
   rate: number;
-  genre: string;
+  genre: string[];
   ageRange: string;
   timezone: string;
   bio: string;
   isApproved: boolean;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  streetAddress: string;
+  city: string;
+  province: string;
+  postalCode: string;
+  craft: string[];
+  website: string;
+  profilePictureLink: string;
+  availability: string[];
+  bookCovers: string[];
+  isReadyForReview: boolean;
+  // TODO:
+  // presentations: Presentation[];
+  // publications: Publication[];
 };
 
 export type CreatorCreateUpdateDTO = Omit<CreatorDTO, "isApproved">;

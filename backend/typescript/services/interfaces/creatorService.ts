@@ -16,14 +16,20 @@ interface ICreatorService {
    */
   getCreators({
     status,
-    genre,
+    genres,
     location,
     ageRange,
+    provinces,
+    crafts,
+    searchText,
   }: {
     status?: string;
-    genre?: string;
+    genres?: string[];
     location?: string;
     ageRange?: string;
+    provinces?: string[];
+    crafts?: string[];
+    searchText?: string;
   }): Promise<Array<CreatorDTO>>;
   /**
    * Approves a user to be a creator on the platform
@@ -32,12 +38,38 @@ interface ICreatorService {
   approveCreator(userId: string): Promise<void>;
 
   /**
+   * Rejects a user to be a creator on the platform
+   * @param userId The id of the user we want to reject.
+   */
+  rejectCreator(userId: string): Promise<void>;
+
+  /**
    * Create new creator in databse
-   * @param CreatorCreateUpdateDTO
+   * @param userId The id of the user we want to delete.
    * @returns void
+   * @throws Error if deleting a creator fails
+   */
+  deleteCreator(userId: string): Promise<void>;
+
+  /**
+   * Create new creator in databse
+   * @param userId the userId of the creator
+   * @returns New creator
    * @throws Error if creating a creator fails
    */
-  createCreator(creator: CreatorCreateUpdateDTO): Promise<void>;
+  createCreator(userId: number): Promise<CreatorDTO>;
+
+  /**
+   * Update creator with the given id, return updated creator
+   * @param id Creator's id
+   * @param creator updated creator object
+   * @returns Updated creator
+   * @throws Error if updating a creator fails
+   */
+  updateCreator(
+    id: number,
+    creator: CreatorCreateUpdateDTO,
+  ): Promise<CreatorDTO>;
 
   /**
    * Sends a link to the creator profile setup page to the creator with the given email

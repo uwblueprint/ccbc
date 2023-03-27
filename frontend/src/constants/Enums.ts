@@ -3,12 +3,14 @@
 export enum UserRole {
   Admin = "Admin",
   Subscriber = "Subscriber",
-  Creator = "Creator",
+  Creator = "Author",
 }
 
 export enum TagType {
   Genre = "Genre",
   Age = "Age",
+  Province = "Province",
+  Craft = "Craft",
 }
 
 export enum Genre {
