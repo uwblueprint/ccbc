@@ -3,11 +3,14 @@
 import { Button, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import React from "react";
 
+import Moment from "moment"
+import MomentTimezone from 'moment-timezone'
+
 import { Creator } from "../../../types/CreatorTypes";
 
 interface CreatorPublicationsProps {
     currentCreator: Creator;
-  }
+}
 
 const slots = [
   "SundayMorning",
@@ -58,8 +61,16 @@ const CreatorAvailability = ({
   };
 
   const timezone = currentCreator?.timezone
-  const d = new Date()
-  let diff = d.getTimezoneOffset()
+  const now = MomentTimezone.tz.guess()
+  const userOffset = Moment().tz(now).utcOffset()
+  const creatorOffset = Moment().tz(timezone ?? "America/Toronto").utcOffset()
+  const diffInHours = (creatorOffset - userOffset)/60
+  
+  const timeDifferenceNegative = diffInHours < 0
+  console.log(diffInHours)
+  console.log(now)
+  console.log(timezone)
+  console.log(timeDifferenceNegative)
 
   return (
     <Flex flex="1" direction="column" justify="start">
@@ -128,7 +139,8 @@ const CreatorAvailability = ({
           textAlign="right"
           colSpan={5}
         >
-          Creator's Timezone: {timezone ?? ""}
+          {timeDifferenceNegative ? `Note: this authors timezone is ${Math.abs(diffInHours)}h behind of you` 
+            : `Note: this authors timezone is ${Math.abs(diffInHours)}h ahead of you`}
         </GridItem>
       </Grid>
      
