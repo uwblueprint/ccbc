@@ -1,6 +1,12 @@
-import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, ArrowForwardIcon, CheckIcon } from "@chakra-ui/icons";
 import { Button, createIcon, Flex, Spacer } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext, useState } from "react";
+
+import CreatorAPIClient from "../../../APIClients/CreatorAPIClient";
+import AuthContext from "../../../contexts/AuthContext";
+import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
+import { Creator } from "../../../types/CreatorTypes";
+import useToasts from "../../Toast";
 
 const SaveIcon = createIcon({
   displayName: "SaveIcon",
@@ -18,14 +24,98 @@ const SaveIcon = createIcon({
 interface CreatorProfileNavProps {
   activeForm: number;
   handleNav: (direction: number) => void;
-  saveAndExit: () => void;
+  saveAndExit?: () => boolean;
+  setModalState?: (a: boolean) => void;
 }
 
 const CreatorProfileNav = ({
   activeForm,
   handleNav,
   saveAndExit,
+  setModalState,
 }: CreatorProfileNavProps): React.ReactElement => {
+  const { creatorProfile } = useContext(CreatorProfileContext);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { authenticatedUser } = useContext(AuthContext);
+  const newToast = useToasts();
+
+  const handleSaveAndExit = async (finalSubmit: boolean) => {
+    setIsLoading(true);
+    if (!saveAndExit || saveAndExit()) {
+      const formattedProfile = {
+        ...creatorProfile,
+        bookCovers: creatorProfile?.bookCovers?.map((cover) => cover.url),
+      };
+      try {
+        const creatorObj = await CreatorAPIClient.getCreatorByUserId(
+          String(authenticatedUser?.id),
+        );
+        try {
+          await CreatorAPIClient.updateCreator(
+            Number(creatorObj.id),
+            !!finalSubmit,
+            formattedProfile as Creator,
+          );
+          if (finalSubmit && setModalState) {
+            setModalState(true);
+          } else {
+            newToast(
+              "success",
+              "Creator Profile successfully saved",
+              "Revisit this page to continue editing your profile.",
+            );
+          }
+          setIsLoading(false);
+        } catch (error) {
+          newToast(
+            "error",
+            "Error saving creator profile",
+            "Something went wrong, please refresh the page and try again.",
+          );
+          setIsLoading(false);
+        }
+      } catch (error) {
+        try {
+          await CreatorAPIClient.createCreator(Number(authenticatedUser?.id));
+          await CreatorAPIClient.updateCreator(
+            Number(authenticatedUser?.id),
+            false,
+            formattedProfile as Creator,
+          );
+          if (finalSubmit && setModalState) {
+            setModalState(true);
+          } else {
+            newToast(
+              "success",
+              "Creator Profile successfully saved",
+              "Revisit this page to continue editing your profile.",
+            );
+          }
+          setIsLoading(false);
+        } catch (err) {
+          newToast(
+            "error",
+            "Error saving creator profile",
+            "Something went wrong, please refresh the page and try again.",
+          );
+          setIsLoading(false);
+        }
+      }
+    } else {
+      setIsLoading(false);
+    }
+  };
+
+  const handleNext = () => {
+    if (activeForm !== 5) {
+      handleNav(1);
+    } else {
+      handleSaveAndExit(true);
+    }
+  };
+
   return (
     <Flex justify="space-between" my="20" px="16">
       <Button
@@ -41,18 +131,19 @@ const CreatorProfileNav = ({
           colorScheme="teal"
           variant="outline"
           leftIcon={<SaveIcon />}
-          onClick={saveAndExit}
+          onClick={() => handleSaveAndExit(false)}
+          isLoading={isLoading}
         >
           Save and exit
         </Button>
         <Spacer w="3" />
         <Button
-          leftIcon={<ArrowForwardIcon />}
+          leftIcon={activeForm === 5 ? <CheckIcon /> : <ArrowForwardIcon />}
           colorScheme="teal"
-          disabled={activeForm === 5}
-          onClick={() => handleNav(1)}
+          onClick={handleNext}
+          isLoading={activeForm === 5 && isLoading}
         >
-          Next
+          {activeForm === 5 ? "Submit" : "Next"}
         </Button>
       </Flex>
     </Flex>

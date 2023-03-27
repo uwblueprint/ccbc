@@ -19,10 +19,10 @@ import { CgClose } from "react-icons/cg";
 import uploadImage from "../../../../APIClients/StorageAPIClient";
 import CreatorProfileContext from "../../../../contexts/CreatorProfileContext";
 import {
-  BibliographyEntry,
   BookCoverFile,
   CreatorProfile,
 } from "../../../../types/CreatorProfileTypes";
+import { Publication } from "../../../../types/CreatorTypes";
 import CreatorProfileNav from "../CreatorProfileNav";
 import BibliographyDragAndDrop from "./BibliographyDragAndDrop";
 import BibliographyInputField from "./BibliographyInputField";
@@ -57,11 +57,11 @@ const PublicationsForm = ({
 
   const [error, setError] = useState<boolean>(false);
 
-  const [formInputs, setFormInputs] = useState<BibliographyEntry>({
+  const [formInputs, setFormInputs] = useState<Publication>({
     title: "",
     publisher: "",
-    publicationYear: new Date().getFullYear(),
-    additionalNotes: "",
+    publication_year: String(new Date().getFullYear()),
+    notes: "",
   });
 
   // Cover upload status
@@ -102,11 +102,11 @@ const PublicationsForm = ({
     setBookCovers([...temp]);
   };
 
-  const setBibliography = (bib: BibliographyEntry[]) => {
+  const setBibliography = (bib: Publication[]) => {
     const creatorProfileObj: CreatorProfile = {
       ...creatorProfile,
     };
-    creatorProfileObj.bibliography = [...bib];
+    creatorProfileObj.publications = [...bib];
     setCreatorProfile(creatorProfileObj);
   };
 
@@ -114,22 +114,22 @@ const PublicationsForm = ({
     if (
       formInputs.title &&
       formInputs.publisher &&
-      formInputs.publicationYear
+      formInputs.publication_year
     ) {
       setBibliography([
-        ...(creatorProfile?.bibliography ?? []),
+        ...(creatorProfile?.publications ?? []),
         {
           title: formInputs.title,
           publisher: formInputs.publisher,
-          publicationYear: formInputs.publicationYear,
-          additionalNotes: formInputs.additionalNotes,
+          publication_year: formInputs.publication_year,
+          notes: formInputs.notes,
         },
       ]);
       setFormInputs({
         title: "",
         publisher: "",
-        publicationYear: new Date().getFullYear(),
-        additionalNotes: "",
+        publication_year: String(new Date().getFullYear()),
+        notes: "",
       });
       setError(false);
       return true;
@@ -287,13 +287,13 @@ const PublicationsForm = ({
                   <BibliographyInputField
                     name="Publication Year"
                     placeholder="Enter the year"
-                    value={formInputs.publicationYear}
+                    value={formInputs.publication_year}
                     error={error}
                     numberInput
                     onChange={(e) => {
                       setFormInputs({
                         ...formInputs,
-                        publicationYear: e.target.value,
+                        publication_year: e.target.value,
                       });
                     }}
                   />
@@ -302,12 +302,12 @@ const PublicationsForm = ({
                 <BibliographyInputField
                   name="Additional Notes"
                   placeholder="Enter any additional details (ex. awards, formats, availability)"
-                  value={formInputs.additionalNotes}
+                  value={formInputs.notes}
                   optional
                   onChange={(e) => {
                     setFormInputs({
                       ...formInputs,
-                      additionalNotes: e.target.value,
+                      notes: e.target.value,
                     });
                   }}
                 />
@@ -336,23 +336,23 @@ const PublicationsForm = ({
             // Check for unsaved changes
             formInputs.title ||
             formInputs.publisher ||
-            formInputs.publicationYear !== new Date().getFullYear() ||
-            formInputs.additionalNotes
+            formInputs.publication_year !== String(new Date().getFullYear()) ||
+            formInputs.notes
           ) {
             addedNew = handleAddBibEntry();
           }
           if (
             // Check for missing covers or info
             creatorProfile?.bookCovers?.length !==
-            (addedNew ? 1 : 0) + (creatorProfile?.bibliography?.length ?? 0)
+            (creatorProfile?.publications?.length ?? 0)
           ) {
             // eslint-disable-next-line no-alert
             alert(
-              "Please ensure the number of book covers uploaded matches the number of bibliography entries.",
+              "Please ensure the number of book covers uploaded matches the number of bibliography entries or try again.",
             );
-          } else {
-            // TODO: exit
+            return false;
           }
+          return true;
         }}
       />
     </>

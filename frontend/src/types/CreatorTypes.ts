@@ -6,6 +6,7 @@ export type Creator = {
   userId: number;
   genre?: string[];
   ageRange?: string;
+  location?: string;
   timezone?: string;
   bio?: string;
   isApproved?: boolean;
@@ -20,7 +21,7 @@ export type Creator = {
   craft?: string[];
   website?: string;
   profilePictureLink?: string;
-  availability?: string;
+  availability?: string[];
   bookCovers?: string[];
   isReadyForReview?: boolean;
   presentations?: Presentation[];

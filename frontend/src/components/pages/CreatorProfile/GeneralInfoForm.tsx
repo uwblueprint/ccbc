@@ -30,11 +30,6 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
     { label: "Non-Fiction", value: "nonFiction" },
     { label: "Graphic Novels", value: "graphicNovels" },
   ]);
-  const [presentationOptions, setPresentationOptions] = useState([
-    { label: "Readings", value: "readings" },
-    { label: "Workshops", value: "workshops" },
-    { label: "Other", value: "other" },
-  ]);
 
   const craftsMap = new Map<string, string>([
     ["illustrator", "Illustrator"],
@@ -48,11 +43,6 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
     ["teenFiction", "Teen Fiction"],
     ["nonFiction", "Non-Fiction"],
     ["graphicNovels", "Graphic Novels"],
-  ]);
-  const presentationsMap = new Map<string, string>([
-    ["readings", "Readings"],
-    ["workshops", "Workshops"],
-    ["other", "Other"],
   ]);
 
   const getOptionsArray = (
@@ -69,40 +59,25 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
     const craftValues = selectedCrafts.map((craft) => craft.value);
     setCreatorProfile({
       ...creatorProfile,
-      crafts: craftValues,
+      craft: craftValues,
     });
   };
   const setGenres = (selectedGenres: Option[]) => {
     const genreValues = selectedGenres.map((genre) => genre.value);
     setCreatorProfile({
       ...creatorProfile,
-      genres: genreValues,
-    });
-  };
-  const setPresentations = (selectedPresentations: Option[]) => {
-    const presentationValues = selectedPresentations.map(
-      (presentation) => presentation.value,
-    );
-    setCreatorProfile({
-      ...creatorProfile,
-      presentations: presentationValues,
+      genre: genreValues,
     });
   };
   const crafts = useMemo(() => {
-    if (creatorProfile?.crafts) {
-      return getOptionsArray(creatorProfile.crafts, craftsMap);
+    if (creatorProfile?.craft) {
+      return getOptionsArray(creatorProfile.craft, craftsMap);
     }
     return [];
   }, [creatorProfile]);
   const genres = useMemo(() => {
-    if (creatorProfile?.genres) {
-      return getOptionsArray(creatorProfile.genres, genresMap);
-    }
-    return [];
-  }, [creatorProfile]);
-  const presentations = useMemo(() => {
-    if (creatorProfile?.presentations) {
-      return getOptionsArray(creatorProfile.presentations, presentationsMap);
+    if (creatorProfile?.genre) {
+      return getOptionsArray(creatorProfile.genre, genresMap);
     }
     return [];
   }, [creatorProfile]);
@@ -139,18 +114,6 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           setOptionsSelected={(options: Option[]) => setGenres(options)}
           allowMultiSelectOption
           allowAddOption
-          error={submitted}
-          required
-        />
-        <AddMultiSelect
-          id="presentations"
-          label="Presentation"
-          placeholder="Select option(s)"
-          options={presentationOptions}
-          setOptions={setPresentationOptions}
-          optionsSelected={presentations}
-          setOptionsSelected={(options: Option[]) => setPresentations(options)}
-          allowMultiSelectOption
           error={submitted}
           required
         />

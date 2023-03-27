@@ -15,17 +15,18 @@ import {
   BibliographyEntry,
   CreatorProfile,
 } from "../../../../types/CreatorProfileTypes";
+import { Publication } from "../../../../types/CreatorTypes";
 
 const BibliographyDragAndDrop = (): React.ReactElement => {
   const { creatorProfile, setCreatorProfile } = useContext(
     CreatorProfileContext,
   );
 
-  const setBibliography = (bib: BibliographyEntry[]) => {
+  const setBibliography = (bib: Publication[]) => {
     const creatorProfileObj: CreatorProfile = {
       ...creatorProfile,
     };
-    creatorProfileObj.bibliography = [...bib];
+    creatorProfileObj.publications = [...bib];
     setCreatorProfile(creatorProfileObj);
   };
 
@@ -33,7 +34,7 @@ const BibliographyDragAndDrop = (): React.ReactElement => {
   const handleOnDragEnd = (res: DropResult) => {
     if (!res.destination) return;
 
-    const items = Array.from(creatorProfile?.bibliography ?? []);
+    const items = Array.from(creatorProfile?.publications ?? []);
     const [reorderedItem] = items.splice(res.source.index, 1);
     items.splice(res.destination.index, 0, reorderedItem);
 
@@ -49,12 +50,9 @@ const BibliographyDragAndDrop = (): React.ReactElement => {
             ref={provided.innerRef}
             style={{ listStyleType: "none" }}
           >
-            {creatorProfile?.bibliography &&
-              creatorProfile.bibliography.map(
-                (
-                  { title, publisher, publicationYear, additionalNotes },
-                  index,
-                ) => {
+            {creatorProfile?.publications &&
+              creatorProfile.publications.map(
+                ({ title, publisher, publication_year, notes }, index) => {
                   return (
                     <Draggable
                       key={`bib-${index}`}
@@ -85,10 +83,10 @@ const BibliographyDragAndDrop = (): React.ReactElement => {
                               />
                               <Text>
                                 <b>
-                                  {title}, {publisher}, {publicationYear}
+                                  {title}, {publisher}, {publication_year}
                                 </b>
                                 <br />
-                                <i>{additionalNotes}</i>
+                                <i>{notes}</i>
                               </Text>
                             </Flex>
                             <Flex alignItems="center">
@@ -101,7 +99,7 @@ const BibliographyDragAndDrop = (): React.ReactElement => {
                                 }
                                 onClick={() => {
                                   const tempBib =
-                                    creatorProfile?.bibliography ?? [];
+                                    creatorProfile?.publications ?? [];
                                   tempBib.splice(index, 1);
                                   setBibliography([...tempBib]);
                                 }}
