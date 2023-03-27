@@ -1,3 +1,5 @@
+import Publication from "./models/publication.model";
+
 export type Role = "Admin" | "Subscriber" | "Author";
 
 export type Token = {
@@ -29,9 +31,9 @@ export type CreatorDTO = {
   availability: string[];
   bookCovers: string[];
   isReadyForReview: boolean;
+  publications: Publication[];
   // TODO:
   // presentations: Presentation[];
-  // publications: Publication[];
 };
 
 export type CreatorCreateUpdateDTO = Omit<CreatorDTO, "isApproved">;

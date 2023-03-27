@@ -43,7 +43,7 @@ class CreatorService implements ICreatorService {
 
       if (isAdmin && creator?.is_approved === false) {
         throw new Error("No creator was found.");
-      }
+    }
 
       if (!creator) {
         throw new Error(`creatorId ${creatorId} not found.`);
@@ -76,6 +76,7 @@ class CreatorService implements ICreatorService {
       availability: creator.availability,
       bookCovers: creator.book_covers,
       isReadyForReview: creator.isReadyForReview,
+      publications: creator.publications,
     };
   }
 
@@ -125,6 +126,7 @@ class CreatorService implements ICreatorService {
           availability: creator.availability,
           bookCovers: creator.book_covers,
           isReadyForReview: creator.isReadyForReview,
+          publications: creator.publications,
         }))
         .filter(
           (creator) =>
@@ -282,6 +284,7 @@ class CreatorService implements ICreatorService {
         availability: newCreator.availability,
         bookCovers: newCreator.book_covers,
         isReadyForReview: newCreator.isReadyForReview,
+        publications: newCreator.publications,
       };
     } catch (error) {
       Logger.error(
@@ -340,6 +343,7 @@ class CreatorService implements ICreatorService {
         availability: updatedCreator.availability,
         bookCovers: updatedCreator.book_covers,
         isReadyForReview: updatedCreator.isReadyForReview,
+        publications: updatedCreator.publications,
       };
     } catch (error) {
       Logger.error(
