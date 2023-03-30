@@ -64,7 +64,7 @@ const deleteCreator = async (id: number): Promise<void> => {
   });
 };
 
-const createCreator = async (id: number): Promise<void> => {
+const createCreator = async (id: number): Promise<Creator> => {
   const newCreator: Creator = {
     userId: id,
   };

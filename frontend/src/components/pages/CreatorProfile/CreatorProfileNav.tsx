@@ -78,9 +78,9 @@ const CreatorProfileNav = ({
         }
       } catch (error) {
         try {
-          await CreatorAPIClient.createCreator(Number(authenticatedUser?.id));
+          const creator = await CreatorAPIClient.createCreator(Number(authenticatedUser?.id));
           await CreatorAPIClient.updateCreator(
-            Number(authenticatedUser?.id),
+            Number(creator.id),
             false,
             formattedProfile as Creator,
           );
