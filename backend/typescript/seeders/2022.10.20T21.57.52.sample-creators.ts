@@ -54,7 +54,15 @@ const seedCreators: CreatorSeed[] = [
     craft: ["TODO"],
     website: "https://example.com",
     profile_picture_link: "TODO", // get from firebase cloud storage,
-    availability: ["SundayMorning", "TuesdayAfternoon", "ThursdayMorning", "SaturdayMorning", "MondayAfternoon", "WednesdayAfternoon", "FridayAfternoon" ],
+    availability: [
+      "SundayMorning",
+      "TuesdayAfternoon",
+      "ThursdayMorning",
+      "SaturdayMorning",
+      "MondayAfternoon",
+      "WednesdayAfternoon",
+      "FridayAfternoon",
+    ],
     book_covers: ["TODO1", "TODO2"], // array of URLs
     isReadyForReview: true,
   },
@@ -81,7 +89,15 @@ const seedCreators: CreatorSeed[] = [
     craft: ["TODO"],
     website: "https://google.com",
     profile_picture_link: "TODO", // get from firebase cloud storage,
-    availability: ["SundayAfternoon", "TuesdayAfternoon", "ThursdayAfternoon", "SaturdayMorning", "MondayAfternoon", "WednesdayAfternoon", "FridayAfternoon" ],
+    availability: [
+      "SundayAfternoon",
+      "TuesdayAfternoon",
+      "ThursdayAfternoon",
+      "SaturdayMorning",
+      "MondayAfternoon",
+      "WednesdayAfternoon",
+      "FridayAfternoon",
+    ],
     book_covers: ["TODO1", "TODO2"], // array of URLs
     isReadyForReview: true,
   },
