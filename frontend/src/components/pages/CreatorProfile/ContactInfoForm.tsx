@@ -56,8 +56,8 @@ const ContactInfoForm = ({
         <CreatorInputField
           name="Street Address"
           placeholder="ex. 121 Alphabet Street"
-          value={creatorProfile?.address}
-          field="address"
+          value={creatorProfile?.streetAddress}
+          field="streetAddress"
           error={submitted}
         />
 

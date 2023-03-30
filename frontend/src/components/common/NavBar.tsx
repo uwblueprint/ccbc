@@ -29,18 +29,6 @@ const NavBar = (): React.ReactElement => {
     onOpen: onChangePasswordModalOpen,
     onClose: onChangePasswordModalClose,
   } = useDisclosure();
-  let userFirstName = "";
-  let userLastName = "";
-  let userEmail = "";
-  if (
-    authenticatedUser &&
-    authenticatedUser.firstName &&
-    authenticatedUser.lastName
-  ) {
-    userFirstName = authenticatedUser?.firstName;
-    userLastName = authenticatedUser?.lastName;
-    userEmail = authenticatedUser.email;
-  }
 
   const onLogOutClick = async () => {
     const success = await authAPIClient.logout(authenticatedUser?.id);
@@ -127,7 +115,7 @@ const NavBar = (): React.ReactElement => {
                 cursor="default"
                 paddingTop="3px"
               >
-                {userFirstName} {userLastName}
+                {authenticatedUser?.firstName} {authenticatedUser?.lastName}
               </Text>
               <Text
                 color="#4A5568"
@@ -136,7 +124,16 @@ const NavBar = (): React.ReactElement => {
                 padding="3px 0px"
                 cursor="default"
               >
-                {userEmail}
+                {authenticatedUser?.email}
+              </Text>
+
+              <Text
+                color="#4A5568"
+                textStyle="body"
+                fontSize="sm"
+                cursor="default"
+              >
+                {authenticatedUser?.roleType}
               </Text>
 
               <MenuDivider />
@@ -151,19 +148,19 @@ const NavBar = (): React.ReactElement => {
                   >
                     Invite new admin
                   </MenuItem>
-                  <MenuItem
-                    textStyle="body"
-                    fontSize="sm"
-                    padding="3px 0px"
-                    cursor="pointer"
-                    onClick={onChangePasswordModalOpen}
-                  >
-                    Change password
-                  </MenuItem>
-
-                  <MenuDivider />
                 </div>
               )}
+              <MenuItem
+                textStyle="body"
+                fontSize="sm"
+                padding="3px 0px"
+                cursor="pointer"
+                onClick={onChangePasswordModalOpen}
+              >
+                Change password
+              </MenuItem>
+
+              <MenuDivider />
 
               <MenuItem
                 textStyle="body"

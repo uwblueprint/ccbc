@@ -100,15 +100,15 @@ const AvailabilityForm = ({
 
       <CreatorInputField
         name="Geographic reach"
-        value={creatorProfile?.geographicReach}
+        value={creatorProfile?.location}
         selectOptions={["Locally", "Regionally", "Provincially", "Nationally"]}
-        field="geographicReach"
+        field="location"
         error={submitted}
         width="33%"
       />
       <CreatorInputField
         name="Primary timezone"
-        value={creatorProfile?.primaryTimezone}
+        value={creatorProfile?.timezone}
         selectOptions={[
           "America/Halifax",
           "America/Winnipeg",
@@ -119,7 +119,7 @@ const AvailabilityForm = ({
           "America/Regina",
           "America/Whitehorse"
         ]}
-        field="primaryTimezone"
+        field="timezone"
         error={submitted}
         width="33%"
         mb="7"

@@ -45,4 +45,5 @@ export enum BookFormats {
   Paperback = "Paperback",
   eBook = "eBook",
   audioBook = "Audio Book",
+  Board = "Board Book",
 }

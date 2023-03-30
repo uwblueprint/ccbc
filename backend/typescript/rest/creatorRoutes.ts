@@ -86,6 +86,20 @@ creatorRouter.get(
   },
 );
 
+creatorRouter.get(
+  "/user/:id",
+  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      const creator = await creatorService.getCreatorById(id, true);
+      res.status(200).json(creator);
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
+
 /* Approve users to be creators by id */
 creatorRouter.put(
   "/approve/:id",
