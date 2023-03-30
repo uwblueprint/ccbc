@@ -16,6 +16,7 @@ import background from "../../../assets/SearchResultsBackground.png";
 import { SEARCH_REVIEWS_PAGE } from "../../../constants/Routes";
 import { Creator } from "../../../types/CreatorTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
+import CreatorAvailability from "./CreatorAvailability";
 import ContactInquiry from "./ContactInquiry";
 import CreatorOverview from "./CreatorOverview";
 import CreatorPublications from "./CreatorPublications";
@@ -102,6 +103,7 @@ const CreatorProfile = (): React.ReactElement => {
               </Flex>
 
               <CreatorOverview currentCreator={currentCreator} />
+              <CreatorAvailability currentCreator={currentCreator} />
               <CreatorPublications currentCreator={currentCreator} />
               <ContactInquiry
                 currentCreator={currentCreator}
