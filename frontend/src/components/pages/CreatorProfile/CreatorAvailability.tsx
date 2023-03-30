@@ -67,10 +67,6 @@ const CreatorAvailability = ({
   const diffInHours = (creatorOffset - userOffset)/60
   
   const timeDifferenceNegative = diffInHours < 0
-  console.log(diffInHours)
-  console.log(now)
-  console.log(timezone)
-  console.log(timeDifferenceNegative)
 
   return (
     <Flex flex="1" direction="column" justify="start">
