@@ -95,15 +95,28 @@ const createCreator = async (id: number): Promise<Creator> => {
 
 const updateCreator = async (
   id: number,
+  isReadyForReview: boolean,
   creator: Creator,
 ): Promise<Creator> => {
+  const newCreator: Creator = {
+    ...creator,
+    isReadyForReview,
+  };
+  const formattedCreator = Object.fromEntries(
+    Object.entries(newCreator).filter(([_, v]) => v != null),
+  );
+
   try {
-    const { data } = await baseAPIClient.put(`/creators/${id}`, creator, {
-      headers: {
-        Authorization: getBearerToken(),
-        "Content-Type": "application/json",
+    const { data } = await baseAPIClient.put(
+      `/creators/${id}`,
+      formattedCreator,
+      {
+        headers: {
+          Authorization: getBearerToken(),
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
     return data;
   } catch (error) {
     throw new Error(`Update creator failed`);
@@ -144,6 +157,21 @@ const getCreatorById = async (id: string): Promise<Creator> => {
   return data;
 };
 
+/**
+ * This function obtains a creator given a unique identifer
+ *
+ * @param id - the unique identifier of the creator to obtain
+ * @returns Promise<ReviewResponse>
+ */
+
+const getCreatorByUserId = async (id: string): Promise<Creator> => {
+  const requestRoute = `/creators/user/${id}`;
+  const { data } = await baseAPIClient.get(requestRoute, {
+    headers: { Authorization: getBearerToken() }, // this line is copied jwt token
+  });
+  return data;
+};
+
 export default {
   getCreators,
   approveCreator,
@@ -153,4 +181,5 @@ export default {
   updateCreator,
   addCreatorBooking,
   getCreatorById,
+  getCreatorByUserId,
 };
