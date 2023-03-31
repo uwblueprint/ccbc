@@ -11,11 +11,12 @@ const creatorBookingRouter: Router = Router();
 const creatorBookingService: ICreatorBookingService =
   new CreatorBookingService();
 
-creatorBookingRouter.post("/", async (req, res) => {
+creatorBookingRouter.post("/:id", async (req, res) => {
   const contentType = req.headers["content-type"];
   try {
+    const { id } = req.params;
     const newBooking = await creatorBookingService.addCreatorBooking({
-      creatorId: req.body.creatorId,
+      creatorId: parseInt(id, 10),
       name: req.body.name,
       email: req.body.email,
       date: req.body.date,
