@@ -72,19 +72,15 @@ creatorRouter.get(
 );
 
 // Get users by ID. Above function does not work properly.
-creatorRouter.get(
-  "/:id",
-  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
-  async (req, res) => {
-    const { id } = req.params;
-    try {
-      const creator = await creatorService.getCreatorById(id);
-      res.status(200).json(creator);
-    } catch (e: unknown) {
-      sendErrorResponse(e, res);
-    }
-  },
-);
+creatorRouter.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const creator = await creatorService.getCreatorById(id);
+    res.status(200).json(creator);
+  } catch (e: unknown) {
+    sendErrorResponse(e, res);
+  }
+});
 
 /* Approve users to be creators by id */
 creatorRouter.put(

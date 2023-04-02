@@ -12,6 +12,9 @@ const baseAPIClient = axios.create({
 baseAPIClient.interceptors.request.use(async (config: AxiosRequestConfig) => {
   const newConfig = { ...config };
 
+  const currentURL = window.location.pathname.split("/");
+  const isCreatorProfilePage = currentURL.includes("creators");
+
   // if access token in header has expired, do a refresh
   const authHeaderParts = config.headers.Authorization?.split(" ");
   if (
@@ -36,7 +39,7 @@ baseAPIClient.interceptors.request.use(async (config: AxiosRequestConfig) => {
         data = res.data;
       } catch (err) {
         localStorage.removeItem(AUTHENTICATED_USER_KEY);
-        window.location.reload();
+        window.location.href = "/login";
       }
 
       const accessToken = data.accessToken || data.access_token;
@@ -47,9 +50,11 @@ baseAPIClient.interceptors.request.use(async (config: AxiosRequestConfig) => {
       );
 
       newConfig.headers.Authorization = `Bearer ${accessToken}`;
+    } else if (decodedToken === null && isCreatorProfilePage) {
+      localStorage.removeItem(AUTHENTICATED_USER_KEY); // do not redirct if url of the form https:localhost:3000/creators/1
     } else if (decodedToken === null) {
       localStorage.removeItem(AUTHENTICATED_USER_KEY);
-      window.location.reload();
+      window.location.href = "/login";
     }
   }
 
