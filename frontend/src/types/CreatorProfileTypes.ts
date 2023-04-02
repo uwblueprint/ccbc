@@ -1,5 +1,5 @@
 import { Option } from "./BookTypes";
-import { Presentation, Publication } from "./CreatorTypes";
+import { Publication } from "./CreatorTypes";
 
 export type CreatorProfile = {
   firstName?: string;
