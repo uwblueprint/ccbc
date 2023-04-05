@@ -469,7 +469,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
             <GridItem>
               <Stack spacing={4} direction="column">
                 <AddProfilePicture
-                  name="bookCover"
+                  name="Book Cover"
                   value={coverImage}
                   field="profilePictureLink"
                   mode="BookModal"
