@@ -1,3 +1,5 @@
+import { Presentation } from "./CreatorTypes";
+
 export type CreatorProfile = {
   firstName?: string;
   lastName?: string;
@@ -14,7 +16,7 @@ export type CreatorProfile = {
   availability?: string[];
   crafts?: string[];
   genres?: string[];
-  presentations?: string[];
+  presentations?: Presentation[];
   website?: string;
   bio?: string;
   profilePictureLink?: string;

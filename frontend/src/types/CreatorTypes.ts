@@ -45,7 +45,7 @@ export type Presentation = {
   languages?: string;
   is_bringing?: boolean;
   details?: string;
-  photos?: string;
+  photos?: string[];
 };
 
 /**
