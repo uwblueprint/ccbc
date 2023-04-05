@@ -476,15 +476,6 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   setInputField={setCoverImage}
                   required
                 />
-                <AddStringInput
-                  id="bookCover"
-                  label="Book Cover"
-                  name="bookCover"
-                  placeholder="Image link here"
-                  required
-                  inputFieldValue={coverImage}
-                  setInputField={setCoverImage}
-                />
                 <AddMultiSelect
                   id="genre"
                   label="Genres"
