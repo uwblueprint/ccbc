@@ -79,6 +79,15 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
       genres: genreValues,
     });
   };
+  const setPresentations = (selectedPresentations: Option[]) => {
+    const presentationValues = selectedPresentations.map(
+      (presentation) => presentation.value,
+    );
+    setCreatorProfile({
+      ...creatorProfile,
+      presentations: presentationValues,
+    });
+  };
   const crafts = useMemo(() => {
     if (creatorProfile?.crafts) {
       return getOptionsArray(creatorProfile.crafts, craftsMap);
@@ -88,6 +97,12 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
   const genres = useMemo(() => {
     if (creatorProfile?.genres) {
       return getOptionsArray(creatorProfile.genres, genresMap);
+    }
+    return [];
+  }, [creatorProfile]);
+  const presentations = useMemo(() => {
+    if (creatorProfile?.presentations) {
+      return getOptionsArray(creatorProfile.presentations, presentationsMap);
     }
     return [];
   }, [creatorProfile]);
@@ -127,7 +142,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           error={submitted}
           required
         />
-        {/* <AddMultiSelect
+        <AddMultiSelect
           id="presentations"
           label="Presentation"
           placeholder="Select option(s)"
@@ -138,7 +153,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           allowMultiSelectOption
           error={submitted}
           required
-        /> */}
+        />
         <CreatorInputField
           name="Website"
           placeholder="Enter a URL to your website"
