@@ -36,6 +36,7 @@ import AddSelect from "./AddSelect";
 import AddSelectList from "./AddSelectList";
 import AddStringInput from "./AddStringInput";
 import AddStringInputList from "./AddStringInputList";
+import AddProfilePicture from "../CreatorProfile/AddProfilePictureField";
 
 /**
  * Interface defining props for BookModal component
@@ -467,6 +468,14 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
             </GridItem>
             <GridItem>
               <Stack spacing={4} direction="column">
+                <AddProfilePicture
+                  name="bookCover"
+                  value={coverImage}
+                  field="profilePictureLink"
+                  mode="BookModal"
+                  setInputField={setCoverImage}
+                  required
+                />
                 <AddStringInput
                   id="bookCover"
                   label="Book Cover"

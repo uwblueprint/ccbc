@@ -139,6 +139,9 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           value={creatorProfile?.profilePictureLink}
           field="profilePictureLink"
           error={submitted}
+          setInputField={()=>{}}
+          mode="CreatorProfile"
+          required
         />
       </div>
     </Flex>

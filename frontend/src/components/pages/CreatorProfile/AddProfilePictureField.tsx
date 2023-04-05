@@ -22,6 +22,8 @@ interface AddProfilePictureProps {
   field: CreatorProfileProps;
   error?: boolean;
   required?: boolean;
+  setInputField: (s: string) => void;
+  mode? : string;
 }
 
 const AddProfilePicture = ({
@@ -30,6 +32,8 @@ const AddProfilePicture = ({
   error = false,
   value,
   required = true,
+  setInputField,
+  mode = ""
 }: AddProfilePictureProps): React.ReactElement => {
   const { creatorProfile, setCreatorProfile } = useContext(
     CreatorProfileContext,
@@ -49,20 +53,30 @@ const AddProfilePicture = ({
   };
 
   const handleOnChange = async () => {
+
     const profilePic = profilePicFile?.current?.files?.[0];
     if (profilePic) {
       const Url = await uploadImage(profilePic);
 
-      const creatorProfileObj: CreatorProfile = {
-        ...creatorProfile,
-      };
-      creatorProfileObj[field] = Url;
-      setFileSize(profilePic.size.toString());
-      setFileName(profilePic.name);
-      localStorage.setItem("fileSize", profilePic.size.toString());
-      localStorage.setItem("fileName", profilePic.name);
-      setCreatorProfile(creatorProfileObj);
+      if (mode === "CreatorProfile") {
+        const creatorProfileObj: CreatorProfile = {
+          ...creatorProfile,
+        };
+        creatorProfileObj[field] = Url;
+        setFileSize(profilePic.size.toString());
+        setFileName(profilePic.name);
+        localStorage.setItem("fileSize", profilePic.size.toString());
+        localStorage.setItem("fileName", profilePic.name);
+        setCreatorProfile(creatorProfileObj);
+      } else if (mode === "BookModal") {
+        setInputField(Url)
+        setFileSize(profilePic.size.toString());
+        setFileName(profilePic.name);
+        localStorage.setItem("fileSize", profilePic.size.toString());
+        localStorage.setItem("fileName", profilePic.name);
+      }
     }
+    
   };
 
   return (
@@ -159,7 +173,5 @@ const AddProfilePicture = ({
     </FormControl>
   );
 };
-
-// TODO: Keep the state once you leave to a different step
 
 export default AddProfilePicture;
