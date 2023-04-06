@@ -44,7 +44,7 @@ const CreatorPresentations = ({
   const WORKSHOPS_NAME = "Workshops";
 
   return (
-    <div>
+    <Flex mb="16px" direction="column">
       <Text textStyle="heading" fontSize="30px" fontWeight="bold">
         Presentations
       </Text>
@@ -77,9 +77,9 @@ const CreatorPresentations = ({
                 mr="36px"
                 ml="20px"
                 borderColor="#4A5568"
-                height="400px"
+                height="auto"
               />
-              <Flex direction="column">
+              <Flex direction="column" width="100%">
                 <Text mb="16px">{pres.details}</Text>
                 <Flex>
                   <Flex direction="column" width="30%" mr="10px">
@@ -133,7 +133,7 @@ const CreatorPresentations = ({
           </Flex>
         );
       })}
-    </div>
+    </Flex>
   );
 };
 
