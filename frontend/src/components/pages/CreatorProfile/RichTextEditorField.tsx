@@ -69,7 +69,7 @@ const AddRichTextEditor = ({
     <FormControl
       isRequired={required}
       isInvalid={required && error && value === ""}
-      width="100%"
+      width="40%"
     >
       <FormLabel mb="1" mt="3">
         {name}
