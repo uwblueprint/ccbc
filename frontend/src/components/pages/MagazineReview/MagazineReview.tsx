@@ -7,12 +7,15 @@ import {
   useBreakpointValue,
   VStack,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 
+import GenreAPIClient from "../../../APIClients/GenreAPIClient";
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import background from "../../../assets/home-bg.png";
+import { Option } from "../../../types/BookTypes";
 import { PaginatedReviewResponse, Review } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
+import FilterBox from "../FilterBox";
 import SearchBox from "../SearchBox";
 import CategoryReviews from "./CategoryReviews";
 import FeaturedReview from "./FeaturedReview";
@@ -24,6 +27,12 @@ const MagazineReview = (): React.ReactElement => {
   const [nineToTwelveReviews, setNineToTwelveReviews] = useState<Review[]>([]);
   const [featuredReviews, setFeaturedReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  // filter state
+  const [genresFilter, setGenresFilter] = useState<string[]>([]);
+  const [allGenres, setAllGenres] = useState<Option[]>([]);
+  const [allAges, setAllAges] = useState<Option[]>([]);
+  const [ageRangeFilter, setAgeRangeFilter] = useState<number[]>([]); // ageRange[0] is min age, ageRange[1] is max age
 
   const displayBlurb = useBreakpointValue(
     {
@@ -65,6 +74,34 @@ const MagazineReview = (): React.ReactElement => {
         );
         setLoading(false);
       });
+
+    // filtering setup
+
+    // fetch filter params from URL
+    const params = new URLSearchParams(window.location.search);
+    const searchQuery = params.has("search_query")
+      ? params.get("search_query")
+      : "";
+    const genres = params.has("genres") ? params.get("genres")?.split(",") : [];
+    const ageFilter = params.has("minAge") || params.has("maxAge");
+    const minAge = params.has("minAge") ? Number(params.get("minAge")) : 0;
+    const maxAge = params.has("maxAge") ? Number(params.get("maxAge")) : 0;
+
+    if (searchQuery) {
+      setSearchText(searchQuery);
+    }
+    if (genres) {
+      setGenresFilter(genres);
+    }
+    if (ageFilter && minAge >= 0 && maxAge >= 0) {
+      setAgeRangeFilter([minAge, maxAge]);
+    }
+
+    GenreAPIClient.getGenreOptions().then(
+      (genreResponse: SetStateAction<Option[]>) => {
+        setAllGenres(genreResponse);
+      },
+    );
   }, []);
 
   return (
@@ -96,6 +133,13 @@ const MagazineReview = (): React.ReactElement => {
               setSearchText={setSearchText}
               searchQuery={searchText}
               homePage
+            />
+            <FilterBox
+              genreOptions={allGenres}
+              ageOptions={allAges}
+              setGenreFilter={() => null}
+              setAgeFilter={() => null}
+              searchStyle
             />
           </Box>
 
