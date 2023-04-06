@@ -7,6 +7,7 @@ import AddMultiSelect from "../CreateReview/AddMultiSelect";
 import AddProfilePictureField from "./AddProfilePictureField";
 import CreatorInputField from "./CreatorInputField";
 import RichTextEditorField from "./RichTextEditorField";
+import AddProfilePictureMode from "../../../types/Types"
 
 interface GeneraInfoProps {
   submitted: boolean;
@@ -97,6 +98,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           options={craftOptions}
           placeholder="Select or type to add your own option"
           setOptions={setCraftOptions}
+          maxWidth="33%"
           optionsSelected={crafts}
           setOptionsSelected={(options: Option[]) => setCrafts(options)}
           allowMultiSelectOption
@@ -110,6 +112,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           options={genreOptions}
           placeholder="Select or type to add your own option"
           setOptions={setGenreOptions}
+          maxWidth="33%"
           optionsSelected={genres}
           setOptionsSelected={(options: Option[]) => setGenres(options)}
           allowMultiSelectOption
@@ -123,13 +126,13 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           value={creatorProfile?.website}
           field="website"
           required={false}
-          width="100%"
+          width="33%"
           error={submitted}
         />
         <RichTextEditorField
           name="Bio"
           placeholder="Here's where you can briefly describe who you are as a creator!"
-          value={creatorProfile?.bio}
+        value={creatorProfile?.bio}
           field="bio"
           error={submitted}
           charLimit={500}
@@ -139,6 +142,9 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           value={creatorProfile?.profilePictureLink}
           field="profilePictureLink"
           error={submitted}
+          setInputField={()=>{}}
+          mode={AddProfilePictureMode.creatorProfile}
+          required
         />
       </div>
     </Flex>

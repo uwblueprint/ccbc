@@ -15,6 +15,7 @@ import CreatorProfileNav from "./CreatorProfileNav";
 import GeneralInfoForm from "./GeneralInfoForm";
 import PresentationForm from "./PresentationForm";
 import PublicationsForm from "./Publications Form/PublicationsForm";
+import ReviewForm from "./ReviewForm";
 import SubmittedCreatorProfileModal from "./SubmittedCreatorProfile";
 
 const CreatorProfileForm = (): React.ReactElement => {
@@ -233,34 +234,43 @@ const CreatorProfileForm = (): React.ReactElement => {
             );
           })}
         </Flex>
-        <Flex direction="column" pt="4">
-          <CreatorProfileContext.Provider
-            value={{ creatorProfile, setCreatorProfile }}
-          >
-            {activeForm !== 3 ? (
-              <>
-                <Center
-                  borderLeftWidth="thin"
-                  borderLeftColor="gray.200"
-                  px="16"
-                >
-                  {activeForm === 0 && <ContactInfoForm submitted={error} />}
-                  {activeForm === 1 && <GeneralInfoForm submitted={error} />}
-                  {activeForm === 2 && <PresentationForm submitted={error} />}
-                  {activeForm === 4 && <AvailabilityForm submitted={error} />}
-                </Center>
-                <CreatorProfileNav
-                  activeForm={activeForm}
-                  handleNav={handleNav}
-                  setModalState={setSubmitted}
-                />
-              </>
-            ) : (
-              // CreatorProfileNav needs to be within PublicationsForm because the "Save and exit"
-              //   button in this step also needs to verify and set state, unlike in other steps
-              <PublicationsForm handleNav={handleNav} />
-            )}
-          </CreatorProfileContext.Provider>
+        <Flex direction="column" pt="4" w="full">
+          {isLoading ? (
+            <Flex justify="center">
+              <LoadingSpinner />
+            </Flex>
+          ) : (
+            <CreatorProfileContext.Provider
+              value={{ creatorProfile, setCreatorProfile }}
+            >
+              {activeForm !== 3 ? (
+                <>
+                  <Center
+                    borderLeftWidth="thin"
+                    borderLeftColor="gray.200"
+                    px="16"
+                  >
+                    {activeForm === 0 && <ContactInfoForm submitted={error} />}
+                    {activeForm === 1 && <GeneralInfoForm submitted={error} />}
+                    {activeForm === 2 && <PresentationForm submitted={error} />}
+                    {activeForm === 4 && <AvailabilityForm submitted={error} />}
+                    {activeForm === 5 && (
+                      <ReviewForm setFormPage={setActiveForm} />
+                    )}
+                  </Center>
+                  <CreatorProfileNav
+                    activeForm={activeForm}
+                    handleNav={handleNav}
+                    setModalState={setSubmitted}
+                  />
+                </>
+              ) : (
+                // CreatorProfileNav needs to be within PublicationsForm because the "Save and exit"
+                //   button in this step also needs to verify and set state, unlike in other steps
+                <PublicationsForm handleNav={handleNav} />
+              )}
+            </CreatorProfileContext.Provider>
+          )}
         </Flex>
       </Flex>
     </>

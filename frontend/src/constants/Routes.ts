@@ -16,6 +16,8 @@ export const CREATOR_PROFILE_LANDING = "/finish-profile";
 
 export const CREATOR_PROFILE_SETUP = "/create-creator-profile";
 
+export const CREATOR_PROFILE_OVERVIEW = "/creators/:id";
+
 export const EDIT_TEAM_PAGE = "/edit-team";
 
 export const DISPLAY_ENTITY_PAGE = "/entity";
@@ -50,4 +52,3 @@ export const SEARCH_REVIEWS_PAGE = "/magazine/search_results";
 export const PREVIEW_REVIEW_TEST = "/test/preview-review";
 export const SEARCH_BOX = "/test/search-box";
 export const FILTER_BOX = "/test/filter";
-export const CREATOR_PROFILE_OVERVIEW = "/creators/:id";
