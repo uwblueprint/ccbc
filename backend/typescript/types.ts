@@ -1,5 +1,3 @@
-import Publication from "./models/publication.model";
-
 export type Role = "Admin" | "Subscriber" | "Author";
 
 export type Token = {
