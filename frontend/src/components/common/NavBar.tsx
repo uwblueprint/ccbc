@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { HiUser } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import logo from "../../assets/ccbc.png";
@@ -23,7 +23,10 @@ import InviteAdminModal from "./InviteAdminModal";
 
 const NavBar = (): React.ReactElement => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
+  const history = useHistory();
+
   const isAdmin = authenticatedUser?.roleType === UserRole.Admin;
+  const isCreator = authenticatedUser?.roleType === UserRole.Creator;
   const {
     isOpen: isChangePasswordModalOpen,
     onOpen: onChangePasswordModalOpen,
@@ -147,6 +150,23 @@ const NavBar = (): React.ReactElement => {
                     onClick={onInviteAdminOpen}
                   >
                     Invite new admin
+                  </MenuItem>
+                </div>
+              )}
+              {isCreator && (
+                <div className="Section 2">
+                  <MenuItem
+                    textStyle="body"
+                    fontSize="sm"
+                    padding="3px 0px"
+                    cursor="pointer"
+                    onClick={() =>
+                      history.push("/create-creator-profile", {
+                        currentPage: 5,
+                      })
+                    }
+                  >
+                    Edit creator profile
                   </MenuItem>
                 </div>
               )}
