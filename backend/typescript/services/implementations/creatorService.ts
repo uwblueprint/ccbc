@@ -76,6 +76,7 @@ class CreatorService implements ICreatorService {
       availability: creator.availability,
       bookCovers: creator.book_covers,
       isReadyForReview: creator.isReadyForReview,
+      presentations: creator.presentations
     };
   }
 

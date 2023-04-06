@@ -82,9 +82,9 @@ export default class Creator extends Model {
   @Column
   isReadyForReview!: boolean;
 
-  @Column({ type: DataType.ARRAY(DataType.JSON) })
+  @Column
   presentations!: Presentation[];
 
-  @Column({ type: DataType.ARRAY(DataType.JSON) })
+  @Column
   publications!: Publication[];
 }

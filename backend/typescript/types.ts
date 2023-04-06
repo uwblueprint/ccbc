@@ -5,6 +5,22 @@ export type Token = {
   refreshToken: string;
 };
 
+export interface Presentation {
+  name?: string;
+  locations?: string;
+  age_groups?: string;
+  audience_size?: string;
+  is_in_person?: boolean;
+  in_person_rate?: number;
+  is_virtual?: boolean;
+  virtual_rate?: number;
+  special_equipment?: string;
+  languages?: string;
+  is_bringing?: boolean;
+  details?: string;
+  photos?: string[];
+}
+
 export type CreatorDTO = {
   id: number;
   userId: number;
@@ -29,8 +45,9 @@ export type CreatorDTO = {
   availability: string[];
   bookCovers: string[];
   isReadyForReview: boolean;
+  presentations: Presentation[];
+
   // TODO:
-  // presentations: Presentation[];
   // publications: Publication[];
 };
 
