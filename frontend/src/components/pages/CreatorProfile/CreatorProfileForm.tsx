@@ -1,41 +1,52 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import { Button, Center, createIcon, Flex, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Button, Center, Flex, Text } from "@chakra-ui/react";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
+import CreatorAPIClient from "../../../APIClients/CreatorAPIClient";
 import { CREATOR_PROFILE_LANDING } from "../../../constants/Routes";
+import AuthContext from "../../../contexts/AuthContext";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
-import { CreatorProfile } from "../../../types/CreatorProfileTypes";
+import {
+  CreatorProfile,
+  CreatorProfileFormProps,
+} from "../../../types/CreatorProfileTypes";
+import LoadingSpinner from "../../common/LoadingSpinner";
 import AvailabilityForm from "./AvailabilityForm";
 import ContactInfoForm from "./ContactInfoForm";
 import CreatorProfileNav from "./CreatorProfileNav";
 import GeneralInfoForm from "./GeneralInfoForm";
 import PublicationsForm from "./Publications Form/PublicationsForm";
+import ReviewForm from "./ReviewForm";
+import SubmittedCreatorProfileModal from "./SubmittedCreatorProfile";
 
 const CreatorProfileForm = (): React.ReactElement => {
+  const { state } = useLocation<CreatorProfileFormProps>();
   const [creatorProfile, setCreatorProfile] = useState<CreatorProfile>({
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
-    address: "",
+    streetAddress: "",
     city: "",
     province: "",
     postalCode: "",
-    bibliography: [],
+    publications: [],
     bookCovers: [],
-    geographicReach: "",
-    primaryTimezone: "",
+    location: "",
+    timezone: "",
     availability: [],
-    crafts: [],
-    genres: [],
+    craft: [],
+    genre: [],
     presentations: [],
     website: "",
     bio: "",
     profilePictureLink: "",
   });
 
-  const [activeForm, setActiveForm] = useState<number>(0);
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [activeForm, setActiveForm] = useState<number>(state?.currentPage || 0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
   const forms = [
@@ -47,6 +58,51 @@ const CreatorProfileForm = (): React.ReactElement => {
     "Review",
   ];
 
+  const { authenticatedUser } = useContext(AuthContext);
+  const history = useHistory();
+
+  useEffect(() => {
+    setIsLoading(true);
+    CreatorAPIClient.getCreatorByUserId(String(authenticatedUser?.id))
+      .then((res) => {
+        if (res) {
+          setCreatorProfile({
+            firstName: res.firstName || "",
+            lastName: res.lastName || "",
+            email: res.email || "",
+            phone: res.phone || "",
+            streetAddress: res.streetAddress || "",
+            city: res.city || "",
+            province: res.province || "",
+            postalCode: res.postalCode || "",
+            publications: res.publications || [],
+            bookCovers:
+              (res.bookCovers || []).map((cover, index) => {
+                return {
+                  url: cover,
+                  name: `Image ${index + 1}`,
+                  fileSize: 100,
+                };
+              }) || [],
+            location: res.location || "",
+            timezone: res.timezone || "",
+            availability: res.availability || [],
+            craft: res.craft || [],
+            genre: res.genre || [],
+            presentations: res.presentations || [],
+            website: res.website || "",
+            bio: res.bio || "",
+            profilePictureLink: res.profilePictureLink || "",
+          });
+          setIsLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
+  }, [authenticatedUser?.id]);
+
   const handleNav = (direction: number) => {
     const fieldsInvalid =
       (activeForm === 0 &&
@@ -54,20 +110,18 @@ const CreatorProfileForm = (): React.ReactElement => {
           creatorProfile?.lastName === "" ||
           creatorProfile?.email === "" ||
           creatorProfile?.phone === "" ||
-          creatorProfile?.address === "" ||
+          creatorProfile?.streetAddress === "" ||
           creatorProfile?.city === "" ||
           creatorProfile?.province === "" ||
           creatorProfile?.postalCode === "")) ||
       (activeForm === 1 &&
-        ((creatorProfile?.crafts && creatorProfile.crafts.length === 0) ||
-          (creatorProfile?.genres && creatorProfile.genres.length === 0) ||
-          (creatorProfile?.presentations &&
-            creatorProfile.presentations.length === 0) ||
+        ((creatorProfile?.craft && creatorProfile.craft.length === 0) ||
+          (creatorProfile?.genre && creatorProfile.genre.length === 0) ||
           creatorProfile?.bio === "" ||
           creatorProfile?.profilePictureLink === "")) ||
       (activeForm === 4 &&
-        (creatorProfile?.geographicReach === "" ||
-          creatorProfile?.primaryTimezone === "" ||
+        (creatorProfile?.location === "" ||
+          creatorProfile?.timezone === "" ||
           !creatorProfile?.availability ||
           creatorProfile?.availability.length === 0));
     setError(fieldsInvalid ?? false);
@@ -76,6 +130,11 @@ const CreatorProfileForm = (): React.ReactElement => {
     } else if (direction === -1) {
       setActiveForm(Math.max(activeForm - 1, 0));
     }
+  };
+
+  const handleCloseSubmissionModal = () => {
+    setSubmitted(false);
+    history.push("/creator-directory");
   };
 
   return (
@@ -92,6 +151,10 @@ const CreatorProfileForm = (): React.ReactElement => {
           Back
         </Button>
       </Link>
+      <SubmittedCreatorProfileModal
+        isOpen={submitted}
+        onClose={handleCloseSubmissionModal}
+      />
       <Flex
         direction={{ sm: "column", base: "row", md: "row", lg: "row" }}
         justify="flex-start"
@@ -146,33 +209,42 @@ const CreatorProfileForm = (): React.ReactElement => {
             );
           })}
         </Flex>
-        <Flex direction="column" pt="4">
-          <CreatorProfileContext.Provider
-            value={{ creatorProfile, setCreatorProfile }}
-          >
-            {activeForm !== 3 ? (
-              <>
-                <Center
-                  borderLeftWidth="thin"
-                  borderLeftColor="gray.200"
-                  px="16"
-                >
-                  {activeForm === 0 && <ContactInfoForm submitted={error} />}
-                  {activeForm === 1 && <GeneralInfoForm submitted={error} />}
-                  {activeForm === 4 && <AvailabilityForm submitted={error} />}
-                </Center>
-                <CreatorProfileNav
-                  activeForm={activeForm}
-                  handleNav={handleNav}
-                  saveAndExit={() => {}}
-                />
-              </>
-            ) : (
-              // CreatorProfileNav needs to be within PublicationsForm because the "Save and exit"
-              //   button in this step also needs to verify and set state, unlike in other steps
-              <PublicationsForm handleNav={handleNav} />
-            )}
-          </CreatorProfileContext.Provider>
+        <Flex direction="column" pt="4" w="full">
+          {isLoading ? (
+            <Flex justify="center">
+              <LoadingSpinner />
+            </Flex>
+          ) : (
+            <CreatorProfileContext.Provider
+              value={{ creatorProfile, setCreatorProfile }}
+            >
+              {activeForm !== 3 ? (
+                <>
+                  <Center
+                    borderLeftWidth="thin"
+                    borderLeftColor="gray.200"
+                    px="16"
+                  >
+                    {activeForm === 0 && <ContactInfoForm submitted={error} />}
+                    {activeForm === 1 && <GeneralInfoForm submitted={error} />}
+                    {activeForm === 4 && <AvailabilityForm submitted={error} />}
+                    {activeForm === 5 && (
+                      <ReviewForm setFormPage={setActiveForm} />
+                    )}
+                  </Center>
+                  <CreatorProfileNav
+                    activeForm={activeForm}
+                    handleNav={handleNav}
+                    setModalState={setSubmitted}
+                  />
+                </>
+              ) : (
+                // CreatorProfileNav needs to be within PublicationsForm because the "Save and exit"
+                //   button in this step also needs to verify and set state, unlike in other steps
+                <PublicationsForm handleNav={handleNav} />
+              )}
+            </CreatorProfileContext.Provider>
+          )}
         </Flex>
       </Flex>
     </>

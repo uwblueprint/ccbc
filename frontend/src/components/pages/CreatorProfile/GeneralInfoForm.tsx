@@ -7,6 +7,7 @@ import AddMultiSelect from "../CreateReview/AddMultiSelect";
 import AddProfilePictureField from "./AddProfilePictureField";
 import CreatorInputField from "./CreatorInputField";
 import RichTextEditorField from "./RichTextEditorField";
+import AddProfilePictureMode from "../../../types/Types"
 
 interface GeneraInfoProps {
   submitted: boolean;
@@ -30,11 +31,6 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
     { label: "Non-Fiction", value: "nonFiction" },
     { label: "Graphic Novels", value: "graphicNovels" },
   ]);
-  const [presentationOptions, setPresentationOptions] = useState([
-    { label: "Readings", value: "readings" },
-    { label: "Workshops", value: "workshops" },
-    { label: "Other", value: "other" },
-  ]);
 
   const craftsMap = new Map<string, string>([
     ["illustrator", "Illustrator"],
@@ -48,11 +44,6 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
     ["teenFiction", "Teen Fiction"],
     ["nonFiction", "Non-Fiction"],
     ["graphicNovels", "Graphic Novels"],
-  ]);
-  const presentationsMap = new Map<string, string>([
-    ["readings", "Readings"],
-    ["workshops", "Workshops"],
-    ["other", "Other"],
   ]);
 
   const getOptionsArray = (
@@ -69,25 +60,25 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
     const craftValues = selectedCrafts.map((craft) => craft.value);
     setCreatorProfile({
       ...creatorProfile,
-      crafts: craftValues,
+      craft: craftValues,
     });
   };
   const setGenres = (selectedGenres: Option[]) => {
     const genreValues = selectedGenres.map((genre) => genre.value);
     setCreatorProfile({
       ...creatorProfile,
-      genres: genreValues,
+      genre: genreValues,
     });
   };
   const crafts = useMemo(() => {
-    if (creatorProfile?.crafts) {
-      return getOptionsArray(creatorProfile.crafts, craftsMap);
+    if (creatorProfile?.craft) {
+      return getOptionsArray(creatorProfile.craft, craftsMap);
     }
     return [];
   }, [creatorProfile]);
   const genres = useMemo(() => {
-    if (creatorProfile?.genres) {
-      return getOptionsArray(creatorProfile.genres, genresMap);
+    if (creatorProfile?.genre) {
+      return getOptionsArray(creatorProfile.genre, genresMap);
     }
     return [];
   }, [creatorProfile]);
@@ -107,6 +98,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           options={craftOptions}
           placeholder="Select or type to add your own option"
           setOptions={setCraftOptions}
+          maxWidth="33%"
           optionsSelected={crafts}
           setOptionsSelected={(options: Option[]) => setCrafts(options)}
           allowMultiSelectOption
@@ -120,6 +112,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           options={genreOptions}
           placeholder="Select or type to add your own option"
           setOptions={setGenreOptions}
+          maxWidth="33%"
           optionsSelected={genres}
           setOptionsSelected={(options: Option[]) => setGenres(options)}
           allowMultiSelectOption
@@ -127,31 +120,19 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           error={submitted}
           required
         />
-        {/* <AddMultiSelect
-          id="presentations"
-          label="Presentation"
-          placeholder="Select option(s)"
-          options={presentationOptions}
-          setOptions={setPresentationOptions}
-          optionsSelected={presentations}
-          setOptionsSelected={(options: Option[]) => setPresentations(options)}
-          allowMultiSelectOption
-          error={submitted}
-          required
-        /> */}
         <CreatorInputField
           name="Website"
           placeholder="Enter a URL to your website"
           value={creatorProfile?.website}
           field="website"
           required={false}
-          width="100%"
+          width="33%"
           error={submitted}
         />
         <RichTextEditorField
           name="Bio"
           placeholder="Here's where you can briefly describe who you are as a creator!"
-          value={creatorProfile?.bio}
+        value={creatorProfile?.bio}
           field="bio"
           error={submitted}
           charLimit={500}
@@ -161,6 +142,9 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           value={creatorProfile?.profilePictureLink}
           field="profilePictureLink"
           error={submitted}
+          setInputField={()=>{}}
+          mode={AddProfilePictureMode.creatorProfile}
+          required
         />
       </div>
     </Flex>

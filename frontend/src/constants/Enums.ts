@@ -9,6 +9,8 @@ export enum UserRole {
 export enum TagType {
   Genre = "Genre",
   Age = "Age",
+  Province = "Province",
+  Craft = "Craft",
 }
 
 export enum Genre {
@@ -43,4 +45,5 @@ export enum BookFormats {
   Paperback = "Paperback",
   eBook = "eBook",
   audioBook = "Audio Book",
+  Board = "Board Book",
 }

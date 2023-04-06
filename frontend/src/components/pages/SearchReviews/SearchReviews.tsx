@@ -58,24 +58,12 @@ const SearchReviews = (): React.ReactElement => {
       },
     );
 
-    const ageArr = [];
-    // eslint-disable-next-line no-restricted-syntax, guard-for-in
-    for (const review in displayedReviews) {
-      const targetBook = displayedReviews[review].books[0];
-      const ageRange = `${targetBook.minAge},${targetBook.maxAge}`;
-      const ageOpt = {
-        label: `Ages ${ageRange.replace(",", "-")}`,
+    const ageArr = ["0-3", "4-8", "9-12", "12-18"].map((ageRange) => {
+      return {
+        label: `Ages ${ageRange}`,
         value: ageRange,
       };
-
-      if (
-        ageArr.findIndex(
-          (opt) => opt.label === ageOpt.label && opt.value === ageOpt.value,
-        ) === -1
-      ) {
-        ageArr.push(ageOpt);
-      }
-    }
+    });
     setAllAges(ageArr);
   }, []);
 
@@ -124,29 +112,6 @@ const SearchReviews = (): React.ReactElement => {
       .then((reviewResponse: PaginatedReviewResponse) => {
         settotalReviews(reviewResponse.totalReviews);
         setDisplayedReviews(mapReviewResponseToReview(reviewResponse.reviews));
-        const ageArr = [];
-        // eslint-disable-next-line no-restricted-syntax, guard-for-in
-        for (const review in mapReviewResponseToReview(
-          reviewResponse.reviews,
-        )) {
-          const targetBook = mapReviewResponseToReview(reviewResponse.reviews)[
-            review
-          ].books[0];
-          const ageRange = `${targetBook.minAge}-${targetBook.maxAge}`;
-          const ageOpt = {
-            label: `Ages ${ageRange}`,
-            value: ageRange,
-          };
-
-          if (
-            ageArr.findIndex(
-              (opt) => opt.label === ageOpt.label && opt.value === ageOpt.value,
-            ) === -1
-          ) {
-            ageArr.push(ageOpt);
-          }
-        }
-        setAllAges(ageArr);
         setLoading(false);
       });
   }, [searchText, genresFilter, ageRangeFilter]);
@@ -177,7 +142,6 @@ const SearchReviews = (): React.ReactElement => {
                 setAgeRangeFilter([Math.min(...ageOpts), Math.max(...ageOpts)]);
               }}
             />
-            {console.log(allAges)}
           </Box>
           <VStack spacing="24px" align="stretch">
             {searchText !== "" && !loading && totalReviews === 1 && (

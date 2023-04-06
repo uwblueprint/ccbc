@@ -15,6 +15,7 @@ import {
   CreatorProfile,
   CreatorProfileProps,
 } from "../../../types/CreatorProfileTypes";
+import AddProfilePictureMode from "../../../types/Types"
 
 interface AddProfilePictureProps {
   name: string;
@@ -22,6 +23,8 @@ interface AddProfilePictureProps {
   field: CreatorProfileProps;
   error?: boolean;
   required?: boolean;
+  setInputField: (s: string) => void;
+  mode? : AddProfilePictureMode;
 }
 
 const AddProfilePicture = ({
@@ -30,6 +33,8 @@ const AddProfilePicture = ({
   error = false,
   value,
   required = true,
+  setInputField,
+  mode
 }: AddProfilePictureProps): React.ReactElement => {
   const { creatorProfile, setCreatorProfile } = useContext(
     CreatorProfileContext,
@@ -49,20 +54,38 @@ const AddProfilePicture = ({
   };
 
   const handleOnChange = async () => {
+
     const profilePic = profilePicFile?.current?.files?.[0];
     if (profilePic) {
       const Url = await uploadImage(profilePic);
 
-      const creatorProfileObj: CreatorProfile = {
-        ...creatorProfile,
-      };
-      creatorProfileObj[field] = Url;
-      setFileSize(profilePic.size.toString());
-      setFileName(profilePic.name);
-      localStorage.setItem("fileSize", profilePic.size.toString());
-      localStorage.setItem("fileName", profilePic.name);
-      setCreatorProfile(creatorProfileObj);
+      switch (mode) {
+        case AddProfilePictureMode.creatorProfile: {
+          const creatorProfileObj: CreatorProfile = {
+            ...creatorProfile,
+          };
+          creatorProfileObj[field] = Url;
+          setFileSize(profilePic.size.toString());
+          setFileName(profilePic.name);
+          localStorage.setItem("fileSize", profilePic.size.toString());
+          localStorage.setItem("fileName", profilePic.name);
+          setCreatorProfile(creatorProfileObj);
+          break;
+        }
+        case AddProfilePictureMode.bookModal: {
+          setInputField(Url)
+          setFileSize(profilePic.size.toString());
+          setFileName(profilePic.name);
+          localStorage.setItem("fileSize", profilePic.size.toString());
+          localStorage.setItem("fileName", profilePic.name);
+          break;
+        }
+        default: {
+          break;
+        }
+      }
     }
+    
   };
 
   return (
@@ -159,7 +182,5 @@ const AddProfilePicture = ({
     </FormControl>
   );
 };
-
-// TODO: Keep the state once you leave to a different step
 
 export default AddProfilePicture;

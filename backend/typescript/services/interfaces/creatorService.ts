@@ -4,10 +4,11 @@ interface ICreatorService {
   /**
    * Get creator associated with id
    * @param id creator's id
+   * @param isUserId true indicates search for user id instead of creator id
    * @returns a CreatorDTO with creator's information
    * @throws Error if creator retrieval fails
    */
-  getCreatorById(userId: string): Promise<CreatorDTO>;
+  getCreatorById(userId: string, isUserId?: boolean): Promise<CreatorDTO>;
 
   /**
    * Get all creator information (possibly paginated in the future)
@@ -16,16 +17,20 @@ interface ICreatorService {
    */
   getCreators({
     status,
-    genre,
+    genres,
     location,
     ageRange,
-    province,
+    provinces,
+    crafts,
+    searchText,
   }: {
     status?: string;
-    genre?: string[];
+    genres?: string[];
     location?: string;
     ageRange?: string;
-    province?: string;
+    provinces?: string[];
+    crafts?: string[];
+    searchText?: string;
   }): Promise<Array<CreatorDTO>>;
   /**
    * Approves a user to be a creator on the platform
