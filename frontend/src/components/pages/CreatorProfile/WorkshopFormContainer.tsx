@@ -7,7 +7,6 @@ import {
   FormControl,
   FormLabel,
   Grid,
-  Icon,
   Input,
   Radio,
   RadioGroup,
@@ -15,16 +14,14 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { StringOrNumber } from "@chakra-ui/utils/dist/declarations/src/types";
+import { StringOrNumber } from "@chakra-ui/utils";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import React, { useContext, useEffect, useState } from "react";
-import { displayPartsToString } from "typescript";
 
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { Option } from "../../../types/BookTypes";
 import { PresentationAttributes } from "../../../types/CreatorProfileTypes";
 import AddMultiSelect from "../CreateReview/AddMultiSelect";
-import CreatorInputField from "./CreatorInputField";
 
 interface WorkshopFormContainerProps {
   title: string;
@@ -32,7 +29,6 @@ interface WorkshopFormContainerProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   icon: ReactJSXElement;
-  submitted: boolean;
   detailsDisplayedWhenCollapsed?: [PresentationAttributes, string][];
 }
 
@@ -67,7 +63,6 @@ const WorkshopFormContainer = ({
   index,
   setIsOpen,
   icon,
-  submitted,
   detailsDisplayedWhenCollapsed = [
     ["offeredLocations", "Offered locations"],
     ["preferredGradeLevel", "Preferred grade level"],
@@ -92,7 +87,6 @@ const WorkshopFormContainer = ({
     const creatorProfileObj = { ...creatorProfile };
 
     if (creatorProfileObj.presentations) {
-      // eslint-disable-next-line
       creatorProfileObj.presentations[index][field] = newValue;
     }
     setCreatorProfile(creatorProfileObj);
@@ -103,16 +97,25 @@ const WorkshopFormContainer = ({
   const detailsToDisplay = detailsDisplayedWhenCollapsed.filter(
     ([field]) => presentation && presentation[field].length > 0,
   );
-  const generateCollapsedDetails = () => {
+  const generateCollapsedDetails = () =>
     detailsToDisplay.map(([field, displayName]) => {
       return (
-        <Flex key={`${field}-${title}`} direction="row">
-          <Text>{displayName}</Text>
-          <Text>placeholder</Text>
+        <Flex
+          key={`${field}-${title}`}
+          direction="row"
+          justifyContent="space-around"
+        >
+          <Text>{displayName}:</Text>
+          <Text>
+            {presentation &&
+              Array.isArray(presentation[field]) &&
+              presentation[field]
+                .map((option: Option) => option.label)
+                .join(", ")}
+          </Text>
         </Flex>
       );
     });
-  };
 
   const [offeredLocationsOptions, setOfferedLocationsOptions] = useState<
     Option[]
@@ -322,8 +325,7 @@ const WorkshopFormContainer = ({
           </Container>
         ) : (
           /** Details Collapsed */
-          <Flex>
-            {console.log(detailsToDisplay)}
+          <Container>
             {detailsToDisplay.length > 0 ? (
               generateCollapsedDetails()
             ) : (
@@ -332,7 +334,7 @@ const WorkshopFormContainer = ({
                 section.
               </Text>
             )}
-          </Flex>
+          </Container>
         )}
       </Container>
     </Flex>

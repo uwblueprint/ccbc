@@ -1,30 +1,8 @@
 import { AddIcon } from "@chakra-ui/icons";
-import {
-  Button,
-  Checkbox,
-  CheckboxGroup,
-  CheckboxGroupProps,
-  Container,
-  Divider,
-  Flex,
-  FormControl,
-  FormLabel,
-  Grid,
-  Icon,
-  Input,
-  Radio,
-  RadioGroup,
-  Text,
-  Textarea,
-} from "@chakra-ui/react";
+import { Button, Divider, Flex, Icon, Text } from "@chakra-ui/react";
 //
-import { StringOrNumber } from "@chakra-ui/utils/dist/declarations/src/types";
-import { Book } from "@material-ui/icons";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
-import AddMultiSelect from "../CreateReview/AddMultiSelect";
-import CreatorInputField from "./CreatorInputField";
 import WorkshopFormContainer from "./WorkshopFormContainer";
 
 interface PresentationFormProps {
@@ -34,15 +12,10 @@ interface PresentationFormProps {
 const PresentationForm = ({
   submitted,
 }: PresentationFormProps): React.ReactElement => {
-  const { creatorProfile, setCreatorProfile } = useContext(
-    CreatorProfileContext,
-  );
-
   const [isReadingSectionOpen, setIsReadingSectionOpen] = useState(false);
   const [isWorkshopSectionOpen, setIsWorkshopSectionOpen] = useState(false);
 
   // Set inital multiselection options
-
 
   return (
     <Flex flex="1" direction="column" justify="start">

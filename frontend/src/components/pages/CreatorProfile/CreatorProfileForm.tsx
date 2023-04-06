@@ -11,9 +11,9 @@ import { CreatorProfile } from "../../../types/CreatorProfileTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import AvailabilityForm from "./AvailabilityForm";
 import ContactInfoForm from "./ContactInfoForm";
-import PresentationForm from "./PresentationForm";
 import CreatorProfileNav from "./CreatorProfileNav";
 import GeneralInfoForm from "./GeneralInfoForm";
+import PresentationForm from "./PresentationForm";
 import PublicationsForm from "./Publications Form/PublicationsForm";
 import SubmittedCreatorProfileModal from "./SubmittedCreatorProfile";
 
@@ -32,8 +32,8 @@ const CreatorProfileForm = (): React.ReactElement => {
     location: "",
     timezone: "",
     availability: [],
-    crafts: [],
-    genres: [],
+    craft: [],
+    genre: [],
     presentations: [
       {
         title: "Readings",
@@ -246,7 +246,7 @@ const CreatorProfileForm = (): React.ReactElement => {
                 >
                   {activeForm === 0 && <ContactInfoForm submitted={error} />}
                   {activeForm === 1 && <GeneralInfoForm submitted={error} />}
-                  {activeForm === 3 && <PresentationForm submitted={error} />}
+                  {activeForm === 2 && <PresentationForm submitted={error} />}
                   {activeForm === 4 && <AvailabilityForm submitted={error} />}
                 </Center>
                 <CreatorProfileNav

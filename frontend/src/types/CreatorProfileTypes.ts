@@ -1,5 +1,5 @@
 import { Option } from "./BookTypes";
-import { Publication } from "./CreatorTypes";
+import { Publication, Presentation } from "./CreatorTypes";
 
 export type CreatorProfile = {
   firstName?: string;
@@ -32,21 +32,13 @@ export type CreatorProfileProps =
   | "streetAddress"
   | "city"
   | "province"
-  | "postalCode";
+  | "postalCode"
+  | "location"
+  | "timezone"
+  | "website"
+  | "bio"
+  | "profilePictureLink";
 
-export type Presentation = {
-  title: string;
-  offeredLocations: Option[];
-  preferredGradeLevel: Option[];
-  preferredAudienceSize: string;
-  inPersonDeliveryFee: string;
-  virtualDeliveryFee: string;
-  equipmentRequired: string;
-  languages: string[];
-  otherReadingLanguages: string;
-  booksPurchasedAndAutoGraphed: string;
-  contentOfReadings: string;
-};
 
 export type PresentationAttributes =
   | "title"
@@ -59,13 +51,7 @@ export type PresentationAttributes =
   | "languages"
   | "otherReadingLanguages"
   | "booksPurchasedAndAutoGraphed"
-  | "contentOfReadings"
-  | "postalCode"
-  | "location"
-  | "timezone"
-  | "website"
-  | "bio"
-  | "profilePictureLink";
+  | "contentOfReadings";
 
 export type BibliographyEntry = {
   title: string;

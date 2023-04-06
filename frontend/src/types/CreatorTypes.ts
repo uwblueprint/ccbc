@@ -1,3 +1,4 @@
+import { Option } from "./BookTypes";
 /**
  * Type for Creator, a special class of user
  */
@@ -30,25 +31,19 @@ export type Creator = {
   updatedAt?: number;
 };
 
-/**
- * Type for Presentation
- */
 export type Presentation = {
-  name?: string;
-  locations?: string;
-  age_groups?: string;
-  audience_size?: string;
-  is_in_person?: boolean;
-  in_person_rate?: number;
-  is_virtual?: boolean;
-  virtual_rate?: number;
-  special_equipment?: string;
-  languages?: string;
-  is_bringing?: boolean;
-  details?: string;
-  photos?: string;
+  title: string;
+  offeredLocations: Option[];
+  preferredGradeLevel: Option[];
+  preferredAudienceSize: string;
+  inPersonDeliveryFee: string;
+  virtualDeliveryFee: string;
+  equipmentRequired: string;
+  languages: string[];
+  otherReadingLanguages: string;
+  booksPurchasedAndAutoGraphed: string;
+  contentOfReadings: string;
 };
-
 /**
  * Type for Publication
  */

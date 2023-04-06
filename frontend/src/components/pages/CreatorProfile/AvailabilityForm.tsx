@@ -117,7 +117,7 @@ const AvailabilityForm = ({
           "America/St_Johns",
           "America/Vancouver",
           "America/Regina",
-          "America/Whitehorse"
+          "America/Whitehorse",
         ]}
         field="timezone"
         error={submitted}
