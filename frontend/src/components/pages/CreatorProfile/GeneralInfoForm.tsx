@@ -7,6 +7,7 @@ import AddMultiSelect from "../CreateReview/AddMultiSelect";
 import AddProfilePictureField from "./AddProfilePictureField";
 import CreatorInputField from "./CreatorInputField";
 import RichTextEditorField from "./RichTextEditorField";
+import AddProfilePictureMode from "../../../types/Types"
 
 interface GeneraInfoProps {
   submitted: boolean;
@@ -142,7 +143,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           field="profilePictureLink"
           error={submitted}
           setInputField={()=>{}}
-          mode="CreatorProfile"
+          mode={AddProfilePictureMode.creatorProfile}
           required
         />
       </div>

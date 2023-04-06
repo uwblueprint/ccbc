@@ -21,6 +21,7 @@ import genreAPIClient from "../../../APIClients/GenreAPIClient";
 import tagAPIClient from "../../../APIClients/TagAPIClient";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { BookFormats } from "../../../constants/Enums";
+import AddProfilePictureMode from "../../../types/Types"
 import {
   Author,
   Book,
@@ -472,7 +473,7 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
                   name="Book Cover"
                   value={coverImage}
                   field="profilePictureLink"
-                  mode="BookModal"
+                  mode={AddProfilePictureMode.bookModal}
                   setInputField={setCoverImage}
                   required
                 />

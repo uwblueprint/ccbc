@@ -15,6 +15,7 @@ import {
   CreatorProfile,
   CreatorProfileProps,
 } from "../../../types/CreatorProfileTypes";
+import AddProfilePictureMode from "../../../types/Types"
 
 interface AddProfilePictureProps {
   name: string;
@@ -23,7 +24,7 @@ interface AddProfilePictureProps {
   error?: boolean;
   required?: boolean;
   setInputField: (s: string) => void;
-  mode? : string;
+  mode? : AddProfilePictureMode;
 }
 
 const AddProfilePicture = ({
@@ -33,7 +34,7 @@ const AddProfilePicture = ({
   value,
   required = true,
   setInputField,
-  mode = ""
+  mode
 }: AddProfilePictureProps): React.ReactElement => {
   const { creatorProfile, setCreatorProfile } = useContext(
     CreatorProfileContext,
@@ -58,22 +59,30 @@ const AddProfilePicture = ({
     if (profilePic) {
       const Url = await uploadImage(profilePic);
 
-      if (mode === "CreatorProfile") {
-        const creatorProfileObj: CreatorProfile = {
-          ...creatorProfile,
-        };
-        creatorProfileObj[field] = Url;
-        setFileSize(profilePic.size.toString());
-        setFileName(profilePic.name);
-        localStorage.setItem("fileSize", profilePic.size.toString());
-        localStorage.setItem("fileName", profilePic.name);
-        setCreatorProfile(creatorProfileObj);
-      } else if (mode === "BookModal") {
-        setInputField(Url)
-        setFileSize(profilePic.size.toString());
-        setFileName(profilePic.name);
-        localStorage.setItem("fileSize", profilePic.size.toString());
-        localStorage.setItem("fileName", profilePic.name);
+      switch (mode) {
+        case AddProfilePictureMode.creatorProfile: {
+          const creatorProfileObj: CreatorProfile = {
+            ...creatorProfile,
+          };
+          creatorProfileObj[field] = Url;
+          setFileSize(profilePic.size.toString());
+          setFileName(profilePic.name);
+          localStorage.setItem("fileSize", profilePic.size.toString());
+          localStorage.setItem("fileName", profilePic.name);
+          setCreatorProfile(creatorProfileObj);
+          break;
+        }
+        case AddProfilePictureMode.bookModal: {
+          setInputField(Url)
+          setFileSize(profilePic.size.toString());
+          setFileName(profilePic.name);
+          localStorage.setItem("fileSize", profilePic.size.toString());
+          localStorage.setItem("fileName", profilePic.name);
+          break;
+        }
+        default: {
+          break;
+        }
       }
     }
     
