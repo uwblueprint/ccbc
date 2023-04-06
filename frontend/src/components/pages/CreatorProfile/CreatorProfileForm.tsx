@@ -14,6 +14,7 @@ import ContactInfoForm from "./ContactInfoForm";
 import CreatorProfileNav from "./CreatorProfileNav";
 import GeneralInfoForm from "./GeneralInfoForm";
 import PublicationsForm from "./Publications Form/PublicationsForm";
+import ReviewForm from "./ReviewForm";
 import SubmittedCreatorProfileModal from "./SubmittedCreatorProfile";
 
 const CreatorProfileForm = (): React.ReactElement => {
@@ -224,6 +225,9 @@ const CreatorProfileForm = (): React.ReactElement => {
                     {activeForm === 0 && <ContactInfoForm submitted={error} />}
                     {activeForm === 1 && <GeneralInfoForm submitted={error} />}
                     {activeForm === 4 && <AvailabilityForm submitted={error} />}
+                    {activeForm === 5 && (
+                      <ReviewForm setFormPage={setActiveForm} />
+                    )}
                   </Center>
                   <CreatorProfileNav
                     activeForm={activeForm}
