@@ -21,6 +21,13 @@ export interface Presentation {
   photos?: string[];
 }
 
+export interface Publication {
+  title: string;
+  publisher: string;
+  publication_year: string;
+  notes: string;
+}
+
 export type CreatorDTO = {
   id: number;
   userId: number;
@@ -46,9 +53,7 @@ export type CreatorDTO = {
   bookCovers: string[];
   isReadyForReview: boolean;
   presentations: Presentation[];
-
-  // TODO:
-  // publications: Publication[];
+  publications: Publication[];
 };
 
 export type CreatorCreateUpdateDTO = Omit<CreatorDTO, "isApproved">;

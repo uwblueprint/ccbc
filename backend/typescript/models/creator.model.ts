@@ -8,8 +8,8 @@ import {
   ForeignKey,
 } from "sequelize-typescript";
 import User from "./user.model";
-import Presentation from "./presentation.model";
-import Publication from "./publication.model";
+import { Presentation, Publication } from "../types";
+
 
 @Table({ tableName: "creator" })
 export default class Creator extends Model {
@@ -82,9 +82,9 @@ export default class Creator extends Model {
   @Column
   isReadyForReview!: boolean;
 
-  @Column
+  @Column({ type: DataType.ARRAY(DataType.JSON) })
   presentations!: Presentation[];
 
-  @Column
+  @Column({ type: DataType.ARRAY(DataType.JSON) })
   publications!: Publication[];
 }
