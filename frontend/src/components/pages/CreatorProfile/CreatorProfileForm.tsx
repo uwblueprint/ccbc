@@ -1,13 +1,16 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Button, Center, Flex, Text } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 import CreatorAPIClient from "../../../APIClients/CreatorAPIClient";
 import { CREATOR_PROFILE_LANDING } from "../../../constants/Routes";
 import AuthContext from "../../../contexts/AuthContext";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
-import { CreatorProfile } from "../../../types/CreatorProfileTypes";
+import {
+  CreatorProfile,
+  CreatorProfileFormProps,
+} from "../../../types/CreatorProfileTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import AvailabilityForm from "./AvailabilityForm";
 import ContactInfoForm from "./ContactInfoForm";
@@ -18,6 +21,7 @@ import ReviewForm from "./ReviewForm";
 import SubmittedCreatorProfileModal from "./SubmittedCreatorProfile";
 
 const CreatorProfileForm = (): React.ReactElement => {
+  const { state } = useLocation<CreatorProfileFormProps>();
   const [creatorProfile, setCreatorProfile] = useState<CreatorProfile>({
     firstName: "",
     lastName: "",
@@ -41,7 +45,7 @@ const CreatorProfileForm = (): React.ReactElement => {
   });
 
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const [activeForm, setActiveForm] = useState<number>(0);
+  const [activeForm, setActiveForm] = useState<number>(state?.currentPage || 0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -62,7 +66,6 @@ const CreatorProfileForm = (): React.ReactElement => {
     CreatorAPIClient.getCreatorByUserId(String(authenticatedUser?.id))
       .then((res) => {
         if (res) {
-          console.log(res);
           setCreatorProfile({
             firstName: res.firstName || "",
             lastName: res.lastName || "",

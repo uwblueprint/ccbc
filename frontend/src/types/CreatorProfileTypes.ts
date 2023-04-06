@@ -49,3 +49,7 @@ export type BookCoverFile = {
   name: string;
   fileSize: number;
 };
+
+export type CreatorProfileFormProps = {
+  currentPage: number;
+}
