@@ -13,9 +13,9 @@ interface CreatorPublicationsProps {
 const CreatorPublications = ({
   currentCreator,
 }: CreatorPublicationsProps): React.ReactElement => {
-  const publicationDisplay = (publication: Publication) => {
+  const publicationDisplay = (publication: Publication, index: number) => {
     return (
-      <Flex mb="16px">
+      <Flex mb="16px" key={index}>
         <Image mr="12px" src={rectangle} />
         <Box>
           <Text fontWeight="500">
@@ -34,8 +34,15 @@ const CreatorPublications = ({
     );
   };
 
-  const bookCoverDisplay = (bookCoverImageURL: string) => {
-    return <Image minWidth="175px" height="auto" src={bookCoverImageURL} />;
+  const bookCoverDisplay = (bookCoverImageURL: string, index: number) => {
+    return (
+      <Image
+        minWidth="175px"
+        height="auto"
+        src={bookCoverImageURL}
+        key={index}
+      />
+    );
   };
 
   return (
@@ -53,7 +60,9 @@ const CreatorPublications = ({
         <Box flex="2">
           {currentCreator.publications
             ?.slice(0, 3)
-            .map((publication: Publication) => publicationDisplay(publication))}
+            .map((publication: Publication, index: number) =>
+              publicationDisplay(publication, index),
+            )}
           <Link
             ml="16px"
             href={`${Routes.SEARCH_REVIEWS_PAGE}/?search_query=${currentCreator.firstName}+${currentCreator.lastName}`}
@@ -65,8 +74,8 @@ const CreatorPublications = ({
         <Flex flex="4" paddingLeft="50px">
           {currentCreator.bookCovers
             ?.slice(0, 3)
-            .map((bookCoverImageURL: string) =>
-              bookCoverDisplay(bookCoverImageURL),
+            .map((bookCoverImageURL: string, index: number) =>
+              bookCoverDisplay(bookCoverImageURL, index),
             )}
         </Flex>
       </Flex>
