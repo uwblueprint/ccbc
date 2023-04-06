@@ -84,7 +84,6 @@ class CreatorService implements ICreatorService {
       publications: creator.publications,
       isReadyForReview: creator.isReadyForReview,
       presentations: creator.presentations,
-      publications: creator.publications,
     };
   }
 
@@ -136,7 +135,6 @@ class CreatorService implements ICreatorService {
           publications: creator.publications,
           isReadyForReview: creator.isReadyForReview,
           presentations: creator.presentations,
-          publications: creator.publications,
         }))
         .filter(
           (creator) =>
@@ -295,7 +293,6 @@ class CreatorService implements ICreatorService {
         bookCovers: newCreator.book_covers,
         publications: newCreator.publications,
         isReadyForReview: newCreator.isReadyForReview,
-        publications: newCreator.publications,
         presentations: newCreator.presentations,
       };
     } catch (error) {
@@ -372,7 +369,6 @@ class CreatorService implements ICreatorService {
         bookCovers: updatedCreator.book_covers,
         publications: updatedCreator.publications,
         isReadyForReview: updatedCreator.isReadyForReview,
-        publications: updatedCreator.publications,
         presentations: updatedCreator.presentations,
       };
     } catch (error) {
