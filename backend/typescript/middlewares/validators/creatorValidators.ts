@@ -95,74 +95,89 @@ export const creatorUpdateDtoValidator = async (
   res: Response,
   next: NextFunction,
 ): Promise<Response | void> => {
-  if (!validatePrimitive(req.body.userId, "integer")) {
+  if (req.body.userId && !validatePrimitive(req.body.userId, "integer")) {
     return res.status(400).send(getApiValidationError("userId", "integer"));
   }
-  if (!validatePrimitive(req.body.location, "string")) {
+  if (req.body.location && !validatePrimitive(req.body.location, "string")) {
     return res.status(400).send(getApiValidationError("location", "string"));
   }
-  if (!validatePrimitive(req.body.genre, "string")) {
-    return res.status(400).send(getApiValidationError("genre", "string"));
-  }
+  // if (!validatePrimitive(req.body.genre, "string")) {
+  //   return res.status(400).send(getApiValidationError("genre", "string"));
+  // }
   // temporarily commenting this out, somewhere in the backend the type for rate is an integer
   // if (!validatePrimitive(req.body.rate, "float")) {
   //   return res.status(400).send(getApiValidationError("rate", "number"));
   // }
-  if (!validatePrimitive(req.body.ageRange, "string")) {
+  if (req.body.ageRange && !validatePrimitive(req.body.ageRange, "string")) {
     return res.status(400).send(getApiValidationError("ageRange", "string"));
   }
-  if (!validatePrimitive(req.body.timezone, "string")) {
+  if (req.body.timezone && !validatePrimitive(req.body.timezone, "string")) {
     return res.status(400).send(getApiValidationError("timezone", "string"));
   }
-  if (!validatePrimitive(req.body.bio, "string")) {
+  if (req.body.bio && !validatePrimitive(req.body.bio, "string")) {
     return res.status(400).send(getApiValidationError("bio", "string"));
   }
   if (req.body.isApproved) {
     return res.status(400).send("The isApproved is not undefined");
   }
   // Calder W: New types
-  if (!validatePrimitive(req.body.first_name, "string")) {
+  if (
+    req.body.first_name &&
+    !validatePrimitive(req.body.first_name, "string")
+  ) {
     return res.status(400).send(getApiValidationError("first_name", "string"));
   }
-  if (!validatePrimitive(req.body.last_name, "string")) {
+  if (req.body.last_name && !validatePrimitive(req.body.last_name, "string")) {
     return res.status(400).send(getApiValidationError("last_name", "string"));
   }
-  if (!validatePrimitive(req.body.email, "string")) {
+  if (req.body.email && !validatePrimitive(req.body.email, "string")) {
     return res.status(400).send(getApiValidationError("email", "string"));
   }
-  if (!validatePrimitive(req.body.phone, "string")) {
+  if (req.body.phone && !validatePrimitive(req.body.phone, "string")) {
     return res.status(400).send(getApiValidationError("phone", "string"));
   }
-  if (!validatePrimitive(req.body.street_address, "string")) {
+  if (
+    req.body.street_address &&
+    !validatePrimitive(req.body.street_address, "string")
+  ) {
     return res
       .status(400)
       .send(getApiValidationError("street_address", "string"));
   }
-  if (!validatePrimitive(req.body.city, "string")) {
+  if (req.body.city && !validatePrimitive(req.body.city, "string")) {
     return res.status(400).send(getApiValidationError("city", "string"));
   }
-  if (!validatePrimitive(req.body.province, "string")) {
+  if (req.body.province && !validatePrimitive(req.body.province, "string")) {
     return res.status(400).send(getApiValidationError("province", "string"));
   }
-  if (!validatePrimitive(req.body.postal_code, "string")) {
+  if (
+    req.body.postal_code &&
+    !validatePrimitive(req.body.postal_code, "string")
+  ) {
     return res.status(400).send(getApiValidationError("postal_code", "string"));
   }
-  if (!validatePrimitive(req.body.craft, "string")) {
-    return res.status(400).send(getApiValidationError("craft", "string"));
-  }
-  if (!validatePrimitive(req.body.website, "string")) {
+  // if (!validatePrimitive(req.body.craft, "string")) {
+  //   return res.status(400).send(getApiValidationError("craft", "string"));
+  // }
+  if (req.body.website && !validatePrimitive(req.body.website, "string")) {
     return res.status(400).send(getApiValidationError("website", "string"));
   }
-  if (!validatePrimitive(req.body.profile_picture_link, "string")) {
+  if (
+    req.body.profile_picture_link &&
+    !validatePrimitive(req.body.profile_picture_link, "string")
+  ) {
     return res
       .status(400)
       .send(getApiValidationError("profile_picture_link", "string"));
   }
-  if (!validatePrimitive(req.body.availability, "string")) {
-    return res
-      .status(400)
-      .send(getApiValidationError("availability", "string"));
-  }
+  // if (
+  //   req.body.availability &&
+  //   !validatePrimitive(req.body.availability, "string")
+  // ) {
+  //   return res
+  //     .status(400)
+  //     .send(getApiValidationError("availability", "string"));
+  // }
   // TODO: How to do arrays?
   // if (!validatePrimitive(req.body.book_covers, "string")) {
   //   return res.status(400).send(getApiValidationError("book_covers", "string"));

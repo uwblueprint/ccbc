@@ -16,17 +16,28 @@ interface CreatorReqQuery {
   id?: string;
   location?: string;
   ageRange?: string;
-  genre?: string[];
+  genres?: string[];
   status?: string;
-  province?: string;
+  provinces?: string[];
+  crafts?: string[];
+  searchText?: string;
 }
 
 creatorRouter.get(
   "/",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
-    const { id, location, ageRange, genre, status, province } =
+    const { id, location, ageRange, status, searchText } =
       req.query as CreatorReqQuery;
+    const genres: string[] | undefined = (req.query.genres as string)
+      ? (req.query.genres as string).split(",")
+      : undefined;
+    const provinces: string[] | undefined = (req.query.provinces as string)
+      ? (req.query.provinces as string).split(",")
+      : undefined;
+    const crafts: string[] | undefined = (req.query.crafts as string)
+      ? (req.query.crafts as string).split(",")
+      : undefined;
     if (id) {
       const idNumeric = parseInt(id, 10);
       // Get User By Id
@@ -45,10 +56,12 @@ creatorRouter.get(
         res.status(200).json(
           await creatorService.getCreators({
             status,
-            genre,
+            genres,
             location,
             ageRange,
-            province,
+            provinces,
+            crafts,
+            searchText,
           }),
         );
       } catch (error: unknown) {
@@ -59,13 +72,23 @@ creatorRouter.get(
 );
 
 // Get users by ID. Above function does not work properly.
+creatorRouter.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const creator = await creatorService.getCreatorById(id);
+    res.status(200).json(creator);
+  } catch (e: unknown) {
+    sendErrorResponse(e, res);
+  }
+});
+
 creatorRouter.get(
-  "/:id",
+  "/user/:id",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
     const { id } = req.params;
     try {
-      const creator = await creatorService.getCreatorById(id);
+      const creator = await creatorService.getCreatorById(id, true);
       res.status(200).json(creator);
     } catch (e: unknown) {
       sendErrorResponse(e, res);

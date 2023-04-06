@@ -1,21 +1,21 @@
-import { Presentation } from "./CreatorTypes";
+import { Presentation, Publication } from "./CreatorTypes";
 
 export type CreatorProfile = {
   firstName?: string;
   lastName?: string;
   email?: string;
   phone?: string;
-  address?: string;
+  streetAddress?: string;
   city?: string;
   province?: string;
   postalCode?: string;
-  bibliography?: BibliographyEntry[];
+  publications?: Publication[];
   bookCovers?: BookCoverFile[];
-  geographicReach?: string;
-  primaryTimezone?: string;
+  location?: string;
+  timezone?: string;
   availability?: string[];
-  crafts?: string[];
-  genres?: string[];
+  craft?: string[];
+  genre?: string[];
   presentations?: Presentation[];
   website?: string;
   bio?: string;
@@ -27,12 +27,12 @@ export type CreatorProfileProps =
   | "lastName"
   | "email"
   | "phone"
-  | "address"
+  | "streetAddress"
   | "city"
   | "province"
   | "postalCode"
-  | "geographicReach"
-  | "primaryTimezone"
+  | "location"
+  | "timezone"
   | "website"
   | "bio"
   | "profilePictureLink";
@@ -40,8 +40,8 @@ export type CreatorProfileProps =
 export type BibliographyEntry = {
   title: string;
   publisher: string;
-  publicationYear: number;
-  additionalNotes?: string;
+  publication_year: number;
+  notes?: string;
 };
 
 export type BookCoverFile = {
@@ -49,3 +49,7 @@ export type BookCoverFile = {
   name: string;
   fileSize: number;
 };
+
+export type CreatorProfileFormProps = {
+  currentPage: number;
+}

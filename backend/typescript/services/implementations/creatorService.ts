@@ -35,12 +35,18 @@ class CreatorService implements ICreatorService {
   }
 
   /* eslint-disable class-methods-use-this */
-  async getCreatorById(creatorId: string): Promise<CreatorDTO> {
+  async getCreatorById(
+    creatorId: string,
+    isUserId?: boolean,
+  ): Promise<CreatorDTO> {
     let creator: Creator | null;
     const isAdmin = !isAuthorizedByRole(new Set(["Admin"]));
     try {
-      creator = await Creator.findByPk(Number(creatorId));
-
+      if (isUserId) {
+        creator = await Creator.findOne({ where: { user_id: creatorId } });
+      } else {
+        creator = await Creator.findByPk(Number(creatorId));
+      }
       if (isAdmin && creator?.is_approved === false) {
         throw new Error("No creator was found.");
       }
@@ -75,6 +81,7 @@ class CreatorService implements ICreatorService {
       profilePictureLink: creator.profile_picture_link,
       availability: creator.availability,
       bookCovers: creator.book_covers,
+      publications: creator.publications,
       isReadyForReview: creator.isReadyForReview,
       presentations: creator.presentations,
       publications: creator.publications,
@@ -83,16 +90,20 @@ class CreatorService implements ICreatorService {
 
   async getCreators({
     status,
-    genre,
+    genres,
     location,
     ageRange,
-    province,
+    provinces,
+    crafts,
+    searchText,
   }: {
     status?: string;
-    genre?: string[];
+    genres?: string[];
     location?: string;
     ageRange?: string;
-    province?: string;
+    provinces?: string[];
+    crafts?: string[];
+    searchText?: string;
   }): Promise<Array<CreatorDTO>> {
     const isAdmin = !!isAuthorizedByRole(new Set(["Admin"]));
     try {
@@ -122,6 +133,7 @@ class CreatorService implements ICreatorService {
           profilePictureLink: creator.profile_picture_link,
           availability: creator.availability,
           bookCovers: creator.book_covers,
+          publications: creator.publications,
           isReadyForReview: creator.isReadyForReview,
           presentations: creator.presentations,
           publications: creator.publications,
@@ -130,14 +142,21 @@ class CreatorService implements ICreatorService {
           (creator) =>
             (creator.isApproved || isAdmin) &&
             (status ? creator.isApproved === (status === "true") : true) &&
-            (genre
+            (genres
               ? // ez clap
-                creator.genre.filter((i) => new Set(genre).has(i)).length > 0
+                creator.genre.filter((i) => genres.includes(i)).length > 0
               : true) &&
+            (crafts
+              ? creator.craft.filter((i) => crafts.includes(i)).length > 0
+              : true) &&
+            (provinces ? provinces.includes(creator.province) : true) &&
             (location
               ? creator.location.toLowerCase() === location.toLowerCase()
               : true) &&
-            (ageRange ? isOverlap(creator.ageRange, ageRange) : true),
+            (ageRange ? isOverlap(creator.ageRange, ageRange) : true) &&
+            (searchText
+              ? `${creator.firstName} ${creator.lastName}`.includes(searchText)
+              : true),
         );
     } catch (error) {
       Logger.error(
@@ -274,6 +293,7 @@ class CreatorService implements ICreatorService {
         profilePictureLink: newCreator.profile_picture_link,
         availability: newCreator.availability,
         bookCovers: newCreator.book_covers,
+        publications: newCreator.publications,
         isReadyForReview: newCreator.isReadyForReview,
         publications: newCreator.publications,
         presentations: newCreator.presentations,
@@ -300,6 +320,22 @@ class CreatorService implements ICreatorService {
           age_range: creator.ageRange,
           timezone: creator.timezone,
           bio: creator.bio,
+          is_approved: false,
+          first_name: creator.firstName,
+          last_name: creator.lastName,
+          email: creator.email,
+          phone: creator.phone,
+          street_address: creator.streetAddress,
+          city: creator.city,
+          province: creator.province,
+          postal_code: creator.postalCode,
+          craft: creator.craft,
+          website: creator.website,
+          profile_picture_link: creator.profilePictureLink,
+          availability: creator.availability,
+          publications: creator.publications,
+          book_covers: creator.bookCovers,
+          isReadyForReview: creator.isReadyForReview,
         },
         {
           where: { id },
@@ -334,6 +370,7 @@ class CreatorService implements ICreatorService {
         profilePictureLink: updatedCreator.profile_picture_link,
         availability: updatedCreator.availability,
         bookCovers: updatedCreator.book_covers,
+        publications: updatedCreator.publications,
         isReadyForReview: updatedCreator.isReadyForReview,
         publications: updatedCreator.publications,
         presentations: updatedCreator.presentations,

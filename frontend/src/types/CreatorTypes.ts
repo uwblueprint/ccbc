@@ -6,6 +6,7 @@ export type Creator = {
   userId: number;
   genre?: string[];
   ageRange?: string;
+  location?: string;
   timezone?: string;
   bio?: string;
   isApproved?: boolean;
@@ -20,7 +21,7 @@ export type Creator = {
   craft?: string[];
   website?: string;
   profilePictureLink?: string;
-  availability?: string;
+  availability?: string[];
   bookCovers?: string[];
   isReadyForReview?: boolean;
   presentations?: Presentation[];
@@ -72,4 +73,20 @@ export type CreatorRequest = {
   audienceSize?: number;
   subject?: string;
   message?: string;
+};
+
+/**
+ * Type for Creator Booking Requests
+ */
+export type CreatorBookingRequest = {
+  creatorId?: number;
+  name: string;
+  email: string;
+  date: string;
+  isTentative: boolean;
+  isOneDay: boolean;
+  ageGroup: string;
+  audienceSize: number;
+  subject: string;
+  message: string;
 };
