@@ -46,6 +46,6 @@ export default class Presentation extends Model {
   @Column
   details!: string;
 
-  @Column({ type: DataType.ARRAY(DataType.STRING)})
+  @Column({ type: DataType.ARRAY(DataType.STRING) })
   photos!: string[];
 }

@@ -10,7 +10,6 @@ import {
 import User from "./user.model";
 import { Presentation, Publication } from "../types";
 
-
 @Table({ tableName: "creator" })
 export default class Creator extends Model {
   // TODO: Should we add a foreign key for the presentations and publications?
