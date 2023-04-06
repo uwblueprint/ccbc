@@ -1,5 +1,4 @@
-import { Option } from "./BookTypes";
-import { Publication, Presentation } from "./CreatorTypes";
+import { Presentation, Publication } from "./CreatorTypes";
 
 export type CreatorProfile = {
   firstName?: string;
@@ -38,7 +37,6 @@ export type CreatorProfileProps =
   | "website"
   | "bio"
   | "profilePictureLink";
-
 
 export type PresentationAttributes =
   | "title"

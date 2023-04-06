@@ -246,7 +246,7 @@ const CreatorProfileForm = (): React.ReactElement => {
                 >
                   {activeForm === 0 && <ContactInfoForm submitted={error} />}
                   {activeForm === 1 && <GeneralInfoForm submitted={error} />}
-                  {activeForm === 2 && <PresentationForm submitted={error} />}
+                  {activeForm === 2 && <PresentationForm />}
                   {activeForm === 4 && <AvailabilityForm submitted={error} />}
                 </Center>
                 <CreatorProfileNav

@@ -5,17 +5,9 @@ import React, { useState } from "react";
 
 import WorkshopFormContainer from "./WorkshopFormContainer";
 
-interface PresentationFormProps {
-  submitted: boolean;
-}
-
-const PresentationForm = ({
-  submitted,
-}: PresentationFormProps): React.ReactElement => {
+const PresentationForm = (): React.ReactElement => {
   const [isReadingSectionOpen, setIsReadingSectionOpen] = useState(false);
   const [isWorkshopSectionOpen, setIsWorkshopSectionOpen] = useState(false);
-
-  // Set inital multiselection options
 
   return (
     <Flex flex="1" direction="column" justify="start">
@@ -50,7 +42,6 @@ const PresentationForm = ({
             />
           </Icon>
         }
-        submitted
       />
       <Divider size="4px" m="24px" />
       {/* Workshops section */}
@@ -77,7 +68,6 @@ const PresentationForm = ({
             />
           </Icon>
         }
-        submitted
       />
       <Divider />
       <Button color="blue.400" w="30%" justifyContent="start" p="0">
