@@ -31,9 +31,9 @@ export type CreatorDTO = {
   availability: string[];
   bookCovers: string[];
   isReadyForReview: boolean;
+  publications: Publication[];
   // TODO:
   // presentations: Presentation[];
-  publications: Publication[];
 };
 
 export type CreatorCreateUpdateDTO = Omit<CreatorDTO, "isApproved">;
