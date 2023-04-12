@@ -22,13 +22,6 @@ const register = async (
   }
 };
 
-/**
- * This function obtains a creator given a unique identifer
- *
- * @param id - the unique identifier of the creator to obtain
- * @returns Promise<ReviewResponse>
- */
-
 const getUserByEmail = async (email: string): Promise<AuthenticatedUser> => {
   try {
     const encoded = encodeURIComponent(email);

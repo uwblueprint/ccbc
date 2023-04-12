@@ -16,8 +16,14 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import Moment from "moment"
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import Moment from "moment";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import UsersAPIClient from "../../../APIClients/UsersAPIClient";
@@ -38,8 +44,9 @@ const MagazineReview = (): React.ReactElement => {
   const [featuredReviews, setFeaturedReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
+  const expiryDate = useRef(authenticatedUser?.subscriptionExpiresOn);
 
-  const { isOpen, onOpen } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const displayBlurb = useBreakpointValue(
     {
@@ -54,29 +61,36 @@ const MagazineReview = (): React.ReactElement => {
   const onClick = () => {
     window.location.href = `${process.env.REACT_APP_GIVECLOUD_URL}`;
   };
-
   const checkUserSubscriptionExpiry = useCallback(async () => {
+    // Convert the PostgresSQL date to a JavaScript Date object
+    const subscriptionExpiryDate = new Date(
+      Moment(expiryDate.current).format("LLLL"),
+    );
+    if (subscriptionExpiryDate < new Date(Date.now())) {
+      onOpen();
+    } else {
+      onClose();
+    }
+  }, [onClose, onOpen]);
+
+  const verifySubscriptionExpiry = useCallback(async () => {
     if (authenticatedUser) {
-      const user: AuthenticatedUser = await UsersAPIClient.getUserByEmail(
-        authenticatedUser?.email,
-      );
-
-      // Convert the PostgresSQL date to a JavaScript Date object
-      const subscriptionExpiryDate = new Date(
-        Moment(user?.subscriptionExpiresOn).format("LLLL"),
-      );
-
-      if (user) {
-        if (subscriptionExpiryDate < new Date(Date.now())) {
-          onOpen();
-        }
+      const updatedUser: AuthenticatedUser =
+        await UsersAPIClient.getUserByEmail(authenticatedUser?.email);
+      if (updatedUser) {
+        expiryDate.current = updatedUser.subscriptionExpiresOn;
+        setAuthenticatedUser({
+          ...authenticatedUser,
+          subscriptionExpiresOn: updatedUser.subscriptionExpiresOn,
+        });
+        checkUserSubscriptionExpiry();
       }
     }
-  }, [authenticatedUser, onOpen]);
+  }, [authenticatedUser, checkUserSubscriptionExpiry, setAuthenticatedUser]);
 
   useEffect(() => {
-    checkUserSubscriptionExpiry();
-  }, [checkUserSubscriptionExpiry]);
+    verifySubscriptionExpiry();
+  }, [verifySubscriptionExpiry]);
 
   // get featured reviews on magazine home page
   useEffect(() => {
