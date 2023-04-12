@@ -17,7 +17,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import Moment from "moment"
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import UsersAPIClient from "../../../APIClients/UsersAPIClient";
@@ -39,7 +39,7 @@ const MagazineReview = (): React.ReactElement => {
   const [loading, setLoading] = useState<boolean>(false);
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen } = useDisclosure();
 
   const displayBlurb = useBreakpointValue(
     {
@@ -55,7 +55,7 @@ const MagazineReview = (): React.ReactElement => {
     window.location.href = `${process.env.REACT_APP_GIVECLOUD_URL}`;
   };
 
-  const checkUserSubscriptionExpiry = async () => {
+  const checkUserSubscriptionExpiry = useCallback(async () => {
     if (authenticatedUser) {
       const user: AuthenticatedUser = await UsersAPIClient.getUserByEmail(
         authenticatedUser?.email,
@@ -72,11 +72,11 @@ const MagazineReview = (): React.ReactElement => {
         }
       }
     }
-  };
+  }, [authenticatedUser, onOpen]);
 
   useEffect(() => {
     checkUserSubscriptionExpiry();
-  });
+  }, [checkUserSubscriptionExpiry]);
 
   // get featured reviews on magazine home page
   useEffect(() => {
