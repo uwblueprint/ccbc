@@ -26,6 +26,26 @@ const register = async (
   }
 };
 
+/**
+ * This function obtains a creator given a unique identifer
+ *
+ * @param id - the unique identifier of the creator to obtain
+ * @returns Promise<ReviewResponse>
+ */
+
+const getUserByEmail = async (email: string): Promise<AuthenticatedUser> => {
+  try {
+    const encoded = encodeURIComponent(email);
+    const { data } = await baseAPIClient.get(`/users?email=${encoded}`, {
+      withCredentials: true,
+    });
+    return data;
+  } catch (error) {
+    throw new Error(`Get user failed: ${error}`);
+  }
+};
+
 export default {
   register,
+  getUserByEmail,
 };
