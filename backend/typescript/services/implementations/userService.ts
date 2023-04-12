@@ -190,7 +190,7 @@ class UserService implements IUserService {
           auth_id: firebaseUser.uid,
           email: firebaseUser.email,
           role_type: user.roleType,
-          subscription_expires_on: user.subscriptionExpiresOn,
+          subscription_expires_on: new Date(Date.now()),
         });
       } catch (postgresError) {
         try {

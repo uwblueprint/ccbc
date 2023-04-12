@@ -93,9 +93,6 @@ userRouter.post("/", createUserDtoValidator, async (req, res) => {
       password.digits,
     ],
   });
-  // TODO: Set proper expiry date, right now it is set to a month from now
-  const date = new Date(Date.now());
-  date.setDate(date.getDate() + 4 * 7);
 
   try {
     const newUser = await userService.createUser({
@@ -104,7 +101,7 @@ userRouter.post("/", createUserDtoValidator, async (req, res) => {
       email: req.body.email,
       roleType: req.body.roleType,
       password: accessCode.toString(),
-      subscriptionExpiresOn: date
+      subscriptionExpiresOn: new Date(Date.now()),
     });
 
     await authService.sendPasswordSetupLink(newUser, accessCode, true);

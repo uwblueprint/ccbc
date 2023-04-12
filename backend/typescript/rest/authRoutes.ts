@@ -33,15 +33,14 @@ authRouter.post("/login", loginRequestValidator, async (req, res) => {
       : await authService.generateToken(req.body.email, req.body.password);
 
     const { refreshToken, ...rest } = authDTO;
-    // Comment out subscription expiry check on login, this was causing login to fail
-    // const today = new Date();
-    // if (rest.subscriptionExpiresOn && rest.subscriptionExpiresOn > today) {
-    //   res.status(400).json({
-    //     message: "Generating token for expired user.",
-    //   });
+    const today = new Date();
+    if (rest.subscriptionExpiresOn && rest.subscriptionExpiresOn > today) {
+      res.status(400).json({
+        message: "Generating token for expired user.",
+      });
 
-    //   return;
-    // }
+      return;
+    }
 
     res
       .cookie("refreshToken", refreshToken, {
