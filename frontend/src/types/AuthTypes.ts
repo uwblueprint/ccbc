@@ -8,6 +8,7 @@ export type AuthenticatedUser = {
   roleType: UserRole;
   active: boolean;
   accessToken: string;
+  subscriptionExpiresOn: Date;
 } | null;
 
 export type DecodedJWT =
