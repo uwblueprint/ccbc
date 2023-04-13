@@ -155,7 +155,9 @@ creatorRouter.post(
     try {
       if (req.body.isApproved) throw new Error("invalid creator");
       // Only allow creation without any data
-      const result = await creatorService.createCreator(req.body.userId);
+      const result = await creatorService.createCreator(
+        parseInt(req.body.userId, 10),
+      );
 
       res.status(200).json(result);
     } catch (e: unknown) {
