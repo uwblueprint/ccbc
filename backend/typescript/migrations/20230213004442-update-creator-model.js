@@ -153,118 +153,122 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
+    const creatorsDef = await queryInterface.describeTable("creator");
+    
     return queryInterface.sequelize.transaction(async (t) => {
-      await queryInterface.removeColumn(
-        "creator",
-        "first_name",
-        { type: Sequelize.STRING },
-        { transaction: t },
-      );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "last_name",
-              { type: Sequelize.STRING },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "email",
-              { type: Sequelize.STRING },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "phone",
-              { type: Sequelize.STRING },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "street_address",
-              { type: Sequelize.STRING },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "city",
-              { type: Sequelize.STRING },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "province",
-              { type: Sequelize.STRING },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "postal_code",
-              { type: Sequelize.STRING },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "craft",
-              { type: Sequelize.DataTypes.ARRAY(Sequelize.DataTypes.STRING) },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "website",
-              { type: Sequelize.STRING },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "profile_picture_link",
-              { type: Sequelize.STRING },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "availability",
-              { type: Sequelize.DataTypes.ARRAY(Sequelize.DataTypes.STRING) },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "book_covers",
-              { type: Sequelize.DataTypes.ARRAY(Sequelize.DataTypes.STRING) },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "isReadyForReview",
-              { type: Sequelize.BOOLEAN },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "presentations",
-              { type: Sequelize.DataTypes.ARRAY(Sequelize.DataTypes.JSON) },
-              { transaction: t },
-            );
-
-      await queryInterface.removeColumn(
-              "creator",
-              "publications",
-              { type: Sequelize.DataTypes.ARRAY(Sequelize.DataTypes.JSON) },
-              { transaction: t },
-            );
+      if (creatorsDef.first_name) {
+        await queryInterface.removeColumn(
+          "creator",
+          "first_name",
+          { type: Sequelize.STRING },
+          { transaction: t },
+        );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "last_name",
+                { type: Sequelize.STRING },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "email",
+                { type: Sequelize.STRING },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "phone",
+                { type: Sequelize.STRING },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "street_address",
+                { type: Sequelize.STRING },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "city",
+                { type: Sequelize.STRING },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "province",
+                { type: Sequelize.STRING },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "postal_code",
+                { type: Sequelize.STRING },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "craft",
+                { type: Sequelize.DataTypes.ARRAY(Sequelize.DataTypes.STRING) },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "website",
+                { type: Sequelize.STRING },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "profile_picture_link",
+                { type: Sequelize.STRING },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "availability",
+                { type: Sequelize.DataTypes.ARRAY(Sequelize.DataTypes.STRING) },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "book_covers",
+                { type: Sequelize.DataTypes.ARRAY(Sequelize.DataTypes.STRING) },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "isReadyForReview",
+                { type: Sequelize.BOOLEAN },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "presentations",
+                { type: Sequelize.DataTypes.ARRAY(Sequelize.DataTypes.JSON) },
+                { transaction: t },
+              );
+  
+        await queryInterface.removeColumn(
+                "creator",
+                "publications",
+                { type: Sequelize.DataTypes.ARRAY(Sequelize.DataTypes.JSON) },
+                { transaction: t },
+              );
+      }
 
 
       return Promise.resolve();

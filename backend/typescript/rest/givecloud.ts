@@ -39,7 +39,7 @@ givecloudRouter.post(
           .update(JSON.stringify(req.body))
           .digest("hex");
 
-        if (hash !== req.get("HTTP_X_GIVECLOUD_SIGNATURE")) {
+        if (hash !== req.get("X-Givecloud-Signature")) {
           res.status(401).send("Unauthorized");
           return;
         }

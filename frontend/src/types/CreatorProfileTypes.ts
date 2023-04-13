@@ -9,6 +9,8 @@ export type CreatorProfile = {
   city?: string;
   province?: string;
   postalCode?: string;
+  presentations?: Presentation[];
+  bibliography?: BibliographyEntry[];
   publications?: Publication[];
   bookCovers?: BookCoverFile[];
   location?: string;
@@ -16,7 +18,6 @@ export type CreatorProfile = {
   availability?: string[];
   craft?: string[];
   genre?: string[];
-  presentations?: Presentation[];
   website?: string;
   bio?: string;
   profilePictureLink?: string;
@@ -36,6 +37,19 @@ export type CreatorProfileProps =
   | "website"
   | "bio"
   | "profilePictureLink";
+
+export type PresentationAttributes =
+  | "title"
+  | "offeredLocations"
+  | "preferredGradeLevel"
+  | "preferredAudienceSize"
+  | "inPersonDeliveryFee"
+  | "virtualDeliveryFee"
+  | "equipmentRequired"
+  | "languages"
+  | "otherReadingLanguages"
+  | "booksPurchasedAndAutoGraphed"
+  | "contentOfReadings";
 
 export type BibliographyEntry = {
   title: string;

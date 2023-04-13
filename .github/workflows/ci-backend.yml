@@ -30,7 +30,7 @@ jobs:
       
       # Install dependencies
       - name: Install dependencies
-        run:  yarn --cwd ./backend/typescript/
+        run: yarn --cwd ./backend/typescript/
         
       #Lint Check
       - name: Run lint for backend
