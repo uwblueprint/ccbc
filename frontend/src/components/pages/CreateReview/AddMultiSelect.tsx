@@ -103,6 +103,7 @@ interface AddMultiSelectProps {
   allowAddOption?: boolean;
   allowMultiSelectOption?: boolean;
   searchStyle?: boolean;
+  p?: string;
   error?: boolean;
 }
 
@@ -120,6 +121,7 @@ const AddMultiSelect = ({
   allowAddOption = false,
   allowMultiSelectOption,
   searchStyle,
+  p,
   error = false,
 }: AddMultiSelectProps): React.ReactElement => {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -260,6 +262,7 @@ const AddMultiSelect = ({
         isRequired={required}
         isInvalid={error && optionsSelected.length === 0}
         width={maxWidth || "100%"}
+        p={p}
       >
         <FormLabel mb="1" mt="3">
           {label}

@@ -16,6 +16,7 @@ import AvailabilityForm from "./AvailabilityForm";
 import ContactInfoForm from "./ContactInfoForm";
 import CreatorProfileNav from "./CreatorProfileNav";
 import GeneralInfoForm from "./GeneralInfoForm";
+import PresentationForm from "./PresentationForm";
 import PublicationsForm from "./Publications Form/PublicationsForm";
 import ReviewForm from "./ReviewForm";
 import SubmittedCreatorProfileModal from "./SubmittedCreatorProfile";
@@ -38,7 +39,34 @@ const CreatorProfileForm = (): React.ReactElement => {
     availability: [],
     craft: [],
     genre: [],
-    presentations: [],
+    presentations: [
+      {
+        title: "Readings",
+        offeredLocations: [],
+        preferredGradeLevel: [],
+        preferredAudienceSize: "",
+        inPersonDeliveryFee: "",
+        virtualDeliveryFee: "",
+        equipmentRequired: "",
+        languages: [],
+        otherReadingLanguages: "",
+        booksPurchasedAndAutoGraphed: "",
+        contentOfReadings: "",
+      },
+      {
+        title: "Workshops",
+        offeredLocations: [],
+        preferredGradeLevel: [],
+        preferredAudienceSize: "",
+        inPersonDeliveryFee: "",
+        virtualDeliveryFee: "",
+        equipmentRequired: "",
+        languages: [],
+        otherReadingLanguages: "",
+        booksPurchasedAndAutoGraphed: "",
+        contentOfReadings: "",
+      },
+    ],
     website: "",
     bio: "",
     profilePictureLink: "",
@@ -227,6 +255,7 @@ const CreatorProfileForm = (): React.ReactElement => {
                   >
                     {activeForm === 0 && <ContactInfoForm submitted={error} />}
                     {activeForm === 1 && <GeneralInfoForm submitted={error} />}
+                    {activeForm === 2 && <PresentationForm />}
                     {activeForm === 4 && <AvailabilityForm submitted={error} />}
                     {activeForm === 5 && (
                       <ReviewForm setFormPage={setActiveForm} />
