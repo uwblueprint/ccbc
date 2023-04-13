@@ -22,6 +22,9 @@ const MagazineReview = (): React.ReactElement => {
   const [zeroToThreeReviews, setZeroToThreeReviews] = useState<Review[]>([]);
   const [fourToEightReviews, setFourToEightReviews] = useState<Review[]>([]);
   const [nineToTwelveReviews, setNineToTwelveReviews] = useState<Review[]>([]);
+  const [twelveAndOverReviews, setTwelveAndOverReviews] = useState<Review[]>(
+    [],
+  );
   const [featuredReviews, setFeaturedReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -44,23 +47,31 @@ const MagazineReview = (): React.ReactElement => {
         setFeaturedReviews(mapReviewResponseToReview(reviewResponse.reviews));
       });
     reviewAPIClient
-      .getReviews(undefined, 5, 0, 0, 3)
+      .getReviews(undefined, 4, 0, 0, 3)
       .then((reviewResponse: PaginatedReviewResponse) => {
         setZeroToThreeReviews(
           mapReviewResponseToReview(reviewResponse.reviews),
         );
       });
     reviewAPIClient
-      .getReviews(undefined, 5, 0, 4, 8)
+      .getReviews(undefined, 4, 0, 4, 8)
       .then((reviewResponse: PaginatedReviewResponse) => {
         setFourToEightReviews(
           mapReviewResponseToReview(reviewResponse.reviews),
         );
       });
     reviewAPIClient
-      .getReviews(undefined, 5, 0, 9, 12)
+      .getReviews(undefined, 4, 0, 9, 12)
       .then((reviewResponse: PaginatedReviewResponse) => {
         setNineToTwelveReviews(
+          mapReviewResponseToReview(reviewResponse.reviews),
+        );
+        setLoading(false);
+      });
+    reviewAPIClient
+      .getReviews(undefined, 4, 0, 12, 100)
+      .then((reviewResponse: PaginatedReviewResponse) => {
+        setTwelveAndOverReviews(
           mapReviewResponseToReview(reviewResponse.reviews),
         );
         setLoading(false);
@@ -77,7 +88,7 @@ const MagazineReview = (): React.ReactElement => {
         bgRepeat="no-repeat"
         backgroundSize="cover"
         backgroundAttachment="scroll"
-        bgPosition="0 -120px"
+        bgPosition="0"
       >
         <VStack>
           {displayBlurb && (
@@ -128,6 +139,11 @@ const MagazineReview = (): React.ReactElement => {
                   name="Age 9 - 12"
                   link="/magazine/search_results/?minAge=9&maxAge=12"
                   reviews={nineToTwelveReviews}
+                />
+                <CategoryReviews
+                  name="Age 12+"
+                  link="/magazine/search_results/?minAge=12&maxAge=100"
+                  reviews={twelveAndOverReviews}
                 />
               </Box>
             </Flex>
