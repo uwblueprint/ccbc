@@ -30,9 +30,7 @@ jobs:
       
       # Install dependencies
       - name: Install dependencies
-        run: |
-        export NODE_OPTIONS="--max-old_space_size=4096" 
-        yarn --cwd ./backend/typescript/
+        run: yarn --cwd ./backend/typescript/
         
       #Lint Check
       - name: Run lint for backend
