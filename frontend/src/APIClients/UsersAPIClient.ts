@@ -5,15 +5,11 @@ const register = async (
   email: string,
   roleType = "Subscriber",
 ): Promise<AuthenticatedUser> => {
-  const date = new Date(Date.now());
-  date.setDate(date.getDate() - 1);
-
   const newSubscriber = {
     firstName: "",
     lastName: "",
     email,
     roleType,
-    subscriptionExpiresOn: date,
   };
 
   try {
@@ -26,6 +22,19 @@ const register = async (
   }
 };
 
+const getUserByEmail = async (email: string): Promise<AuthenticatedUser> => {
+  try {
+    const encoded = encodeURIComponent(email);
+    const { data } = await baseAPIClient.get(`/users?email=${encoded}`, {
+      withCredentials: true,
+    });
+    return data;
+  } catch (error) {
+    throw new Error(`Get user failed: ${error}`);
+  }
+};
+
 export default {
   register,
+  getUserByEmail,
 };
