@@ -67,6 +67,7 @@ const App = (): React.ReactElement => {
     DEFAULT_NOTIFICATION_CONTEXT,
   );
 
+  
   return (
     <ChakraProvider theme={customTheme}>
       <SampleContext.Provider value={sampleContext}>
