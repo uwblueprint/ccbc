@@ -13,8 +13,11 @@ import { Link, useHistory, useParams } from "react-router-dom";
 
 import CreatorAPIClient from "../../../APIClients/CreatorAPIClient";
 import background from "../../../assets/SearchResultsBackground.png";
+import { AUTHENTICATED_USER_KEY } from "../../../constants/AuthConstants";
 import { SEARCH_REVIEWS_PAGE } from "../../../constants/Routes";
+import { AuthenticatedUser } from "../../../types/AuthTypes";
 import { Creator } from "../../../types/CreatorTypes";
+import { getLocalStorageObj } from "../../../utils/LocalStorageUtils";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import ContactInquiry from "./ContactInquiry";
 import CreatorAvailability from "./CreatorAvailability";
@@ -43,6 +46,16 @@ const CreatorProfile = (): React.ReactElement => {
           setCurrentCreator(res);
         }
         setLoading(false);
+
+        // If the creator isn't approved, only admins can view their profile, non-admins will be sent to /unathorized
+        if (currentCreator?.isApproved !== true) {
+          const currentUser: AuthenticatedUser = getLocalStorageObj(
+            AUTHENTICATED_USER_KEY,
+          );
+          if (currentUser?.roleType !== "Admin") {
+            history.replace("/unauthorized");
+          }
+        }
       })
       .catch((error) => {
         history.replace("/404");
