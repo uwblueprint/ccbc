@@ -41,7 +41,7 @@ const CreatorPreview = ({
       gap={6}
       w="full"
       bgColor="white"
-      onClick={() => history.push(`/creator-profile/${creator.id}`)}
+      onClick={() => history.push(`/creators/${creator.id}`)}
       cursor="pointer"
     >
       <GridItem
