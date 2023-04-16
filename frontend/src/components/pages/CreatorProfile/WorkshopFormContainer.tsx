@@ -115,7 +115,7 @@ const WorkshopFormContainer = ({
           <Text>
             {presentation &&
               Array.isArray(presentation[field]) &&
-              presentation[field]
+              (presentation[field] as Option[])
                 .map((option: Option) => option.label)
                 .join(", ")}
           </Text>
