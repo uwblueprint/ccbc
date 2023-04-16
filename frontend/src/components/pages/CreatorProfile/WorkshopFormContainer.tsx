@@ -87,7 +87,13 @@ const WorkshopFormContainer = ({
     const creatorProfileObj = { ...creatorProfile };
 
     if (creatorProfileObj.presentations) {
-      creatorProfileObj.presentations[index][field] = newValue;
+      if (field === 'offeredLocations' || field === 'preferredGradeLevel') {
+        creatorProfileObj.presentations[index][field] = newValue;
+      } else if (field === 'languages') {
+        creatorProfileObj.presentations[index][field] = newValue as string[];
+      } else {
+        creatorProfileObj.presentations[index][field] = newValue as string;
+      }
     }
     setCreatorProfile(creatorProfileObj);
   };
