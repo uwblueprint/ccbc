@@ -40,7 +40,7 @@ givecloudRouter.post(
           .digest("hex");
 
         if (hash !== req.get("X-Givecloud-Signature")) {
-          res.status(401).send("Unauthorized");
+          res.status(401).send(hash);
           return;
         }
       } else {
