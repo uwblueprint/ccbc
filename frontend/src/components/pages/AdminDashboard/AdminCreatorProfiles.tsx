@@ -180,6 +180,19 @@ const AdminCreatorProfiles = (): React.ReactElement => {
         label: "Creator",
         options: {
           setCellProps: () => ({ style: { minWidth: "220px" } }),
+          customBodyRender: (value, tableMeta) => {
+            return (
+              <Button
+                pl={0}
+                variant="ghost"
+                onClick={() =>
+                  history.push(`/creators/${tableMeta.rowData[0]}`)
+                }
+              >
+                {value}
+              </Button>
+            );
+          },
         },
       },
       {
@@ -299,6 +312,7 @@ const AdminCreatorProfiles = (): React.ReactElement => {
         });
         currColumn.options.customHeadLabelRender = headLabelRenderFunction;
         if (
+          currColumn.name !== "name" &&
           currColumn.name !== "authors" &&
           currColumn.name !== "status" &&
           currColumn.name !== "actions"
