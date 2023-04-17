@@ -39,8 +39,8 @@ givecloudRouter.post(
           .update(JSON.stringify(req.body))
           .digest("hex");
 
-        if (hash !== req.get("X-Givecloud-Signature")) {
-          res.status(401).send(hash);
+        if (hash !== req.get("HTTP_X_GIVECLOUD_SIGNATURE")) {
+          res.status(401).send(hash+"\n"+req.get("HTTP_X_GIVECLOUD_SIGNATURE"));
           return;
         }
       } else {
