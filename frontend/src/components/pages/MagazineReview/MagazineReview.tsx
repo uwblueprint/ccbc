@@ -28,6 +28,7 @@ import React, {
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
 import UsersAPIClient from "../../../APIClients/UsersAPIClient";
 import background from "../../../assets/home-bg.png";
+import { UserRole } from "../../../constants/Enums";
 import AuthContext from "../../../contexts/AuthContext";
 import { AuthenticatedUser } from "../../../types/AuthTypes";
 import { PaginatedReviewResponse, Review } from "../../../types/ReviewTypes";
@@ -48,6 +49,7 @@ const MagazineReview = (): React.ReactElement => {
   const [loading, setLoading] = useState<boolean>(false);
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
   const expiryDate = useRef(authenticatedUser?.subscriptionExpiresOn);
+  const isSubscriber = authenticatedUser?.roleType === UserRole.Subscriber;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -69,7 +71,7 @@ const MagazineReview = (): React.ReactElement => {
     const subscriptionExpiryDate = new Date(
       Moment(expiryDate.current).format("LLLL"),
     );
-    if (subscriptionExpiryDate < new Date(Date.now())) {
+    if (subscriptionExpiryDate < new Date(Date.now()) && isSubscriber) {
       onOpen();
     } else {
       onClose();
@@ -93,7 +95,7 @@ const MagazineReview = (): React.ReactElement => {
 
   useEffect(() => {
     verifySubscriptionExpiry();
-  }, [verifySubscriptionExpiry]);
+  }, []);
 
   // get featured reviews on magazine home page
   useEffect(() => {
