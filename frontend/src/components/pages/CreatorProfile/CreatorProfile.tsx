@@ -22,6 +22,7 @@ import LoadingSpinner from "../../common/LoadingSpinner";
 import ContactInquiry from "./ContactInquiry";
 import CreatorAvailability from "./CreatorAvailability";
 import CreatorOverview from "./CreatorOverview";
+import CreatorPresentations from "./CreatorPresentations";
 import CreatorPublications from "./CreatorPublications";
 
 interface CreatorProfileParams {
@@ -117,6 +118,7 @@ const CreatorProfile = (): React.ReactElement => {
 
               <CreatorOverview currentCreator={currentCreator} />
               <CreatorAvailability currentCreator={currentCreator} />
+              <CreatorPresentations currentCreator={currentCreator} />
               <CreatorPublications currentCreator={currentCreator} />
               <ContactInquiry
                 currentCreator={currentCreator}

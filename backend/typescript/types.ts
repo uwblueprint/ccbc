@@ -1,11 +1,32 @@
-import Publication from "./models/publication.model";
-
 export type Role = "Admin" | "Subscriber" | "Author";
 
 export type Token = {
   accessToken: string;
   refreshToken: string;
 };
+
+export interface Presentation {
+  name?: string;
+  locations?: string;
+  age_groups?: string;
+  audience_size?: string;
+  is_in_person?: boolean;
+  in_person_rate?: number;
+  is_virtual?: boolean;
+  virtual_rate?: number;
+  special_equipment?: string;
+  languages?: string;
+  is_bringing?: boolean;
+  details?: string;
+  photos?: string[];
+}
+
+export interface Publication {
+  title: string;
+  publisher: string;
+  publication_year: string;
+  notes: string;
+}
 
 export type CreatorDTO = {
   id: number;
@@ -31,9 +52,8 @@ export type CreatorDTO = {
   availability: string[];
   bookCovers: string[];
   isReadyForReview: boolean;
+  presentations: Presentation[];
   publications: Publication[];
-  // TODO:
-  // presentations: Presentation[];
 };
 
 export type CreatorCreateUpdateDTO = Omit<CreatorDTO, "isApproved">;

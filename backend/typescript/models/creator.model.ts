@@ -8,8 +8,7 @@ import {
   ForeignKey,
 } from "sequelize-typescript";
 import User from "./user.model";
-import Presentation from "./presentation.model";
-import Publication from "./publication.model";
+import { Presentation, Publication } from "../types";
 
 @Table({ tableName: "creator" })
 export default class Creator extends Model {
