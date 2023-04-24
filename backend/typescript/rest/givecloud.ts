@@ -41,7 +41,7 @@ givecloudRouter.post(
           const hash1 = createHmac("sha1", process.env.HMAC_SECRET_KEY)
           .update(JSON.stringify(req.body))
           .digest("hex");
-        res.status(401).send("sha256="+hash256+"\n"+"sha1="+hash1+"\n"+req.get("X-Givecloud-Signature"));
+        res.status(401).send(process.env.HMAC_SECRET_KEY+"\nsha256="+hash256+"\n"+"sha1="+hash1+"\n"+req.get("HTTP_X_GIVECLOUD_SIGNATURE"));
         // if (hash !== req.get("X-Givecloud-Signature")) {
         //   res.status(401).send(hash);
         //   return;
