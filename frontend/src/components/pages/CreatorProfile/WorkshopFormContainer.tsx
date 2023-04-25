@@ -353,6 +353,7 @@ const WorkshopFormContainer = ({
             <FormControl isRequired>
               <FormLabel> Describe the contents of your readings(s)</FormLabel>
               <Textarea
+                value={presentation?.details}
                 onChange={(e) => {
                   handleFormInputChange({
                     newValue: e.target.value,
