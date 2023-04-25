@@ -21,6 +21,7 @@ import React, { useContext, useEffect, useState } from "react";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { Option } from "../../../types/BookTypes";
 import { PresentationAttributes } from "../../../types/CreatorProfileTypes";
+import { Presentation } from "../../../types/CreatorTypes";
 import AddMultiSelect from "../CreateReview/AddMultiSelect";
 
 interface WorkshopFormContainerProps {
@@ -49,7 +50,8 @@ interface InputHandler {
     | "inPersonDeliveryFee"
     | "virtualDeliveryFee"
     | "otherReadingLanguages"
-    | "preferredAudienceSize";
+    | "preferredAudienceSize"
+    | "details";
 }
 
 interface RadioGroupHandler {
@@ -87,9 +89,28 @@ const WorkshopFormContainer = ({
     const creatorProfileObj = { ...creatorProfile };
 
     if (creatorProfileObj.presentations) {
-      if (field === 'offeredLocations' || field === 'preferredGradeLevel') {
+      if (creatorProfileObj.presentations[index] === undefined) {
+        const newPresentation = {
+          title,
+          details: "",
+          photos: [],
+          contentOfReadings: "",
+          offeredLocations: [],
+          preferredGradeLevel: [],
+          languages: [],
+          equipmentRequired: "",
+          inPersonDeliveryFee: "",
+          virtualDeliveryFee: "",
+          otherReadingLanguages: "",
+          booksPurchasedAndAutoGraphed: "",
+          preferredAudienceSize: "",
+        };
+        creatorProfileObj.presentations.push(newPresentation as Presentation);
+      }
+
+      if (field === "offeredLocations" || field === "preferredGradeLevel") {
         creatorProfileObj.presentations[index][field] = newValue;
-      } else if (field === 'languages') {
+      } else if (field === "languages") {
         creatorProfileObj.presentations[index][field] = newValue as string[];
       } else {
         creatorProfileObj.presentations[index][field] = newValue as string;
@@ -109,15 +130,20 @@ const WorkshopFormContainer = ({
         <Flex
           key={`${field}-${title}`}
           direction="row"
-          justifyContent="space-around"
+          justifyContent="space-between"
+          w="50%"
         >
           <Text>{displayName}:</Text>
           <Text>
-            {presentation &&
-              Array.isArray(presentation[field]) &&
-              (presentation[field] as Option[])
-                .map((option: Option) => option.label)
-                .join(", ")}
+            {presentation && (
+              <>
+                {Array.isArray(presentation[field])
+                  ? (presentation[field] as Option[])
+                      .map((option: Option) => option.label)
+                      .join(", ")
+                  : presentation[field]}
+              </>
+            )}
           </Text>
         </Flex>
       );
@@ -144,7 +170,6 @@ const WorkshopFormContainer = ({
     ]);
   }, []);
 
-  
   return (
     <Flex direction="column">
       <Flex alignItems="center">
@@ -327,7 +352,14 @@ const WorkshopFormContainer = ({
             </FormControl>
             <FormControl isRequired>
               <FormLabel> Describe the contents of your readings(s)</FormLabel>
-              <Textarea />
+              <Textarea
+                onChange={(e) => {
+                  handleFormInputChange({
+                    newValue: e.target.value,
+                    field: "details",
+                  });
+                }}
+              />
             </FormControl>
           </Container>
         ) : (

@@ -115,7 +115,11 @@ const App = (): React.ReactElement => {
                       exact
                       path={Routes.CREATOR_DIRECTORY}
                       component={SearchCreators}
-                      requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
+                      requiredRoles={[
+                        UserRole.Admin,
+                        UserRole.Subscriber,
+                        UserRole.Creator,
+                      ]}
                     />
                     <PrivateRoute
                       exact
@@ -133,7 +137,11 @@ const App = (): React.ReactElement => {
                       exact
                       path={Routes.PROFILE_PAGE}
                       component={Profile}
-                      requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
+                      requiredRoles={[
+                        UserRole.Admin,
+                        UserRole.Subscriber,
+                        UserRole.Creator,
+                      ]}
                     />
                     <PrivateRoute
                       exact
