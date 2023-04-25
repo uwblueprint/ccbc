@@ -255,9 +255,7 @@ const ReviewForm = ({ setFormPage }: ContactInfoProps): React.ReactElement => {
                                 <GridItem colSpan={2} fontWeight="medium">
                                   Content of Readings
                                 </GridItem>
-                                <GridItem colSpan={4}>
-                                  {pres.contentOfReadings}
-                                </GridItem>
+                                <GridItem colSpan={4}>{pres.details}</GridItem>
                               </>
                             ))}
                           {fieldData
