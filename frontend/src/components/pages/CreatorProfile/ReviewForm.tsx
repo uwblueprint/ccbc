@@ -173,90 +173,135 @@ const ReviewForm = ({ setFormPage }: ContactInfoProps): React.ReactElement => {
                       )}
                       {item === "Presentations" && (
                         <>
-                          {fieldData.map((pres: Presentation, i: number) => (
-                            <>
-                              <GridItem
-                                colSpan={6}
-                                fontSize="xl"
-                                fontWeight="semibold"
-                                mt={i !== 0 ? 5 : 0}
-                              >
-                                {pres.title}
-                              </GridItem>
-                              <GridItem colSpan={2} fontWeight="medium">
-                                Offered Locations
-                              </GridItem>
-                              <GridItem colSpan={4}>
-                                {pres.offeredLocations
-                                  .map((loc) => loc.label)
-                                  .join(",")}
-                              </GridItem>
-                              <GridItem colSpan={2} fontWeight="medium">
-                                Preferred Grade Levels
-                              </GridItem>
-                              <GridItem colSpan={4}>
-                                {pres.preferredGradeLevel
-                                  .map((loc) => loc.label)
-                                  .join(",")}
-                              </GridItem>
-                              <GridItem colSpan={2} fontWeight="medium">
-                                Preferred Audience Size
-                              </GridItem>
-                              <GridItem colSpan={4}>
-                                {pres.preferredAudienceSize}
-                              </GridItem>
-                              <GridItem
-                                colSpan={2}
-                                rowSpan={2}
-                                fontWeight="medium"
-                              >
-                                Delivery Formats
-                              </GridItem>
-                              <GridItem colSpan={4} rowSpan={2}>
-                                <Flex direction="column">
-                                  <Text>
-                                    In Person | Fee: ${pres.inPersonDeliveryFee}
-                                  </Text>
-                                  <Text>
-                                    Virtual | Fee: ${pres.virtualDeliveryFee}
-                                  </Text>
-                                </Flex>
-                              </GridItem>
-                              <GridItem colSpan={2} fontWeight="medium">
-                                AV / Special Equipment
-                              </GridItem>
-                              <GridItem colSpan={4}>
-                                {pres.equipmentRequired}
-                              </GridItem>
-                              <GridItem colSpan={2} fontWeight="medium">
-                                Available Languages
-                              </GridItem>
-                              <GridItem colSpan={4}>
-                                {`${pres.languages
-                                  .map((lang) => capitalize(lang))
-                                  .join(",")}${
-                                  pres.languages.length > 0 &&
-                                  pres.otherReadingLanguages !== ""
-                                    ? `, Other (${capitalize(
-                                        pres.otherReadingLanguages,
-                                      )})`
-                                    : capitalize(pres.otherReadingLanguages)
-                                }`}
-                              </GridItem>
-                              <GridItem colSpan={2} fontWeight="medium">
-                                Book copies included?
-                              </GridItem>
-                              <GridItem colSpan={4}>
-                                {pres.booksPurchasedAndAutoGraphed}
-                              </GridItem>
-                              <GridItem colSpan={2} fontWeight="medium">
-                                Content of Readings
-                              </GridItem>
-                              <GridItem colSpan={4}>
-                                {pres.contentOfReadings}
-                              </GridItem>
-                            </>
-                          ))}
+                          {fieldData
+                            .slice(0, 2)
+                            .map((pres: Presentation, i: number) => (
+                              <>
+                                <GridItem
+                                  colSpan={6}
+                                  fontSize="xl"
+                                  fontWeight="semibold"
+                                  mt={i !== 0 ? 5 : 0}
+                                >
+                                  {pres.title}
+                                </GridItem>
+                                <GridItem colSpan={2} fontWeight="medium">
+                                  Offered Locations
+                                </GridItem>
+                                <GridItem colSpan={4}>
+                                  {pres.offeredLocations
+                                    .map((loc) => loc.label)
+                                    .join(",")}
+                                </GridItem>
+                                <GridItem colSpan={2} fontWeight="medium">
+                                  Preferred Grade Levels
+                                </GridItem>
+                                <GridItem colSpan={4}>
+                                  {pres.preferredGradeLevel
+                                    .map((loc) => loc.label)
+                                    .join(",")}
+                                </GridItem>
+                                <GridItem colSpan={2} fontWeight="medium">
+                                  Preferred Audience Size
+                                </GridItem>
+                                <GridItem colSpan={4}>
+                                  {pres.preferredAudienceSize}
+                                </GridItem>
+                                <GridItem
+                                  colSpan={2}
+                                  rowSpan={2}
+                                  fontWeight="medium"
+                                >
+                                  Delivery Formats
+                                </GridItem>
+                                <GridItem colSpan={4} rowSpan={2}>
+                                  <Flex direction="column">
+                                    <Text>
+                                      In Person | Fee: $
+                                      {pres.inPersonDeliveryFee}
+                                    </Text>
+                                    <Text>
+                                      Virtual | Fee: ${pres.virtualDeliveryFee}
+                                    </Text>
+                                  </Flex>
+                                </GridItem>
+                                <GridItem colSpan={2} fontWeight="medium">
+                                  AV / Special Equipment
+                                </GridItem>
+                                <GridItem colSpan={4}>
+                                  {pres.equipmentRequired}
+                                </GridItem>
+                                <GridItem colSpan={2} fontWeight="medium">
+                                  Available Languages
+                                </GridItem>
+                                <GridItem colSpan={4}>
+                                  {`${pres.languages
+                                    .map((lang) => capitalize(lang))
+                                    .join(",")}${
+                                    pres.languages.length > 0 &&
+                                    pres.otherReadingLanguages !== ""
+                                      ? `, Other (${capitalize(
+                                          pres.otherReadingLanguages,
+                                        )})`
+                                      : capitalize(pres.otherReadingLanguages)
+                                  }`}
+                                </GridItem>
+                                <GridItem colSpan={2} fontWeight="medium">
+                                  Book copies included?
+                                </GridItem>
+                                <GridItem colSpan={4}>
+                                  {pres.booksPurchasedAndAutoGraphed}
+                                </GridItem>
+                                <GridItem colSpan={2} fontWeight="medium">
+                                  Content of Readings
+                                </GridItem>
+                                <GridItem colSpan={4}>
+                                  {pres.contentOfReadings}
+                                </GridItem>
+                              </>
+                            ))}
+                          {fieldData
+                            .slice(2, fieldData.length)
+                            .map((pres: Presentation, i: number) => (
+                              <>
+                                <GridItem
+                                  colSpan={6}
+                                  fontSize="xl"
+                                  fontWeight="semibold"
+                                  mt={i !== 0 ? 5 : 0}
+                                >
+                                  {pres.title}
+                                </GridItem>
+                                <GridItem
+                                  colSpan={2}
+                                  rowSpan={2}
+                                  fontWeight="medium"
+                                >
+                                  Delivery Formats
+                                </GridItem>
+                                <GridItem colSpan={4} rowSpan={2}>
+                                  <Flex direction="column">
+                                    <Text>
+                                      In Person | Fee: $
+                                      {pres.inPersonDeliveryFee}
+                                    </Text>
+                                    <Text>
+                                      Virtual | Fee: ${pres.virtualDeliveryFee}
+                                    </Text>
+                                  </Flex>
+                                </GridItem>
+                                <GridItem colSpan={2} fontWeight="medium">
+                                  AV / Special Equipment
+                                </GridItem>
+                                <GridItem colSpan={4}>
+                                  {pres.equipmentRequired}
+                                </GridItem>
+                                <GridItem colSpan={2} fontWeight="medium">
+                                  Content of Presentation
+                                </GridItem>
+                                <GridItem colSpan={4}>{pres.details}</GridItem>
+                              </>
+                            ))}
                         </>
                       )}
                       <GridItem colSpan={5} rowSpan={item === "Bio" ? 1 : 4}>
