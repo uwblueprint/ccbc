@@ -127,11 +127,16 @@ const AvailabilityForm = ({
       <Text textStyle="h2" textAlign="left" fontWeight="bold">
         General availability
       </Text>
-      <Text textAlign="left" mb="5">
+      <Text textAlign="left" mb="1">
         Please select your preferred availability for bookings below. Note that
         this serves just to help bookers gauge your schedule and is not a
         calendar booker. <span style={{ color: "red" }}>*</span>
       </Text>
+      {submitted && creatorProfile?.availability.length === 0 && (
+        <span style={{ color: "red", fontSize: '11pt', marginTop: '0px'}}> 
+          Please enter your availability
+        </span>
+      )}
       <Grid
         templateRows="repeat(3, 1fr)"
         templateColumns="repeat(8, 1fr)"
@@ -156,7 +161,6 @@ const AvailabilityForm = ({
         })}
       </Grid>
     </Flex>
-    //
   );
 };
 
