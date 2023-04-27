@@ -135,6 +135,7 @@ class CreatorService implements ICreatorService {
           publications: creator.publications,
           presentations: creator.presentations,
           isReadyForReview: creator.isReadyForReview,
+          createdAt: creator.createdAt,
         }))
         .filter(
           (creator) =>
