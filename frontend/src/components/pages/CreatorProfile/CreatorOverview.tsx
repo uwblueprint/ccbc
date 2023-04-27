@@ -83,7 +83,7 @@ export default function CreatorOverview({
                       value={pair.value as any}
                       readOnly
                       theme="bubble"
-                      className={`${reactQuill}`}
+                      className={reactQuill}
                     />
                   )}
               </HStack>
