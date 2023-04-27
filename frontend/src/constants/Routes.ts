@@ -1,5 +1,7 @@
 export const HOME_PAGE = "/";
 
+export const REVIEWS = "/reviews"
+
 export const LOGIN_PAGE = "/login";
 
 export const UNAUTHORIZED_PAGE = "/unauthorized";

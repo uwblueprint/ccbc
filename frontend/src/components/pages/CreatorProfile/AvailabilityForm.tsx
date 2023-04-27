@@ -132,7 +132,7 @@ const AvailabilityForm = ({
         this serves just to help bookers gauge your schedule and is not a
         calendar booker. <span style={{ color: "red" }}>*</span>
       </Text>
-      {submitted && creatorProfile?.availability?.length === 0 && (
+      {submitted && (!creatorProfile?.availability || creatorProfile?.availability.length === 0) && (
         <span style={{ color: "red", fontSize: '11pt', marginTop: '0px'}}> 
           Please enter your availability
         </span>

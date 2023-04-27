@@ -107,19 +107,14 @@ const App = (): React.ReactElement => {
                     />
                     <PrivateRoute
                       exact
-                      path={Routes.HOME_PAGE}
+                      path={Routes.REVIEWS}
                       component={MagazineReview}
                       requiredRoles={[UserRole.Admin, UserRole.Subscriber]}
                     />
-                    <PrivateRoute
+                    <Route
                       exact
-                      path={Routes.CREATOR_DIRECTORY}
+                      path={Routes.HOME_PAGE}
                       component={SearchCreators}
-                      requiredRoles={[
-                        UserRole.Admin,
-                        UserRole.Subscriber,
-                        UserRole.Creator,
-                      ]}
                     />
                     <PrivateRoute
                       exact
