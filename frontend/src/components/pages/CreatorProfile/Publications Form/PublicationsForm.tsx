@@ -323,7 +323,7 @@ const PublicationsForm = ({
             mt="8px"
             onClick={handleAddBibEntry}
           >
-            Another book
+            Save book
           </Button>
         </Flex>
       </Center>
