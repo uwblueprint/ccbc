@@ -4,6 +4,7 @@ import { BiFileBlank } from "react-icons/bi";
 import { BsBook } from "react-icons/bs";
 import { IoBrushOutline } from "react-icons/io5";
 
+import { Option } from "../../../types/BookTypes";
 import { Creator, Presentation } from "../../../types/CreatorTypes";
 import Carousel from "./Carousel";
 
@@ -19,16 +20,16 @@ const additionalInfoNames = [
 ];
 
 const additionalInfoFields = [
-  "age_groups",
-  "audience_size",
-  "locations",
+  "preferredGradeLevel",
+  "preferredAudienceSize",
+  "offeredLocations",
   "languages",
-  "special_equipment",
+  "equipmentRequired",
   "is_in_person",
   "is_virtual",
   "is_bringing",
-  "in_person_rate",
-  "virtual_rate",
+  "inPersonDeliveryFee",
+  "virtualDeliveryFee",
 ];
 
 interface CreatorPresentationsProps {
@@ -61,13 +62,13 @@ const CreatorPresentations = ({
                 justifyContent="center"
                 mr="16px"
               >
-                {(pres.name === READINGS_NAME && <BsBook />) ||
-                  (pres.name === WORKSHOPS_NAME && <IoBrushOutline />) || (
+                {(pres.title === READINGS_NAME && <BsBook />) ||
+                  (pres.title === WORKSHOPS_NAME && <IoBrushOutline />) || (
                     <BiFileBlank />
                   )}
               </Flex>
               <Text fontSize="22px" fontWeight={500}>
-                {pres.name}
+                {pres.title}
               </Text>
             </Flex>
             <Flex mt="16px">
@@ -112,11 +113,17 @@ const CreatorPresentations = ({
                       }
                       return (
                         <Text key={name} mb="6px">
+                          {/* If array, make join either the options array or string array */}
                           <b>{name}:</b>{" "}
-                          {(Array.isArray(value) && value.join(", ")) ||
-                            (value === true && "Yes") ||
-                            (value === false && "No") ||
-                            value}
+                          {/* eslint-disable-next-line no-nested-ternary */}
+                          {Array.isArray(value)
+                            ? // If option, get values then join. Else just join
+                              typeof value[0] === "string"
+                              ? value.join(", ")
+                              : (value as Option[])
+                                  .map((v) => v.value)
+                                  .join(", ")
+                            : value}
                         </Text>
                       );
                     })}

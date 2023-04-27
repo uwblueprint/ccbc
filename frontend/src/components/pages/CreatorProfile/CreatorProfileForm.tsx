@@ -42,6 +42,8 @@ const CreatorProfileForm = (): React.ReactElement => {
     presentations: [
       {
         title: "Readings",
+        details: "",
+        photos: [],
         offeredLocations: [],
         preferredGradeLevel: [],
         preferredAudienceSize: "",
@@ -55,6 +57,8 @@ const CreatorProfileForm = (): React.ReactElement => {
       },
       {
         title: "Workshops",
+        details: "",
+        photos: [],
         offeredLocations: [],
         preferredGradeLevel: [],
         preferredAudienceSize: "",

@@ -82,8 +82,8 @@ class CreatorService implements ICreatorService {
       availability: creator.availability,
       bookCovers: creator.book_covers,
       publications: creator.publications,
-      isReadyForReview: creator.isReadyForReview,
       presentations: creator.presentations,
+      isReadyForReview: creator.isReadyForReview,
     };
   }
 
@@ -133,8 +133,8 @@ class CreatorService implements ICreatorService {
           availability: creator.availability,
           bookCovers: creator.book_covers,
           publications: creator.publications,
-          isReadyForReview: creator.isReadyForReview,
           presentations: creator.presentations,
+          isReadyForReview: creator.isReadyForReview,
         }))
         .filter(
           (creator) =>
@@ -292,8 +292,8 @@ class CreatorService implements ICreatorService {
         availability: newCreator.availability,
         bookCovers: newCreator.book_covers,
         publications: newCreator.publications,
-        isReadyForReview: newCreator.isReadyForReview,
         presentations: newCreator.presentations,
+        isReadyForReview: newCreator.isReadyForReview,
       };
     } catch (error) {
       Logger.error(
@@ -331,6 +331,7 @@ class CreatorService implements ICreatorService {
           profile_picture_link: creator.profilePictureLink,
           availability: creator.availability,
           publications: creator.publications,
+          presentations: creator.presentations,
           book_covers: creator.bookCovers,
           isReadyForReview: creator.isReadyForReview,
         },
@@ -368,8 +369,8 @@ class CreatorService implements ICreatorService {
         availability: updatedCreator.availability,
         bookCovers: updatedCreator.book_covers,
         publications: updatedCreator.publications,
-        isReadyForReview: updatedCreator.isReadyForReview,
         presentations: updatedCreator.presentations,
+        isReadyForReview: updatedCreator.isReadyForReview,
       };
     } catch (error) {
       Logger.error(
