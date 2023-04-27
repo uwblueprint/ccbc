@@ -35,17 +35,14 @@ givecloudRouter.post(
   async (req: Request, res: Response) => {
     try {
       if (process.env.HMAC_SECRET_KEY) {
-        // const hash256 = createHmac("sha256", process.env.HMAC_SECRET_KEY)
-        //   .update(JSON.stringify(req.body))
-        //   .digest("hex");
-        //   const hash1 = createHmac("sha1", process.env.HMAC_SECRET_KEY)
-        //   .update(JSON.stringify(req.body))
-        //   .digest("hex");
-        // res.status(401).send(process.env.HMAC_SECRET_KEY+"\nsha256="+hash256+"\n"+"sha1="+hash1+"\n"+req.get("HTTP_X_GIVECLOUD_SIGNATURE"));
-        // // if (hash !== req.get("X-Givecloud-Signature")) {
-        // //   res.status(401).send(hash);
-        // //   return;
-        // // }
+        const hash = createHmac("SHA1", process.env.HMAC_SECRET_KEY)
+          .update(JSON.stringify(req.body))
+          .digest("hex");
+
+        if (hash !== req.get("X-Givecloud-Signature")) {
+          res.status(401).send("Unauthorized");
+          return;
+        }
       } else {
         throw new Error("No HMAC secret key set");
       }
