@@ -41,7 +41,6 @@ export type Presentation = {
   is_virtual?: boolean;
   virtual_rate?: number;
   special_equipment?: string;
-  languages?: string;
   is_bringing?: boolean;
   details?: string;
   photos?: string[];
