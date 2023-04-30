@@ -44,7 +44,7 @@ const CreatorPresentations = ({
   const READINGS_NAME = "Readings";
   const WORKSHOPS_NAME = "Workshops";
 
-  return (
+  return (presentations.length ?? 0) > 0 ? (
     <Flex mb="16px" direction="column">
       <Text textStyle="heading" fontSize="30px" fontWeight="bold">
         Presentations
@@ -141,6 +141,8 @@ const CreatorPresentations = ({
         );
       })}
     </Flex>
+  ) : (
+    <></>
   );
 };
 
