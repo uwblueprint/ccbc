@@ -1,6 +1,6 @@
 export const HOME_PAGE = "/";
 
-export const REVIEWS = "/reviews"
+export const REVIEWS = "/reviews";
 
 export const LOGIN_PAGE = "/login";
 

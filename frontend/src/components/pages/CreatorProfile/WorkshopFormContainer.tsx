@@ -7,6 +7,7 @@ import {
   FormControl,
   FormLabel,
   Grid,
+  Image,
   Input,
   Radio,
   RadioGroup,
@@ -16,8 +17,16 @@ import {
 } from "@chakra-ui/react";
 import { StringOrNumber } from "@chakra-ui/utils";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
+import checkMarkActive from "../../../assets/checkmark-active.svg";
+import checkMarkInactive from "../../../assets/checkmark-inactive.svg";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { Option } from "../../../types/BookTypes";
 import { PresentationAttributes } from "../../../types/CreatorProfileTypes";
@@ -59,6 +68,39 @@ interface RadioGroupHandler {
   field: "booksPurchasedAndAutoGraphed";
 }
 
+const DeliverReadingButton = ({
+  isActive,
+  buttonText,
+  setActiveState,
+}: {
+  isActive: boolean;
+  buttonText: string;
+  setActiveState: Dispatch<SetStateAction<boolean>>;
+}): ReactJSXElement => {
+  return (
+    <Button
+      color={isActive ? "gray.500" : "gray.400"}
+      minW="131px"
+      minH="45px"
+      px="12px"
+      py="7px"
+      border="1px"
+      borderColor={isActive ? "blue.400" : "gray.300"}
+      borderRadius="4px"
+      display="flex"
+      alignItems="center"
+      bg={isActive ? "blue.50" : "gray.50"}
+      fontSize="16px"
+      gap="8px"
+      justifyContent="start"
+      onClick={() => setActiveState(!isActive)}
+    >
+      <Image src={isActive ? checkMarkActive : checkMarkInactive} />
+      {buttonText}
+    </Button>
+  );
+};
+
 const WorkshopFormContainer = ({
   isOpen,
   title,
@@ -74,6 +116,8 @@ const WorkshopFormContainer = ({
   const { creatorProfile, setCreatorProfile } = useContext(
     CreatorProfileContext,
   );
+  const [isInPerson, setIsInPerson] = useState(false);
+  const [isVirtual, setIsVirtual] = useState(false);
   /**
    * @param newOptionsSelected handle updating context
    * @param field string of key in context value
@@ -233,7 +277,7 @@ const WorkshopFormContainer = ({
               allowMultiSelectOption
               maxWidth="80%"
             />
-            <FormLabel>Preferred audience size</FormLabel>
+            <FormLabel mt="12px">Preferred audience size</FormLabel>
             <Select
               name="Preferred audience size"
               value={presentation?.preferredAudienceSize}
@@ -249,13 +293,19 @@ const WorkshopFormContainer = ({
                 return <option key={i}>{item}</option>;
               })}
             </Select>
-            <FormControl isRequired>
+            <FormControl isRequired mb="12px">
               <FormLabel mb="1" mt="3">
                 How do you deliver readings?
               </FormLabel>
-              <Flex>
-                <Button> In-person </Button>
+              <Flex gap="10px" mb="10px">
+                <DeliverReadingButton
+                  isActive={isInPerson}
+                  buttonText="In-person"
+                  setActiveState={setIsInPerson}
+                />
                 <Input
+                  isDisabled={!isInPerson}
+                  minH="45px"
                   name="In-person delivery fee"
                   placeholder="Enter fee for in-person"
                   value={presentation?.inPersonDeliveryFee}
@@ -267,9 +317,15 @@ const WorkshopFormContainer = ({
                   }}
                 />
               </Flex>
-              <Flex>
-                <Button> Virtual </Button>
+              <Flex gap="10px">
+                <DeliverReadingButton
+                  isActive={isVirtual}
+                  buttonText="Virtual"
+                  setActiveState={setIsVirtual}
+                />
                 <Input
+                  isDisabled={!isVirtual}
+                  minH="45px"
                   name="Virtual delivery fee"
                   placeholder="Enter fee for virtual"
                   value={presentation?.virtualDeliveryFee}
