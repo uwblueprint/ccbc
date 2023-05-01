@@ -77,7 +77,8 @@ const CreatorProfile = (): React.ReactElement => {
           bgRepeat="no-repeat"
           backgroundSize="cover"
           backgroundAttachment="scroll"
-          bgPosition="0 -120px"
+          bgPosition="0"
+          paddingBottom="36"
         >
           <Center>
             <Box w="80%">
