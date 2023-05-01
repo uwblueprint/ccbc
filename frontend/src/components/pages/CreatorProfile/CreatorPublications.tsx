@@ -45,7 +45,7 @@ const CreatorPublications = ({
     );
   };
 
-  return (
+  return (currentCreator.publications?.length ?? 0) > 0 ? (
     <>
       <Text
         textStyle="heading"
@@ -80,6 +80,8 @@ const CreatorPublications = ({
         </Flex>
       </Flex>
     </>
+  ) : (
+    <></>
   );
 };
 
