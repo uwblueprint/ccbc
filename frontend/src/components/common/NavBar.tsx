@@ -179,18 +179,26 @@ const NavBar = (): React.ReactElement => {
               >
                 Change password
               </MenuItem>
-
               <MenuDivider />
-
+              {authenticatedUser ? ( 
               <MenuItem
-                textStyle="body"
-                fontSize="sm"
-                onClick={onLogOutClick}
-                cursor="pointer"
-                padding="5px 0px"
-              >
-                Sign out
-              </MenuItem>
+              textStyle="body"
+              fontSize="sm"
+              onClick={onLogOutClick}
+              cursor="pointer"
+              padding="5px 0px"
+            >
+              Sign out
+            </MenuItem>) : (
+            <MenuItem
+              textStyle="body"
+              fontSize="sm"
+              cursor="pointer"
+              padding="5px 0px"
+            >
+              <Link to="/login">Login</Link>
+            </MenuItem>
+            )}              
             </MenuList>
           </Menu>
         </Flex>
