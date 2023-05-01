@@ -23,8 +23,7 @@ const getCreators = async (
 
   try {
     const { data } = await baseAPIClient.get("/creators", {
-      headers: { Authorization: getBearerToken() },
-      params,
+      params
     });
     return data;
   } catch (error: unknown) {

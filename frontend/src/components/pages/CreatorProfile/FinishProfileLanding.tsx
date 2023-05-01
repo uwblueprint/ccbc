@@ -24,7 +24,7 @@ const FinishProfileLanding = (): React.ReactElement => {
       textAlign="center"
     >
       <Text textStyle="heading" fontSize="42px" fontWeight="extrabold">
-        Let&apos;s create your profile!
+        Haven&apos;t created your profile yet? Let&apos;s create your profile!
       </Text>
       <Text textStyle="h2" marginY="24px">
         This is where bookers can get to know you and your work better.

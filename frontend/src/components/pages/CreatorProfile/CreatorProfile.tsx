@@ -49,7 +49,7 @@ const CreatorProfile = (): React.ReactElement => {
         setLoading(false);
 
         // If the creator isn't approved, only admins can view their profile, non-admins will be sent to /unathorized
-        if (currentCreator?.isApproved !== true) {
+        if (res?.isApproved !== true) {
           const currentUser: AuthenticatedUser = getLocalStorageObj(
             AUTHENTICATED_USER_KEY,
           );

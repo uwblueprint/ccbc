@@ -85,7 +85,7 @@ const NavBar = (): React.ReactElement => {
             />
           </Link>
           {displayNavText && (
-            <Link to="/">
+            <Link to="/reviews">
               <Text textStyle="h4" ml="60px">
                 Magazine Directory
               </Text>
@@ -93,7 +93,7 @@ const NavBar = (): React.ReactElement => {
           )}
           {displayNavText && (
             <Link to="/creator-directory">
-              {isAdmin && <Text textStyle="h4">Creator Directory</Text>}
+              <Text textStyle="h4">Creator Directory</Text>
             </Link>
           )}
           {displayNavText && (

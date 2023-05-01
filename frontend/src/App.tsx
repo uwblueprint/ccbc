@@ -45,6 +45,7 @@ import sampleContextReducer from "./reducers/SampleContextReducer";
 import customTheme from "./theme/index";
 import { AuthenticatedUser } from "./types/AuthTypes";
 import { getLocalStorageObj } from "./utils/LocalStorageUtils";
+import Redirects from "./utils/Redirects";
 
 const App = (): React.ReactElement => {
   const currentUser: AuthenticatedUser = getLocalStorageObj<AuthenticatedUser>(
@@ -101,6 +102,11 @@ const App = (): React.ReactElement => {
                       // }
                     />
                     <Route
+                    exact
+                    path={Routes.HOME_PAGE}
+                    component={Redirects}
+                    />
+                    <Route
                       exact
                       path={Routes.UNAUTHORIZED_PAGE}
                       component={Unauthorized}
@@ -113,7 +119,7 @@ const App = (): React.ReactElement => {
                     />
                     <Route
                       exact
-                      path={Routes.HOME_PAGE}
+                      path={Routes.CREATOR_DIRECTORY}
                       component={SearchCreators}
                     />
                     <PrivateRoute

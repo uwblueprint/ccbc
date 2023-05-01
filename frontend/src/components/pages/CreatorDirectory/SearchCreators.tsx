@@ -195,7 +195,7 @@ const SearchCreators = (): React.ReactElement => {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText, genresFilter, ageRangeFilter, provincesFilter, craftsFilter]);
-
+  
   return (
     <Center>
       <Box

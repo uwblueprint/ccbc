@@ -25,7 +25,6 @@ interface CreatorReqQuery {
 
 creatorRouter.get(
   "/",
-  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
     const { id, location, ageRange, status, searchText } =
       req.query as CreatorReqQuery;

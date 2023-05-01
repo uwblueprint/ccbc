@@ -10,7 +10,6 @@ const genreService: IGenreService = new GenreService();
 
 genreRouter.get(
   "/",
-  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
   async (req, res) => {
     const contentType = req.headers["content-type"];
     try {
