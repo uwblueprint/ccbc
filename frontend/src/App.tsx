@@ -68,7 +68,6 @@ const App = (): React.ReactElement => {
     DEFAULT_NOTIFICATION_CONTEXT,
   );
 
-  
   return (
     <ChakraProvider theme={customTheme}>
       <SampleContext.Provider value={sampleContext}>
@@ -102,9 +101,9 @@ const App = (): React.ReactElement => {
                       // }
                     />
                     <Route
-                    exact
-                    path={Routes.HOME_PAGE}
-                    component={Redirects}
+                      exact
+                      path={Routes.HOME_PAGE}
+                      component={Redirects}
                     />
                     <Route
                       exact

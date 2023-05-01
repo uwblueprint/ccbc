@@ -107,7 +107,6 @@ class CreatorService implements ICreatorService {
     const isAdmin = !!isAuthorizedByRole(new Set(["Admin"]));
     try {
       const creators: Array<Creator> = await Creator.findAll({ raw: true });
-
       return creators
         .map((creator) => ({
           id: creator.id,
@@ -143,12 +142,20 @@ class CreatorService implements ICreatorService {
             (status ? creator.isApproved === (status === "true") : true) &&
             (genres
               ? // ez clap
-                creator.genre.filter((i) => genres.includes(i)).length > 0
+                creator.genre.filter((i) =>
+                  genres.map((c) => c.toLowerCase()).includes(i.toLowerCase()),
+                ).length > 0
               : true) &&
             (crafts
-              ? creator.craft.filter((i) => crafts.includes(i)).length > 0
+              ? creator.craft.filter((i) =>
+                  crafts.map((c) => c.toLowerCase()).includes(i.toLowerCase()),
+                ).length > 0
               : true) &&
-            (provinces ? provinces.includes(creator.province) : true) &&
+            (provinces
+              ? provinces
+                  .map((i) => i.toLowerCase())
+                  .includes(creator.province.toLowerCase())
+              : true) &&
             (location
               ? creator.location.toLowerCase() === location.toLowerCase()
               : true) &&

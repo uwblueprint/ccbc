@@ -1,4 +1,5 @@
 import { Avatar, Box, Grid, GridItem, Tag, Text } from "@chakra-ui/react";
+import { startCase } from "lodash";
 import React from "react";
 import { useHistory } from "react-router-dom";
 
@@ -15,7 +16,7 @@ const CreatorPreview = ({
     if (!range) {
       return "";
     }
-    const ages = range.split(", ");
+    const ages = range.split(",");
     const minAge = Number(ages[0]);
     const maxAge = Number(ages[1]);
     const gradeLevels: string[] = [];
@@ -73,10 +74,19 @@ const CreatorPreview = ({
         justifyContent="center"
         colSpan={2}
       >
+        <Text>{handleGradeLevel(creator.ageRange)}</Text>
+      </GridItem>
+      <GridItem
+        height="80px"
+        flexDir="column"
+        display="flex"
+        justifyContent="center"
+        colSpan={2}
+      >
         <Text>
-          {handleGradeLevel(
-            creator.ageRange?.substring(1, creator.ageRange.length - 1),
-          )}
+          {creator.craft
+            ? creator.craft.map((c) => startCase(c)).join(", ")
+            : ""}
         </Text>
       </GridItem>
       <GridItem
@@ -86,16 +96,11 @@ const CreatorPreview = ({
         justifyContent="center"
         colSpan={2}
       >
-        <Text>{creator.craft ? creator.craft.join(", ") : ""}</Text>
-      </GridItem>
-      <GridItem
-        height="80px"
-        flexDir="column"
-        display="flex"
-        justifyContent="center"
-        colSpan={2}
-      >
-        <Text>{creator.genre ? creator.genre.join(", ") : ""}</Text>
+        <Text>
+          {creator.genre
+            ? creator.genre.map((c) => startCase(c)).join(", ")
+            : ""}
+        </Text>
       </GridItem>
     </Grid>
   );

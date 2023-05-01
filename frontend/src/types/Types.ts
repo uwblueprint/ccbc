@@ -1,10 +1,9 @@
-
 /**
  * enum for the mode selector used by AddProfilePictureField component
  */
 enum AddProfilePictureMode {
-    creatorProfile,
-    bookModal
+  creatorProfile,
+  bookModal,
 }
 
-export default AddProfilePictureMode
+export default AddProfilePictureMode;

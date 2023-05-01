@@ -21,7 +21,6 @@ import genreAPIClient from "../../../APIClients/GenreAPIClient";
 import tagAPIClient from "../../../APIClients/TagAPIClient";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { BookFormats } from "../../../constants/Enums";
-import AddProfilePictureMode from "../../../types/Types"
 import {
   Author,
   Book,
@@ -31,13 +30,14 @@ import {
   Publisher,
   Tag,
 } from "../../../types/BookTypes";
+import AddProfilePictureMode from "../../../types/Types";
+import AddProfilePicture from "../CreatorProfile/AddProfilePictureField";
 import AddMultiSelect from "./AddMultiSelect";
 import AddNumberInput from "./AddNumberInput";
 import AddSelect from "./AddSelect";
 import AddSelectList from "./AddSelectList";
 import AddStringInput from "./AddStringInput";
 import AddStringInputList from "./AddStringInputList";
-import AddProfilePicture from "../CreatorProfile/AddProfilePictureField";
 
 /**
  * Interface defining props for BookModal component

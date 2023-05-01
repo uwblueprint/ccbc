@@ -1,13 +1,14 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Input, Text } from "@chakra-ui/react";
 import React, { useContext, useMemo, useState } from "react";
 
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
 import { Option } from "../../../types/BookTypes";
+import AddProfilePictureMode from "../../../types/Types";
+import InputField from "../../InputField";
 import AddMultiSelect from "../CreateReview/AddMultiSelect";
 import AddProfilePictureField from "./AddProfilePictureField";
 import CreatorInputField from "./CreatorInputField";
 import RichTextEditorField from "./RichTextEditorField";
-import AddProfilePictureMode from "../../../types/Types"
 
 interface GeneraInfoProps {
   submitted: boolean;
@@ -120,6 +121,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           error={submitted}
           required
         />
+
         <CreatorInputField
           name="Website"
           placeholder="Enter a URL to your website"
@@ -129,10 +131,18 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           width="33%"
           error={submitted}
         />
+        <CreatorInputField
+          name="Age Range, enter as minAge,maxAge"
+          placeholder="0,99"
+          value={creatorProfile?.ageRange}
+          field="ageRange"
+          error={submitted}
+          width="33%"
+        />
         <RichTextEditorField
           name="Bio"
           placeholder="Here's where you can briefly describe who you are as a creator!"
-        value={creatorProfile?.bio}
+          value={creatorProfile?.bio}
           field="bio"
           error={submitted}
           charLimit={500}
@@ -142,7 +152,7 @@ const GeneraInfoForm = ({ submitted }: GeneraInfoProps): React.ReactElement => {
           value={creatorProfile?.profilePictureLink}
           field="profilePictureLink"
           error={submitted}
-          setInputField={()=>{}}
+          setInputField={() => {}}
           mode={AddProfilePictureMode.creatorProfile}
           required
         />

@@ -11,7 +11,7 @@ const getCreators = async (
   genres?: string[],
   provinces?: string[],
   crafts?: string[],
-  gradeLevel?: string
+  gradeLevel?: string,
 ): Promise<Array<Creator>> => {
   const params = new URLSearchParams();
   if (status) params.append("status", status);
@@ -23,7 +23,7 @@ const getCreators = async (
 
   try {
     const { data } = await baseAPIClient.get("/creators", {
-      params
+      params,
     });
     return data;
   } catch (error: unknown) {

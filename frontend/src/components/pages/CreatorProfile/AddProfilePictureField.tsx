@@ -15,7 +15,7 @@ import {
   CreatorProfile,
   CreatorProfileProps,
 } from "../../../types/CreatorProfileTypes";
-import AddProfilePictureMode from "../../../types/Types"
+import AddProfilePictureMode from "../../../types/Types";
 
 interface AddProfilePictureProps {
   name: string;
@@ -24,7 +24,7 @@ interface AddProfilePictureProps {
   error?: boolean;
   required?: boolean;
   setInputField: (s: string) => void;
-  mode? : AddProfilePictureMode;
+  mode?: AddProfilePictureMode;
 }
 
 const AddProfilePicture = ({
@@ -34,7 +34,7 @@ const AddProfilePicture = ({
   value,
   required = true,
   setInputField,
-  mode
+  mode,
 }: AddProfilePictureProps): React.ReactElement => {
   const { creatorProfile, setCreatorProfile } = useContext(
     CreatorProfileContext,
@@ -54,7 +54,6 @@ const AddProfilePicture = ({
   };
 
   const handleOnChange = async () => {
-
     const profilePic = profilePicFile?.current?.files?.[0];
     if (profilePic) {
       const Url = await uploadImage(profilePic);
@@ -73,7 +72,7 @@ const AddProfilePicture = ({
           break;
         }
         case AddProfilePictureMode.bookModal: {
-          setInputField(Url)
+          setInputField(Url);
           setFileSize(profilePic.size.toString());
           setFileName(profilePic.name);
           localStorage.setItem("fileSize", profilePic.size.toString());
@@ -85,7 +84,6 @@ const AddProfilePicture = ({
         }
       }
     }
-    
   };
 
   return (

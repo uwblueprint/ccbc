@@ -5,6 +5,7 @@ export type CreatorProfile = {
   lastName?: string;
   email?: string;
   phone?: string;
+  ageRange?: string;
   streetAddress?: string;
   city?: string;
   province?: string;
@@ -36,7 +37,8 @@ export type CreatorProfileProps =
   | "timezone"
   | "website"
   | "bio"
-  | "profilePictureLink";
+  | "profilePictureLink"
+  | "ageRange";
 
 export type PresentationAttributes =
   | "title"
@@ -66,4 +68,4 @@ export type BookCoverFile = {
 
 export type CreatorProfileFormProps = {
   currentPage: number;
-}
+};

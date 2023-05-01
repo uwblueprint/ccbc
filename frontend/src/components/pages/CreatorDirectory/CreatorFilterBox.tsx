@@ -9,7 +9,7 @@ import {
   TagRightIcon,
   Text,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { TagType } from "../../../constants/Enums";
 import { Option } from "../../../types/BookTypes";
@@ -37,12 +37,10 @@ const CreatorFilterBox = ({
   const [craft, setCraft] = useState<Option[]>([]); // save the craft choosen
   const [province, setProvince] = useState<Option[]>([]); // save the ages choosen
 
-  const clickApply = async () => {
-    setGenreFilter(genres);
-    setAgeFilter(age);
-    setProvinceFilter(province);
-    setCraftFilter(craft);
-  };
+  useEffect(() => setGenreFilter(genres), [genres]);
+  useEffect(() => setAgeFilter(age), [age]);
+  useEffect(() => setProvinceFilter(province), [province]);
+  useEffect(() => setCraftFilter(craft), [craft]);
 
   const clear = async () => {
     setGenres([]);
@@ -120,7 +118,7 @@ const CreatorFilterBox = ({
               { name: "Saskatchewan", abbreviation: "SK" },
               { name: "Yukon Territory", abbreviation: "YT" },
             ].map((region) => {
-              return { label: region.abbreviation, value: region.abbreviation };
+              return { label: region.abbreviation, value: region.name };
             })}
             setOptions={null}
             optionsSelected={province}
@@ -174,15 +172,6 @@ const CreatorFilterBox = ({
           padding={0}
           mt={{ base: "10px", md: "0px" }}
         >
-          <Button
-            fontWeight="normal"
-            textDecoration="underline"
-            color="blue.500"
-            variant="link"
-            onClick={clickApply}
-          >
-            Apply
-          </Button>
           <Button
             fontWeight="normal"
             textDecoration="underline"

@@ -9,6 +9,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { startCase } from "lodash";
 import React, { SetStateAction, useEffect, useState } from "react";
 
 import creatorAPIClient from "../../../APIClients/CreatorAPIClient";
@@ -59,32 +60,14 @@ const SearchCreators = (): React.ReactElement => {
 
   /** Fetches the search queries from url */
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const searchQuery = params.has("search_query")
-      ? params.get("search_query")
-      : "";
-    const genres = params.has("genres") ? params.get("genres")?.split(",") : [];
-    const gradeLevel = params.has("gradeLevel")
-      ? params.get("gradeLevel")?.split(",")
-      : [];
-
-    if (searchQuery) {
-      setSearchText(searchQuery);
-    }
-    if (genres) {
-      setGenresFilter(genres);
-    }
-    if (gradeLevel) {
-      setGradeLevelFilter(gradeLevel);
-    }
-    setIsLoading(false);
-
-    GenreAPIClient.getGenreOptions().then(
-      (genreResponse: SetStateAction<Option[]>) => {
-        setAllGenres(genreResponse);
-      },
+    const genres = new Set(
+      data
+        .map((creator) => creator.genre)
+        .flat()
+        .map((g) => ({ value: g as string, label: startCase(g) })),
     );
-  }, []);
+    setAllGenres(Array.from(genres));
+  }, [data]);
 
   /** Creates new url based on search text and filters */
   const generateSearchUrl = (
@@ -195,7 +178,7 @@ const SearchCreators = (): React.ReactElement => {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText, genresFilter, ageRangeFilter, provincesFilter, craftsFilter]);
-  
+
   return (
     <Center>
       <Box
@@ -249,10 +232,10 @@ const SearchCreators = (): React.ReactElement => {
                   setGradeLevelFilter(ages.map((g) => g.label));
                 }}
                 setGenreFilter={(genres) => {
-                  setGenresFilter(genres.map((g) => g.label));
+                  setGenresFilter(genres.map((g) => g.value));
                 }}
                 setProvinceFilter={(provinces) => {
-                  setProvincesFilter(provinces.map((g) => g.label));
+                  setProvincesFilter(provinces.map((g) => g.value));
                 }}
               />
             )}
