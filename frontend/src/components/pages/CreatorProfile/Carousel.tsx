@@ -1,6 +1,6 @@
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-import { Box, Flex, IconButton, Image } from "@chakra-ui/react";
+import { IconButton, Image } from "@chakra-ui/react";
 import { makeStyles } from "@material-ui/core";
 import React from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
