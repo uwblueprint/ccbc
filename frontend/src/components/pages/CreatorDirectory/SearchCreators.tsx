@@ -20,6 +20,7 @@ import LoadingSpinner from "../../common/LoadingSpinner";
 import SearchBox from "../SearchBox";
 import CreatorFilterBox from "./CreatorFilterBox";
 import CreatorPreview from "./CreatorPreview";
+import NavBar from "../../common/NavBar";
 
 const FiltersIcon = createIcon({
   displayName: "FiltersIcon",
@@ -197,6 +198,8 @@ const SearchCreators = (): React.ReactElement => {
   }, [searchText, genresFilter, ageRangeFilter, provincesFilter, craftsFilter]);
   
   return (
+    <>
+    <NavBar />
     <Center>
       <Box
         h="100%"
@@ -309,6 +312,7 @@ const SearchCreators = (): React.ReactElement => {
         </VStack>
       </Box>
     </Center>
+    </>
   );
 };
 
