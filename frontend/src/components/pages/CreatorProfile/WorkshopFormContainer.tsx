@@ -32,6 +32,10 @@ import { Option } from "../../../types/BookTypes";
 import { PresentationAttributes } from "../../../types/CreatorProfileTypes";
 import { Presentation } from "../../../types/CreatorTypes";
 import AddMultiSelect from "../CreateReview/AddMultiSelect";
+import RichTextEditorField from "./RichTextEditorField";
+import AddProfilePictureField from "./AddProfilePictureField";
+import AddProfilePictureMode from "../../../types/Types";
+
 
 interface WorkshopFormContainerProps {
   title: string;
@@ -416,6 +420,14 @@ const WorkshopFormContainer = ({
                     field: "details",
                   });
                 }}
+              />
+              <AddProfilePictureField
+                name="contentReadings"
+                value={presentation?.photos}
+                field="profilePictureLink"
+                setInputField={() => {}}
+                mode={AddProfilePictureMode.WorkshopForm}
+                required={false}
               />
             </FormControl>
           </Container>

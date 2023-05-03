@@ -4,6 +4,7 @@
 enum AddProfilePictureMode {
   creatorProfile,
   bookModal,
+  WorkshopForm,
 }
 
 export default AddProfilePictureMode;
