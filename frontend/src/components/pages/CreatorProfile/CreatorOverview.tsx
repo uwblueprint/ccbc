@@ -34,11 +34,19 @@ export default function CreatorOverview({
 }: CreatorOverviewProps): React.ReactElement {
   const { reactQuill } = useStyles();
 
-  // eslint-disable-next-line no-param-reassign
-  currentCreator.website = "<p>jfdk</p>";
   const titleValuePair = [
     { title: "Craft", value: currentCreator.craft },
-    { title: "Genre", value: currentCreator.genre?.join(", ") },
+    {
+      title: "Genre",
+      value: currentCreator.genre
+        ?.map((genre) =>
+          genre.replace(
+            /^[a-z]|[A-Z]/g,
+            (c, i) => (i ? " " : "") + c.toUpperCase(),
+          ),
+        )
+        .join(", "),
+    },
     {
       title: "Audience",
       value: currentCreator.ageRange
@@ -71,11 +79,23 @@ export default function CreatorOverview({
                 <Box width="130px">
                   <b>{pair.title}</b>
                 </Box>
-                {(pair.title === "Craft" && (
-                  <Box py="2px" px="8px" bg="green.100" borderRadius="sm">
-                    {pair.value}
-                  </Box>
-                )) ||
+                {(pair.title === "Craft" &&
+                  (typeof pair.value === "string"
+                    ? [pair.value]
+                    : pair.value
+                  ).map((craft: any) => {
+                    return (
+                      <Box
+                        py="2px"
+                        px="8px"
+                        bg="green.100"
+                        borderRadius="sm"
+                        key={craft}
+                      >
+                        {craft}
+                      </Box>
+                    );
+                  })) ||
                   (pair.title === "Website" && (
                     <ChakraLink href="www.google.com">{pair.value}</ChakraLink>
                   )) || (
