@@ -5,6 +5,7 @@ import React from "react";
 import rectangle from "../../../assets/rectangle.png";
 import * as Routes from "../../../constants/Routes";
 import { Creator, Publication } from "../../../types/CreatorTypes";
+import Carousel from "./Carousel";
 
 interface CreatorPublicationsProps {
   currentCreator: Creator;
@@ -37,8 +38,9 @@ const CreatorPublications = ({
   const bookCoverDisplay = (bookCoverImageURL: string, index: number) => {
     return (
       <Image
-        minWidth="175px"
-        height="auto"
+        maxHeight="250px"
+        marginLeft="25px"
+        width="auto"
         src={bookCoverImageURL}
         key={index}
       />
@@ -56,7 +58,7 @@ const CreatorPublications = ({
       >
         Publications
       </Text>
-      <Flex>
+      <Flex direction={{ base: "column", lg: "row" }}>
         <Box flex="2">
           {currentCreator.publications
             ?.slice(0, 3)
@@ -72,10 +74,16 @@ const CreatorPublications = ({
           </Link>
         </Box>
         <Flex flex="4" paddingLeft="50px">
-          {currentCreator.bookCovers
-            ?.slice(0, 3)
-            .map((bookCoverImageURL: string, index: number) =>
-              bookCoverDisplay(bookCoverImageURL, index),
+          {currentCreator.bookCovers &&
+            currentCreator.bookCovers.length <= 3 &&
+            currentCreator.bookCovers
+              ?.slice(0, 3)
+              .map((bookCoverImageURL: string, index: number) =>
+                bookCoverDisplay(bookCoverImageURL, index),
+              )}
+          {currentCreator.bookCovers &&
+            currentCreator.bookCovers.length > 3 && (
+              <Carousel images={currentCreator.bookCovers || []} />
             )}
         </Flex>
       </Flex>

@@ -1,6 +1,6 @@
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-import { Flex, IconButton, Image } from "@chakra-ui/react";
+import { IconButton, Image } from "@chakra-ui/react";
 import { makeStyles } from "@material-ui/core";
 import React from "react";
 import { FcNext, FcPrevious } from "react-icons/fc";
@@ -80,14 +80,15 @@ const Carousel = ({ images }: CarouselProps): React.ReactElement => {
         }
       >
         {images.map((URL, index) => (
-          <Flex key={index} mr="16px">
-            <Image
-              alt={`media_gallery_${index}`}
-              src={URL}
-              key={index}
-              height="230px"
-            />
-          </Flex>
+          <Image
+            alt={`media_gallery_${index}`}
+            src={URL}
+            key={index}
+            height="250px"
+            maxWidth="175px"
+            objectFit="contain"
+            mr="-30px"
+          />
         ))}
       </ResponsiveCarousel>
     </div>
