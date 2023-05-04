@@ -1,39 +1,22 @@
 /* eslint-disable react/no-unescaped-entities */
 import {
   Box,
-  Button,
   Center,
   Flex,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Spinner,
   Text,
   useBreakpointValue,
-  useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import Moment from "moment";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 
 import reviewAPIClient from "../../../APIClients/ReviewAPIClient";
-import UsersAPIClient from "../../../APIClients/UsersAPIClient";
 import background from "../../../assets/home-bg.png";
 import { UserRole } from "../../../constants/Enums";
-import AuthContext from "../../../contexts/AuthContext";
-import { AuthenticatedUser } from "../../../types/AuthTypes";
 import { PaginatedReviewResponse, Review } from "../../../types/ReviewTypes";
 import { mapReviewResponseToReview } from "../../../utils/MappingUtils";
 import SearchBox from "../SearchBox";
+import SubscriptionExpireModal from "../Subscription/SubscriptionExpireModal";
 import CategoryReviews from "./CategoryReviews";
 import FeaturedReview from "./FeaturedReview";
 
@@ -47,11 +30,6 @@ const MagazineReview = (): React.ReactElement => {
   );
   const [featuredReviews, setFeaturedReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
-  const expiryDate = useRef(authenticatedUser?.subscriptionExpiresOn);
-  const isSubscriber = authenticatedUser?.roleType === UserRole.Subscriber;
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const displayBlurb = useBreakpointValue(
     {
@@ -62,40 +40,6 @@ const MagazineReview = (): React.ReactElement => {
     },
     "lg",
   );
-
-  const onClick = () => {
-    window.location.href = `${process.env.REACT_APP_GIVECLOUD_URL}`;
-  };
-  const checkUserSubscriptionExpiry = useCallback(async () => {
-    // Convert the PostgresSQL date to a JavaScript Date object
-    const subscriptionExpiryDate = new Date(
-      Moment(expiryDate.current).format("LLLL"),
-    );
-    if (subscriptionExpiryDate < new Date(Date.now()) && isSubscriber) {
-      onOpen();
-    } else {
-      onClose();
-    }
-  }, [onClose, onOpen]);
-
-  const verifySubscriptionExpiry = useCallback(async () => {
-    if (authenticatedUser) {
-      const updatedUser: AuthenticatedUser =
-        await UsersAPIClient.getUserByEmail(authenticatedUser?.email);
-      if (updatedUser) {
-        expiryDate.current = updatedUser.subscriptionExpiresOn;
-        setAuthenticatedUser({
-          ...authenticatedUser,
-          subscriptionExpiresOn: updatedUser.subscriptionExpiresOn,
-        });
-        checkUserSubscriptionExpiry();
-      }
-    }
-  }, [authenticatedUser, checkUserSubscriptionExpiry, setAuthenticatedUser]);
-
-  useEffect(() => {
-    verifySubscriptionExpiry();
-  }, []);
 
   // get featured reviews on magazine home page
   useEffect(() => {
@@ -209,22 +153,7 @@ const MagazineReview = (): React.ReactElement => {
           )}
         </VStack>
       </Box>
-      <Modal isOpen={isOpen} onClose={() => {}}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>User Subscription Expired</ModalHeader>
-          <ModalBody>
-            Your subscription to the Canadian Children's Book Centre has
-            expired. Please click on the button below and follow the steps to
-            renew your account
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="submit" type="submit" onClick={onClick}>
-              Renew Subscription
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <SubscriptionExpireModal targetUser={UserRole.Subscriber} />
     </Center>
   );
 };

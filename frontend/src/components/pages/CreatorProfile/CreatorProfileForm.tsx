@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 
 import CreatorAPIClient from "../../../APIClients/CreatorAPIClient";
+import { UserRole } from "../../../constants/Enums";
 import { CREATOR_PROFILE_LANDING } from "../../../constants/Routes";
 import AuthContext from "../../../contexts/AuthContext";
 import CreatorProfileContext from "../../../contexts/CreatorProfileContext";
@@ -12,6 +13,7 @@ import {
   CreatorProfileFormProps,
 } from "../../../types/CreatorProfileTypes";
 import LoadingSpinner from "../../common/LoadingSpinner";
+import SubscriptionExpireModal from "../Subscription/SubscriptionExpireModal";
 import AvailabilityForm from "./AvailabilityForm";
 import ContactInfoForm from "./ContactInfoForm";
 import CreatorProfileNav from "./CreatorProfileNav";
@@ -279,6 +281,7 @@ const CreatorProfileForm = (): React.ReactElement => {
             </CreatorProfileContext.Provider>
           )}
         </Flex>
+        <SubscriptionExpireModal targetUser={UserRole.Creator} />
       </Flex>
     </>
   );
