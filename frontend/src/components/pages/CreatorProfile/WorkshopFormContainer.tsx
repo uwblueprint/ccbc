@@ -36,8 +36,6 @@ import AddMultiSelect from "../CreateReview/AddMultiSelect";
 interface WorkshopFormContainerProps {
   title: string;
   index: number /* Index in creatorForm presentations array */;
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   icon: ReactJSXElement;
   detailsDisplayedWhenCollapsed?: [PresentationAttributes, string][];
 }
@@ -102,10 +100,8 @@ const DeliverReadingButton = ({
 };
 
 const WorkshopFormContainer = ({
-  isOpen,
   title,
   index,
-  setIsOpen,
   icon,
   detailsDisplayedWhenCollapsed = [
     ["offeredLocations", "Offered locations"],
@@ -118,6 +114,7 @@ const WorkshopFormContainer = ({
   );
   const [isInPerson, setIsInPerson] = useState(false);
   const [isVirtual, setIsVirtual] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   /**
    * @param newOptionsSelected handle updating context
    * @param field string of key in context value
@@ -130,6 +127,7 @@ const WorkshopFormContainer = ({
       | RadioGroupHandler,
   ) => {
     const { newValue, field } = keyValue;
+    console.log(newValue, field);
     const creatorProfileObj = { ...creatorProfile };
 
     if (creatorProfileObj.presentations) {
@@ -227,9 +225,23 @@ const WorkshopFormContainer = ({
         >
           {icon}
         </Grid>
+        {/* {title === "Readings" || title === "Workshops" ? ( */}
         <Text as="b" fontSize="xl" marginRight="32px">
           {title}
         </Text>
+        {/* ) : (
+          <Input
+            name="Name New Presentation"
+            placeholder="Name of Presentation"
+            value={presentation?.title}
+            onChange={(e) => {
+              handleFormInputChange({
+                newValue: e.target.value,
+                field: "title",
+              });
+            }}
+          />
+        )} */}
         <Button
           color="blue.400"
           onClick={() => setIsOpen((open: boolean) => !open)}
