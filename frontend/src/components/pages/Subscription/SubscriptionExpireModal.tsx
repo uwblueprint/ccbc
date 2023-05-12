@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import Moment from "moment";
 import React, { useCallback, useContext, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
 import UsersAPIClient from "../../../APIClients/UsersAPIClient";
 import { UserRole } from "../../../constants/Enums";
@@ -73,9 +74,11 @@ const SubscriptionExpireModal = ({
           renew your account
         </ModalBody>
         <ModalFooter>
-          <Button variant="submit" type="submit" onClick={onClick}>
-            Renew Subscription
-          </Button>
+          <Link to="https://bookcentre.givecloud.co/product/MEMBER/membership">
+            <Button variant="submit" type="submit">
+              Renew Subscription
+            </Button>
+          </Link>
         </ModalFooter>
       </ModalContent>
     </Modal>
