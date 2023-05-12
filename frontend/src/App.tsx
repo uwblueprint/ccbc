@@ -52,6 +52,7 @@ const App = (): React.ReactElement => {
     AUTHENTICATED_USER_KEY,
   );
 
+    
   const [authenticatedUser, setAuthenticatedUser] =
     useState<AuthenticatedUser>(currentUser);
 
