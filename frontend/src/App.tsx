@@ -55,9 +55,6 @@ const App = (): React.ReactElement => {
   const [authenticatedUser, setAuthenticatedUser] =
     useState<AuthenticatedUser>(currentUser);
 
-  // Some sort of global state. Context API replaces redux.
-  // Split related states into different contexts as necessary.
-  // Split dispatcher and state into separate contexts as necessary.
   const [sampleContext, dispatchSampleContextUpdate] = useReducer(
     sampleContextReducer,
     DEFAULT_SAMPLE_CONTEXT,
