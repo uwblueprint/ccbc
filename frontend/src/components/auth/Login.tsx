@@ -102,9 +102,23 @@ const Login = (): React.ReactElement => {
                 Forgot password?
               </Link>
             </Box>
-            <Button variant="submit" type="submit" onClick={onLogInClick}>
-              Log in
-            </Button>
+            <Box mb="2rem">
+              <Button variant="submit" type="submit" onClick={onLogInClick}>
+                Log in
+              </Button>
+            </Box>
+            <Link
+              href={`${Routes.SUBSCRIBER_SIGNUP_PAGE}`}
+              style={{ textDecoration: "none" }}
+            >
+              <Button mb="1rem" variant="submit">Signup as Subscriber</Button>
+            </Link>
+            <Link
+              href={`${Routes.CREATOR_SIGNUP_PAGE}`}
+              style={{ textDecoration: "none" }}
+            >
+              <Button variant="submit">Signup as Creator</Button>
+            </Link>
           </FormControl>
         </Stack>
       </GridItem>

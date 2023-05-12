@@ -15,10 +15,13 @@ import IEmailService from "../services/interfaces/emailService";
 import IUserService from "../services/interfaces/userService";
 import { sendErrorResponse } from "../utilities/errorResponse";
 import authDtoToToUserDto from "../utilities/authUtils";
+import ICreatorService from "../services/interfaces/creatorService";
+import CreatorService from "../services/implementations/creatorService";
 
 const authRouter: Router = Router();
 const userService: IUserService = new UserService();
 const emailService: IEmailService = new EmailService(nodemailerConfig);
+const creatorService: ICreatorService = new CreatorService(emailService);
 const authService: IAuthService = new AuthService(userService, emailService);
 
 /* Returns access token and user info in response body and sets refreshToken as an httpOnly cookie */
@@ -166,6 +169,11 @@ authRouter.post(
 authRouter.post("/verifyEmail/:uid", async (req, res) => {
   try {
     await authService.markVerified(req.params.uid);
+    const userId = await userService.getUserIdByAuthId(req.params.uid);
+    const user = await userService.getUserById(userId);
+    if (user.roleType === "Author") {
+      await creatorService.sendCreatorProfileSetupLink(user.email);
+    }
     res.status(204).send();
   } catch (error: unknown) {
     sendErrorResponse(error, res);

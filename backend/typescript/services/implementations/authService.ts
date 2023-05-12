@@ -205,7 +205,11 @@ class AuthService implements IAuthService {
       const emailBody = isNewAccount
         ? `Hello,
       <br><br>
-      You have been invited to join CCBC as a ${user.roleType.toLowerCase()}. Please click on the link 
+      You have been invited to join CCBC as ${
+        user.roleType === "Subscriber"
+          ? `a ${user.roleType.toLowerCase()}`
+          : `an ${user.roleType.toLowerCase()}`
+      }. Please click on the link 
       below to verify your account and set your new password. 
       <br>Your unique access code is ${accessCode}.
       <br><br>

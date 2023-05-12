@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { body, validationResult } from "express-validator";
 import { createHmac } from "crypto";
+import password from "secure-random-password";
 import AuthService from "../services/implementations/authService";
 import UserService from "../services/implementations/userService";
 import { sendErrorResponse } from "../utilities/errorResponse";
@@ -20,17 +21,6 @@ const authService: IAuthService = new AuthService(userService, emailService);
 givecloudRouter.post(
   "/user.subscription_paid",
   isGiveCloudEnabled(),
-  body(
-    "supporter.groups[0].name",
-    "supporter.groups.name is required",
-  ).exists(),
-  body(
-    "supporter.groups[0].days_left",
-    "supporter.groups.days_left is required",
-  ).exists(),
-  body("supporter.email", "supporter email is required").exists(),
-  body("supporter.first_name", "supporter first_name is required").exists(),
-  body("supporter.last_name", "supporter last_name is required").exists(),
   async (req: Request, res: Response) => {
     try {
       if (process.env.HMAC_SECRET_KEY) {
@@ -38,7 +28,7 @@ givecloudRouter.post(
           .update(JSON.stringify(req.body))
           .digest("hex");
 
-        if (hash !== req.get("HTTP_X_GIVECLOUD_SIGNATURE")) {
+        if (hash !== req.get("X-Givecloud-Signature")) {
           res.status(401).send("Unauthorized");
           return;
         }
@@ -47,34 +37,53 @@ givecloudRouter.post(
       }
       const errors = validationResult(req);
       if (errors.isEmpty()) {
-        const { supporter } = req.body;
-        const { email, groups } = supporter;
+        const { membership, email, firstName, lastName } = req.body.supporters[0];
         const subscriptionExpiresOn = new Date();
+        subscriptionExpiresOn.setDate(
+          subscriptionExpiresOn.getDate() + membership.duration,
+        );
+
         let roleType: Role = "Subscriber";
-        if (groups[0].name === "Professional Creator Membership") {
+        if (membership.vendor_membership_id === "PROFESSIONAL") {
           roleType = "Author";
         }
+
         try {
-          subscriptionExpiresOn.setDate(
-            subscriptionExpiresOn.getDate() + groups[0].days_left,
-          );
           await userService.getUserByEmail(email);
-          const userDTO = await userService.updateUserSubscriptionbyEmail(
-            email,
-            subscriptionExpiresOn,
-          );
-          res.status(200).json(userDTO);
         } catch {
-          const authDTO = await authService.createUserAndSendRegistrationEmail(
-            supporter.first_name,
-            supporter.last_name,
+          const accessCode = password.randomPassword({
+            length: 8, // length of the password
+            characters: [
+              // acceptable characters in the password
+              password.lower,
+              password.upper,
+              password.digits,
+            ],
+          });
+
+          const newUser = await userService.createUser({
+            firstName,
+            lastName,
             email,
             roleType,
+            password: accessCode.toString(),
             subscriptionExpiresOn,
-          );
-
-          res.status(201).json(authDtoToToUserDto(authDTO));
+          });
+          await authService.sendPasswordSetupLink(newUser, accessCode, true);
         }
+
+        const userDTO = await userService.updateUserSubscriptionbyEmail(
+          email,
+          subscriptionExpiresOn,
+        );
+
+        emailService.sendEmail(
+          email,
+          "Your CCBC Subscription has been renewed!",
+          `Your CCBC Subscription has been renewed! Your subscription as a ${roleType} will expire on ${subscriptionExpiresOn}.`,
+        );
+
+        res.status(200).json(userDTO);
       } else {
         res.status(400).json({ errors: errors.array() });
       }

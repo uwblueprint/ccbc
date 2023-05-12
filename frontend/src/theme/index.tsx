@@ -112,6 +112,16 @@ const customTheme = extendTheme({
         },
       },
     },
+    Progress: {
+      baseStyle: {
+        track: {
+          bg: "#edf2f7",
+        },
+        filledTrack: {
+          bg: "#4299E1",
+        },
+      },
+    },
   },
   config: {
     initialColorMode: "light",

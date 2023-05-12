@@ -5,16 +5,55 @@ export type Token = {
   refreshToken: string;
 };
 
+export interface Presentation {
+  title: string;
+  details: string;
+  photos: string[];
+  contentOfReadings: string;
+  offeredLocations: string[];
+  preferredGradeLevel: string[];
+  languages: string[];
+  equipmentRequired: string;
+  inPersonDeliveryFee: string;
+  virtualDeliveryFee: string;
+  otherReadingLanguages: string;
+  booksPurchasedAndAutoGraphed: string;
+  preferredAudienceSize: string;
+}
+
+export interface Publication {
+  title: string;
+  publisher: string;
+  publication_year: string;
+  notes: string;
+}
+
 export type CreatorDTO = {
   id: number;
   userId: number;
   location: string;
   rate: number;
-  genre: string;
+  genre: string[];
   ageRange: string;
   timezone: string;
   bio: string;
   isApproved: boolean;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  streetAddress: string;
+  city: string;
+  province: string;
+  postalCode: string;
+  craft: string[];
+  website: string;
+  profilePictureLink: string;
+  availability: string[];
+  bookCovers: string[];
+  isReadyForReview: boolean;
+  presentations: Presentation[];
+  publications: Publication[];
 };
 
 export type CreatorCreateUpdateDTO = Omit<CreatorDTO, "isApproved">;

@@ -8,22 +8,18 @@ import { isAuthorizedByRole } from "../middlewares/auth";
 const genreRouter: Router = Router();
 const genreService: IGenreService = new GenreService();
 
-genreRouter.get(
-  "/",
-  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
-  async (req, res) => {
-    const contentType = req.headers["content-type"];
-    try {
-      const genres = await genreService.getGenres();
-      await sendResponseByMimeType(res, 200, contentType, genres);
-    } catch (e: unknown) {
-      await sendResponseByMimeType(res, 500, contentType, [
-        {
-          error: getErrorMessage(e),
-        },
-      ]);
-    }
-  },
-);
+genreRouter.get("/", async (req, res) => {
+  const contentType = req.headers["content-type"];
+  try {
+    const genres = await genreService.getGenres();
+    await sendResponseByMimeType(res, 200, contentType, genres);
+  } catch (e: unknown) {
+    await sendResponseByMimeType(res, 500, contentType, [
+      {
+        error: getErrorMessage(e),
+      },
+    ]);
+  }
+});
 
 export default genreRouter;

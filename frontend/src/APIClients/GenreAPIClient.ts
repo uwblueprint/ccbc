@@ -3,9 +3,7 @@ import { getBearerToken } from "../utils/AuthUtils";
 import baseAPIClient from "./BaseAPIClient";
 
 const getGenreOptions = async (): Promise<Option[]> => {
-  const { data } = await baseAPIClient.get("/genres", {
-    headers: { Authorization: getBearerToken() },
-  });
+  const { data } = await baseAPIClient.get("/genres");
 
   if (!data) {
     throw new Error(`Genres not found.`);

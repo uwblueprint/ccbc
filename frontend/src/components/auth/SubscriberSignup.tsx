@@ -1,35 +1,41 @@
 import {
-  Box,
-  Button,
   Center,
   FormControl,
-  FormLabel,
+  FormErrorMessage,
   Grid,
   GridItem,
   Image,
-  Input,
-  Link,
   Stack,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 import UsersAPIClient from "../../APIClients/UsersAPIClient";
-import * as Routes from "../../constants/Routes";
 /* Images */
 import CCBCLogo from "../../images/ccbc-logo.png";
 import LoginGraphic from "../../images/Login-graphic.png";
+import { AuthenticatedUser } from "../../types/AuthTypes";
 import authUtils from "../../utils/AuthUtils";
+import EmailForm from "./EmailForm";
+import SuccessfullyCreatedEmailModal from "./SuccessfullyCreatedEmailModal";
 
 const SubscriberSignup = (): React.ReactElement => {
   const [isEmailInvalid, setIsEmailInvalid] = useState(false);
-  const [email, setEmail] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const onSendEmailClick = async () => {
+  const onSendEmailClick = async (email: string) => {
     if (!authUtils.validateEmail(email)) {
       setIsEmailInvalid(true);
     } else {
-      await UsersAPIClient.register(email);
+      const user: AuthenticatedUser = await UsersAPIClient.register(email);
+
+      if (user) {
+        setIsEmailInvalid(false);
+        onOpen();
+      } else {
+        setIsEmailInvalid(true);
+      }
     }
   };
 
@@ -63,34 +69,13 @@ const SubscriberSignup = (): React.ReactElement => {
             Please enter an email for a verification code to be sent
           </Text>
           <FormControl mt="1rem">
-            <Box mt="4%" mb="4%">
-              <FormLabel>Email address</FormLabel>
-              <Input
-                value={email}
-                name="email"
-                placeholder="example@gmail.com"
-                isInvalid={isEmailInvalid}
-                onChange={(event) => {
-                  setEmail(event.target.value);
-                  setIsEmailInvalid(false);
-                }}
-              />
-            </Box>
-            <Button variant="submit" type="button" onClick={onSendEmailClick}>
-              Sign Up
-            </Button>
-            <Box display="flex" mt="3">
-              <Box mr="1">
-                <Text textStyle="body" color="gray.700">
-                  Already have an account?
-                </Text>
-              </Box>
-              <Link href={`${Routes.LOGIN_PAGE}`}>
-                <Text fontWeight="bold" color="gray.700" as="u">
-                  Log In
-                </Text>
-              </Link>
-            </Box>
+            <EmailForm
+              onSendEmailClick={onSendEmailClick}
+              isEmailInvalid={isEmailInvalid}
+              setIsEmailInvalid={setIsEmailInvalid}
+            />
+            <FormErrorMessage>Account creation failed</FormErrorMessage>
+            <SuccessfullyCreatedEmailModal isOpen={isOpen} onClose={onClose} />
           </FormControl>
         </Stack>
       </GridItem>

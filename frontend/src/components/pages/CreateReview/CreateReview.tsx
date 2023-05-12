@@ -64,14 +64,13 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
   const [currBook, setCurrBook] = useState<Book | null>(null);
   const newToast = useToasts();
 
-  const [showDeleteBookModal, setShowDeleteBookModal] = useState<boolean>(
-    false,
-  );
+  const [showDeleteBookModal, setShowDeleteBookModal] =
+    useState<boolean>(false);
   const [showPublishModal, setShowPublishModal] = useState<boolean>(false);
-  const [showDeleteReviewModal, setShowDeleteReviewModal] = useState<boolean>(
-    false,
-  );
-  const [showSaveDraftBeforeModal, setSaveDraftBeforeModal] = useState<boolean>(false);
+  const [showDeleteReviewModal, setShowDeleteReviewModal] =
+    useState<boolean>(false);
+  const [showSaveDraftBeforeModal, setSaveDraftBeforeModal] =
+    useState<boolean>(false);
   const [deleteBookIndex, setDeleteBookIndex] = useState<number>(-1);
   const [books, setBooks] = useState<Book[]>([]);
   const [review, setReview] = useState("");
@@ -294,25 +293,31 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         });
     }
   }, [history, id, setBooksFromBookResponse]);
-  
+
   useEffect(() => {
     setCannotSave(false);
-  }, [books, review, featured, reviewerByline, reviewerFirstName, reviewerLastName])
+  }, [
+    books,
+    review,
+    featured,
+    reviewerByline,
+    reviewerFirstName,
+    reviewerLastName,
+  ]);
 
   const alertSaveChanges = (e: any) => {
     e.preventDefault();
     setSaveDraftBeforeModal(true);
-    e.returnValue = '';
-  }
-  
+    e.returnValue = "";
+  };
+
   useEffect(() => {
-    if (!cannotSave)
-      window.addEventListener('beforeunload', alertSaveChanges);
+    if (!cannotSave) window.addEventListener("beforeunload", alertSaveChanges);
     return () => {
       if (!cannotSave)
-        window.removeEventListener('beforeunload', alertSaveChanges);
-    }
-  })
+        window.removeEventListener("beforeunload", alertSaveChanges);
+    };
+  });
 
   return (
     <Box>
@@ -341,12 +346,15 @@ const CreateReview = ({ id }: CreateReviewProps): React.ReactElement => {
         deleteReview={() => deleteReview()}
       />
       <SaveDraftReviewModal
-          isOpen={showSaveDraftBeforeModal}
-          onClose={() => setSaveDraftBeforeModal(false)}
-          deleteReview={() => { setSaveDraftBeforeModal(false); history.push("/dashboard"); }}
-          saveReview={() => handleSave()}
-          bookTitle="this review"
-        />
+        isOpen={showSaveDraftBeforeModal}
+        onClose={() => setSaveDraftBeforeModal(false)}
+        deleteReview={() => {
+          setSaveDraftBeforeModal(false);
+          history.push("/dashboard");
+        }}
+        saveReview={() => handleSave()}
+        bookTitle="this review"
+      />
       <PreviewReviewModal
         review={createPreviewModalReviewObject()}
         isOpen={isOpenPreviewModal}

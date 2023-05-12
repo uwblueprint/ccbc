@@ -30,6 +30,8 @@ import {
   Publisher,
   Tag,
 } from "../../../types/BookTypes";
+import AddProfilePictureMode from "../../../types/Types";
+import AddProfilePicture from "../CreatorProfile/AddProfilePictureField";
 import AddMultiSelect from "./AddMultiSelect";
 import AddNumberInput from "./AddNumberInput";
 import AddSelect from "./AddSelect";
@@ -467,14 +469,13 @@ const BookModal = (props: BookModalProps): React.ReactElement => {
             </GridItem>
             <GridItem>
               <Stack spacing={4} direction="column">
-                <AddStringInput
-                  id="bookCover"
-                  label="Book Cover"
-                  name="bookCover"
-                  placeholder="Image link here"
-                  required
-                  inputFieldValue={coverImage}
+                <AddProfilePicture
+                  name="Book Cover"
+                  value={coverImage}
+                  field="profilePictureLink"
+                  mode={AddProfilePictureMode.bookModal}
                   setInputField={setCoverImage}
+                  required
                 />
                 <AddMultiSelect
                   id="genre"

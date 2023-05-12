@@ -58,24 +58,12 @@ const SearchReviews = (): React.ReactElement => {
       },
     );
 
-    const ageArr = [];
-    // eslint-disable-next-line no-restricted-syntax, guard-for-in
-    for (const review in displayedReviews) {
-      const targetBook = displayedReviews[review].books[0];
-      const ageRange = `${targetBook.minAge},${targetBook.maxAge}`;
-      const ageOpt = {
-        label: `Ages ${ageRange.replace(",", "-")}`,
+    const ageArr = ["0-3", "4-8", "9-12", "12-18"].map((ageRange) => {
+      return {
+        label: `Ages ${ageRange}`,
         value: ageRange,
       };
-
-      if (
-        ageArr.findIndex(
-          (opt) => opt.label === ageOpt.label && opt.value === ageOpt.value,
-        ) === -1
-      ) {
-        ageArr.push(ageOpt);
-      }
-    }
+    });
     setAllAges(ageArr);
   }, []);
 
@@ -114,8 +102,13 @@ const SearchReviews = (): React.ReactElement => {
       newSearchUrl.toString(),
     );
 
+    const params = new URLSearchParams(window.location.search);
+    const genres = params.has("genres") ? String(params.get("genres")) : "";
+    const minAge = params.has("minAge") ? Number(params.get("minAge")) : 0;
+    const maxAge = params.has("maxAge") ? Number(params.get("maxAge")) : 0;
+
     reviewAPIClient
-      .getReviews(searchText, 25, 0)
+      .getReviews(searchText, 25, 0, minAge, maxAge, undefined, genres)
       .then((reviewResponse: PaginatedReviewResponse) => {
         settotalReviews(reviewResponse.totalReviews);
         setDisplayedReviews(mapReviewResponseToReview(reviewResponse.reviews));
@@ -138,9 +131,16 @@ const SearchReviews = (): React.ReactElement => {
             <FilterBox
               genreOptions={allGenres}
               ageOptions={allAges}
-              setGenreFilter={() => null}
-              setAgeFilter={() => null}
-              searchStyle
+              setGenreFilter={(genres) => {
+                setGenresFilter(genres.map((g) => g.label));
+              }}
+              setAgeFilter={(ages) => {
+                const numAges = ages.map((a) => {
+                  return a.value.split("-").map((x) => parseInt(x, 10));
+                });
+                const ageOpts = numAges.flat();
+                setAgeRangeFilter([Math.min(...ageOpts), Math.max(...ageOpts)]);
+              }}
             />
           </Box>
           <VStack spacing="24px" align="stretch">

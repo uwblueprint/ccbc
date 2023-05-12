@@ -1,54 +1,93 @@
 import { Router } from "express";
 import { isAuthorizedByRole } from "../middlewares/auth";
 import { sendErrorResponse } from "../utilities/errorResponse";
-import { creatorDtoValidator } from "../middlewares/validators/creatorValidators";
+import { creatorUpdateDtoValidator } from "../middlewares/validators/creatorValidators";
 import CreatorService from "../services/implementations/creatorService";
 import ICreatorService from "../services/interfaces/creatorService";
+import EmailService from "../services/implementations/emailService";
+import nodemailerConfig from "../nodemailer.config";
 
 const creatorRouter: Router = Router();
-const creatorService: ICreatorService = new CreatorService();
-creatorRouter.get("/");
+const creatorService: ICreatorService = new CreatorService(
+  new EmailService(nodemailerConfig),
+);
 
 interface CreatorReqQuery {
   id?: string;
   location?: string;
   ageRange?: string;
-  genre?: string;
+  genres?: string[];
   status?: string;
+  provinces?: string[];
+  crafts?: string[];
+  searchText?: string;
 }
 
-creatorRouter.get(
-  "/",
-  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
-  async (req, res) => {
-    const { id, location, ageRange, genre, status } =
-      req.query as CreatorReqQuery;
-    if (id) {
-      const idNumeric = parseInt(id, 10);
-      // Get User By Id
-      if (Number.isNaN(idNumeric)) {
-        res.status(400).json({ error: "id query parameter must be a number." });
-      } else {
-        try {
-          res.status(200).json(await creatorService.getCreatorById(id));
-        } catch (error: unknown) {
-          sendErrorResponse(error, res);
-        }
-      }
+creatorRouter.get("/", async (req, res) => {
+  const { id, location, ageRange, status, searchText } =
+    req.query as CreatorReqQuery;
+  const genres: string[] | undefined = (req.query.genres as string)
+    ? (req.query.genres as string).split(",")
+    : undefined;
+  const provinces: string[] | undefined = (req.query.provinces as string)
+    ? (req.query.provinces as string).split(",")
+    : undefined;
+  const crafts: string[] | undefined = (req.query.crafts as string)
+    ? (req.query.crafts as string).split(",")
+    : undefined;
+  if (id) {
+    const idNumeric = parseInt(id, 10);
+    // Get User By Id
+    if (Number.isNaN(idNumeric)) {
+      res.status(400).json({ error: "id query parameter must be a number." });
     } else {
-      // Get all creators with filter
       try {
-        res.status(200).json(
-          await creatorService.getCreators({
-            status,
-            genre,
-            location,
-            ageRange,
-          }),
-        );
+        res.status(200).json(await creatorService.getCreatorById(id));
       } catch (error: unknown) {
         sendErrorResponse(error, res);
       }
+    }
+  } else {
+    // Get all creators with filter
+    try {
+      res.status(200).json(
+        await creatorService.getCreators({
+          status,
+          genres,
+          location,
+          ageRange,
+          provinces,
+          crafts,
+          searchText,
+        }),
+      );
+    } catch (error: unknown) {
+      sendErrorResponse(error, res);
+    }
+  }
+});
+
+// Get users by ID. Above function does not work properly.
+creatorRouter.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const creator = await creatorService.getCreatorById(id);
+    res.status(200).json(creator);
+  } catch (e: unknown) {
+    sendErrorResponse(e, res);
+  }
+});
+
+creatorRouter.get(
+  "/user/:id",
+  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      const creator = await creatorService.getCreatorById(id, true);
+      res.status(200).json(creator);
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
     }
   },
 );
@@ -70,25 +109,73 @@ creatorRouter.put(
   },
 );
 
+/* Reject users to be creators by id */
+creatorRouter.put(
+  "/reject/:id",
+  isAuthorizedByRole(new Set(["Admin"])),
+  async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      await creatorService.rejectCreator(id);
+
+      res.status(200).json({ message: "rejected" });
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
+
+/* Delete creators by id */
+creatorRouter.delete(
+  "/delete/:id",
+  isAuthorizedByRole(new Set(["Admin"])),
+  async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      await creatorService.deleteCreator(id);
+
+      res.status(200).json({ message: "deleted" });
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
+
+/* Create creator by id in database */
 creatorRouter.post(
   "/",
   isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
-  creatorDtoValidator,
   async (req, res) => {
     try {
       if (req.body.isApproved) throw new Error("invalid creator");
-      await creatorService.createCreator({
-        id: req.body.id,
-        userId: req.body.userId,
-        location: req.body.location,
-        rate: req.body.rate,
-        genre: req.body.genre,
-        ageRange: req.body.ageRange,
-        timezone: req.body.timezone,
-        bio: req.body.bio,
-      });
+      // Only allow creation without any data
+      const result = await creatorService.createCreator(
+        parseInt(req.body.userId, 10),
+      );
 
-      res.status(200).json({ message: "Created creator!" });
+      res.status(200).json(result);
+    } catch (e: unknown) {
+      sendErrorResponse(e, res);
+    }
+  },
+);
+
+/* Update creator in the database */
+creatorRouter.put(
+  "/:id",
+  isAuthorizedByRole(new Set(["Admin", "Subscriber", "Author"])),
+  creatorUpdateDtoValidator,
+  async (req, res) => {
+    try {
+      if (req.body.isApproved) throw new Error("invalid creator");
+      const { id } = req.params;
+      const creator = await creatorService.updateCreator(
+        parseInt(id, 10),
+        req.body,
+      );
+      res.status(200).json(creator);
     } catch (e: unknown) {
       sendErrorResponse(e, res);
     }

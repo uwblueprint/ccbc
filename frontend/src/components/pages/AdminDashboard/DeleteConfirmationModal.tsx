@@ -14,7 +14,8 @@ export type DeleteConfirmationProps = {
   isOpen: boolean;
   onClose: () => void;
   onDelete: () => Promise<void>;
-  reviewName: string;
+  reviewName?: string;
+  authorName?: string;
 };
 
 /**
@@ -26,6 +27,7 @@ const DeleteConfirmationModal = ({
   onClose,
   onDelete,
   reviewName,
+  authorName,
 }: DeleteConfirmationProps): React.ReactElement => {
   return (
     <Modal isOpen={isOpen} onClose={() => onClose()} isCentered>
@@ -42,9 +44,15 @@ const DeleteConfirmationModal = ({
           Hey wait!
         </ModalHeader>
         <ModalCloseButton />
-        <ModalBody ml="40px" mr="40px" fontFamily="DM Sans">
-          Are you sure you want to delete this review of {reviewName}?
-        </ModalBody>
+        {reviewName ? (
+          <ModalBody ml="40px" mr="40px" fontFamily="DM Sans">
+            Are you sure you want to delete this review of {reviewName}?
+          </ModalBody>
+        ) : (
+          <ModalBody ml="40px" mr="40px" fontFamily="DM Sans">
+            Are you sure you want to delete {authorName}?
+          </ModalBody>
+        )}
         <ModalFooter mb="40px" mr="40px" ml="40px">
           <Button
             w="167px"
@@ -54,7 +62,7 @@ const DeleteConfirmationModal = ({
               onDelete();
             }}
           >
-            Yes, delete review
+            Yes, delete {reviewName ? "review" : "creator"}
           </Button>
           <Button
             w="167px"

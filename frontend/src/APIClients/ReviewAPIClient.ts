@@ -14,6 +14,7 @@ import baseAPIClient from "./BaseAPIClient";
  * @param minAge? - the minimum age for book audience (inclusive)
  * @param maxAge? - the  maximum age for book audience (inclusive)
  * @param featured? - whether the reviews are featured or not
+ * @param genres? - genres selected
  */
 const getReviews = async (
   search?: string,
@@ -22,6 +23,7 @@ const getReviews = async (
   minAge?: number,
   maxAge?: number,
   featured?: boolean,
+  genres?: string,
 ): Promise<PaginatedReviewResponse> => {
   const params = new URLSearchParams();
   if (search) params.append("search", search);
@@ -30,6 +32,7 @@ const getReviews = async (
   if (minAge || minAge === 0) params.append("minAge", String(minAge));
   if (maxAge || maxAge === 0) params.append("maxAge", String(maxAge));
   if (featured) params.append("featured", "featured");
+  if (genres) params.append("genres", String(genres));
 
   try {
     const { data } = await baseAPIClient.get("/reviews", {

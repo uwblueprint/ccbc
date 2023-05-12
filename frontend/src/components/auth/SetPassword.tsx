@@ -15,13 +15,14 @@ import React, { useContext, useState } from "react";
 import { Redirect } from "react-router-dom";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
-import { HOME_PAGE } from "../../constants/Routes";
+import { CREATOR_PROFILE_LANDING, HOME_PAGE } from "../../constants/Routes";
 import AuthContext from "../../contexts/AuthContext";
 /* Images */
 import CCBCLogo from "../../images/ccbc-logo.png";
 import LoginGraphic from "../../images/Login-graphic.png";
 import { AuthenticatedUser } from "../../types/AuthTypes";
 import firebaseApp from "../../utils/Firebase";
+import PasswordRequirements from "../common/ChangePassword/PasswordRequirements";
 import PasswordInputField from "../common/PasswordInputField";
 
 /**
@@ -61,7 +62,18 @@ const SetPassword = ({
         const { currentUser } = auth;
         if (currentUser === null)
           throw new Error("Unable to retreive current user");
-        await updatePassword(currentUser, newPassword);
+        try {
+          await updatePassword(currentUser, newPassword);
+        } catch (e: any) {
+          if (e.message.includes("weak-password")) {
+            setInvalid(true);
+            setErrorMessage(
+              "The password is too weak, must be at least 6 characters long.",
+            );
+            return;
+          }
+          throw new Error(e);
+        }
 
         if (isNewAccount) {
           // verify the user
@@ -87,6 +99,9 @@ const SetPassword = ({
     }
   };
 
+  if (authenticatedUser?.roleType === "Author") {
+    return <Redirect to={CREATOR_PROFILE_LANDING} />;
+  }
   if (authenticatedUser) {
     return <Redirect to={HOME_PAGE} />;
   }
@@ -119,13 +134,12 @@ const SetPassword = ({
               {isNewAccount ? "Password Set Up" : "Reset Password"}
             </Text>
           </Center>
-          <Center>
-            <Text textStyle="body" color="gray.700">
-              {isNewAccount
-                ? "A CCBC account was successfully created for you! Set your password below to activate your account."
-                : "Enter a new password below to reset it."}
-            </Text>
-          </Center>
+          <Text textStyle="body" color="gray.700">
+            {isNewAccount
+              ? "A CCBC account was successfully created for you! Set your password below to activate your account."
+              : "Enter a new password below to reset it."}
+          </Text>
+          <PasswordRequirements />
           <FormControl mt="1rem">
             <Box mt="4%">
               <FormLabel>New Password</FormLabel>

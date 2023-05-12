@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { HiUser } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import authAPIClient from "../../APIClients/AuthAPIClient";
 import logo from "../../assets/ccbc.png";
@@ -23,24 +23,15 @@ import InviteAdminModal from "./InviteAdminModal";
 
 const NavBar = (): React.ReactElement => {
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext);
+  const history = useHistory();
+
   const isAdmin = authenticatedUser?.roleType === UserRole.Admin;
+  const isCreator = authenticatedUser?.roleType === UserRole.Creator;
   const {
     isOpen: isChangePasswordModalOpen,
     onOpen: onChangePasswordModalOpen,
     onClose: onChangePasswordModalClose,
   } = useDisclosure();
-  let userFirstName = "";
-  let userLastName = "";
-  let userEmail = "";
-  if (
-    authenticatedUser &&
-    authenticatedUser.firstName &&
-    authenticatedUser.lastName
-  ) {
-    userFirstName = authenticatedUser?.firstName;
-    userLastName = authenticatedUser?.lastName;
-    userEmail = authenticatedUser.email;
-  }
 
   const onLogOutClick = async () => {
     const success = await authAPIClient.logout(authenticatedUser?.id);
@@ -94,10 +85,15 @@ const NavBar = (): React.ReactElement => {
             />
           </Link>
           {displayNavText && (
-            <Link to="/">
+            <Link to="/reviews">
               <Text textStyle="h4" ml="60px">
-                Home
+                Book Reviews
               </Text>
+            </Link>
+          )}
+          {displayNavText && (
+            <Link to="/creator-directory">
+              <Text textStyle="h4">Creator Directory</Text>
             </Link>
           )}
           {displayNavText && (
@@ -122,7 +118,7 @@ const NavBar = (): React.ReactElement => {
                 cursor="default"
                 paddingTop="3px"
               >
-                {userFirstName} {userLastName}
+                {authenticatedUser?.firstName} {authenticatedUser?.lastName}
               </Text>
               <Text
                 color="#4A5568"
@@ -131,7 +127,16 @@ const NavBar = (): React.ReactElement => {
                 padding="3px 0px"
                 cursor="default"
               >
-                {userEmail}
+                {authenticatedUser?.email}
+              </Text>
+
+              <Text
+                color="#4A5568"
+                textStyle="body"
+                fontSize="sm"
+                cursor="default"
+              >
+                {authenticatedUser?.roleType}
               </Text>
 
               <MenuDivider />
@@ -146,29 +151,54 @@ const NavBar = (): React.ReactElement => {
                   >
                     Invite new admin
                   </MenuItem>
+                </div>
+              )}
+              {isCreator && (
+                <div className="Section 2">
                   <MenuItem
                     textStyle="body"
                     fontSize="sm"
                     padding="3px 0px"
                     cursor="pointer"
-                    onClick={onChangePasswordModalOpen}
+                    onClick={() =>
+                      history.push("/create-creator-profile", {
+                        currentPage: 5,
+                      })
+                    }
                   >
-                    Change password
+                    Edit creator profile
                   </MenuItem>
-
-                  <MenuDivider />
                 </div>
               )}
-
               <MenuItem
                 textStyle="body"
                 fontSize="sm"
-                onClick={onLogOutClick}
+                padding="3px 0px"
                 cursor="pointer"
-                padding="5px 0px"
+                onClick={onChangePasswordModalOpen}
               >
-                Sign out
+                Change password
               </MenuItem>
+              <MenuDivider />
+              {authenticatedUser ? ( 
+              <MenuItem
+              textStyle="body"
+              fontSize="sm"
+              onClick={onLogOutClick}
+              cursor="pointer"
+              padding="5px 0px"
+            >
+              Sign out
+            </MenuItem>) : (
+            <MenuItem
+              textStyle="body"
+              fontSize="sm"
+              cursor="pointer"
+              padding="5px 0px"
+            >
+              <Link to="/login">Login</Link>
+            </MenuItem>
+            )}              
             </MenuList>
           </Menu>
         </Flex>

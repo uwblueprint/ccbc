@@ -146,7 +146,7 @@ const seedBooks = [
 
 export const up: Seeder = async ({ context: sequelize }) => {
   await sequelize.query("TRUNCATE TABLE books CASCADE");
-  await sequelize.getQueryInterface().bulkInsert("books", seedBooks, {}, []);
+  await sequelize.getQueryInterface().bulkInsert("books", seedBooks, {});
   await sequelize.getQueryInterface().bulkUpdate(
     "books",
     {
