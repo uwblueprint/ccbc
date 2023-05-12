@@ -161,7 +161,7 @@ const NavBar = (): React.ReactElement => {
                     padding="3px 0px"
                     cursor="pointer"
                     onClick={() =>
-                      history.push("/create-creator-profile", {
+                      history.push(`/create-creator-profile/`, {
                         currentPage: 5,
                       })
                     }

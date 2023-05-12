@@ -133,6 +133,12 @@ const App = (): React.ReactElement => {
                     />
                     <PrivateRoute
                       exact
+                      path={Routes.CREATOR_PROFILE_MODIFY}
+                      component={CreatorProfileForm}
+                      requiredRoles={[UserRole.Admin, UserRole.Creator]}
+                    />
+                    <PrivateRoute
+                      exact
                       path={Routes.PROFILE_PAGE}
                       component={Profile}
                       requiredRoles={[
