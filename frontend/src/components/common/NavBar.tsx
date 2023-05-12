@@ -87,7 +87,7 @@ const NavBar = (): React.ReactElement => {
           {displayNavText && (
             <Link to="/reviews">
               <Text textStyle="h4" ml="60px">
-                Magazine Directory
+                Book Reviews
               </Text>
             </Link>
           )}

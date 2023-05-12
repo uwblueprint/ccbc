@@ -102,7 +102,7 @@ const Login = (): React.ReactElement => {
                 Forgot password?
               </Link>
             </Box>
-            <Box mb="1rem">
+            <Box mb="2rem">
               <Button variant="submit" type="submit" onClick={onLogInClick}>
                 Log in
               </Button>
@@ -111,7 +111,13 @@ const Login = (): React.ReactElement => {
               href={`${Routes.SUBSCRIBER_SIGNUP_PAGE}`}
               style={{ textDecoration: "none" }}
             >
-              <Button variant="submit">Signup</Button>
+              <Button mb="1rem" variant="submit">Signup as Subscriber</Button>
+            </Link>
+            <Link
+              href={`${Routes.CREATOR_SIGNUP_PAGE}`}
+              style={{ textDecoration: "none" }}
+            >
+              <Button variant="submit">Signup as Creator</Button>
             </Link>
           </FormControl>
         </Stack>

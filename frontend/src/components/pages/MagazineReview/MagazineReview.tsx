@@ -97,7 +97,7 @@ const MagazineReview = (): React.ReactElement => {
           {displayBlurb && (
             <Box mt="10" w={["80%", "80%", "30%"]}>
               <VStack textAlign="center">
-                <Text textStyle="h2">Welcome to the CCBC Magazine Review</Text>
+                <Text textStyle="h2">Welcome to the Canadian children Book News Online Edition</Text>
                 <Text textStyle="body">
                   Scroll and skim through a wide selection of book reviews
                   approved by the Canadian Children’s Book Centre

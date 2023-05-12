@@ -21,17 +21,6 @@ const authService: IAuthService = new AuthService(userService, emailService);
 givecloudRouter.post(
   "/user.subscription_paid",
   isGiveCloudEnabled(),
-  body(
-    "supporter.groups[0].name",
-    "supporter.groups.name is required",
-  ).exists(),
-  body(
-    "supporter.groups[0].days_left",
-    "supporter.groups.days_left is required",
-  ).exists(),
-  body("supporter.email", "supporter email is required").exists(),
-  body("supporter.first_name", "supporter first_name is required").exists(),
-  body("supporter.last_name", "supporter last_name is required").exists(),
   async (req: Request, res: Response) => {
     try {
       if (process.env.HMAC_SECRET_KEY) {
@@ -48,16 +37,15 @@ givecloudRouter.post(
       }
       const errors = validationResult(req);
       if (errors.isEmpty()) {
-        const { supporter } = req.body;
-        const { email, groups } = supporter;
+        const { membership, email, first_name, last_name } = req.body;
         const subscriptionExpiresOn = new Date();
         let roleType: Role = "Subscriber";
-        if (groups[0].name === "Professional Creator Membership") {
+        if (membership.vendor_membership_id === 'PROFESSIONAL') {
           roleType = "Author";
         }
         try {
           subscriptionExpiresOn.setDate(
-            subscriptionExpiresOn.getDate() + groups[0].days_left,
+            subscriptionExpiresOn.getDate() + membership.duration,
           );
           await userService.getUserByEmail(email);
           const userDTO = await userService.updateUserSubscriptionbyEmail(
@@ -77,8 +65,8 @@ givecloudRouter.post(
           });
 
           const newUser = await userService.createUser({
-            firstName: supporter.first_name,
-            lastName: supporter.last_name,
+            firstName: first_name,
+            lastName: last_name,
             email,
             roleType,
             password: accessCode.toString(),
