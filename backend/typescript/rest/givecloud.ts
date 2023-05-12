@@ -37,7 +37,7 @@ givecloudRouter.post(
       }
       const errors = validationResult(req);
       if (errors.isEmpty()) {
-        const { membership, email, firstName, lastName } = req.body;
+        const { membership, email, firstName, lastName } = req.body.supporters[0];
         const subscriptionExpiresOn = new Date();
         let roleType: Role = "Subscriber";
         if (membership.vendor_membership_id === "PROFESSIONAL") {
