@@ -37,10 +37,10 @@ givecloudRouter.post(
       }
       const errors = validationResult(req);
       if (errors.isEmpty()) {
-        const { membership, email, first_name, last_name } = req.body;
+        const { membership, email, firstName, lastName } = req.body;
         const subscriptionExpiresOn = new Date();
         let roleType: Role = "Subscriber";
-        if (membership.vendor_membership_id === 'PROFESSIONAL') {
+        if (membership.vendor_membership_id === "PROFESSIONAL") {
           roleType = "Author";
         }
         try {
@@ -52,6 +52,13 @@ givecloudRouter.post(
             email,
             subscriptionExpiresOn,
           );
+
+          emailService.sendEmail(
+            email,
+            "Your CCBC Subscription has been renewed!",
+            `Your CCBC Subscription has been renewed! Your subscription as a ${roleType} will expire on ${subscriptionExpiresOn}.`,
+          );
+
           res.status(200).json(userDTO);
         } catch {
           const accessCode = password.randomPassword({
@@ -65,8 +72,8 @@ givecloudRouter.post(
           });
 
           const newUser = await userService.createUser({
-            firstName: first_name,
-            lastName: last_name,
+            firstName,
+            lastName,
             email,
             roleType,
             password: accessCode.toString(),
