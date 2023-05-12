@@ -39,27 +39,17 @@ givecloudRouter.post(
       if (errors.isEmpty()) {
         const { membership, email, firstName, lastName } = req.body.supporters[0];
         const subscriptionExpiresOn = new Date();
+        subscriptionExpiresOn.setDate(
+          subscriptionExpiresOn.getDate() + membership.duration,
+        );
+
         let roleType: Role = "Subscriber";
         if (membership.vendor_membership_id === "PROFESSIONAL") {
           roleType = "Author";
         }
+
         try {
-          subscriptionExpiresOn.setDate(
-            subscriptionExpiresOn.getDate() + membership.duration,
-          );
           await userService.getUserByEmail(email);
-          const userDTO = await userService.updateUserSubscriptionbyEmail(
-            email,
-            subscriptionExpiresOn,
-          );
-
-          emailService.sendEmail(
-            email,
-            "Your CCBC Subscription has been renewed!",
-            `Your CCBC Subscription has been renewed! Your subscription as a ${roleType} will expire on ${subscriptionExpiresOn}.`,
-          );
-
-          res.status(200).json(userDTO);
         } catch {
           const accessCode = password.randomPassword({
             length: 8, // length of the password
@@ -80,8 +70,20 @@ givecloudRouter.post(
             subscriptionExpiresOn,
           });
           await authService.sendPasswordSetupLink(newUser, accessCode, true);
-          res.status(201).json(newUser);
         }
+
+        const userDTO = await userService.updateUserSubscriptionbyEmail(
+          email,
+          subscriptionExpiresOn,
+        );
+
+        emailService.sendEmail(
+          email,
+          "Your CCBC Subscription has been renewed!",
+          `Your CCBC Subscription has been renewed! Your subscription as a ${roleType} will expire on ${subscriptionExpiresOn}.`,
+        );
+
+        res.status(200).json(userDTO);
       } else {
         res.status(400).json({ errors: errors.array() });
       }
