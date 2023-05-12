@@ -26,6 +26,7 @@ interface CreatorProfileNavProps {
   handleNav: (direction: number) => void;
   saveAndExit?: () => boolean;
   setModalState?: (a: boolean) => void;
+  userId: number;
 }
 
 const CreatorProfileNav = ({
@@ -33,12 +34,12 @@ const CreatorProfileNav = ({
   handleNav,
   saveAndExit,
   setModalState,
+  userId
 }: CreatorProfileNavProps): React.ReactElement => {
   const { creatorProfile } = useContext(CreatorProfileContext);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { authenticatedUser } = useContext(AuthContext);
   const newToast = useToasts();
 
   const handleSaveAndExit = async (finalSubmit: boolean) => {
@@ -50,12 +51,11 @@ const CreatorProfileNav = ({
       };
       try {
         const creatorObj = await CreatorAPIClient.getCreatorByUserId(
-          String(authenticatedUser?.id),
+          String(userId),
         );
         try {
           await CreatorAPIClient.updateCreator(
             Number(creatorObj.id),
-            !!finalSubmit,
             formattedProfile as Creator,
           );
           if (finalSubmit && setModalState) {
@@ -79,7 +79,7 @@ const CreatorProfileNav = ({
       } catch (error) {
         try {
           const creator = await CreatorAPIClient.createCreator(
-            Number(authenticatedUser?.id),
+            Number(userId),
           );
           await CreatorAPIClient.updateCreator(
             Number(creator.id),

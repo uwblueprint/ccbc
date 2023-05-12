@@ -94,12 +94,10 @@ const createCreator = async (id: number): Promise<Creator> => {
 
 const updateCreator = async (
   id: number,
-  isReadyForReview: boolean,
   creator: Creator,
 ): Promise<Creator> => {
   const newCreator: Creator = {
     ...creator,
-    isReadyForReview,
   };
   const formattedCreator = Object.fromEntries(
     Object.entries(newCreator).filter(([_, v]) => v != null),

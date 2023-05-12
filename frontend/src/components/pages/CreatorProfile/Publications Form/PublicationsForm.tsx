@@ -45,10 +45,12 @@ const useStyles = makeStyles({
 
 interface PublicationsFormProps {
   handleNav: (direction: number) => void;
+  userId: number;
 }
 
 const PublicationsForm = ({
   handleNav,
+  userId
 }: PublicationsFormProps): React.ReactElement => {
   const classes = useStyles();
   const { creatorProfile, setCreatorProfile } = useContext(
@@ -328,6 +330,7 @@ const PublicationsForm = ({
         </Flex>
       </Center>
       <CreatorProfileNav
+        userId={userId}
         activeForm={3}
         handleNav={handleNav}
         saveAndExit={() => {

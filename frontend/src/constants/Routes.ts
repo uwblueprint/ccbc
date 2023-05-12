@@ -16,7 +16,7 @@ export const CREATOR_SIGNUP_PAGE = "/creator-signup";
 
 export const CREATOR_PROFILE_LANDING = "/finish-profile";
 
-export const CREATOR_PROFILE_SETUP = "/create-creator-profile";
+export const CREATOR_PROFILE_SETUP = "/create-creator-profile/:userId";
 
 export const CREATOR_PROFILE_OVERVIEW = "/creators/:id";
 

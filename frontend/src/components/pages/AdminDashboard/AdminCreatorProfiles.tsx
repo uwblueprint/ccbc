@@ -22,6 +22,7 @@ type CreatorRow = {
   isApproved: boolean;
   isReadyForReview: boolean;
   createdAt: string;
+  userId: number;
 };
 
 const AdminCreatorProfiles = (): React.ReactElement => {
@@ -228,6 +229,7 @@ const AdminCreatorProfiles = (): React.ReactElement => {
           // eslint-disable-next-line
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
+            console.log(tableMeta)
             const isReadyForReview = tableMeta.rowData[5];
             return (
               <div>
@@ -237,7 +239,7 @@ const AdminCreatorProfiles = (): React.ReactElement => {
                       <IconButton
                         aria-label="edit creator"
                         icon={<EditIcon color="#718096" />}
-                        onClick={() => history.push("/create-creator-profile")}
+                        onClick={() => history.push(`/create-creator-profile/${tableMeta.rowData[7]}`)}
                       />
                     </Tooltip>
                     <Tooltip label="Delete">
@@ -280,6 +282,13 @@ const AdminCreatorProfiles = (): React.ReactElement => {
             );
           },
         },
+      },
+      {
+        name: "userId",
+        label: "userId",
+        options: {
+          display: false
+        }
       },
     ];
 
@@ -333,7 +342,7 @@ const AdminCreatorProfiles = (): React.ReactElement => {
         created = new Date(creator.createdAt as number)
           .toDateString()
           .substring(4);
-
+        console.log(creator)
         const row: CreatorRow = {
           id: creator.id || -1,
           name: `${creator.firstName} ${creator.lastName}`,
@@ -341,6 +350,7 @@ const AdminCreatorProfiles = (): React.ReactElement => {
           isApproved: creator.isApproved || false,
           isReadyForReview: creator.isReadyForReview || false,
           createdAt: created,
+          userId: creator.userId
         };
         if (row.isReadyForReview || row.isApproved) {
           rows.push(row);

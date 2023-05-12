@@ -1,7 +1,7 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Button, Center, Flex, Text } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 
 import CreatorAPIClient from "../../../APIClients/CreatorAPIClient";
 import { UserRole } from "../../../constants/Enums";
@@ -94,10 +94,11 @@ const CreatorProfileForm = (): React.ReactElement => {
 
   const { authenticatedUser } = useContext(AuthContext);
   const history = useHistory();
+  const { userId } = useParams<any>();
 
   useEffect(() => {
     setIsLoading(true);
-    CreatorAPIClient.getCreatorByUserId(String(authenticatedUser?.id))
+    CreatorAPIClient.getCreatorByUserId(String(userId ?? authenticatedUser?.id))
       .then((res) => {
         if (res) {
           setCreatorProfile({
@@ -271,12 +272,13 @@ const CreatorProfileForm = (): React.ReactElement => {
                     activeForm={activeForm}
                     handleNav={handleNav}
                     setModalState={setSubmitted}
+                    userId={userId ?? authenticatedUser?.id}
                   />
                 </>
               ) : (
                 // CreatorProfileNav needs to be within PublicationsForm because the "Save and exit"
                 //   button in this step also needs to verify and set state, unlike in other steps
-                <PublicationsForm handleNav={handleNav} />
+                <PublicationsForm handleNav={handleNav} userId={userId ?? authenticatedUser?.id} />
               )}
             </CreatorProfileContext.Provider>
           )}

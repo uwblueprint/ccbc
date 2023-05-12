@@ -325,7 +325,6 @@ class CreatorService implements ICreatorService {
           age_range: creator.ageRange,
           timezone: creator.timezone,
           bio: creator.bio,
-          is_approved: false,
           first_name: creator.firstName,
           last_name: creator.lastName,
           email: creator.email,
@@ -341,7 +340,7 @@ class CreatorService implements ICreatorService {
           publications: creator.publications,
           presentations: creator.presentations,
           book_covers: creator.bookCovers,
-          isReadyForReview: creator.isReadyForReview,
+          ...(creator.isReadyForReview && {isReadyForReview: creator.isReadyForReview})
         },
         {
           where: { id },

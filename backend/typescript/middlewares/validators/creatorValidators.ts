@@ -182,11 +182,6 @@ export const creatorUpdateDtoValidator = async (
   // if (!validatePrimitive(req.body.book_covers, "string")) {
   //   return res.status(400).send(getApiValidationError("book_covers", "string"));
   // }
-  if (!validatePrimitive(req.body.isReadyForReview, "boolean")) {
-    return res
-      .status(400)
-      .send(getApiValidationError("isReadyForReview", "boolean"));
-  }
   // TODO: How to validate the presentations and publications?
 
   return next();
