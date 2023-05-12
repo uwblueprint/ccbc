@@ -70,12 +70,6 @@ const PresentationForm = (): React.ReactElement => {
         }
       />
       <Divider />
-      <Button color="blue.400" w="30%" justifyContent="start" p="0">
-        <Flex justifyContent="space-between">
-          <AddIcon />
-          Other presentation
-        </Flex>
-      </Button>
     </Flex>
   );
 };
