@@ -83,7 +83,6 @@ const CreatorProfileNav = ({
           );
           await CreatorAPIClient.updateCreator(
             Number(creator.id),
-            false,
             formattedProfile as Creator,
           );
           if (finalSubmit && setModalState) {
