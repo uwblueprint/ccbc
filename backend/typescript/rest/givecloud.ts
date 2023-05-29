@@ -22,73 +22,69 @@ givecloudRouter.post(
   "/user.subscription_paid",
   isGiveCloudEnabled(),
   async (req: Request, res: Response) => {
-    // try {
-    //   if (process.env.HMAC_SECRET_KEY) {
-    //     const hash = createHmac("sha1", process.env.HMAC_SECRET_KEY)
-    //       .update(JSON.stringify(req.body))
-    //       .digest("hex");
+    if (process.env.HMAC_SECRET_KEY) {
+      const hash = createHmac("sha1", process.env.HMAC_SECRET_KEY)
+        .update(JSON.stringify(req.body))
+        .digest("hex");
 
-    //     if (hash !== req.get("X-Givecloud-Signature")) {
-    //       res.status(401).send("Unauthorized");
-    //       return;
-    //     }
-    //   } else {
-    //     throw new Error("No HMAC secret key set");
-    //   }
-      const errors = validationResult(req);
-      if (errors.isEmpty()) {
-        const { membership, email, firstName, lastName } = req.body.supporters[0];
-        const subscriptionExpiresOn = new Date();
-        subscriptionExpiresOn.setDate(
-          subscriptionExpiresOn.getDate() + membership.duration,
-        );
-
-        let roleType: Role = "Subscriber";
-        if (membership.vendor_membership_id === "PROFESSIONAL") {
-          roleType = "Author";
-        }
-
-        try {
-          await userService.getUserByEmail(email);
-        } catch {
-          const accessCode = password.randomPassword({
-            length: 8, // length of the password
-            characters: [
-              // acceptable characters in the password
-              password.lower,
-              password.upper,
-              password.digits,
-            ],
-          });
-
-          const newUser = await userService.createUser({
-            firstName,
-            lastName,
-            email,
-            roleType,
-            password: accessCode.toString(),
-            subscriptionExpiresOn,
-          });
-          await authService.sendPasswordSetupLink(newUser, accessCode, true);
-        }
-
-        const userDTO = await userService.updateUserSubscriptionbyEmail(
-          email,
-          subscriptionExpiresOn,
-        );
-
-        emailService.sendEmail(
-          email,
-          "Your CCBC Subscription has been renewed!",
-          `Your CCBC Subscription has been renewed! Your subscription as a ${roleType} will expire on ${subscriptionExpiresOn}.`,
-        );
-
-        res.status(200).json(userDTO);
-      } else {
-        res.status(400).json({ errors: errors.array() });
+      if (hash !== req.get("X-Givecloud-Signature")) {
+        res.status(401).send("Unauthorized");
+        return;
       }
-    } catch (e: unknown) {
-      sendErrorResponse(e, res);
+    } else {
+      throw new Error("No HMAC secret key set");
+    }
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+      const { membership, email, firstName, lastName } = req.body.supporters[0];
+      const subscriptionExpiresOn = new Date();
+      subscriptionExpiresOn.setDate(
+        subscriptionExpiresOn.getDate() + membership.duration,
+      );
+
+      let roleType: Role = "Subscriber";
+      if (membership.vendor_membership_id === "PROFESSIONAL") {
+        roleType = "Author";
+      }
+
+      try {
+        await userService.getUserByEmail(email);
+      } catch {
+        const accessCode = password.randomPassword({
+          length: 8, // length of the password
+          characters: [
+            // acceptable characters in the password
+            password.lower,
+            password.upper,
+            password.digits,
+          ],
+        });
+
+        const newUser = await userService.createUser({
+          firstName,
+          lastName,
+          email,
+          roleType,
+          password: accessCode.toString(),
+          subscriptionExpiresOn,
+        });
+        await authService.sendPasswordSetupLink(newUser, accessCode, true);
+      }
+
+      const userDTO = await userService.updateUserSubscriptionbyEmail(
+        email,
+        subscriptionExpiresOn,
+      );
+
+      emailService.sendEmail(
+        email,
+        "Your CCBC Subscription has been renewed!",
+        `Your CCBC Subscription has been renewed! Your subscription as a ${roleType} will expire on ${subscriptionExpiresOn}.`,
+      );
+
+      res.status(200).json(userDTO);
+    } else {
+      res.status(400).json({ errors: errors.array() });
     }
   },
 );
