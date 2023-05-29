@@ -22,18 +22,6 @@ givecloudRouter.post(
   "/user.subscription_paid",
   isGiveCloudEnabled(),
   async (req: Request, res: Response) => {
-    if (process.env.HMAC_SECRET_KEY) {
-      const hash = createHmac("sha1", process.env.HMAC_SECRET_KEY)
-        .update(JSON.stringify(req.body))
-        .digest("hex");
-
-      if (hash !== req.get("X-Givecloud-Signature")) {
-        res.status(401).send("Unauthorized");
-        return;
-      }
-    } else {
-      throw new Error("No HMAC secret key set");
-    }
     const errors = validationResult(req);
     if (errors.isEmpty()) {
       const { membership, email, firstName, lastName } = req.body.supporters[0];
