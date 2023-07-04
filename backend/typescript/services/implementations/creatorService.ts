@@ -340,7 +340,9 @@ class CreatorService implements ICreatorService {
           publications: creator.publications,
           presentations: creator.presentations,
           book_covers: creator.bookCovers,
-          ...(creator.isReadyForReview && {isReadyForReview: creator.isReadyForReview})
+          ...(creator.isReadyForReview && {
+            isReadyForReview: creator.isReadyForReview,
+          }),
         },
         {
           where: { id },
