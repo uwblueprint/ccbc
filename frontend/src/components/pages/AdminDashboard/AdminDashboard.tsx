@@ -12,7 +12,7 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { CREATE_REVIEW_PAGE } from "../../../constants/Routes";
@@ -20,22 +20,29 @@ import AdminCreatorProfiles from "./AdminCreatorProfiles";
 import AdminReviews from "./AdminReviews";
 
 const AdminDashboard = (): React.ReactElement => {
-  useEffect(() => {}, []);
+  const [currentTab, setCurrentTab] = useState(0);
 
   return (
     <Box>
       <Center>
         <Stack w="90%" mb="50">
-          <Flex mt="10" mb="25">
+          <Flex mt="10" mb="25" minH="12">
             <Text textStyle="heading">Admin dashboard</Text>
             <Spacer />
-            <Link to={CREATE_REVIEW_PAGE}>
-              <Button w="159px" h="48px" colorScheme="teal">
-                + Add review
-              </Button>
-            </Link>
+            {currentTab === 0 && (
+              <Link to={CREATE_REVIEW_PAGE}>
+                <Button w="159px" h="48px" colorScheme="teal">
+                  + Add review
+                </Button>
+              </Link>
+            )}
           </Flex>
-          <Tabs variant="unstyled" colorScheme="green">
+          <Tabs
+            variant="unstyled"
+            colorScheme="green"
+            index={currentTab}
+            onChange={(index) => setCurrentTab(index)}
+          >
             <TabList>
               <Tab
                 fontWeight="bold"
